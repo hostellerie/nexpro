@@ -1,0 +1,7 @@
+<table>
+    <tr>
+    <td>{uploader}</td>
+    <td style="width:1px;background-color:black"></td>
+    <td>{mash_selections}</td>
+</tr>
+</table>

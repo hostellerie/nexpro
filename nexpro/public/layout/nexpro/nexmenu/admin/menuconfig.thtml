@@ -1,0 +1,401 @@
+
+<!-- css -->
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.5.1/build/assets/skins/sam/skin.css">
+<style>
+    .colorpicker {
+        float:right;
+        width:20px;
+        padding:2px;
+    }
+</style>
+<!-- js -->
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/dragdrop/dragdrop-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/slider/slider-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/element/element-beta-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/colorpicker/colorpicker-min.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.5.1/build/container/container-min.js"></script>
+
+<script type="text/javascript">
+
+// Need to add this class to the body tag for the YUI Dialog
+var objects = document.getElementsByTagName("body");
+var bodytag = objects[0];
+bodytag.className = bodytag.className + ' yui-skin-sam';
+
+// Create a namespace object:
+YAHOO.namespace("glmenu.colorpicker")
+
+// Create a new object for this module:
+YAHOO.glmenu.colorpicker.inDialog = function() {
+
+    // Define some shortcuts
+    var Event=YAHOO.util.Event;
+    var colorfield = '';
+    var colorsample = '';
+    var color = 255;
+    var mycolorpicker;
+
+    return {
+
+        // In the initialization function, create the dialog;
+        // In therender event, create the Color Picker instance.
+        init: function() {
+
+            // Instantiate the Dialog
+            var mydialog = new YAHOO.widget.Dialog("yui-picker-panel", {
+                width : "500px",
+                fixedcenter : true,
+                visible : false,
+                zindex: 2000,
+                modal: true,
+                constraintoviewport : true,
+                buttons : [ { text:"Submit", handler:this.handleSubmit, isDefault:true },
+                            { text:"Cancel", handler:this.handleCancel } ]
+             });
+
+            // Once the Dialog renders, we want to create our Color Picker instance.
+            mydialog.renderEvent.subscribe(function() {
+                if (!mycolorpicker) { //make sure that we haven't already created our Color Picker
+                    mycolorpicker = new YAHOO.widget.ColorPicker("yui-picker", {
+                        container: mydialog,
+                        showhexcontrols: true
+                    });
+
+
+                }
+            });
+
+
+            // We're all set up with our Dialog's configurations , now render the Dialog
+            mydialog.render();
+
+            Event.on('glmenu_config', 'click', function(e){
+                var target = YAHOO.util.Event.getTarget(e);
+                if(target.tagName.toUpperCase() === 'SPAN') {
+                    if (YAHOO.util.Dom.hasClass(target,'colorpicker')) {
+                        var field = target.getAttribute('id');
+                        colorfield = eval('document.frm_config.clr_' + field);
+                        color = colorfield.value;
+
+                        // Convert hex value to decimal to set initial value of color picker and popup dialog
+                        var red   = HexToR(color);
+                        var green = HexToG(color);
+                        var blue  = HexToB(color);
+                        mycolorpicker.setValue([red, green, blue],false);
+
+                        // Set the object of color sample so we can update it once new selection is made
+                        colorsample = document.getElementById(field);
+                        mydialog.cfg.setProperty("visible",true);
+                        YAHOO.util.Event.preventDefault(e);
+                    }
+                }
+            });
+
+        },
+
+        // Wire this to the Dialog's submit button:
+        handleSubmit: function() {
+            colorfield.value = '#' + document.frm_yuipicker.yui_pickerhex.value;
+            colorsample.style.backgroundColor = colorfield.value;
+            this.cancel();
+        },
+
+         // If the Dialog's cancel button is clicked, this function fires
+        handleCancel: function() {
+            // The cancel method automatically hides the Dialog:
+            this.cancel();
+        }
+
+    }
+
+}();
+
+// The earliest safe moment to instantiate a Dialog element is onDOMReady;
+YAHOO.util.Event.onDOMReady(YAHOO.glmenu.colorpicker.inDialog.init, YAHOO.glmenu.colorpicker.inDialog, true);
+
+function HexToR(h) { return parseInt((cutHex(h)).substring(0,2),16) }
+function HexToG(h) { return parseInt((cutHex(h)).substring(2,4),16) }
+function HexToB(h) { return parseInt((cutHex(h)).substring(4,6),16) }
+function cutHex(h) { return (h.charAt(0)=="#") ? h.substring(1,7) : h}
+
+</script>
+
+<div id="myLogContainer"></div>
+
+<!--begin dialog markup-->
+<div id="yui-picker-panel" class="yui-picker-panel" style="font-size:10pt;">
+  <div class="hd">Please choose a color:</div>
+  <div class="bd">
+
+      <!--begin Color picker markup-->
+      <div class="yui-picker" id="yui-picker">
+
+        <!--markup for the Region Slider of the Color Picker-->
+        <div class="yui-picker-bg" id="yui-picker-bg" tabindex="-1" hidefocus="true">
+          <div class="yui-picker-thumb" id="yui-picker-thumb"><img src="{layout_url}/glmenu/images/admin/picker_thumb.png" /></div>
+        </div>
+
+        <!--markup for the vertical Slider for color hue-->
+        <div class="yui-picker-hue-bg" id="yui-picker-hue-bg" tabindex="-1" hidefocus="true">
+          <div class="yui-picker-hue-thumb" id="yui-picker-hue-thumb"><img src="{layout_url}/glmenu/images/admin/hue_thumb.png" /></div>
+        </div>
+
+        <!--markup for the various Color Picker interface controls-->
+        <div id="yui-picker-controls" class="yui-picker-controls">
+          <div class="hd"><a href="#" id="yui-picker-controls-label"></a></div>
+          <div class="bd">
+            <form name="frm_yuipicker" method="post" action="{site_url}/glmenu/ajaxserver.php">
+              <ul id="yui-picker-rgb-controls" class="yui-picker-rgb-controls">
+                <li>R
+                <input autocomplete="off" name="yui-picker-r" id="yui-picker-r" type="text" value="0" size="3" maxlength="3" /></li>
+                <li>G
+                <input autocomplete="off" name="yui-picker-g" id="yui-picker-g" type="text" value="0" size="3" maxlength="3" /></li>
+                <li>B
+                <input autocomplete="off" name="yui-picker-b" id="yui-picker-b" type="text" value="0" size="3" maxlength="3" /></li>
+              </ul>
+
+              <ul class="yui-picker-hsv-controls" id="yui-picker-hsv-controls">
+                <li>H
+                <input autocomplete="off" name="yui-picker-h" id="yui-picker-h" type="text" value="0" size="3" maxlength="3" /> &#176;</li>
+                <li>S
+                <input autocomplete="off" name="yui-picker-s" id="yui-picker-s" type="text" value="0" size="3" maxlength="3" /> %</li>
+                <li>V
+                <input autocomplete="off" name="yui-picker-v" id="yui-picker-v" type="text" value="0" size="3" maxlength="3" /> %</li>
+              </ul>
+
+              <ul class="yui-picker-hex-summary" id="yui-picker-hex-summary">
+                <li id="yui-picker-rhex">
+                <li id="yui-picker-ghex">
+                <li id="yui-picker-bhex">
+              </ul>
+
+              <div class="yui-picker-hex-controls" id="yui-picker-hex-controls">
+                # <input autocomplete="off" name="yui_pickerhex" id="yui-picker-hex" type="text" value="0" size="6" maxlength="6" />
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!--markup for swatches-->
+        <div class="yui-picker-swatch" id="yui-picker-swatch">&nbsp;</div>
+        <div class="yui-picker-websafe-swatch" id="yui-picker-websafe-swatch">&nbsp;</div>
+      </div>
+
+  </div>
+  <div class="ft"></div>
+</div>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="1" class="plugin" style="border: 0px;">
+    <tr>
+        <td class="pluginAlert" style="display:{showalert};">{statusmsg}</td>
+    </tr>
+    <tr>
+        <td class="pluginTitle" style="padding:5px;">{LANG_title}</td>
+    </tr>
+    <tr>
+        <td>{navbar}</td>
+    </tr>
+    <tr>
+        <td style="font-size:10pt;">
+            <form name="frm_config" action="{phpself}" method="post" style="padding:0;margin:0;">
+            <input type="hidden" name="op" value="saveconfig">
+            <input type="hidden" name="showdisabled" value="{showdisabled}">
+            <input type="hidden" name="menulocation" value="{location}">
+            <table id="glmenu_config" width="600" border="0" cellspacing="1" cellpadding="1" class="plugin">
+                <tr>
+                    <td width="140" style="padding-top:10px;padding-left:20px;">Theme</td>
+                    <td style="padding-top:10px;"><select name="theme" onChange="document.frm_config.op.value='config';submit();">{theme_options}</select><span style="padding-left:20px;" class="pluginSmallText">Select theme to define unique menu style per theme</span></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="padding-right:50px;">
+                        <fieldset><legend><b>Header Menu</b></legend>
+                        <table cellpadding="0" cellspacing="0" width="500" class="plugin pluginSmallText" style="margin:10px;">
+                            <tr>
+                                <td width="140" style="padding-top:10px;padding-bottom:10px;">{LANG_menumode}</td>
+                                <td style="padding-top:10px;padding-bottom:10px;"><select name="header_mode">{headerMenuType_options}</select></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <table style="display:{show_headerCssMenuSettings};">
+                                        <!-- Header Menu -->
+                                            <tr>
+                                                <th>{LANG_csslabel26}</th>
+                                                <th>{LANG_csslabel3}</th>
+                                                <th>{LANG_csslabel4}</th>
+                                            </tr>
+                                            <tr>
+                                                <td width="150">{LANG_csslabel5}:</td>
+                                                <td><input type="text" name="clr_headerbg" value="{headerbg}" size="9">&nbsp;
+                                                    <span ID="headerbg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{headerbg};">&nbsp;</span>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="clr_onhover_headerbg" value="{onhover_headerbg}" size="9">&nbsp;
+                                                    <span ID="onhover_headerbg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{onhover_headerbg};">&nbsp;</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="150">{LANG_csslabel6}:</td>
+                                                <td><input type="text" name="clr_headerfg" value="{headerfg}" size="9">&nbsp;
+                                                    <span ID="headerfg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{headerfg};">&nbsp;</span>
+                                                </td>
+                                                <td><input type="text" name="clr_onhover_headerfg" value="{onhover_headerfg}" size="9">&nbsp;
+                                                    <span ID="onhover_headerfg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{onhover_headerfg};">&nbsp;</span>
+                                                </td>
+                                            </tr>
+
+                                        <!-- Header Sub Menu -->
+                                            <tr>
+                                                <th>{LANG_csslabel28}</th>
+                                                <th>{LANG_csslabel3}</th>
+                                                <th>{LANG_csslabel4}</th>
+                                            </tr>
+                                            <tr>
+                                                <td width="150">{LANG_csslabel29}:</td>
+                                                <td><input type="text" name="clr_headersubmenubg" value="{headersubmenubg}" size="9">&nbsp;
+                                                    <span ID="headersubmenubg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{headersubmenubg};">&nbsp;</span>
+                                                </td>
+                                                <td><input type="text" name="clr_onhover_headersubmenubg" value="{onhover_headersubmenubg}" size="9">&nbsp;
+                                                    <span ID="onhover_headersubmenubg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{onhover_headersubmenubg};">&nbsp;</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="150">{LANG_csslabel30}:</td>
+                                                <td><input type="text" name="clr_headersubmenufg" value="{headersubmenufg}" size="9">&nbsp;
+                                                    <span ID="headersubmenufg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{headersubmenufg};">&nbsp;</span>
+                                                </td>
+                                                <td><input type="text" name="clr_onhover_headersubmenufg" value="{onhover_headersubmenufg}" size="9">&nbsp;
+                                                    <span ID="onhover_headersubmenufg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{onhover_headersubmenufg};">&nbsp;</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        <table style="display:{show_headerMilonicMenuSettings};">
+                                            <tr>
+                                                <td>{LANG_miloniclabel5}</td>
+                                                <td><select name="style3">{style3_options}</select></td>
+                                            </tr>
+                                            <tr>
+                                                <td>{LANG_miloniclabel6}</td>
+                                                <td><select name="style4">{style4_options}</select></td>
+                                            </tr>
+                                            <tr>
+                                                <td>{LANG_miloniclabel7}<div><a href="http://www.milonic.com/menuproperties.php" target="_new">{LANG_reference}</a></div></td>
+                                                <td><textarea name="header_properties" cols="40" rows="3"  style="font-size:10pt;">{header_properties}</textarea></td>
+                                            </tr>
+                                        </table>
+                                    <td>
+                                </tr>
+                            </table>
+                        </fieldset>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="padding-right:50px;">
+                        <fieldset><legend><b>Block Menu</b></legend>
+                        <table cellpadding="0" cellspacing="0" width="500" class="plugin pluginSmallText" style="margin:10px;">
+                            <tr>
+                                <td width="140" style="padding-top:10px;padding-bottom:10px;">{LANG_menumode}</td>
+                                <td style="padding-top:10px;padding-bottom:10px;"><select name="block_mode">{blockMenuType_options}</select></td>
+                            </tr>
+                                <td colspan="2">
+                                    <table style="display:{show_blockCssMenuSettings};">
+                                        <!-- Block Menu -->
+                                            <tr>
+                                                <th>{LANG_csslabel27}</th>
+                                                <th>{LANG_csslabel3}</th>
+                                                <th>{LANG_csslabel4}</th>
+                                            </tr>
+
+                                            <tr>
+                                                <td width="150">{LANG_csslabel7}:</td>
+                                                <td><input type="text" name="clr_blockbg" value="{blockbg}" size="9">&nbsp;
+                                                    <span ID="blockbg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{blockbg};">&nbsp;</span>
+                                                </td>
+                                                <td><input type="text" name="clr_onhover_blockbg" value="{onhover_blockbg}" size="9">&nbsp;
+                                                    <span ID="onhover_blockbg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{onhover_blockbg};">&nbsp;</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="150">{LANG_csslabel8}:</td>
+                                                <td><input type="text" name="clr_blockfg" value="{blockfg}" size="9">&nbsp;
+                                                    <span ID="blockfg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{blockfg};">&nbsp;</span>
+                                                </td>
+                                                <td><input type="text" name="clr_onhover_blockfg" value="{onhover_blockfg}" size="9">&nbsp;
+                                                    <span ID="onhover_blockfg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{onhover_blockfg};">&nbsp;</span>
+                                                </td>
+                                            </tr>
+                                        <!-- Block Sub Menu -->
+                                            <tr>
+                                                <th>{LANG_csslabel31}</th>
+                                                <th>{LANG_csslabel3}</th>
+                                                <th>{LANG_csslabel4}</th>
+                                            </tr>
+
+                                            <tr>
+                                                <td width="150">{LANG_csslabel29}:</td>
+                                                <td><input type="text" name="clr_blocksubmenubg" value="{blocksubmenubg}" size="9">&nbsp;
+                                                    <span ID="blocksubmenubg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{blocksubmenubg};">&nbsp;</span>
+                                                </td>
+                                                <td><input type="text" name="clr_onhover_blocksubmenubg" value="{onhover_blocksubmenubg}" size="9">&nbsp;
+                                                    <span ID="onhover_blocksubmenubg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{onhover_blocksubmenubg};">&nbsp;</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td width="150">{LANG_csslabel30}:</td>
+                                                <td><input type="text" name="clr_blocksubmenufg" value="{blocksubmenufg}" size="9">&nbsp;
+                                                    <span ID="blocksubmenufg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{blocksubmenufg};">&nbsp;</span>
+                                                </td>
+                                                <td><input type="text" name="clr_onhover_blocksubmenufg" value="{onhover_blocksubmenufg}" size="9">&nbsp;
+                                                    <span ID="onhover_blocksubmenufg" class="colorpicker" TITLE="{LANG_usecolorpicker}" style="background-color:{onhover_blocksubmenufg};">&nbsp;</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table style="display:{show_blockMilonicMenuSettings};">
+                                            <tr>
+                                                <td>{LANG_miloniclabel2}</td>
+                                                <td><select name="style1">{style1_options}</select></td>
+                                            </tr>
+                                            <tr>
+                                                <td>{LANG_miloniclabel3}</td>
+                                                <td><select name="style2">{style2_options}</select></td>
+                                            </tr>
+                                            <tr>
+                                                <td>{LANG_miloniclabel4}
+                                                    <div class="pluginTinyText">{LANG_milonichelp1}</div>
+                                                </td>
+                                                <td><textarea name="block_properties" cols="40" rows="3" style="font-size:10pt;">{block_properties}</textarea></td>
+                                            </tr>
+                                        </table>
+                                    <td>
+                                </tr>
+                            </table>
+                        </fieldset>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>{LANG_langlabels}</td>
+                    <td><input name="multilang" type="radio" value="1" {chk_langon}>{LANG_enabled}<span style="padding-left:10px;"><input name="multilang" type="radio" value="0" {chk_langoff}>{LANG_disabled}</span></td>
+                </tr>
+                <tr>
+                    <td>{LANG_newwindow}<div class="pluginSmallText"><a href="http://www.w3schools.com/htmldom/met_win_open.asp" target="_new">{LANG_reference}</a></div></td>
+                    <td><textarea name="targetfeatures" cols="55" rows="4" style="font-size:10pt;">{targetfeatures}</textarea></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" style="padding:10px; text-align:center;">
+                        <input type=button value="{LANG_CANCEL}" onclick="document.location='{cancel_url}'"><span style="padding-left:20px;">
+                        <input type="submit" value="{LANG_SUBMIT}"></span>
+                    </td>
+                </tr>
+             </table>
+             </form>
+        </td>
+    </tr>
+</table>
+</div>
+<p />
