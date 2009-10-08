@@ -46,6 +46,18 @@ require_once ($_CONF['path'] . 'plugins/nexlist/autouninstall.php');
 */
 function plugin_autoinstall_nexlist($pi_name)
 {
+    global $_TABLES, $_CONF;
+    $install_flag=true;
+    //  so lets test out to see if the nexPro is installed.  If not, bail out with an error
+    $nxpro=intval(DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'"));
+    if ($nxpro==0) {     //install nexpro first
+        if (DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'") == '0') {     //nexpro disabled?
+            COM_errorLog ('The nexpro plugin must be enabled for nexList to work.  Please enable the nexpro it before continuing to install nexList');
+        }else{
+            COM_errorLog ('The nexpro plugin is not installed.  Please install it before continuing to install nexList');
+        }
+        $install_flag=false;
+    }
     $pi_name         = 'nexlist';
     $pi_display_name = 'nexList';
     $pi_admin        = $pi_display_name . ' Admin';
@@ -84,7 +96,11 @@ function plugin_autoinstall_nexlist($pi_name)
         'tables'    => $tables
     );
 
-    return $inst_parms;
+    if($install_flag){
+        return $inst_parms;
+    }else{
+        return null;
+    }
 }
 
 /**
