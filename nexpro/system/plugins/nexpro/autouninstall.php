@@ -1,14 +1,16 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexFile Plugin v2.2.1 for the nexPro Portal Server                        |
-// | May 20, 2008                                                              |
+// | nexPro Plugin v2.1.0 for the nexPro Portal Server                         |
+// | October 9, 2009                                                           |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
-// | nexfile_mysql_install_3.0.0.php                                           |
+// | autouninstall.php                                                         |
 // +---------------------------------------------------------------------------+
 // | Copyright (C) 2007-2008 by the following authors:                         |
 // | Blaine Lang            - Blaine.Lang@nextide.ca                           |
+// | Randy Kolenko          - Randy.Kolenko@nextide.ca                         |
+// | Eric de la Chevrotiere - Eric.delaChevrotiere@nextide.ca                  |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |
@@ -27,36 +29,37 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 //
+global $_TABLES,$_DB_table_prefix;
+require_once ($_CONF['path'] . 'plugins/nexpro/nexpro.php');
 
+/**
+* Automatic uninstall function for plugins
+*
+* @return   array
+*
+* This code is automatically uninstalling the plugin.
+* It passes an array to the core code function that removes
+* tables, groups, features and php blocks from the tables.
+* Additionally, this code can perform special actions that cannot be
+* foreseen by the core code (interactions with other plugins for example)
+*
+*/
+function plugin_autouninstall_nexpro ()
+{
+    $out = array (
+        /* give the name of the tables, without $_TABLES[] */
+        'tables' => array('tagwords','tagworditems','tagwordmetrics'),
+        /* give the full name of the group, as in the db */
+        'groups' => array('nexPro Admin'),
+        /* give the full name of the feature, as in the db */
+        'features' => array(),
+        /* give the full name of the block, including 'phpblock_', etc */
+        'php_blocks' => array(),
+        /* give all vars with their name */
+        'vars'=> array()
+    );
+    return $out;
+}
 
-$_SQL[] = "CREATE TABLE {$_TABLES['tagwords']} (
-  `id` int(11) NOT NULL auto_increment,
-  `tagword` varchar(32) NOT NULL,
-  `displayword` varchar(32) default NULL,
-  `metric` smallint(5) NOT NULL default '1',
-  `last_updated` datetime NOT NULL,
-  PRIMARY KEY  (`id`),
-  KEY `tagword` (`tagword`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;";
-
-$_SQL[] = "CREATE TABLE {$_TABLES['tagworditems']} (
-  `itemid` varchar(128) NOT NULL,
-  `type` varchar(32) NOT NULL,
-  `tags` text,
-  KEY `itemid` (`itemid`),
-  KEY `type` (`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
-
-$_SQL[] = "CREATE TABLE {$_TABLES['tagwordmetrics']} (
-  `tagid` int(11) NOT NULL,
-  `type` varchar(32) NOT NULL,
-  `uid` mediumint(8) default NULL,
-  `grpid` mediumint(8) default NULL,
-  `metric` smallint(5) NOT NULL,
-  `last_updated` datetime NOT NULL,
-  KEY `tagid` (`tagid`),
-  KEY `type` (`type`),
-  KEY `uid` (`grpid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1; ";
 
 ?>

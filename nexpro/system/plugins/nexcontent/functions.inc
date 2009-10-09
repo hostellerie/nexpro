@@ -1,8 +1,8 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexContent Plugin v2.1.1 for the nexPro Portal Server                     |
-// | May 20, 2008                                                              |
+// | nexContent Plugin v2.3.0 for the nexPro Portal Server                     |
+// | October 9, 2009                                                           |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
 // | functions.inc                                                             |
@@ -35,15 +35,15 @@ if (file_exists ($langfile)) {
     include_once ($_CONF['path'] . 'plugins/nexcontent/language/english.php');
 }
 
+
+
 if (!isset($CONF_SE['public_url'])) {
     require_once $_CONF['path_system'] . 'classes/config.class.php';
 
     $nexcontent_config = config::get_instance();
     $CONF_SE = $nexcontent_config->get_config('nexcontent');
 }
-
-$CONF_SE['version'] = '2.3.0';
-require_once ($_CONF['path'] . 'plugins/nexcontent/config.php');
+require_once ($_CONF['path'] . 'plugins/nexcontent/autouninstall.php');
 
 // If config setting initialized - convert to MB
 if (isset($CONF_SE['max_uploadfile_size'])) {
@@ -381,34 +381,6 @@ function plugin_chkVersion_nexcontent() {
 }
 
 
-/**
-* Automatic uninstall function for plugins
-*
-* @return   array
-*
-* This code is automatically uninstalling the plugin.
-* It passes an array to the core code function that removes
-* tables, groups, features and php blocks from the tables.
-* Additionally, this code can perform special actions that cannot be
-* foreseen by the core code (interactions with other plugins for example)
-*
-*/
-function plugin_autouninstall_nexcontent ()
-{
-    $out = array (
-        /* give the name of the tables, without $_TABLES[] */
-        'tables' => array('nexcontent','nexcontent_pages','nexcontent_images'),
-        /* give the full name of the group, as in the db */
-        'groups' => array('Nexcontent Admin'),
-        /* give the full name of the feature, as in the db */
-        'features' => array('nexcontent.edit','nexcontent.user'),
-        /* give the full name of the block, including 'phpblock_', etc */
-        'php_blocks' => array(''),
-        /* give all vars with their name */
-        'vars'=> array()
-    );
-    return $out;
-}
 
 
 

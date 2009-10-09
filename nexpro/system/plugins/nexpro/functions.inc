@@ -1,7 +1,7 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexPro Plugin v2.0.1 for the nexPro Portal Server                         |
+// | nexPro Plugin v2.1.0 for the nexPro Portal Server                         |
 // | May 20, 2008                                                              |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
@@ -36,7 +36,7 @@ if (file_exists ($langfile)) {
 } else {
     include_once ($_CONF['path'] . 'plugins/nexpro/language/english.php');
 }
-
+require_once ($_CONF['path'] . 'plugins/nexpro/autouninstall.php');
 require_once ($_CONF['path_system'] . 'classes/sanitize.class.php');
 require_once ($_CONF['path_system'] . 'lib-portalparts.php');
 require_once ($_CONF['path_system'] . 'lib-nextide.php');
@@ -44,7 +44,6 @@ require_once ($_CONF['path_html'] . 'jscalendar/calendar.php');
 
 // Used for debugging to log messages to the Firebug addon for Firefox from PHP
 require_once ($_CONF['path_system'] . 'nexpro/FirePHPCore/FirePHP.class.php');
-
 
 /*
 * Check and see if we need to load the plugin configuration
@@ -56,8 +55,6 @@ if (!isset($CONF_NEXPRO['load_treemenu'])) {
     $CONF_NEXPRO = $nexpro_config->get_config('nexpro');
 }
 
-$CONF_NEXPRO['version'] = '2.1.0';
-require_once ($_CONF['path'] . 'plugins/nexpro/config.php');
 
 /**
 * Returns the needed link to the menu csss- which will be included in the header
@@ -234,7 +231,7 @@ function plugin_templatesetvars_nexpro($type,&$template) {
 * foreseen by the core code (interactions with other plugins for example)
 *
 */
-function plugin_autouninstall_nexpro ()
+function plugin_autouninstall_nexprox ()
 {
     $out = array (
         /* give the name of the tables, without $_TABLES[] */

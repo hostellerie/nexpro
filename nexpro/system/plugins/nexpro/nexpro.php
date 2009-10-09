@@ -2,10 +2,10 @@
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
 // | nexPro Plugin v2.1.0 for the nexPro Portal Server                         |
-// | March , 2009                                                              |
+// | October , 2009                                                            |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
-// | config.php                                                                |
+// | nexpro.php                                                                |
 // +---------------------------------------------------------------------------+
 // | Copyright (C) 2007-2008 by the following authors:                         |
 // | Blaine Lang            - Blaine.Lang@nextide.ca                           |
@@ -29,6 +29,8 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 //
+
+$CONF_NEXPRO['version'] = '2.1.0';
 
 $_TABLES['tagwords']        = $_DB_table_prefix .'tagwords';
 $_TABLES['tagworditems']    = $_DB_table_prefix .'tagword_items';
