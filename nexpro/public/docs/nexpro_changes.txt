@@ -1,3 +1,14 @@
+Oct 9/2009 (Blaine)
+    Forum Plugin Updates
+       - Use new autoinstall feature
+       - Use online config feature instead of the built-in forum settings
+       - Bugfixes applied from glFusion's fork for two older issues
+			1)  Issue with the Active Forum icon would not always
+	  			display when there were new posts in a forum.
+			2) 	Fixed issue where the index page would incorrectly display Today
+	  			as the last post date when in fact that wasn't true.
+
+
 Oct 9/2009 (Randy)
     Updates to nexcontent and nexpro plugins to use autoinstall/uninstall
     Removal of config.php for nexcontent.

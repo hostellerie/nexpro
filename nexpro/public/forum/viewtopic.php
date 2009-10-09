@@ -230,12 +230,6 @@ if ($mode != 'preview') {
 
     }
 
-    /* Blaine: Commented out this section of code that will trim the displayed title */
-    //if(strlen($viewtopic['subject']) > $CONF_FORUM['show_subject_length'])  {
-    //    $viewtopic['subject'] = substr($viewtopic['subject'], 0, $CONF_FORUM['show_subject_length']);
-    //   $viewtopic['subject'] .= "..";
-    //}
-
     if(function_exists(prj_getSessionProject)) {
         $projectid = prj_getSessionProject();
         if($projectid > 0) {
@@ -290,12 +284,12 @@ if($_USER['uid'] > 1 ) {
     if ($showtopicpid == 0 ) {
         $showtopicpid = $showtopic;
     }
-    $lrows = DB_count($_TABLES['gf_log'],array('uid','topic'),array($_USER[uid],$showtopic));
+    $lrows = DB_count($_TABLES['gf_log'],array('uid','topic'),array($_USER['uid'],$showtopicpid));
     $logtime = time();
     if ($lrows < 1) {
-        DB_query("INSERT INTO {$_TABLES['gf_log']} (uid,forum,topic,time) VALUES ('$_USER[uid]','$forum','$showtopic','$logtime')");
+        DB_query("INSERT INTO {$_TABLES['gf_log']} (uid,forum,topic,time) VALUES ('$_USER[uid]','$forum','$showtopicpid','$logtime')");
     } else {
-        DB_query("UPDATE {$_TABLES['gf_log']} SET time=$logtime WHERE uid=$_USER[uid] AND topic=$showtopic");
+        DB_query("UPDATE {$_TABLES['gf_log']} SET time=$logtime WHERE uid=$_USER[uid] AND topic=$showtopicpid");
     }
 }
 
@@ -377,7 +371,7 @@ echo $forum_outline_footer->finish ($forum_outline_footer->get_var('output'));
 $intervalTime = $mytimer->stopTimer();
 //COM_errorLog("End Topic Display Time: $intervalTime");
 
-if($_REQUEST['onlytopic'] != 1) {
+if(!isset($_REQUEST['onlytopic']) || $_REQUEST['onlytopic'] != 1) {
     echo BaseFooter();
     // Display Common headers
     gf_siteFooter();

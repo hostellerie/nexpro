@@ -542,12 +542,11 @@ $LANG_GF05 = array (
 /* Admin Navbar */
 $LANG_GF06 = array (
     1   => 'Statistics',
-    2   => 'Settings',
-    3   => 'Forums',
-    4   => 'Moderator',
-    5   => 'Convert',
-    6   => 'Messages',
-    7   => 'IP Mgmt'
+    2   => 'Forums',
+    3   => 'Moderator',
+    4   => 'Convert',
+    5   => 'Messages',
+    6   => 'IP Mgmt'
 );
 
 
