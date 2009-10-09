@@ -69,3 +69,42 @@ function PLG_Nexflow_tasknotification($parms,$subject,$message) {
     return $retval;
 
 }
+
+
+
+/**
+* Called from nf_formatEmailMessage in plugins/nexflow/library.php
+* to allow modification of the notification subject and/or message.
+*
+* The parameters passed include the workflow process id, queue record id and the template task id
+* which are sufficent to be able to look up template or process details and form results.
+*
+* @param    array   $parms      array('pid' => $processId, 'tid' => $tid, 'qid' => $qid, 'user' => $user);
+* @param    string  $taskname   current taskname
+* @return   array   containg the taskname
+*
+*/
+function PLG_Nexflow_taskname($parms,$taskname) {
+    global $_TABLES,$_CONF,$NF_MYAPP;
+
+    $retval = array('taskname' => $taskame);
+
+    if ($parms['tid'] == $NF_MYAPP['tasks']['mytask']) {
+        if ($parms['pid'] > 0) {
+            $fasttrack = 0;
+            $nfclass= new nexflow($parms['pid']);
+            $project_id = $nfclass->get_processVariable('PID');
+            $request_result = DB_getItem($_TABLES['nfproject_forms'],'results_id',
+                "project_id='$project_id' AND form_id={$NF_COGECO['forms']['capital_request']}");
+            if ($request_result > 0) {
+                $fasttrack = nf_getFormResultData($request_result,$NF_MYAPP['formfield']['fasttrack'] );
+            }
+            if ($fasttrack == 1) {
+                $retval['taskname'] = "$taskname (Fast Track)";
+            }
+            COM_errorLog("project:$project_id, fasttrack:$fasttrack");
+        }
+    }
+    return $retval;
+
+}

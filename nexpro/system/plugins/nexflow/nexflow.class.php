@@ -99,7 +99,7 @@ class nexflow {
             $this->_nfuserTaskList["stepType"] = Array();
             $this->_nfUserTaskCount = 0;
             $this->_nfUserId=NXCOM_filterInt($this->_nfUserId);
-            $sql  = "SELECT a.id, b.nf_stepType, b.function, b.formid, b.nf_handlerid, b.nf_templateID, b.taskname, ";
+            $sql  = "SELECT a.id, b.nf_stepType, b.function, b.formid, b.nf_handlerid, b.nf_templateID, b.taskname,a.nf_templateDataID, ";
             $sql .= "b.isDynamicForm, b.dynamicFormVariableID, a.nf_processID, b.isDynamicTaskName, b.dynamicTaskNameVariableID ";
             $sql .= "FROM {$_TABLES['nfqueue']} a ";
             $sql .= "LEFT JOIN {$_TABLES['nftemplatedata']} b ON a.nf_templateDataId = b.id ";
@@ -154,15 +154,30 @@ class nexflow {
                             $this->_nfuserTaskList["template"] = array_merge($this->_nfuserTaskList["template"], array(1 => $A['nf_templateID']));
                             $this->_nfuserTaskList["url"] = array_merge($this->_nfuserTaskList["url"], array(1 => $handler));
                             //handle dynamic task name based on a variable's value
+							$taskname = '';
                             if($A['isDynamicTaskName'] == 1){
                                 $sql  = "SELECT variableValue FROM {$_TABLES['nfprocessvariables']} ";
                                 $sql .= "WHERE nf_processid='{$A['nf_processID']}' AND nf_templateVariableID='{$A['dynamicTaskNameVariableID']}'";
                                 $res = DB_query($sql);
-                                list($dynamicTaskName)=DB_fetchArray($res);
-                                $this->_nfuserTaskList["taskname"] = array_merge($this->_nfuserTaskList["taskname"], array(1 => $dynamicTaskName));
-                            }else{
-                                $this->_nfuserTaskList["taskname"] = array_merge($this->_nfuserTaskList["taskname"], array(1 => $A['taskname']));
+                                if (DB_numRows($res) == 1) {
+                                	list($taskname)=DB_fetchArray($res);
+                                }
                             }
+                            if (function_exists('PLG_Nexflow_taskname')) {
+                            	$parms = array('pid' => $A['nf_processID'], 'tid' => $A['nf_templateDataID'], 'qid' => $A['id'], 'user' => $this->_nfUserId);
+                            	if (!empty($taskame)) {
+                            		$apiRetval = PLG_Nexflow_taskname($parms,$taskname);
+                            	} else {
+                            		$apiRetval = PLG_Nexflow_taskname($parms,$A['taskname']);
+                            	}
+                            	$taskname = $apiRetval['taskname'];
+                            }
+                            if (!empty($taskname)) {
+                            	$this->_nfuserTaskList["taskname"] = array_merge($this->_nfuserTaskList["taskname"], array(1 => $taskname));
+                            } else {
+                            	$this->_nfuserTaskList["taskname"] = array_merge($this->_nfuserTaskList["taskname"], array(1 => $A['taskname']));
+                            }
+
                             $this->_nfuserTaskList['stepType'] = array_merge($this->_nfuserTaskList['stepType'], array(1 => $A['nf_stepType']));
                             $this->_nfUserTaskCount += 1; //increment the total user taks counter
                         }
