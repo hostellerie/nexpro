@@ -25,9 +25,7 @@
         </tr>
         <tr>
             <td class="header-navigation-container">
-                <ul>
-                    {menu_elements}
-                </ul>
+                {nexmenu}
             </td>
         </tr>
     </table>

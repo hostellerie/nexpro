@@ -13,10 +13,10 @@
     }
 
     if ($A['repository_id'] > 0) {
-        if ($CONF_FORUM['FM_PLUGIN'] == 'filemgmt') {
+        if ($CONF_FORUM['filestorage_plugin'] == 'filemgmt') {
             echo COM_refresh("{$_CONF['site_url']}/filemgmt/visit.php?lid={$A['repository_id']}");
-        } elseif ($CONF_FORUM['FM_PLUGIN'] == 'nexfile') {
-            echo COM_refresh("{$_CONF['site_url']}/nexfile/download.php?op=download&fid={$A['repository_id']}");
+        } elseif ($CONF_FORUM['filestorage_plugin'] == 'nexfile') {
+            echo COM_refresh("{$_CONF['site_url']}/nexfile/download.php?fid={$A['repository_id']}");
         } else {
             COM_errorLog("Forum Error: Invalid request to download file");
         }

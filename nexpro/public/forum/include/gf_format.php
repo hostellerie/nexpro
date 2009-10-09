@@ -999,14 +999,14 @@ function gf_showattachments($topic,$mode='') {
         if ($mode == 'edit') $retval .= '&nbsp;' . $i .'&nbsp;';
         $filename = explode(':',$field_value);
         // Check and see if the file is in the File Mgmt plugin and if user has access
-        if ($CONF_FORUM['FM_PLUGIN'] == 'filemgmt' AND $lid > 0) {
+        if ($CONF_FORUM['filestorage_plugin'] == 'filemgmt' AND $lid > 0) {
             $groupsql = filemgmt_buildAccessSql();
             $sql = "SELECT COUNT(*) FROM {$_FM_TABLES['filemgmt_filedetail']} a ";
             $sql .= "LEFT JOIN {$_FM_TABLES['filemgmt_cat']} b ON a.cid=b.cid ";
             $sql .= "WHERE a.lid='$lid' $groupsql";
             list($testaccess_cnt) = DB_fetchArray(DB_query($sql));
-        } elseif ($CONF_FORUM['FM_PLUGIN'] == 'nexfile' AND $lid > 0) {
-            $cid = DB_getItem($_TABLES['fm_files'],'cid',"fid=$lid");
+        } elseif ($CONF_FORUM['filestorage_plugin'] == 'nexfile' AND $lid > 0) {
+            $cid = DB_getItem($_TABLES['nxfile_files'],'cid',"fid=$lid");
             if (fm_getPermission($cid, 'view')) {
                 $testaccess_cnt = 1;
             } else {

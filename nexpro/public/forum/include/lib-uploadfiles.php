@@ -49,10 +49,10 @@ function gf_check4files($id,$tempfile=false) {
             //COM_errorlog("Forum file upload: Original file: {$uploadfile['name']} and new filename: $filename");
         }
         if ($use_filestore) {
-            if ($CONF_FORUM['FM_PLUGIN'] == 'filemgmt') {
+            if ($CONF_FORUM['filestorage_plugin'] == 'filemgmt') {
                 $filestore_path = $filemgmt_FileStore;
-            } elseif ($CONF_FORUM['FM_PLUGIN'] == 'nexfile') {
-                $filestore_path = $_CONF['path_html'] . 'nexfile/data/'.$cid. '/';
+            } elseif ($CONF_FORUM['filestorage_plugin'] == 'nexfile') {
+                $filestore_path = $_FMCONF['storage_path'] . "{$cid}/";
             } else {
                 $filestore_path = $CONF_FORUM['uploadpath'];
             }
@@ -75,6 +75,10 @@ function gf_check4files($id,$tempfile=false) {
             // Store both the created filename and the real file source filename
             $realfilename = $filename;
             $filename = "$filename:{$uploadfile['name']}";
+            $pos = strrpos($filename,'.') + 1;
+            $fileExtension = substr($filename, $pos);
+            $mimetype =  $filter->getCleanData('text',$uploadfile['type']);
+
             if ($tempfile) {
                 $temp = 1;
             } else {
@@ -82,18 +86,22 @@ function gf_check4files($id,$tempfile=false) {
             }
             if ($use_filestore) {
                 // Check and see if nexfile or the filemgmt plugin is being used
-                if ($CONF_FORUM['FM_PLUGIN'] == 'nexfile') {
-                    DB_query("INSERT INTO {$_TABLES['fm_files']} (cid,fname,title,version,ftype,size,submitter,status,date)
-                        VALUES ('$cid','$realfilename','$realfilename','1','file','{$uploadfile['size']}','{$_USER['uid']}','1',UNIX_TIMESTAMP())");
+                if ($CONF_FORUM['filestorage_plugin'] == 'nexfile') {
+                    $sql = "INSERT INTO {$_TABLES['nxfile_files']} "
+                           . "(cid,fname,title,version,ftype,size,mimetype,extension,submitter,status,date) "
+                           . "VALUES ('$cid','$realfilename','$realfilename','1','file','{$uploadfile['size']}',"
+                           . "'$mimetype','$fileExtension','{$_USER['uid']}','1',UNIX_TIMESTAMP())";
+                    DB_query($sql);
+
                     $fid = DB_insertId();
-                    DB_query("INSERT INTO {$_TABLES['fm_detail']} (fid,description,platform,hits,rating,votes,comments)
-                        VALUES ('$fid','','','0','0','0','0')");
-                    DB_query("INSERT INTO {$_TABLES['fm_versions']} (fid,fname,ftype,version,size,notes,date,uid,status)
+                    DB_query("INSERT INTO {$_TABLES['nxfile_filedetail']} (fid,description,hits,rating,votes,comments)
+                        VALUES ('$fid','','0','0','0','0')");
+                    DB_query("INSERT INTO {$_TABLES['nxfile_fileversions']} (fid,fname,ftype,version,size,notes,date,uid,status)
                         VALUES ('$fid','$realfilename','file','1','{$uploadfile['size']}','',UNIX_TIMESTAMP(),'{$_USER['uid']}','1')");
                     DB_query("INSERT INTO {$_TABLES['gf_attachments']} (topic_id,repository_id,filename,tempfile)
                         VALUES ('$id',$fid,'$filename',$temp)");
 
-                } elseif ($CONF_FORUM['FM_PLUGIN'] == 'filemgmt') {
+                } elseif ($CONF_FORUM['filestorage_plugin'] == 'filemgmt') {
                     $sql = "INSERT INTO {$_FM_TABLES['filemgmt_filedetail']} (cid, title, url, size, submitter, status,date ) ";
                     $sql .= "VALUES ('$cid', '$realfilename', '$realfilename', '{$uploadfile['size']}', '{$_USER['uid']}', 1, UNIX_TIMESTAMP())";
                     DB_query($sql);

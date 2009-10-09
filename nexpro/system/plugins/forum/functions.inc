@@ -2,15 +2,15 @@
 
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | Geeklog Forums Plugin 2.0 for Geeklog - The Ultimate Weblog               |
-// | Official release date: Feb 7,2003                                         |
+// | Forum Plugin for Geeklog based framework CMS applications                 |
 // +---------------------------------------------------------------------------+
 // | functions.inc                                                             |
+// | $Id::                                                                     |
 // | This file implements the necessary Geeklog Plugin API functions and       |
 // | includes some common Forum functions                                      |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2000,2001,2002,2003 by the following authors:               |
-// | Geeklog Author: Tony Bibbs   - tony@tonybibbs.com                         |
+// | Copyright (C) 2002 - 2009 the following authors:                          |
+// | Blaine Lang                 -    blaine@portalparts.com                   |
 // +---------------------------------------------------------------------------+
 // | FORUM Plugin Authors                                                      |
 // | Developed by Blaine and Matthew                                           |
@@ -37,22 +37,66 @@
 //
 
 $langfile = $_CONF['path'] . 'plugins/forum/language/' . $_CONF['language'] . '.php';
-if (file_exists ($langfile))
-{
+if (file_exists ($langfile)) {
     include_once ($langfile);
-}
-else
-{
+} else {
     include_once ($_CONF['path'] . 'plugins/forum/language/english.php');
 }
 
-// Need to add this line because PLG_enableStateChange does an include of this file inside a plugin function and $_TABLES is not global.
-// This will be fixed in GL 1.4.1 Final
-$_TABLES['plugins'] = $_DB_table_prefix . 'plugins';
 
-$pi_version = floatval (DB_getItem($_TABLES['plugins'], 'pi_version', "pi_name='forum'"));
+include_once ($_CONF['path'] . 'plugins/forum/autouninstall.php');
+
+/*
+* Check and see if we need to load the plugin configuration
+*/
+if (!isset($CONF_FORUM['registration_required'])) {
+    require_once $_CONF['path_system'] . 'classes/config.class.php';
+
+    $forum_config = config::get_instance();
+    $CONF_FORUM = $forum_config->get_config('forum');
+}
+
+require_once $_CONF['path'].'plugins/forum/forum.php';
 require_once ($_CONF['path_system'] . 'lib-portalparts.php');
-require_once ($_CONF['path'] . 'plugins/forum/config.php');
+$pi_version = floatval (DB_getItem($_TABLES['plugins'], 'pi_version', "pi_name='forum'"));
+
+// How many messages to show on the Most Popular page
+$CONF_FORUM['popular_limit'] = 20;
+// How many lines to show on one page in the search results
+$CONF_FORUM['show_search_perpage'] = 15;
+// How many users to show on one page in the memberlist results
+$CONF_FORUM['show_members_perpage'] = 100;
+// View Anonymous Posts - registed users can set this false
+$CONF_FORUM['show_anonymous_posts'] = 1;
+// Only send Notification once - even if more posts are created since your last visit
+$CONF_FORUM['notify_once'] = 1;
+
+if ( !isset($CONF_FORUM['enable_user_rating_system']) ) {
+    $CONF_FORUM['enable_user_rating_system'] = 0;
+}
+
+if ( !empty($_USER['uid']) && $_USER['uid'] > 1 ) {
+    $result = DB_query("SELECT * FROM {$_TABLES['gf_userprefs']} where uid = '{$_USER['uid']}'",1);
+    if ( DB_numRows($result) > 0 ) {
+        $userprefs = DB_fetchArray($result);
+        $CONF_FORUM['show_topics_perpage']        = $userprefs['topicsperpage'];
+        $CONF_FORUM['show_posts_perpage']         = $userprefs['postsperpage'];
+        $CONF_FORUM['popular_limit']              = $userprefs['popularlimit'];
+        $CONF_FORUM['show_members_perpage']       = $userprefs['membersperpage'];
+        $CONF_FORUM['show_search_perpage']        = $userprefs['searchlines'];
+        $CONF_FORUM['show_topicreview']           = $userprefs['showiframe'];
+        $CONF_FORUM['show_anonymous_posts']       = $userprefs['viewanonposts'];
+        $CONF_FORUM['notify_once']                = $userprefs['notify_once'];
+    }
+}
+$CONF_FORUM['use_glfilter'] = 1; // always use the filter...
+
+$CONF_FORUM['leftblocks'] = array ('forum_menu');
+$CONF_FORUM['leftblocks'] = ppGetUserBlocks($CONF_FORUM['leftblocks']);
+
+if ( !isset($CONF_FORUM['showtopic_review_order']) ) {
+    $CONF_FORUM['showtopic_review_order'] = 'DESC';
+}
 
 if( empty( $LANG_CHARSET )) {
     $CONF_FORUM['charset'] = $_CONF['default_charset'];
@@ -408,7 +452,7 @@ function plugin_dopluginsearch_forum($query, $datestart, $dateend, $topic, $type
         $plugin_results->searchlabel = $LANG_GF00['searchlabel'];
         return $plugin_results;
     }
-   
+
     // Build search SQL
 
     $sqltmp = " WHERE 1=1 ";
@@ -436,7 +480,7 @@ function plugin_dopluginsearch_forum($query, $datestart, $dateend, $topic, $type
         }
         $tmp = substr($tmp, 0, strlen($tmp) - 4);
         $sqltmp .= "($tmp)";
-       
+
         $sqltmp .= 'OR ';
         $tmp = '';
         $mywords = explode( ' ', $query );
@@ -446,7 +490,7 @@ function plugin_dopluginsearch_forum($query, $datestart, $dateend, $topic, $type
         }
         $tmp = substr($tmp, 0, strlen($tmp) - 4);
         $sqltmp .= "($tmp)";
-       
+
     } else {
         $q = addslashes($query);
         $sqltmp = "WHERE (comment LIKE '%$q%' OR subject LIKE '%$q%')";
@@ -455,7 +499,7 @@ function plugin_dopluginsearch_forum($query, $datestart, $dateend, $topic, $type
     if ( $author != 0 ) {
         $sqltmp .= " AND uid='" . $author . "'";
     }
-   
+
     // handle date ranges
 
     if (!empty($datestart) && !empty($dateend)) {
@@ -466,7 +510,7 @@ function plugin_dopluginsearch_forum($query, $datestart, $dateend, $topic, $type
         $enddate = mktime(0,0,0,$ed[1],$ed[2],$ed[0]) + 3600;
         $sqltmp .= " AND date BETWEEN '$startdate' AND '$enddate'";
     }
-   
+
     $sql = "SELECT id,name,forum,date,subject,comment,views,uid FROM {$_TABLES['gf_topic']} "
            . $sqltmp . " ORDER BY date DESC";
 
@@ -729,7 +773,7 @@ function plugin_chkVersion_forum() {
 * Called by the plugin Editor to run the SQL Update for a plugin update
 */
 function plugin_upgrade_forum() {
-    global $_TABLES,$CONF_FORUM;
+    global $_TABLES,$_CONF,$CONF_FORUM;
 
     include ('upgrade.inc');        // Include the upgrade functions
 
@@ -769,10 +813,14 @@ function plugin_upgrade_forum() {
              }
              break;
        case "3.0" :
-             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.0.1', `pi_gl_version` = '1.4.1' WHERE `pi_name` = 'forum' LIMIT 1");
-             break;
+            if (upgrade_310() == 0 )  {
+                DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.1.0', `pi_gl_version` = '1.6.1' WHERE `pi_name` = 'forum' LIMIT 1");
+            }
+            break;
+
     }
 
+    include $_CONF['path'].'plugins/forum/forum.php';   // Reload so we have value of $CONF_FORUM['version']
     /* Check if update completed and return a message number to be shown */
     if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'forum'") == $CONF_FORUM['version']) {
         return 1;
@@ -782,67 +830,6 @@ function plugin_upgrade_forum() {
 
 }
 
-
-/**
-* Removes the datastructures for this plugin from the Geeklog database
-* This may get called by the install routine to undue anything created during the install.
-* Added check to see that plugin is first disabled.
-*/
-function plugin_uninstall_forum()
-{
-    global $_TABLES, $LANG_GF00;
-
-    $pi_name='forum';
-    $FEATURES = array ('forum.edit', 'forum.user');
-    $TABLES = array(
-        'gf_topic',
-        'gf_categories',
-        'gf_forums',
-        'gf_settings',
-        'gf_watch',
-        'gf_moderators',
-        'gf_banned_ip',
-        'gf_log',
-        'gf_userprefs',
-        'gf_userinfo',
-        'gf_attachments',
-        'gf_bookmarks');
-
-    // Ok to proceed and delete plugin - Unregister the plugin with Geeklog
-    COM_errorLog('Attempting to unregister the Forum plugin from Geeklog',1);
-    DB_query("DELETE FROM {$_TABLES['plugins']} WHERE pi_name = 'forum'",1);
-    // Drop tables
-    foreach($TABLES as $table) {
-        $t = $_TABLES["$table"];
-        COM_errorLog("Removing Table $t",1);
-        DB_query("DROP TABLE $t",1);
-    }
-
-    // Remove Admin Security for this plugin
-    $grp_id = DB_getItem($_TABLES['vars'], 'value', "name = '{$pi_name}_admin'");
-    COM_errorLog("Removing $pi_name Admin Group", 1);
-    DB_query("DELETE FROM {$_TABLES['groups']} WHERE grp_id = $grp_id",1);
-    DB_query("DELETE FROM {$_TABLES['vars']} WHERE name = '{$pi_name}_admin'");
-    COM_errorLog("Removing root users from admin of $pi_name");
-    DB_query("DELETE FROM {$_TABLES['group_assignments']} WHERE ug_main_grp_id = $grp_id",1);
-
-    // Remove all the associated features - access rights. The feature ID's were stored in the vars table during install.
-    foreach ($FEATURES as $feature) {
-        COM_errorLog("Removing $feature feature and rights to it",1);
-        $feat_id = DB_getItem($_TABLES['features'], 'ft_id', "ft_name = '$feature'");
-        COM_errorLog("DELETE FROM {$_TABLES['access']} WHERE acc_ft_id = $feat_id");
-        DB_query("DELETE FROM {$_TABLES['access']} WHERE acc_ft_id = $feat_id",1);
-        DB_query("DELETE FROM {$_TABLES['features']} WHERE ft_id = $feat_id",1);
-    }
-
-    COM_errorLog("Removing Forum - Block Definition ", 1);
-    DB_query("DELETE FROM {$_TABLES['blocks']} WHERE phpblockfn = 'phpblock_forum_newposts'",1);
-    DB_query("DELETE FROM {$_TABLES['blocks']} WHERE phpblockfn = 'phpblock_forum_newposts2'",1);
-    DB_query("DELETE FROM {$_TABLES['blocks']} WHERE phpblockfn = 'phpblock_forum_menu'",1);
-
-    COM_errorLog('...success',1);
-    return true;
-}
 
 //  ------- GENERAL FORUM FUNCTIONS --------
 
@@ -1438,7 +1425,7 @@ function forumPLG_getPMlink($member) {
 
 function forumPLG_getMemberBadge($uid) {
     global $_CONF,$CONF_FORUM;
-    
+
     if ($uid > 1) {
         if (!SEC_inGroup('Root',$uid)) {
             foreach ($CONF_FORUM['grouptags'] as $groupid => $buttonimg) {
@@ -1455,17 +1442,52 @@ function forumPLG_getMemberBadge($uid) {
 function phpblock_forum_menu() {
     global $_TABLES,$_CONF,$_USER,$CONF_FORUM,$LANG_GF01,$LANG_GF02,$LANG_GF07,$CONF_NEXMENU,$_BLOCK_TEMPLATE;
 
-    if (isset($CONF_NEXMENU) AND $CONF_NEXMENU['installed_version'] >= 2.5) {
+    if ($CONF_FORUM['menustyle'] == 'glmenu') {
+
+        if ($CONF_GLMENU['milonicmode']) {
+            $retval = COM_startBlock( $LANG_GF00['forumblock'], '', 'glmenu/milonicmenu/blockheader-blockmenu.thtml');
+            $retval .= 'aI("text='.$LANG_GF01['INDEXPAGE'].';url='.$_CONF['site_url'].'/forum/index.php;");' . LB;
+            if ($_USER['uid'] > 1) {
+                $retval .= 'aI("text='.$LANG_GF01['USERPREFS'].';url='.$_CONF['site_url'].'/forum/userprefs.php;");' . LB;
+                $retval .= 'aI("text='.$LANG_GF01['SUBSCRIPTIONS'].';url='.$_CONF['site_url'].'/forum/notify.php;");' . LB;
+            }
+            if ($CONF_GLMENU['allow_memberlist']) {
+                $retval .= 'aI("text='.$LANG_GF02['msg88'].';url='.$_CONF['site_url'].'/forum/memberlist.php;");' . LB;
+            }
+            $retval .= 'aI("text='.$LANG_GF07['3'].';url='.$_CONF['site_url'].'/forum/index.php?op=popular;");' . LB;
+            $retval .= COM_endBlock('glmenu/milonicmenu/blockfooter-blockmenu.thtml');
+        } else {
+            $retval = COM_startBlock( $LANG01[47], '', 'glmenu/blockheader.thtml');
+            $t = new Template($_CONF['path_layout'] . 'glmenu/cssmenu');
+            $t->set_file('menu','blockmenu.thtml');
+
+            $links = "<li><a href=\"{$_CONF['site_url']}/forum/index.php\" TITLE=\"{$LANG_GF02['msg196']}\">{$LANG_GF01['INDEXPAGE']}</a></li>" . LB;
+            if ($_USER['uid'] > 1) {
+                $links .= "<li><a href=\"{$_CONF['site_url']}/forum/index.php?op=markallread\" TITLE=\"{$LANG_GF02['msg197']}\">{$LANG_GF01['MARKALLREAD']}</a></li>" . LB;
+                $links .= "<li><a href=\"{$_CONF['site_url']}/forum/userprefs.php\" TITLE=\"{$LANG_GF02['msg198']}\">{$LANG_GF01['USERPREFS']}</a></li>" . LB;
+                $links .= "<li><a href=\"{$_CONF['site_url']}/forum/notify.php\" TITLE=\"{$LANG_GF02['msg199']}\">{$LANG_GF01['SUBSCRIPTIONS']}</a></li>" . LB;
+            }
+            $links .= "<li><a href=\"{$_CONF['site_url']}/forum/memberlist.php\" TITLE=\"{$LANG_GF02['msg200']}\">{$LANG_GF02['msg88']}</a></li>" . LB;
+            $links .= "<li><a href=\"{$_CONF['site_url']}/forum/index.php?op=popular\" TITLE=\"{$LANG_GF02['msg201']}\">{$LANG_GF07['3']}</a></li>" . LB;
+
+            $t->set_var('menuitems', $links);
+            $t->parse ('output', 'menu');
+            $retval .= $t->finish ($t->get_var('output'));
+            $retval .= COM_endBlock('glmenu/blockfooter.thtml');
+        }
+
+    } elseif ($CONF_FORUM['menustyle'] == 'nexmenu') {
+
         if ($CONF_NEXMENU['milonicmode']) {
-            $retval = COM_startBlock( $LANG_GF00['forumblock'], '', 'nexmenu/milonicmenu/blockheader-blockmenu.thtml');        
+            $retval = COM_startBlock( $LANG_GF00['forumblock'], '', 'nexmenu/milonicmenu/blockheader-blockmenu.thtml');
             $retval .= 'aI("text='.$LANG_GF01['INDEXPAGE'].';url='.$_CONF['site_url'].'/forum/index.php;");' . LB;
             if ($_USER['uid'] > 1) {
                 $retval .= 'aI("text='.$LANG_GF01['USERPREFS'].';url='.$_CONF['site_url'].'/forum/userprefs.php;");' . LB;
                 $retval .= 'aI("text='.$LANG_GF01['SUBSCRIPTIONS'].';url='.$_CONF['site_url'].'/forum/notify.php;");' . LB;
             }
             $retval .= 'aI("text='.$LANG_GF02['msg88'].';url='.$_CONF['site_url'].'/forum/memberlist.php;");' . LB;
-            $retval .= 'aI("text='.$LANG_GF07['3'].';url='.$_CONF['site_url'].'/forum/index.php?op=popular;");' . LB;            
-            $retval .= COM_endBlock('nexmenu/milonicmenu/blockfooter-blockmenu.thtml');            
+            $retval .= 'aI("text='.$LANG_GF07['3'].';url='.$_CONF['site_url'].'/forum/index.php?op=popular;");' . LB;
+            $retval .= COM_endBlock('nexmenu/milonicmenu/blockfooter-blockmenu.thtml');
         } else {
             $retval = COM_startBlock( $LANG01[47], '', 'nexmenu/blockheader.thtml');
             $t = new Template($_CONF['path_layout'] . 'nexmenu/cssmenu');
@@ -1473,7 +1495,7 @@ function phpblock_forum_menu() {
 
             $links = "<li><a href=\"{$_CONF['site_url']}/forum/index.php\" TITLE=\"{$LANG_GF02['msg196']}\">{$LANG_GF01['INDEXPAGE']}</a></li>" . LB;
             if ($_USER['uid'] > 1) {
-                $links .= "<li><a href=\"{$_CONF['site_url']}/forum/index.php?op=markallread\" TITLE=\"{$LANG_GF02['msg197']}\">{$LANG_GF01['MARKALLREAD']}</a></li>" . LB;                     
+                $links .= "<li><a href=\"{$_CONF['site_url']}/forum/index.php?op=markallread\" TITLE=\"{$LANG_GF02['msg197']}\">{$LANG_GF01['MARKALLREAD']}</a></li>" . LB;
                 $links .= "<li><a href=\"{$_CONF['site_url']}/forum/userprefs.php\" TITLE=\"{$LANG_GF02['msg198']}\">{$LANG_GF01['USERPREFS']}</a></li>" . LB;
                 $links .= "<li><a href=\"{$_CONF['site_url']}/forum/notify.php\" TITLE=\"{$LANG_GF02['msg199']}\">{$LANG_GF01['SUBSCRIPTIONS']}</a></li>" . LB;
             }
@@ -1492,7 +1514,7 @@ function phpblock_forum_menu() {
         $retval .= '</td></tr><tr><td>';
         if ($_USER['uid'] > 1) {
             $retval .= "<a href=\"{$_CONF['site_url']}/forum/index.php?op=markallread\" TITLE=\"{$LANG_GF02['msg197']}\">{$LANG_GF01['MARKALLREAD']}</a>";
-            $retval .= '</td></tr><tr><td>';            
+            $retval .= '</td></tr><tr><td>';
             $retval .= "<a href=\"{$_CONF['site_url']}/forum/userprefs.php\" TITLE=\"{$LANG_GF02['msg198']}\">{$LANG_GF01['USERPREFS']}</a>";
             $retval .= '</td></tr><tr><td>';
             $retval .= "<a href=\"{$_CONF['site_url']}/forum/notify.php\" TITLE=\"{$LANG_GF02['msg199']}\">{$LANG_GF01['SUBSCRIPTIONS']}</a>";

@@ -1,20 +1,13 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | Geeklog Forums Plugin 2.0 for Geeklog - The Ultimate Weblog               |
-// | Official release date: Feb 7,2003                                         |
+// | Forum Plugin for Geeklog based framework CMS applications                 |
 // +---------------------------------------------------------------------------+
 // | English.php                                                               |
-// | Language defines for all text                                             |
+// | $Id::                                                                     |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2000,2001 by the following authors:                         |
-// | Geeklog Author: Tony Bibbs       - tony@tonybibbs.com                     |
-// +---------------------------------------------------------------------------+
-// | FORUM Plugin Authors                                                      |
-// | Prototype & Concept    :  Mr.GxBlock of www.gxblock.com                   |
-// | Co-Developed by Matthew and Blaine                                        |
-// | Matthew DeWyer, contact: matt@mycws.com          www.cweb.ws              |
-// | Blaine Lang,    contact: geeklog@langfamily.ca   www.langfamily.ca        |
+// | Copyright (C) 2002 - 2009 the following authors:                          |
+// | Blaine Lang                 -    blaine@portalparts.com                   |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |
@@ -864,5 +857,117 @@ $LANG_GF97 = array (
 
 $PLG_forum_MESSAGE1 = 'Forum Plugin Upgrade completed - no errors';
 $PLG_forum_MESSAGE5 = 'Forum Plugin Upgrade failed - check error.log';
+
+// Localization of the Admin Configuration UI
+$LANG_configsections['forum'] = array(
+    'label' => 'Forum',
+    'title' => 'Forum Configuration'
+);
+
+$LANG_confignames['forum'] = array(
+    'registration_required' => 'Login Required to View',
+    'registered_to_post' => 'Login Required to Post',
+    'allow_html' => 'Allow HTML in Posts',
+    'post_htmlmode' => 'HTML Mode as Default Post Mode',
+    'use_glfilter' => 'Use HTML Filter',
+    'use_geshi' => 'Use the Geshi Code Formatting',
+    'use_censor' => 'Use Content Filter',
+    'show_moods' => 'Enable Moods to be Selected',
+    'allow_smilies' => 'Enable Smilies',
+    'allow_notification' => 'Allow Email Notification',
+    'allow_user_dateformat' => 'Allow User Defined Date/Time Formats',
+    'show_topicreview' => 'Show Topic Review When Replying',
+    'use_autorefresh' => 'Refresh Page After Submission',
+    'autorefresh_delay' => 'Pause Delay In Seconds',
+    'show_subject_length' => 'Max Length for the Topic Subject',
+    'show_topics_perpage' => 'Topics to Display in Forum Index',
+    'show_posts_perpage' => 'Posts to Show Per Page',
+    'show_messages_perpage' => 'Messages Admin Screen - Number of Lines Per Page',
+    'show_searches_perpage' => 'Search Results to Show',
+    'views_tobe_popular' => 'Number of Views for Popular Rating',
+    'min_comment_length' => 'Minimum Length of Content for Post',
+    'min_username_length' => 'Minimum Length of Member Name or Anonymous Name',
+    'min_subject_length' => 'Minimum Length for Topic Subject to Post',
+    'post_speedlimit' => 'Time in Seconds Required Between Posts',
+    'use_smilies_plugin' => 'Smilies Plugin Installed',
+    'use_pm_plugin' => 'Private Message Plugin Installed',
+    'use_spamx_filter' => 'Enable the Spam-X Plugin to Filter Posts',
+    'show_centerblock' => 'Enable Centerblock',
+    'centerblock_homepage' => 'Homepage Only',
+    'centerblock_where' => 'Placement on the Page',
+    'cb_subject_size' => 'Number of Characters Allowed in Displayed Subject',
+    'centerblock_numposts' => 'Number of Posts to Show in Centerblock',
+    'sb_subject_size' => 'Number of Characters Allowed in Displayed Subject',
+    'sb_latestpostonly' => 'Only Show the Latest Post Per Topic',
+    'sideblock_numposts' => 'Number of Posts to Show in Latestposts Block',
+    'allowed_editwindow' => 'Allowed Time (min) to Allow Members to Edit Their Posts',
+    'level1' => 'Rank 1 - Post Threshold',
+    'level2' => 'Rank 2 - Post Threshold',
+    'level3' => 'Rank 3 - Post Threshold',
+    'level4' => 'Rank 4 - Post Threshold',
+    'level5' => 'Rank 5 - Post Threshold',
+    'level1name' => 'Rank 1 - Name',
+    'level2name' => 'Rank 2 - Name',
+    'level3name' => 'Rank 3 - Name',
+    'level4name' => 'Rank 4 - Name',
+    'level5name' => 'Rank 5 - Name',
+    'showblocks' => 'Show Blocks',
+    'usermenu'  => 'User Menu Type',
+    'menustyle' => 'Menu Style',
+    'mysql4+' => 'MySQL 4+ Installed',
+    'pre2.5_mode' => 'Pre 2.5 Mode',
+    'silent_edit_default' => 'Silent Edit Default',
+    'avatar_width' => 'Avatar Width',
+    'allow_img_bbcode' => 'Allow IMG bbcode',
+    'show_moderators' => 'Show Moderators',
+    'default_Datetime_format' => 'Default Date / Time Format',
+    'default_Topic_Datetime_format' => 'Default Topic Date / Time Format',
+    'contentinfo_numchars' => 'Pop-up Number of Chars',
+    'linkinfo_width' => 'Pop-up Width',
+    'quoteformat' => 'Quote Format',
+    'show_popular_perpage' => 'Number of Popular Posts to Show',
+    'show_last_post_count' => 'Number of Last Posts to Show',
+    'grouptags' => 'Group Tags',
+    'filestorage_plugin'   => 'Attachement Plugin',
+    'maxattachments' => 'Maximum Number of Attachments',
+    'uploadpath' => 'Upload Path',
+    'downloadURL' => 'Download URL',
+    'fileperms' => 'File Permissions',
+    'max_uploadimage_width' => 'Max Image Width (px)',
+    'max_uploadimage_height' => 'Max Image Height (px)',
+    'inlineimage_width' => 'Inline Image Width (px)',
+    'inlineimage_height' => 'Inline Image Height (px)',
+    'allowablefiletypes' => 'Allowable File Types',
+    'inlineimageypes' => 'Allows Image Types',
+    'showtopic_review_order' => 'Order to Display Existing Topics When Replying',
+    'allow_memberlist' => 'Allow Site Member List',
+    'max_uploadfile_size' => 'Max Size for Attachments (bytes)'
+
+);
+
+$LANG_configsubgroups['forum'] = array(
+    'sg_main' => 'Configuration Settings'
+);
+
+$LANG_fs['forum'] = array(
+    'ff_public' => 'General Settings',
+    'ff_topic_post_settings' => 'Topic Posting Settings',
+    'ff_centerblock' => 'Centerblock Settings',
+    'ff_latest_post_block' => 'Latest Posts Block Settings',
+    'ff_rank_settings' => 'Rank Settings',
+    'ff_attachments_settings' => 'Attachment Settings'
+);
+
+$LANG_configselects['forum'] = array(
+    0 => array('True' => 1, 'False' => 0),
+    1 => array('True' => true, 'False' => false),
+    2 => array('Top of Page' => 1, 'After Featured Story' => 2, 'Bottom of Page' => 3),
+    3 => array('No Blocks' => 'noblocks', 'Left Blocks' => 'leftblocks', 'Right Blocks' => 'rightblocks'),
+    4 => array('Block Menu' => 'blockmenu', 'Nav Bar' => 'navbar', 'None' => 'none'),
+    5 => array('Descending' => 'DESC', 'Ascending' => 'ASC'),
+    6 => array('Disabled' => 'disabled', 'filemgmt' => 'filemgmt', 'nexfile' => 'nexfile'),
+    7 => array('Default' => 'default', 'glmenu' => 'glmenu', 'nexmenu' => 'nexmenu')
+);
+
 
 ?>
