@@ -56,7 +56,7 @@ $customFunctionsDir = $_CONF['path'] .'plugins/nexflow/custom_functions/';
 if (is_dir($customFunctionsDir)) {
    if ($dh = opendir($customFunctionsDir)) {
        while (($file = readdir($dh)) !== false) {
-           if (filetype($customFunctionsDir . $file) == 'file') {
+           if (filetype($customFunctionsDir . $file) == 'file' && strpos($file, '.pos')) {
                 include_once ($customFunctionsDir . $file);
            }
        }

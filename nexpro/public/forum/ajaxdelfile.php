@@ -30,7 +30,6 @@ require_once ($_CONF['path_html'] . 'forum/include/gf_format.php');
 
 $deleteid = COM_applyFilter($_GET['id'],true);
 $topic = COM_applyFilter($_GET['topic'],true);
-COM_errorLog("topic:$topic");
 
 $query  = DB_query("SELECT uid,forum,date FROM {$_TABLES['gf_topic']} WHERE id=$topic");
 $edittopic = DB_fetchArray($query,false);
