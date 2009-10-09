@@ -5,11 +5,10 @@
 // | October 9, 2009                                                           |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
-// | config.php                                                                |
+// | functions.inc                                                             |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2007-2009 by the following authors:                         |
+// | Copyright (C) 2007-2008 by the following authors:                         |
 // | Blaine Lang            - Blaine.Lang@nextide.ca                           |
-// | Randy Kolenko          - Randy.Kolenko@nextide.ca                         |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |
@@ -29,30 +28,38 @@
 // +---------------------------------------------------------------------------+
 //
 
-
-//This parameter is used during the initial installation of the plugin to ensure that the
-//nexcontent images directory in the public path is writable.
-$CONF_SE_PREREQUISITE['uploadpath'] = $_CONF['path_html'] . 'nc/images/';
-
-// Permissions that will be used for directories used to store uploaded images.
-$CONF_SE['imagedir_perms'] = (int) 0755;
-
-// Permissions that will be used for uploaded images.
-$CONF_SE['image_perms'] = (int) 0755;
-
-$CONF_SE['menuoptions'] = array (
-    0   => 'None',
-    1   => 'Header Menu',
-    2   => 'Block Menu',
-    3   => 'Same as Parent',
-    4   => 'New Block',
-    5   => 'Single Block'
-);
+global $_TABLES,$_DB_table_prefix;
+require_once ($_CONF['path'] . 'plugins/nexcontent/nexcontent.php');
 
 
-$_TABLES['nexcontent']               = $_DB_table_prefix . 'nxcontent';
-$_TABLES['nexcontent_pages']         = $_DB_table_prefix . 'nxcontent_pages';
-$_TABLES['nexcontent_images']        = $_DB_table_prefix . 'nxcontent_images';
+/**
+* Automatic uninstall function for plugins
+*
+* @return   array
+*
+* This code is automatically uninstalling the plugin.
+* It passes an array to the core code function that removes
+* tables, groups, features and php blocks from the tables.
+* Additionally, this code can perform special actions that cannot be
+* foreseen by the core code (interactions with other plugins for example)
+*
+*/
+function plugin_autouninstall_nexcontent ()
+{
+    $out = array (
+        /* give the name of the tables, without $_TABLES[] */
+        'tables' => array('nexcontent','nexcontent_pages','nexcontent_images'),
+        /* give the full name of the group, as in the db */
+        'groups' => array('Nexcontent Admin'),
+        /* give the full name of the feature, as in the db */
+        'features' => array('nexcontent.edit','nexcontent.user'),
+        /* give the full name of the block, including 'phpblock_', etc */
+        'php_blocks' => array(''),
+        /* give all vars with their name */
+        'vars'=> array()
+    );
+    return $out;
+}
 
 
 ?>
