@@ -1,3 +1,8 @@
+Oct 9/2009 (Randy)
+    Updates to nexcontent and nexpro plugins to use autoinstall/uninstall
+    Removal of config.php for nexcontent.
+
+
 Oct 6/2009 (Randy)
     Updates to nexproject to support new nexfile upload abilities
     Updates to nextime,nexproject to sort out YUI issues
