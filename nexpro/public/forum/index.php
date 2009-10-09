@@ -588,7 +588,10 @@ if ($forum == 0) {
                     $B['subject'] = substr($B['subject'],0,25);
                     $B['subject'] .= "..";
                 }
-                if ($_USER['uid'] > 1) {
+        	        if ($CONF_FORUM['use_censor']) {
+            	        $B['subject'] = COM_checkWords($B['subject']);
+                	}
+	                if (isset($_USER['uid']) && $_USER['uid'] > 1) {
                     // Determine if there are new topics since last visit for this user.
                     $lsql = DB_query("SELECT * FROM {$_TABLES['gf_log']} WHERE uid='{$_USER['uid']}' AND forum='{$B['forum_id']}' AND time > 0");
                     if ($topicCount > DB_numRows($lsql)) {
@@ -600,8 +603,8 @@ if ($forum == 0) {
                     $folderimg = '<img src="'.gf_getImage('quietforum').'" border="0" align="absmiddle" alt="'.$LANG_GF02['quietforum'].'" TITLE="'.$LANG_GF02['quietforum'].'">';
                 }
 
-                $lastdate1 = strftime('%d', $B['date']);
-                if ($lastdate1 == date('d')) {
+    	            $lastdate1 = strftime('%Y-%m-%d',$B['date']);
+        	        if ($lastdate1 == date('Y-m-d') ) {
                     $lasttime = strftime('%I:%M&nbsp;%p', $B['date']);
                     $lastdate = $LANG_GF01['TODAY'] .$lasttime;
                 } elseif ($CONF_FORUM['use_userdate_format']) {
@@ -654,21 +657,19 @@ if ($forum == 0) {
                 $forumlisting->set_var ('markreadlink',$link);
                 $forumlisting->set_var ('LANG_markread', $LANG_GF02['msg84']);
                 $forumlisting->parse ('markread_link','markread');
-                if (!$viewnewpostslink) {
+                if (!isset($viewnewpostslink) || !$viewnewpostslink) {
                     $newpostslink = 'href="'.$_CONF['site_url'] .'/forum/index.php?op=newposts">';
                     $forumlisting->set_var ('newpostslink', $newpostslink);
                     $forumlisting->set_var ('LANG_newposts', $LANG_GF02['msg112']);
                     $viewnewpostslink = true;
                        $forumlisting->parse ('newposts_link','newposts');
-                } else {
-                    $forumlisting->set_var ('newposts_link', '');
                 }
             } else {
                 $forumlisting->set_var ('newposts_link', '');
                 $forumlisting->set_var ('markread_link', "");
             }
             $forumlisting->parse ('category_records', 'category_record',true);
-            $forumlisting->parse ('forum_records', '');
+            $forumlisting->set_var ('forum_records', '',false);
         }
 
     }
@@ -877,20 +878,22 @@ if ($forum > 0) {
 
         if ($record['last_reply_rec'] > 0) {
             $lastreplysql = DB_query("SELECT * FROM {$_TABLES['gf_topic']} WHERE id={$record['last_reply_rec']}");
-            $lastreply = DB_fetchArray($lastreplysql);
-            if(strlen ($lastreply['subject']) > $CONF_FORUM['show_subject_length']){
-                $lastreply['subject'] = substr($record['subject'], 0, $CONF_FORUM['show_subject_length']);
-                $lastreply['subject'] .= "...";
-            }
-            $lastdate1 = strftime('%m/%d/%Y', $lastreply['date']);
-            if ($lastdate1 == date('m/d/Y')) {
-                $lasttime = strftime('%H:%M&nbsp;%p', $lastreply['date']);
-                $lastdate = $LANG_GF01['TODAY'] . $lasttime;
-            } elseif ($CONF_FORUM['use_userdate_format']) {
-                $lastdate = COM_getUserDateTimeFormat($lastreply['date']);
-                $lastdate = $lastdate[0];
-            } else {
-                $lastdate = strftime('%b/%d/%y %I:%M&nbsp;%p',$lastreply['date']);
+            if ( DB_numRows($lastreplysql) > 0 ) {
+				$lastreply = DB_fetchArray($lastreplysql);
+				if(strlen ($lastreply['subject']) > $CONF_FORUM['show_subject_length']){
+					$lastreply['subject'] = substr($record['subject'], 0, $CONF_FORUM['show_subject_length']);
+					$lastreply['subject'] .= "...";
+				}
+				$lastdate1 = strftime('%m/%d/%Y', $lastreply['date']);
+				if ($lastdate1 == date('m/d/Y')) {
+					$lasttime = strftime('%H:%M&nbsp;%p', $lastreply['date']);
+					$lastdate = $LANG_GF01['TODAY'] . $lasttime;
+				} elseif ($CONF_FORUM['use_userdate_format']) {
+					$lastdate = COM_getUserDateTimeFormat($lastreply['date']);
+					$lastdate = $lastdate[0];
+				} else {
+					$lastdate = strftime('%b/%d/%y %I:%M&nbsp;%p',$lastreply['date']);
+				}
             }
         } else {
             $lastdate = strftime('%b/%d/%y %I:%M&nbsp;%p',$record['lastupdated']);
