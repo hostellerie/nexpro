@@ -1,0 +1,230 @@
+Oct 8/2009 (Blaine)
+    Added a new API to nexflow to allow custom code to change tha task name
+    API is called: PLG_Nexflow_taskname();
+    Fixed an issue in nexflow.class.php in how it set the taskname. If task is set to have a Dynamic Taskname
+          and the code does not return a name, maybe process variable is not set, then use the fixed name.
+	  The PLG_Nexflow_taskname is called after that and can replace or append to the name as required.
+
+Oct 6/2009 (Randy)
+    Updates to nexproject to support new nexfile upload abilities
+    Updates to nextime,nexproject to sort out YUI issues
+    Updates to nexproject for autoinstaller
+    Updates to nextime's installer to support new autouninstall feature
+    Updates to nexproject's installer to support new autouninstall feature    
+
+Oct 6/2009 (Blaine)
+    Nexfile updates to work with nexproject - support to popup add file dialog and redirect upon success
+    Nexfile updates to make the uninstall function work with the autoinstaller
+
+Oct 5/2009 (Blaine)
+    Refinements on nexfile API and Custom hooks to add custom reporting options
+    Added back the admin/plugin/nexfile/install.php to provide a failover method to install and un-uninstall
+          There are still a few bugs/issues with the autoinstall feature.
+
+Oct 5/2009 (Randy)
+    Update to nextime for new autoinstaller
+    removal of outdated nextime sql files.
+    removal of manual installer.
+
+    rework of nexproject javascript to support useYuiLoader js parm.  
+    rework of nextime javascript to support useYuiLoader js parm.
+
+
+Oct 2/2009 (Blaine)
+    Added a new API to nexflow - other API's may follow.
+      Added plugins/nexflow/custom_functions/api.php - where you customize/add the API functions.
+      First API added is PLG_Nexflow_tasknotification
+    Fixed an issue with the nexfile 3.0.0 update function.
+    The nexpro plugin will now set a javascript variable 'useYuiLoader' to true or false
+       depending if the YUI library autoloader is being used.
+       Needed so plugins now if they should activate it's use - example use: {theme}/nexfile/page.thtml
+
+Oct 2/2009 (Randy)
+    Updated nexList to use autoinstall
+    Updated nexList to use new filter mechanism (thtml change to viewitems.thtml)
+    library.php in nexlist updated
+
+Oct 2/2009 (Blaine)
+    Added the autoinstall plugin functionality to nexfile 3.0
+    Had to change all table refereces to be consistent - table name to $_TABLES array key name
+    Updated nexproject to use the new nexfile table name references
+
+Oct 1/2009 (Randy)
+    Updates to nexproject to support nexfile
+    updates to nexproject, nextime, nexlist to support new update.inc configs
+
+Oct 1/2009 (Eric)
+    Added nexFile Search API functionality
+
+Sept 29/2009 (Blaine)
+    Added PLG_itemSave, PLG_itemDelete and PLG_templateSetVars calls in nexfile
+    so that it's possible to extend the folder creation with custom site changes.
+    This was needed for a client project and the same should be done for adding files
+    so custom Meta Data can be added to the Add/Edit file.
+    Found and fixed numerous other nexfile realted bugs.
+    Refactored some code.
+
+Sept 28/2009 (Eric)
+    Fixed nexFlow IE8 Line draw issue
+
+Sept 25/2009 (Randy)
+    Nextime plugin updated to use YUI on demand
+    Nextime plugin updated to use YUI on demand
+    nextime.js file added to consolidate some js functionality thanks to the on-demand loader
+    reworked nextime template files  
+    nexList plugin updated to use online config
+    nexlist upgrade process updated  
+
+Sept 23/2009 (Randy)
+    Included nexTime plugin in the bundle
+    Updated nexTime to use online configurator
+    nexTime versioned and upgrade function established
+    statechange API used for nexTime
+    version update for nexProject
+
+
+Sept 23/2009 (Blaine)
+    Nexcontent: Updated the install defaults to remove redundant or unused parms. 
+                Tweaked the config order, language and config UI types
+    Nexcontent: Added the upgrade functions to upgrade to version 2.3.0
+    Nexflow: Added the upgrade function to version 3.1
+    Nexform: Added the upgrade function to version 2.2
+    Nexmenu: Added the upgrade function to version 3.2
+
+Sept 22/2009 (Randy)
+    Updated the nexProject plugin to use the online config features.
+    Bug fixes for nexProject's display routines for DIV, cookie, gantt and sizing issues.
+    Support for statechange plugin API for
+     -nexcontent
+     -nexproject
+
+Sept 22/2009 (Blaine)
+    Updated the nexflow plugin to use the online config features
+    Updated the nexmenu plugin to use the online config features
+    Additional updates to the nexform install - moved additional config options to use the online config
+    Added support for the new 1.6 PluginAPI PLG_pluginStateChange 
+      for the following plugins to be disabled if the nexpro plugin is un-installed or disabled:
+     - nexmenu
+     - nexform
+     - nexfile
+     - nexflow
+    Modified the system/classes/config.class.php to not add to the plugin's documentation link.
+     This change has been committed to core Geeklog CVS and will be in 1.6.1+
+
+
+Sept 16/2009 (Randy)
+    Updated nexcontent plugin to use the online config feature
+    Updated the install and uninstall.
+    Updated the update routine.
+
+Sept 15/2009 (Blaine)
+    Updated nexform plugin to use the online configuration feature
+    Moved most of the config settings to be online
+    Updated the install and uninstall
+    Fixed an issue with the initial form definition that was loaded on install
+
+Sept 14/2009 (Blaine):
+    Additional updates for the nexfile 3.0
+    Updated lib-nextide to include the function mail_attachment()
+    Updated javascript/nexpro.js - added function arrayRemoveItem() 
+    Added javascript/php_serializer.js - able to read PHP serialized arrays passed back via AJAX
+
+
+Aug 12/2009 (Blaine):
+    Updates core framwork code to be Geeklog 1.6.0SR1
+    Updates to the nexpro plugin to use the online configuration and support using the YUI uploader
+    New version of nexfile 3.0 with extensive changes and AJAX driven UI
+
+    Updates to nexflow: Added install sql file for 3.1 release
+                        Moved most of the javascript for the nexflow-template admin out of the .thtml files
+                        Added the public/nexflow/javascript folder
+                        Updated to use the YUI uploader for the nexflow template admin
+
+
+Aug 12/2008 (Blaine): 
+    SQL injection issue in plugin_templatesetvars_nexContent.
+    $_GET['page'] was being used raw in a SQL query
+    Changed: 
+      - plugins/nexcontent/functions.inc
+
+July 19/2008 (Blaine): 
+    Security patch for the forum plugin to address a XSS issue in the search code
+    Also fixed for an issue handling quotes in the search API function
+    Changed: 
+      - plugins/forum/functions.inc and config.php
+      - public_html/index.php
+
+July 03/2008 (Eric):
+    - fixed permission check in nexfile (functions.inc)
+
+May 27/2008 (Eric):
+    - Fixed nexProject SQL error when nexFile and Forum are not installed.
+    - Added nexProject online configuration
+    - Modified installation to include nexfile and forum category ids even if plugins are not installed
+    - Incremented nexProject version to 2.0.2
+
+    - Modified install SQL to install the nexPro plugin as 2.0.1 instead of 2.0.0
+    - Incremented nexPro version to 1.1.1
+
+May 26/2008L: Fix to admin/userreport.php - nexreporting example. Incorrect path to nexreport class [Blaine]
+
+Apr 24/2008: Nexform Changes to use DIV's instead of tables for layout.
+            - Editing field you now set the column width for each field
+              and right padding which effectively sets the spacing between fields on the same row.
+            - Changes to the templates used for records and field layout
+            - Added a few additional CSS styles
+
+
+Feb 20/2008: Nexflow Fixes
+            - Fix to nf_getFormResult() to handle multiple records for same form - same workflow instance
+            - Fix to nf_getFormResultData() to also handle Text result data
+            - Fix to batchFunction nexflow class handler - so that it does not complete until the batch function returns true
+            - Added support for set_processVariable type of task (new task type)
+            - Renamed the file custom_batch_function.php file to batch_base_functions.php
+            - Renamed the file custom_interactive_function.php file to interactive_base_functions.php
+            - Added nf_pauseWorkFlow() - base batch function that can be used to pause workflow
+            - Fix to nf_post_handler.php, typo in the variable name for the draft_return_url variable name
+
+Feb 11/2008: Fix for nexform's handling of dynamic forms. Was not closing table correctly around each dynamic field
+             Fix to now include Dynamic Field Javascript more then once and not at all unless in submit/update mode
+             Added [pullform] autotag function to allow a form to pull default values from another form
+                 > Only used in workflows as it depends on nexflow related and project/request tracking logic
+                 > modified customtags.php
+
+Jan 07/2008: Fixed nexForm scan_for_ta2 function [Eric] (v1.0.8)
+
+Dec 20/2007: Fixed Form Copy Functionality [Eric] (v1.0.7)
+
+Nov 27/2007: Added function USER_getChildGroups to system/lib-user.php. Part of Gl 1.5.1 and used in forum v3
+
+Nov 19/2007: Updated forum plugin to v3.0RC1
+             > New features like attachments and inline images (if MG plugin v1.5.1 installed)
+             > Topic Bookmarking Feature
+
+Nov 19/2007: Fixed issue in nexfile with permission upload_dir not being handled correctly.
+             Function was looking for wrong permission name - upload_direct vs upload_dir
+             Modified functions.inc
+
+Nov 19/2007:  Enhancements to nexreport  (Blaine)
+             > Able to now set the heading text for each column
+             > Added ability to have excel output create a file - used if you need to email report.
+               Modified report.php, format/display.class.php, format/excel.class.php
+
+Nov 15/2007:  0001181: report.php - requires allow_call_time_pass_reference to be enabled  (Blaine)
+              Replaced admin/plugin/nexform/report.php
+
+Nov 12/2007:  Fixed the fixed width issue with the nexpro theme.
+
+Nov 07/2007:  Changed file references of /projects/ to /nexproject/ in nexfile.
+
+Nov 02/2007:  Fixed PHP_SELF issues when register globals was turned off [Eric] (v1.0.4)
+              > replaced $PHP_SELF with $_SERVER['PHP_SELF']
+              > removed global $PHP_SELF
+
+Oct 30/2007:  Fixed IE6 NexPro Theme Issues [Eric] (v1.0.3)
+              > Changed blocktitle pngs to gifs to address transparency issue
+              > Fixed nexmenu block flyout issue
+
+Oct 18/2007:  Modified plugins/nexpro/functions.inc [blaine] (v1.0.2)
+              > function plugin_user_changed_nexpro()
+              > Moved the require_once of the LDAP class to be only if LDAP method is used as some sites remove the extra autentication classes

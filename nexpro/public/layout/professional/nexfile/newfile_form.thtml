@@ -1,0 +1,4 @@
+                                <select id="newfile_category" name="category" style="width:290px" onChange="onCategorySelect(this);">
+                                        {newfile_category_options}
+                                </select>
+

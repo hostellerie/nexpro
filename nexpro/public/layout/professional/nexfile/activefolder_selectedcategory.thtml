@@ -1,0 +1,19 @@
+
+        <!-- DIV active if in a selected category view -->
+        <div style="width:100%;display:{show_activefolder};">
+            <div class="floatleft" style="font-size:9pt;height:26px;padding-bottom:5px;display:{show_breadcrumbs};">{folder_breadcrumb_links}</div>
+            {ajaxactivity_breadcrumbmode}
+            {ajaxstatus_breadcrumbmode}
+            <div class="clearboth"></div>
+            <div class="floatleft" style="width:70;padding-left:2px;padding-bottom:10px;vertical-align:top;">
+                <span style="padding-left:32px;"><img src="{layout_url}/nexfile/images/allfolders-16x16.png"></span>
+            </div>
+            <div id="activefolder_area" class="floatleft" style="padding-top:5px;">
+                {active_folder}
+            </div>
+            <div class="floatright">
+                {ajaxstatus_foldermode}
+                {ajaxactivity_foldermode}
+            </div>
+        </div>
+

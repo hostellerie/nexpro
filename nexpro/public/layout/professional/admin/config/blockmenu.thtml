@@ -1,0 +1,11 @@
+{block_header1}
+  <div class="configmenu">
+    {sections_menu_elements}
+  </div>
+{block_footer}
+
+{block_header2}
+  <div class="configmenu">
+    {config_menu_elements}
+  </div>
+{block_footer}

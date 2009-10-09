@@ -1,0 +1,55 @@
+            <!-- End Content Area -->
+          </td>
+          {right_blocks} </tr>
+    </table>
+    {centerblockfooter-span}
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" class="footer-divider-top">
+      <tr>
+        <td width="70%" class="footerblock">{copyright_notice}</td>
+        <td width="30%" class="footerblock" style="text-align:right">{powered_by} <a href="http://www.nextide.ca">nexPro</a>&nbsp;<br>{execution_textandtime}&nbsp;</td>
+      </tr>
+    </table>
+    </td>
+    <td class="site-border-right">&nbsp;</td>
+   </tr>
+   <tr>
+    <td class="site-border-bottom-left">&nbsp;</td>
+    <td class="site-border-bottom">&nbsp;</td>
+    <td class="site-border-bottom-right">&nbsp;</td>
+  </table>
+</body>
+
+<script>
+// Instantiate and configure Loader and Load the YUI Libraries for the Nexpro Theme:
+var loader = new YAHOO.util.YUILoader({
+
+    // Identify the components you want to load.  Loader will automatically identify
+    // any additional dependencies required for the specified components.
+    require: ["container","animation"],
+
+    // Configure loader to pull in optional dependencies.  For example, animation
+    // is an optional dependency for slider.
+    loadOptional: false,
+
+    // The function to call when all script/css resources have been loaded
+    onSuccess: function() {
+        //this is your callback function; you can use
+        //this space to call all of your instantiation
+        //logic for the components you just loaded.
+    },
+
+    // Configure the Get utility to timeout after 10 seconds for any given node insert
+    timeout: 10000,
+
+    // Combine YUI files into a single request (per file type) by using the Yahoo! CDN combo service.
+    combine: true
+});
+
+// Load the files using the insert() method. The insert method takes an optional
+// configuration object, and in this case we have configured everything in
+// the constructor, so we don't need to pass anything to insert().
+loader.insert();
+
+</script>
+
+</html>

@@ -1,0 +1,3 @@
+<div class="loading" style="background-color:#FAFAFA;padding-left:{message_padding}px; ">
+    <a href="?cid={subfolder_id}&fid={fid}&fnum={foldernumber}&level={level}" class="morefolderdata" TITLE="There are more files in this folder - click here to retrieve the rest of files">Click here to return rest of files ....</a>
+</div>
