@@ -46,18 +46,7 @@ require_once ($_CONF['path'] . 'plugins/nexlist/autouninstall.php');
 */
 function plugin_autoinstall_nexlist($pi_name)
 {
-    global $_TABLES, $_CONF;
-    $install_flag=true;
-    //  so lets test out to see if the nexPro is installed.  If not, bail out with an error
-    $nxpro=intval(DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'"));
-    if ($nxpro==0) {     //install nexpro first
-        if (DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'") == '0') {     //nexpro disabled?
-            COM_errorLog ('The nexpro plugin must be enabled for nexList to work.  Please enable the nexpro it before continuing to install nexList');
-        }else{
-            COM_errorLog ('The nexpro plugin is not installed.  Please install it before continuing to install nexList');
-        }
-        $install_flag=false;
-    }
+
     $pi_name         = 'nexlist';
     $pi_display_name = 'nexList';
     $pi_admin        = $pi_display_name . ' Admin';
@@ -96,11 +85,7 @@ function plugin_autoinstall_nexlist($pi_name)
         'tables'    => $tables
     );
 
-    if($install_flag){
-        return $inst_parms;
-    }else{
-        return null;
-    }
+    return $inst_parms;
 }
 
 /**
@@ -165,16 +150,27 @@ function plugin_postinstall_nexlist($pi_name)
 */
 function plugin_compatible_with_this_version_nexlist($pi_name)
 {
-    global $_CONF, $_DB_dbms;
+    global $_CONF, $_DB_dbms, $_TABLES, $_CONF;
 
+    $install_flag=true;
+    //  so lets test out to see if the nexPro is installed.  If not, bail out with an error
+    $nxpro=intval(DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'"));
+    if ($nxpro==0) {     //install nexpro first
+        if (DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'") == '0') {     //nexpro disabled?
+            COM_errorLog ('The nexpro plugin must be enabled for nexList to work.  Please enable the nexpro it before continuing to install nexList');
+        }else{
+            COM_errorLog ('The nexpro plugin is not installed.  Please install it before continuing to install nexList');
+        }
+        $install_flag=false;
+    }
     // check if we support the DBMS the site is running on
     $dbFile = $_CONF['path'] . 'plugins/' . $pi_name . '/sql/'
             . $_DB_dbms . '_install.php';
     if (! file_exists($dbFile)) {
-        return false;
+        $install_flag=false;
     }
 
-    return true;
+    return $install_flag;
 }
 
 ?>
