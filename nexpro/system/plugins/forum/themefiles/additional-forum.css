@@ -1,0 +1,194 @@
+/* Common Navbar CSS - Add if not already included */
+#navcontainer a { text-decoration: none; }
+
+#navcontainer ul  {
+    margin: 0px;
+    list-style-type: none;
+    position: relative;
+    border: 0px;
+    background-color: #667AB3;
+    padding: 5px 0px 0px 0px;
+    height:26px;
+}
+
+#navcontainer li { float: left; display: inline; margin:0px; padding-top:6px; padding-bottom:5px;}
+
+#navcontainer ul a,
+#navcontainer ul a:link,
+#navcontainer ul a:visited  {
+    background-color: #4358E1;
+    border:0px solid #4358E1;
+    color: white;
+    padding: 5px;
+    margin:2px;
+}
+
+#navcontainer ul a:hover,
+#navcontainer ul a:focus  {
+    background-color: #55516B;
+    border: 0px solid black;
+    padding-bottom:7px;
+    color: white;
+}
+
+/* current Link */
+#navcontainer ul a#current {
+    background-color: #F2F2F2;
+    border: 0px solid black;
+    padding-bottom:7px;
+    color: #4358E1;
+}
+
+#navcontainer ul a#current:link,
+#navcontainer ul a#current:visited { font-weight: bold; }
+
+
+A.navsubmenu,
+A.navsubmenu:visited,
+A.navsubmenu:link {
+    padding:2 5 15 5px;
+    text-decoration: none;
+    color:black;
+}
+
+A.navsubmenu:hover,
+A.navsubmenu:focus  {
+    background-color: #55516B;
+    color: white;
+    text-decoration:none;
+}
+
+a.navsubcurrent, 
+a.navsubcurrent:visited, 
+a.navsubcurrent:link  {
+    padding: 2 5 15 5px;
+    background-color: #667AB3;
+    text-decoration: none;
+    color: white;
+}
+a.navsubcurrent:hover  {
+    background-color: #55516B;
+    color: white;
+}
+/* End of NavBar CSS */
+
+
+/* New GL Common Plugin CSS Declarations */
+.pluginBG              { background-color: #EFEFEF; }
+.pluginAltBG           { background-color: #1C1E2D; }
+.pluginTitle           { color: #1C1E2D; background-color:#CACAAF; font-weight: bold; font-size: 10pt; font-family: Verdana, sans-serif; }
+.pluginHeader          { color: #1A3955; font-weight: bolder; font-size: 95%; background-color: #CCC; padding:5px; }
+.pluginFooter          { background-color:#EFEFEF; }
+.pluginAlert           { padding:5px 15px 5px 15px; color:#D8010E; background-color: #FEF1B4; font-weight:bold;}
+.pluginInfo            { padding:5px 15px 5px 15px; color:#707070; background-color: #FEF1B4; font-size: 8pt; font-weight:normal;}
+
+.pluginSolidOutline    { background-color: #396998; }
+.pluginSolidFill       { background-color: #1A3955; }
+.pluginCellTitle       { color: #1C1E2D; font-weight: bold; font-size: 80%; font-family: Verdana, sans-serif; background-color: #E5E5EA; }
+.pluginCellFill        { background-color: #E5E5EA; }
+.pluginCellText        { color: #000; font-weight: plain; font-size: 75%; font-family: Verdana, sans-serif; background-color: #F7F7F7; }
+.pluginTinyText        { font-size:65%; }
+.pluginSmallText       { font-size:80%; }
+.pluginMediumText      { font-size:85%; }
+.pluginLargeText       { font-size:90%; }
+.pluginAltText         { color: #FFF }
+
+.pluginRow1            { background-color: #EFEFEF; }
+.pluginRow2            { background-color: #D9D9D9; }
+
+.pluginRollOver         { color: #1C1E2D; background-color: #FFFF8F; }
+.pluginRollOut          { color: #1C1E2D; background-color: #F7F7F7; }
+
+.pluginLinks A:link     { color: #0000FF; font-style: normal; font-weight: plain; text-decoration: none }
+.pluginLinks A:visited  { color: #1E1E8E; font-style: normal; font-weight: plain; text-decoration: none }
+.pluginLinks A:hover    { color: #0000FF; font-style: normal; font-weight: plain; text-decoration: underline }
+.pluginBreadCrumbs, .pluginBreadCrumbs A:link     { color: #EFEFEF; font-style: normal; font-weight: plain; text-decoration: none }
+.pluginBreadCrumbs A:visited  { color: #EFEFEF; font-style: normal; font-weight: plain; text-decoration: none }
+.pluginBreadCrumbs A:hover    { color: gold; font-style: normal; font-weight: plain; text-decoration: none }
+
+A.pluginButton:link, A.pluginButton:visited {
+    color: #000;
+    text-align: center;
+    padding-top: 2px;
+    display: block;
+    height: 19px;
+    text-decoration: none;
+    background-color: transparent;
+}
+A.pluginButton:hover { 
+    color: blue; 
+    text-align: center; 
+    padding-top: 2px; 
+    background: url('navbar/images/button_over.gif') repeat-x center; 
+    display:block; height:19px; text-decoration:none; background-repeat:repeat-x; background-color:transparent
+}
+/* END of GL Plugin Common CSS */
+
+
+/* Forum Plugin specific CSS */
+.codeblock  { 
+    background-color: #ECE9D8; 
+    color: #000;
+    width: 470px;
+    height: 160px;
+    overflow: auto;
+    font-size: 11px;
+    min-height: 50px;
+    max-height: 120px;
+    margin: 5px 0px 5px 5px;
+    padding:5px;
+    border: 1px dashed black;
+    }
+.quotetop
+{
+    border-right:1px dotted #000; border-top:1px dotted #000; border-bottom:1px dotted #000; background:#E4EAF2 url('forum/image_set/img_quote.gif') no-repeat right; border-left:4px solid #8394B2; color: #000;
+    font-weight: bold;
+    font-size: 10px;
+    padding: 3px; margin-left:auto; margin-right:auto; margin-top:8px; margin-bottom:0
+}
+
+.quotemain
+{
+    background: #FAFCFE;
+    border: 1px dotted #000;
+    border-left: 4px solid #8394B2;
+    color: #465584;
+    padding: 4px;
+    margin: 0 auto 8px auto;
+}
+
+/* End of Forum specific CSS  */
+
+
+/* Common CSS for on-hover info feature - Add if not already included */
+a.info{
+    position:relative; /*this is the key*/
+    z-index:24;
+    color:#000;
+    text-decoration:none
+}
+
+a.info:hover  {
+    z-index:25;
+    padding-top:5px;
+    padding-bottom:5px;
+    text-decoration:none
+}
+
+a.info span{display: none}
+
+a.info:hover span { /*the span will display just on :hover state*/
+    font-family:Verdana, Tahoma, Arial; 
+    font-style:normal;
+    font-size: 7pt;
+    display:block;
+    position:absolute;
+    top:3em; left:-15em; width:22em;
+    border:1px solid #5D96B9;
+    background-color:#FFFFA0; color:#555;
+    padding:2px;
+    text-align: left;
+    text-decoration:none
+}
+/* End of common CSS for on-hover info feature */
+

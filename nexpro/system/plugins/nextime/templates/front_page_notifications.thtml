@@ -1,0 +1,36 @@
+<table class="frontPageTable" style="{hide_table}">
+    <tr style="display:{show_rejection_row};" class="frontPageTableHeader">
+        <th colspan="2">The following date ranges have rejected items:</th>
+    </tr>
+    <tr style="display:{show_rejection_row};">
+        <td style="width:2%">&nbsp;</td>
+        <td style="width:98%">
+            {rejected_items}
+        </td>
+    </tr>
+
+    <tr style="display:{show_rejection_row};" ><td colspan=2 height=10></td></tr>
+
+    <tr style="display:{show_modified_row};"  class="frontPageTableHeader">
+        <th colspan="2" id="modifiedTH">Items in the following date ranges have been modified by a Supervisor/Manager:</th>
+    </tr>
+    <tr style="display:{show_modified_row};">
+        <td style="width:2%">&nbsp;</td>
+        <td style="width:98%">
+            {modified_items}
+        </td>
+    </tr>
+
+</table>
+<script language="javascript">
+function ackModified(startstamp,endstamp){
+    document.getElementById('modifiedTH').innerHTML='{please_wait_general_msg}';
+    var url = '{site_url}/nextime/ajax/server.php?op=ackmodified&startstamp=' + startstamp+ "&endstamp=" + endstamp;
+    YAHOO.util.Connect.asyncRequest('GET', url, {success:ackModifiedSuccess,argument: { },timeout:50000});
+}
+
+function ackModifiedSuccess(o){
+    document.location='index.php';
+}
+
+</script>
