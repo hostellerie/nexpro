@@ -1,0 +1,6 @@
+            <div id="newfolderdialog" style="display:none;">
+                <div class="hd">Add a new folder</div>
+                <div id="newfolderdialog_form" class="bd" style="text-align:left;">
+
+                </div>
+            </div>

@@ -1,0 +1,11 @@
+<!-- headersubmenu.thtml -->
+    <li>
+        <a class="fly" href="{menuitem_url}">{menuitem_label}
+        <!--[if gte IE 7]><!--></a><!--<![endif]--><!--[if lte IE 6]><table><tr><td><![endif]-->
+        <ul>
+                {submenu_items}
+        </ul>
+        <!--[if lte IE 6]></td></tr></table></a><![endif]-->
+    </li>
+
+

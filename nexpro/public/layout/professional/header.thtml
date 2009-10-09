@@ -1,0 +1,43 @@
+{doctype}
+<html{lang_attribute}{xmlns}>
+<head>
+<title>{page_title_and_site_name}</title>
+<meta http-equiv="Content-Script-Type" content="text/javascript"{xhtml}>
+<meta http-equiv="Content-Style-Type" content="text/css"{xhtml}>
+<!-- link rel="SHORTCUT ICON" href="{site_url}/favicon.ico" -->
+<!-- <meta http-equiv="Pragma" content="no-cache"{xhtml}> -->
+<link rel="stylesheet" type="text/css" href="{css_url}" title="{theme}"{xhtml}>
+
+{feed_url}
+{rel_links}
+{plg_headercode}
+{advanced_editor}
+<!-- Load Common Javascript Libraries -->
+<script type="text/javascript" src="{site_url}/javascript/common.js"></script>
+
+</head>
+<body dir="{direction}">
+     <table width="100%" border="0" cellpadding="0" cellspacing="0" class="header-logobg-container-inner">
+        <tr>
+            <td class="header-logobg-left" style="height:75px;">
+                <a href="{site_url}/"><img src="{site_logo}" alt="{site_name}" border="0" align="abstop"></a>
+            </td>
+        </tr>
+        <tr>
+            <td class="header-navigation-container">
+                <ul>
+                    {menu_elements}
+                </ul>
+            </td>
+        </tr>
+    </table>
+
+    <table cellspacing="0" cellpadding="0" style="width:100%;">
+        <tr>
+            {left_blocks}
+            <td class="story-container">
+                <p id="header-welcomedate" class="header-welcomeanddate-text" style="display:none;">
+                    <b>{welcome_msg}</b><br{xhtml}>{datetime}
+                </p>
+
+                <!-- START OF CONTENT AREA -->

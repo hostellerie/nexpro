@@ -1,0 +1,1 @@
+<span class="searchtag">{searchtag}</span><span class="removetag"><a href="{action_url}?tag={searchtag}" TITLE="Remove search tag">x</a></span>

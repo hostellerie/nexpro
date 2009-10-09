@@ -1,0 +1,219 @@
+{js}
+<br>
+{title_label}
+<br>
+<br>
+<form method=get id="frmMain">
+<table>
+    <tr {enter_timesheet_row}>
+        <td colspan="5" class="actionLabel">{timesheet_entry_label}</td>
+    </tr>
+    <tr {enter_timesheet_row}>
+        <td>{start_date_label}:</td>
+        <td><div  class="popupcal" id="cal1" style="position:absolute"></div>
+            <input type="text" size="8" name="start_date" id="start_date" readonly value="{start_date}">
+        </td>
+        <td>{end_date_label}:</td>
+        <td><div  class="popupcal" id="cal2" style="position:absolute"></div>
+            <input type="text" size="8" name="end_date" id="end_date" readonly value="{end_date}">
+        </td>
+        <td>
+            <input type="button" id="enter_my_timesheet" style="display:none" value="{begin_timesheet_button}" onclick="checkFields('start_date,end_date',document.getElementById('frmMain'),'entry.php');">
+
+        </td>
+    </tr>
+    <tr>
+        <td colspan=5>&nbsp;<span id="span_dummy1">Choose a start date to begin your timesheet entry...</span></td>
+    </tr>
+
+
+
+    <tr {approval_row}>
+        <td colspan="5" class="actionLabel">&nbsp;</td>
+    </tr>
+
+
+    <tr {approval_row}>
+        <td colspan="5" class="actionLabel">{enter_timesheet_for_someone}</td>
+    </tr>
+    <tr {approval_row}>
+        <td>{start_date_label}:</td>
+        <td><div  class="popupcal" id="startdate2" style="position:absolute"></div>
+            <input type="text" size="8" name="start_date2" id="start_date2" readonly value="{start_date}">
+        </td>
+        <td>{end_date_label}:</td>
+        <td><div  class="popupcal" id="enddate2" style="position:absolute"></div>
+            <input type="text" size="8" name="end_date2" id="end_date2" readonly value="{end_date}">
+        </td>
+        <td>
+           <select name="otheremp" id="otheremp" onchange="if(document.getElementById('end_date2').value!=''){document.location='approvals.php?emp='+this.value+'&start_date=' + document.getElementById('start_date2').value+'&end_date=' + document.getElementById('end_date2').value + '&showAsTimesheet=1&sup={uid}'}else{ alert('Choose date range first.');}">
+           {other_employee_dropdown}
+           </select>
+        </td>
+    </tr>
+
+    <tr {approval_row}>
+        <td colspan="5" class="actionLabel">&nbsp;</td>
+    </tr>
+
+    <tr {approval_row}>
+        <td colspan="5" class="actionLabel">{approve_timesheet_label}</td>
+    </tr>
+    <tr {approval_row}>
+        <td>Your Employees:</td>
+        <td><select id="emp" name="emp" onchange="document.getElementById('del').disabled=true;checkFields('emp',document.getElementById('frmMain'),'approvals.php');">
+        {employee_dropdown}
+        </select></td>
+        <td></td>
+        <td style="display:{has_supervisors}">Your Supervisors:</td>
+        <td style="display:{has_supervisors}">
+            <select id="sup" name="sup" onchange="checkFields('sup',document.getElementById('frmMain'),'approvals.php');">
+            {supervisor_dropdown}
+            </select>
+            </td>
+    </tr>
+    <tr {delegate_row}>
+        <td>Delegated Employees:</td>
+        <td><select id="del" name="del" onchange="document.getElementById('emp').disabled=true;checkFields('del',document.getElementById('frmMain'),'approvals.php');">
+        {delegated_employee_dropdown}
+        </select></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+
+    {reports_row}
+
+</table>
+</form>
+
+
+<div id="reportbyemployeepanel" style="height:250px;background-color:#FFFFFF;visibility:hidden;">
+    <div class="hd" style="color:black;background-color:#e0ecd5">{report_by_employee_panel_title}</div>
+    <div class="bd" style="font-weight:bold;font-size:9pt;text-align:center"><br>
+
+            <!-- custom generation parameters -->
+            <div  class="popupcal" id="cal3" style="position:absolute"></div>
+            Start Date: <input type="text" name="byEmpsdate" id="byEmpsdate" readonly  size=7>&nbsp;
+            <div  class="popupcal" id="cale3" style="position:absolute"></div>
+            End  Date: <input type="text" name="byEmpedate" id="byEmpedate" readonly  size=7><br><br>
+             <div id="empreportdateranges">&nbsp;</div>
+             <div id="whichsupervisortorunas" style="display:{is_finance_show_supervisors}">{run_for_which_supervisor}<select name="whichmanager" id="whichmanager">{get_supervisors}</select></div>
+             <div id="entryfilter">{show_unapproved}<input type="checkbox" id="byEmpShowUnapproved" checked>&nbsp;&nbsp;{show_rejected}<input type="checkbox" id="byEmpShowRejected"></div>
+             <div><input type=button value="{report_by_employee_go}" onclick="runByEmployeeReport();" id="byEmpGoButton" style="display:none"></div>
+            <br><br>
+
+            <div style="text-align:center;font-size:9pt" id="reportbyemployee_status"></div>
+
+            <br><br>
+    </div>
+    <div class="ft"></div>
+</div>
+
+<div id="reportbytaskpanel" style="height:250px;background-color:#FFFFFF;visibility:hidden;">
+    <div class="hd" style="color:black;background-color:#e0ecd5">{report_by_task_panel_title}</div>
+    <div class="bd" style="font-weight:bold;font-size:9pt;text-align:center"><br>
+
+            <!-- custom generation parameters -->
+            <div  class="popupcal" id="cal4" style="position:absolute"></div>
+            Start Date: <input type="text" name="byTasksdate" id="byTasksdate" readonly  size=7>&nbsp;
+            <div  class="popupcal" id="cale4" style="position:absolute"></div>
+            End  Date: <input type="text" name="byTaskedate" id="byTaskedate" readonly  size=7><br><br>
+
+             <div id="taskreportdateranges">&nbsp;</div>
+             <div id="whichsupervisortorunas2" style="display:{is_finance_show_supervisors}">{run_for_which_supervisor}<select name="whichmanagertask" id="whichmanagertask">{get_supervisors}</select></div>
+
+             <div id="whichtasktorun" style="display:{is_finance_show_supervisors}">{run_for_which_task}<select name="whichtask" id="whichtask">{get_tasks}</select></div>
+
+             <div id="entryfilter2">{show_unapproved}<input type="checkbox" id="byTaskShowUnapproved" checked>&nbsp;&nbsp;{show_rejected}<input type="checkbox" id="byTaskShowRejected"></div>
+             <div><input type=button value="{report_by_task_go}" onclick="runByTaskReport();" id="byTaskGoButton" style="display:none"></div>
+            <br><br>
+
+            <div style="text-align:center;font-size:9pt" id="reportbytask_status"></div>
+
+            <br><br>
+    </div>
+    <div class="ft"></div>
+</div>
+
+
+<div id="reportbyprojectpanel" style="height:250px;background-color:#FFFFFF;visibility:hidden;">
+    <div class="hd" style="color:black;background-color:#e0ecd5">{report_by_project_panel_title}</div>
+    <div class="bd" style="font-weight:bold;font-size:9pt;text-align:center"><br>
+            <!-- custom generation parameters -->
+            <div  class="popupcal" id="cal5" style="position:absolute"></div>
+
+            Start Date: <input type="text" name="byProjectsdate" id="byProjectsdate" readonly  size=7>&nbsp;
+            <div  class="popupcal" id="cale5" style="position:absolute"></div>
+            End  Date: <input type="text" name="byProjectedate" id="byProjectedate" readonly  size=7><br><br>
+
+             <div id="projectreportdateranges">&nbsp;</div>
+             <div id="whichsupervisortorunas3" style="display:{is_finance_show_supervisors}">{run_for_which_supervisor}<select name="whichmanagerproject" id="whichmanagerproject">{get_supervisors}</select></div>
+
+             <div id="whichprojecttorun" style="display:{is_finance_show_supervisors}">{run_for_which_project}<select name="whichproject" id="whichproject">{get_projects}</select></div>
+
+             <div id="entryfilter2">{show_unapproved}<input type="checkbox" id="byProjectShowUnapproved" checked>&nbsp;&nbsp;{show_rejected}<input type="checkbox" id="byProjectShowRejected"></div>
+             <div><input type=button value="{report_by_project_go}" onclick="runByProjectReport();" id="byProjectGoButton" style="display:none"></div>
+            <br><br>
+
+            <div style="text-align:center;font-size:9pt" id="reportbyproject_status"></div>
+
+            <br><br>
+    </div>
+    <div class="ft"></div>
+</div>
+
+
+<div id="reportbyfreeformpanel" style="height:250px;background-color:#FFFFFF;visibility:hidden;">
+    <div class="hd" style="color:black;background-color:#e0ecd5">{report_by_freeform_panel_title}</div>
+    <div class="bd" style="font-weight:bold;font-size:9pt;text-align:center"><br>
+
+            <!-- custom generation parameters -->
+            <div  class="popupcal" id="cal6" style="position:absolute"></div>
+
+
+            Start Date: <input type="text" name="byFreeFormsdate" id="byFreeFormsdate" readonly  size=7>&nbsp;
+            <div  class="popupcal" id="cale6" style="position:absolute"></div>
+            End  Date: <input type="text" name="byFreeFormedate" id="byFreeFormedate" readonly  size=7><br><br>
+
+
+             <div id="freeformreportdateranges">&nbsp;</div>
+             <div id="whichsupervisortorunas5" style="display:{is_finance_show_supervisors}">{run_for_which_supervisor}<select name="whichmanagerfreeform" id="whichmanagerfreeform">{get_supervisors}</select></div>
+             <div id="entryfilter4">{show_unapproved}<input type="checkbox" id="byFreeFormShowUnapproved" checked>&nbsp;&nbsp;{show_rejected}<input type="checkbox" id="byFreeFormShowRejected"></div>
+             <div><input type=button value="{report_by_freeform_go}" onclick="runByFreeFormReport();" id="byFreeFormGoButton" style="display:none"></div>
+            <br><br>
+
+            <div style="text-align:center;font-size:9pt" id="reportbyfreeform_status"></div>
+
+            <br><br>
+    </div>
+    <div class="ft"></div>
+</div>
+
+
+<script language="Javascript">
+var enableautoenddate={enable_auto_end_date};
+if(useYuiLoader){
+    (function() { 
+        
+        var loader = new YAHOO.util.YUILoader({ 
+            base: '', 
+            require: ["animation","calendar","connection","container","containercore","dom","menu","element","event","yahoo","yuiloader"], 
+            loadOptional: true, 
+            filter: "MIN", 
+            allowRollup: true, 
+            onFailure: function(o) { 
+                  alert("The required javascript libraries could not be loaded.  Please refresh your page and try again."); 
+            },
+            onSuccess: function() { 
+                init_index_page();
+            } 
+        }); 
+     
+    // Load the files using the insert() method. 
+    loader.insert(); 
+    })(); 
+}else{
+    init_index_page();
+}
+</script>

@@ -1,0 +1,148 @@
+<br>
+<div class="savelogout"><a href="javascript:saveTimesheet('{site_url}/users.php?mode=logout');">{log_out}</a></div>
+<div style="margin-left:15px"><a href="{site_url}/nextime">Timesheet Home</a> - Timesheet Entry</div>
+<br>
+
+<div class="statusmessage" id="statusmessages" style="display:none"></div>
+<br>
+<form method=post id="frm_timesheet">
+<div id="timesheetdisplay">
+{timesheet}
+</div>
+<input type="hidden" name="start_date" id="start_date" value="{start_date}">
+<input type="hidden" name="end_date" id="end_date" value="{end_date}">
+<input type="hidden" name="approved_by" id="approved_by" value="{approved_by}">
+<input type='hidden' name='emp' id='emp' value='{emp}'>
+</form>
+
+<BR>
+<div class="savelogout"><a href="javascript:saveTimesheet('{site_url}/users.php?mode=logout');">{log_out}</a></div>
+
+<div id="deletemessage" style="overflow:hidden;background-color:#FFFFFF;visibility:hidden;">
+    <div class="hd" style="color:black;background-color:#e0ecd5">Delete these items?</div>
+    <div class="bd">
+        <div style="padding-top:10px;font-size:8pt;font-family:Verdana;width:100%;text-align:center">
+            {delete_message}
+            <br>
+            <input type="button" value="{continue_with_delete}" onclick="YAHOO.nextide.container.panel1.hide();deleteEntries();"> &nbsp;&nbsp;<input type="button" value="{cancel_delete}" onclick="YAHOO.nextide.container.panel1.hide();"> 
+        </div>
+    </div>
+    <div class="ft"></div>
+</div>
+
+<div id="errormessage" style="overflow:hidden;background-color:#FFFFFF;visibility:hidden;">
+    <div class="hd" style="color:black;background-color:#e0ecd5">{error_message_panel_title}</div>
+    <div class="bd" style="font-weight:bold;font-size:12pt;color:red"><br>
+        <div id="errormessage_content" style="padding-top:10px;font-size:8pt;font-family:Verdana;width:100%;text-align:center">
+        </div>
+        <div style="text-align:center;font-size:9pt"><input type="button" value="{continue_button}" onclick="YAHOO.nextide.container.panel2.hide();"></div>
+        </br><br>
+    </div>
+    <div class="ft"></div>
+</div>
+ 
+
+
+<div id="commententrypanel"  style="overflow:hidden;background-color:#FFFFFF;visibility:hidden;">
+    <div class="hd" style="color:black;background-color:#e0ecd5">{comment_entry_panel_title}</div>
+    <div class="bd" style="font-weight:bold;font-size:12pt;color:red"><br>
+        <div id="" style="padding-top:10px;font-size:8pt;font-family:Verdana;width:100%;text-align:center">
+            <textarea {disable_on_lock} id="commententryarea" name="commententryarea" rows="5" cols="75" wrap="on">
+            </textarea>
+            <input type="hidden" name="hiddenTextboxName" id="hiddenTextboxName">
+            <br>
+            <input type="button" value="{submit_comment}" onclick="submitComment();" style="{disable}">
+        </div>
+
+    </div>
+    <div class="ft"></div>
+</div>
+
+
+
+
+<div id="savepanel"  style="overflow:hidden;background-color:#FFFFFF;visibility:hidden;">
+    <div class="hd" style="color:black;background-color:#e0ecd5">Saving the timesheet... please wait....</div>
+    <div class="bd" style="font-weight:bold;font-size:12pt;color:red"><br>
+        <div id="savestatus" style="padding-top:10px;font-size:8pt;font-family:Verdana;width:100%;text-align:center">
+            	Saving.. please wait
+        </div>
+
+    </div>
+    <div class="ft"></div>
+</div>
+
+
+<div id="rejectionreasonpanel" style="overflow:hidden;background-color:#FFFFFF;visibility:hidden;">
+    <div class="hd" style="color:black;background-color:#e0ecd5">{rejection_reason_panel_title}</div>
+    <div class="bd" style="font-weight:bold;font-size:12pt;color:red"><br>
+        <div id="rejectionreason" style="padding-top:10px;font-size:8pt;font-family:Verdana;width:100%;text-align:center">
+            
+        </div>
+        <br>
+    </div>
+    <div class="ft"></div>
+</div>
+
+
+
+<script language="javascript">
+function delmsgpanel(){
+        YAHOO.namespace("nextide.container");
+        YAHOO.nextide.container.panel1 = new YAHOO.widget.Panel("deletemessage", { width:"600px", visible:false, constraintoviewport:true, x:300, y:600, modal:true } );
+        YAHOO.nextide.container.panel1.render();
+        YAHOO.nextide.container.panel1.center();
+    }
+function errmsgpanel(){
+        YAHOO.namespace("nextide.container");
+        YAHOO.nextide.container.panel2 = new YAHOO.widget.Panel("errormessage", { width:"600px", visible:false, constraintoviewport:true, x:300, y:600, modal:true } );
+        YAHOO.nextide.container.panel2.render();
+        YAHOO.nextide.container.panel2.center();
+    }
+    
+function cmtpanel(){
+        YAHOO.namespace("nextide.container");
+        YAHOO.nextide.container.panel3 = new YAHOO.widget.Panel("commententrypanel", { width:"600px", visible:false, constraintoviewport:true, x:300, y:600, modal:false } );
+        YAHOO.nextide.container.panel3.render();
+        YAHOO.nextide.container.panel3.center();
+    }
+    
+function rejectionreasonpanel(){
+        YAHOO.namespace("nextide.container");
+        YAHOO.nextide.container.panel5 = new YAHOO.widget.Panel("rejectionreasonpanel", { width:"600px", visible:false, constraintoviewport:true, x:300, y:600, modal:false } );
+        YAHOO.nextide.container.panel5.render();
+        YAHOO.nextide.container.panel5.center();
+    }    
+    
+    
+function savepanel(){
+        YAHOO.namespace("nextide.container");
+        YAHOO.nextide.container.panel6 = new YAHOO.widget.Panel("savepanel", { width:"600px", visible:false, constraintoviewport:true, x:300, y:600, modal:false } );
+        YAHOO.nextide.container.panel6.render();
+        YAHOO.nextide.container.panel6.center();
+    }
+    
+if(useYuiLoader){
+    (function() { 
+        var loader = new YAHOO.util.YUILoader({ 
+            base: "", 
+            require: ["animation","calendar","connection","container","containercore","dom","menu","element","event","yahoo","yuiloader"], 
+            loadOptional: true, 
+            filter: "MIN", 
+            allowRollup: true, 
+            onFailure: function(o) { 
+                  alert("The required javascript libraries could not be loaded.  Please refresh your page and try again."); 
+            },
+            onSuccess: function() { 
+                init_entry_page();
+            } 
+        }); 
+     
+    // Load the files using the insert() method. 
+    loader.insert(); 
+    })(); 
+}else{
+    init_entry_page();
+}
+
+</script>

@@ -1,0 +1,40 @@
+
+            <div class="listing_record" id="folder_{subfolder_id}_rec_{fid}">
+                <div style="padding-right:0px;">
+                    <div class="floatleft">
+                            <input id="chkfile{fid}" type="checkbox" name="chkfile" value="{fid}" onClick="updateCheckedItems(this)">
+                            <span style="display:{show_favorite}">
+                                <a href="?id={fid}" onclick="return false;"><img id="favitem{fid}" class="togglefavorite" src="{favorite_status_image}" TITLE="{LANG_favorite_status}"></a>
+                            </span>
+                            <span style="padding-left:{padding_left}px;">
+                                <a class="filedetailsdialog" href="{details_link_parms}"><img src="{extension_icon}"></a>
+                            </span>
+                            <span style="padding-left:5px;padding-right:5px;color:#666;">{file_number}</span>
+                            <span class="filedetailslink">
+                                <a id="listingFilenameRec{fid}" class="filedetailsdialog" href="{details_link_parms}" TITLE="Click to view details">{file_name}</a>
+                            </span>
+                            <span id="listingLockIconRec{fid}" style="padding-left:5px;display:{showlock}"><img src="{imgset}/padlock.gif" TITLE="File Locked"></span>
+                    </div>
+                    <div class="tags" id="listingTagsRec{fid}">{tags}</div>
+                    <div class="floatright">
+                        <div class="actions floatright" style="width:55px;">
+                            <span>{download_action_link}</span>
+                            <span>{edit_action_link}</span>
+                        </div>
+                        <div class="floatright" style="padding-right:40px">{modified_date}</div>
+                        <div class="floatright" style="padding-right:20px;display:{show_foldername};"><a href="#" onClick="makeAJAXGetFolderListing({subfolder_id});return false;">{folder_name}</a></div>
+                    </div>
+                </div>
+                <div class="filedesc" id="filedesc_container_{fid}" style="padding-left:{file_desc_padding_left}px;padding-right:75px;display:none;">
+                    <div><span class="filedesc_span" id="listingDescriptionRec{fid}">{file_description}</span>
+                    <!--
+                      <div id="listingNotificationRec{fid}" style="float:left;width:40px;padding-top:3px;white-space:nowrap;">
+                        <a href="#" onClick="makeAJAXToggleFileNotification({fid},0);return false;"><img id="listingNotifyIconRec{fid}" src="{imgset}/{notification_status_image}" TITLE="{notification_status}"></a>
+                      </div>
+                    -->
+                      <div class="clearboth"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="subfolder{subfolder_id}_rec{fid}_bottom">{more_records_message}</div>
+

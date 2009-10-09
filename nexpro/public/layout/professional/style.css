@@ -1,0 +1,2563 @@
+/* STYLESHEET FORMAT GUIDE *****************************************************
+
+  split the following sections:
+  - semantics (direct formatting for <td>, <a > etc
+  - classes (.whatever)
+  - common plugin CSS
+  - navbar
+  Within these sections, entries are to be strictly alphabetized.
+
+  SAMPLE:
+  .poll-vote,
+  .poll-vote-results {
+    background:transparent;
+    color:#000000;
+    font-size:smaller;
+  }
+
+  These are the rough rules:
+  - always put a ';' after the last entry
+  - always a linebreak before .
+  - always a linebreak after , ; { and }
+  - always a . before all classes
+  - two spaces indent
+  - no tabs
+  - no spaces after colons
+*/
+
+/* SEMANTICS ******************************************************************/
+
+a {
+  background:transparent;
+}
+
+a:link.non-ul,
+a:visited.non-ul,
+a:hover.non-ul,
+a:active.non-ul {
+  color:#000000;
+  text-decoration:none;
+}
+a:link {
+  color:#0000FF;
+}
+a:visited {
+  color:#800080;
+}
+a:hover {
+  color:#008000;
+}
+a:active {
+  color:#FF0000;
+}
+body {
+  width:99%;
+  background:#FFFFFF;
+  color:#000000;
+  font:0.8em arial,verdana,tahoma,helvetica,sans-serif;
+  padding:0px;
+  margin:0px auto;
+  border:1px solid #E7E7E7;
+  padding-left:1px;
+  padding-right:1px;
+}
+fieldset {
+  margin-bottom:1em;
+}
+fieldset p {
+  padding:5px;
+  margin:0px;
+  margin-top:5px;
+  margin-bottom:0px;
+}
+fieldset legend {
+  font-size:0.9em;
+}
+form {
+  margin-top:5px;
+  margin-bottom:5px;
+}
+form div.notes p,
+form div small {
+  line-height:125%;
+}
+form div.notes ul {
+  margin:0px;
+  padding:0px;
+  padding-left:2px;
+}
+form div.notes ul li {
+  margin-left:15px;
+  list-style-position:outside;
+  padding-right:2px;
+}
+form fieldset div.notes {
+  float:right;
+  position:relative;
+  right:30px;
+  width:150px;
+  height:auto;
+  margin:0px 0px 10px 10px;
+  padding:5px;
+  border:1px solid #666666;
+  background-color:#ffffe1;
+  color:#666666;
+  font-size:.75em;
+}
+
+form fieldset div.notes h4 {
+  background-image:url(images/icon_info.png);
+  background-repeat:no-repeat;
+  background-position:top left;
+  padding:3px 0px 2px 27px;
+  border-width:0px 0px 1px 0px;
+  border-style:solid;
+  border-color:#666666;
+  color:#666666;
+  margin-bottom:5px;
+  margin-top:0px;
+  font-size:1.3em;
+}
+
+form fieldset div.notes p {
+  margin:0em 0em 1.2em 0em;
+  color:#666666;
+}
+
+form fieldset div.notes p.last {
+  margin:0em;
+  padding-bottom:5px;
+}
+form label {
+    font-weight:bold;
+}
+h1 {
+  font-size:125%;
+}
+h2 {
+  font-size:100%;
+}
+h3 {
+  font-size:100%;
+  margin:0px;
+}
+img {
+  border:0;
+}
+input {
+  font-size:.9em;
+}
+input,
+submit,
+td {
+  color:#000000;
+}
+table {
+  border:0px;
+}
+textarea {
+  color:#000000;
+  font-family:arial,verdana,tahoma,helvetica,sans-serif;
+  font-size: .9em;
+}
+th {
+  color:#000000;
+  background-color:#DAE0ED;
+  font-weight:bold;
+  font-size:larger;
+  padding-left:3px;
+  text-align:left;
+}
+p {
+  margin-top:5px;
+}
+select {
+  color:#000000;
+  font-size:.9em;
+}
+
+/* CLASSES ********************************************************************/
+
+/* Admin lists ****************************************************************/
+.admin-menu-icon {
+  float:left;
+  padding:5px;
+}
+.admin-menu { /* the box around the menu */
+  padding:5px;
+  border:1px solid #EEEEEE;
+}
+.admin-menu-text { /* the text below the links */
+  padding:5px;
+}
+.admin-menu-item { /* a single link in the menu */
+  padding: 0px 5px 0px 5px;
+}
+.admin-list-table {
+  width:100%;
+  text-align:left;
+  border-spacing:1px;
+}
+.admin-list-table form {
+  margin:0px;
+}
+.admin-list-search {
+  text-align:center;
+  margin-top:5px;
+  margin-bottom:5px;
+}
+.admin-list-field {
+  text-align:left;
+  padding-left:5px;
+  padding-right:5px;
+}
+.admin-list-headerfield {
+  text-align:left;
+  padding-left:5px;
+  padding-right:5px;
+  font-size:larger;
+}
+/* Menus in blocks *****************************************************************/
+.blocklist ul {
+  list-style:none;
+  padding:0px;
+  margin:0px;
+}
+/* general alignment classes **************************************************/
+.alignleft {
+  text-align:left;
+}
+.alignright {
+  text-align:right;
+}
+.aligncenter {
+  text-align:center;
+}
+.aligntop {
+  vertical-align:top;
+}
+.floatright {
+  float:right;
+}
+.floatleft {
+  float:left;
+}
+.clearboth {
+  clear:both;
+}
+/* clear floats by applying the clearfix class to float-encasing block !*******/
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+.clearfix {
+  display: inline-block;
+}
+
+/* Hides from IE-mac \*/
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+/* End hide from IE-mac */
+/* general formatting classes **************************************************/
+.b {
+  font-weight:bold;
+}
+.ext-link {
+  background-color: transparent;
+  background: url(./images/external.png) center right no-repeat;
+  background-attachment: scroll;
+  padding-right: 13px;
+}
+.ext-link-rtl {
+}
+.feed-link {
+  background-color: transparent;
+  background: url(./images/feed.png) center right no-repeat;
+  background-attachment: scroll;
+  padding: 2px 16px 2px 0px;
+}
+.feed-link-rtl {
+}
+.strike {
+  text-decoration: line-through;
+}
+/* Blocks *********************************************************************/
+.block-box-left,
+.block-box-right,
+.block-box {
+  margin:5px 10px 15px 10px;
+}
+.block-box-left ul,
+.block-box-right ul {
+  /* do not indent lists in the blocks too much */
+  margin:0px;
+  padding-left:20px;
+}
+.block-bg-left,
+.block-bg-right {
+  border-top:1px solid #FFFFFF;
+}
+.block-bg-spreader {
+  /* this is making sure that the blocks have a minimum width */
+  background:transparent;
+  width:180px;
+  height:1px;
+}
+.block-content,
+.block-content-right,
+.block-content-left {
+  background:transparent;
+  color:#000000;
+  padding-bottom:2px;
+  padding-top:2px;
+  clear:both;
+}
+.block-content-left ul,
+.block-content-right ul,
+.block-content ul {
+  margin-top:0;
+  margin-bottom:0;
+  margin-left:16px;
+  padding-left:0;
+  border:none;
+}
+.block-divider {
+  background:#FFFFFF;
+  border-bottom:1px solid #F7F7F7;
+  border-top:1px solid #E7E7E7;
+  color:#000000;
+  padding-top:2px;
+}
+.block-divider-left {
+  border-top:1px solid #E7E7E7;
+  border-bottom:1px solid #FFFFFF;
+  width:90%;
+  margin:0 auto;
+  line-height:0px;
+}
+.block-divider-right {
+  border-top:1px solid #CCCCCC;
+  border-bottom:1px solid #FFFFFF;
+  width:90%;
+  margin:0 auto;
+  line-height:0px;
+}
+.block-featured-left {
+  background:#F7F7F7;
+  border-right:1px solid #FFFFFF;
+  color:#000000;
+  width:180px;
+}
+.block-featured-right {
+  background:#E7E7E7;
+  border-left:1px solid #FFFFFF;
+  color:#000000;
+}
+.block-helpicon {
+  padding-top:5px;
+  text-align:right;
+  float:right;
+}
+.block-outerborder-left {
+  border-left:1px solid #E7E7E7;
+  padding:0px;
+  margin:0px;
+}
+.block-outerborder-right {
+  border-right:1px solid #CCCCCC;
+}
+.block-title,
+.blocktitle,
+.block-title-left,
+.block-title-right {
+  background:transparent;
+  color:#1A3955;
+  font-weight:bold;
+  padding-top:5px;
+  padding-bottom:5px;
+  text-align:left;
+}
+
+.configmenu div {
+  padding: 2px 0px 0px 5px;
+}
+
+
+/* Comments *******************************************************************/
+.commentbar-line1 {
+  background:transparent;
+  color:#000000;
+  padding:3px 3px;
+  text-align:center;
+}
+.commentbar-line2 {
+  background:#E7E7E7;
+  text-align:center;
+  padding-left:3px;
+  padding-right:3px;
+}
+.commentbar-line3 {
+  background:#FFFFFF;
+  border-bottom:1px solid #FFFFFF;
+  border-top:1px solid #E7E7E7;
+  color:#000000;
+  padding:3px 3px;
+  text-align:center;
+}
+.commenttitle {
+  background:#F7F7F7;
+  border-bottom:1px solid #E7E7E7;
+  border-left:1px solid #E7E7E7;
+  border-right:1px solid #E7E7E7;
+  border-top:1px solid #E7E7E7;
+  font-weight:bold;
+  font-size:smaller;
+  padding:3px 0px 3px 10px;
+}
+.comment-edit {
+  font-style: italic;
+  padding-top:1ex;
+}
+.comment-sig {
+  color:#666666;
+  padding-top:1ex;
+}
+/******************************************************************************/
+.edit-perm-down {
+  text-align:center;
+}
+.edit-perm-up {
+  text-align:center;
+  padding-right:10px;
+  padding-left:10px;
+}
+.fieldhelp {
+  font-size:0.8em;
+  color:#666666;
+}
+/* Footer *********************************************************************/
+.footerblock {
+  background:#1A3955;
+  border-top:1px solid #CCCCCC;
+  color:#FFFFFF;
+  font-size:0.85em;
+  padding-bottom:10px;
+  padding-top:10px;
+  padding-left:4px;
+  padding-right:4px;
+  vertical-align:middle;
+}
+.footerblock a:link {
+  background:transparent;
+  color:#FFFFFF;
+  text-decoration:none;
+}
+.footerblock a:visited {
+  background:transparent;
+  color:#FFFFFF;
+  text-decoration:none;
+}
+.footerblock a:hover {
+  background:transparent;
+  color:#008000;
+  text-decoration:none;
+}
+.footerblock a:active {
+  background:transparent;
+  color:#FFFFFF;
+  text-decoration:none;
+}
+.footer-divider-top {
+  background:#FFFFFF;
+  border-top:1px solid #CCCCCC;
+  padding-top:1px;
+  color:#000000;
+}
+/* Forms **********************************************************************/
+.form-description {
+  font-weight:bold;
+  float:left;
+  width:100px;
+  text-align:right;
+  padding-right:5px;
+  display:block;
+}
+.form-field {
+  padding-bottom:5px;
+  margin-left:105px;
+}
+.checkboxes-list {  /* this is used for example by COM_checkList */
+  list-style:none;
+  padding:0px;
+  margin:0px;
+}
+.checkboxes-list span { /* space between the text and the checkbox */
+  padding-left:5px;
+}
+.checkboxes-list .gldefault { /* default blocks in the user settings block list */
+  font-weight:bold;
+}
+.missing-field {
+  /* reserved for future use */
+}
+.required-field {
+  /* reserved for future use */
+}
+/* Header *********************************************************************/
+.header-logo {
+  float:left;
+  padding-left:15px;
+  padding-top:13px;
+}
+.header-slogan {
+  float:right;
+  line-height:78px;
+  padding-right:15px;
+  color: #ffffff;
+}
+.header-logobg-container-inner {
+  background:url(images/header-bg.png) #1A3955;
+  border-bottom:1px solid #CCCCCC;
+  height:78px;
+  margin-bottom:1px;
+}
+.header-navigation-container {
+  border-bottom:1px solid #FFFFFF;
+  background:#D3E4F3;
+}
+.header-logobg-left {
+  padding-top:0px;
+  text-align:left;
+  vertical-align: top;
+  vertical-align:middle;
+  margin:0px;
+  padding-left:15px;
+  height:74px;
+  border-collapse: collapse;
+}
+.header-navigation-container ul {
+  list-style: none;
+  padding:0px;
+  margin:0px;
+  border-bottom:1px solid #CCCCCC;
+  color:#FFFFFF;
+  float:right;
+  height:24px;
+}
+.header-navigation-container li {
+  float:left;
+  padding-right:9px;
+  padding-left:9px;
+  margin-top:4px;
+  background:transparent;
+  font-size:.9em;
+  border-left: 1px dotted #FFFFFF;
+}
+
+.header-navigation-container li.last {
+  border:none;
+}
+
+.header-navigation-container a:link {
+  color:#0000FF;
+}
+.header-navigation-container a:visited {
+  color:#800080;
+}
+.header-navigation-container a:hover {
+  color:#008000;
+}
+.header-navigation-container a:active {
+  color:#FF0000;
+}
+.header-welcomeanddate-text {
+  padding-top:12px;
+  padding-left:4px;
+  margin: 0px;
+  height:40px;
+  border-bottom:1px solid #CCCCCC;
+}
+/******************************************************************************/
+.highlight {
+  color:#000000;
+  background-color:yellow;
+  text-decoration:none;
+}
+.inputTable td {
+  padding:4px;
+  vertical-align:top;
+}
+.inputTable label {
+  font-weight:bold;
+  float:right;
+  white-space:nowrap;
+}
+.moderation-cc {
+  width:100%;
+}
+.moderation-cc-row {
+  clear:both;
+  height:80px;
+  width:100%;
+}
+.moderation-cc-item {
+  float:left;
+  text-align:center;
+}
+.nowrap {
+  white-space:nowrap;
+}
+.pagenav {
+  text-align:center;
+}
+.row_center td {
+  text-align:center;
+}
+.searchauth {
+  background:transparent;
+  color:#000000;
+  text-align:left;
+}
+.searchdate {
+  background:transparent;
+  color:#000000;
+  text-align:right;
+}
+.searchform-box {
+  background:#E7E7E7;
+  text-align:right;
+  border-bottom:1px solid #CCCCCC;
+  height:52px;
+  padding:0px 4px 0px 1px;
+  margin:0px;
+}
+.searchform-elements {
+  display:inline;
+  position:relative;
+  top:6px;
+}
+.searchform-elements input {
+  font-size:0.9em;
+}
+.searchhits {
+  background:transparent;
+  color:#000000;
+  text-align:right;
+}
+.site-slogan {
+  color:#ffffff;
+  background:transparent;
+}
+.sysmessage img {
+  border:none;
+  float:left;
+  padding-bottom:3px;
+  padding-right:5px;
+}
+/* Stats **********************************************************************/
+.stats-list-count {
+  text-align:right;
+  padding-left:5px;
+  padding-right:5px;
+}
+.stats-header-title {
+  text-align:left;
+  width:90%;
+  padding-left:5px;
+  padding-right:5px;
+}
+.stats-header-count {
+  text-align:left;
+  width:10%;
+  padding-left:5px;
+  padding-right:5px;
+}
+/* Story **********************************************************************/
+.story {
+  /* the frame around all elements of one story */
+  background:transparent;
+  color:#000000;
+}
+.story h1 {
+  /* the title of a story */
+  background:transparent;
+  color:#000000;
+  font-weight:bold;
+  padding-left:1px;
+}
+.story-body {
+  /* this is the actual content of the story */
+  padding:3px;
+}
+.story-featured {
+  /* the frame around all elements of a featured story */
+  background:transparent;
+  color:#000000;
+}
+.story-featured h1 {
+  /* the title of a featured story */
+  background:transparent;
+  color:#000000;
+  font-weight:bold;
+  font-size:1.4em;
+  padding-left:1px;
+}
+.story-icons {
+  /* print & mail icons in a storybox */
+  float:right;
+  padding-top:10px;
+}
+.story-icons a {
+  margin-left:5px;
+}
+.story-container {
+  /* frame around all stories & centerblocks*/
+  padding-right:9px;
+  width:100%;
+  vertical-align:top;
+}
+.story-footer {
+  /* the bottom of the story with edit-links etc */
+  padding:3px;
+  text-align:center;
+  clear:both;
+}
+.story-footer p {
+  padding:0px;
+  margin:0px;
+}
+.story-information {
+  /* the author, views and date of a story */
+  padding:3px;
+  font-size:0.85em;
+  background:transparent;
+  color:#000000;
+}
+.story-information p {
+  padding:0px;
+  margin:0px;
+}
+/******************************************************************************/
+.topicoption,
+.topicoption-off {
+}
+.warning {
+  background:transparent;
+  color:#FF0000;
+  font-weight:bold;
+}
+.warningsmall {
+  background:transparent;
+  color:#FF0000;
+}
+
+/* Default Plugin CSS Declarations */
+/* Recommended CSS to be used by Plugin Authors - allows easier site themeing */
+
+.plugin {
+  color:#000000;
+  background-color:#EFEFEF;
+  font-weight:normal;
+  border:1px solid #CCCCCC;
+}
+.plugin th {
+  color:#000000;
+  background-color:#B7C1DC;
+  padding:5px;
+  text-align:left;
+}
+.plugin tr {
+  vertical-align:top;
+}
+.plugin td {
+  padding:2px 5px 2px 5px;
+}
+.pluginBG {
+  color:#FEFEFE;
+  background-color:#7398BA;
+}
+.pluginAltBG {
+  background-color:#7398BA;
+}
+.pluginAltBG td {
+  color:#FFFFFF
+}
+.pluginCellTitle {
+  color:#666666;
+  font-weight:bold;
+  background-color:#E6E6E6;
+  padding:5px;
+}
+.pluginCellFill {
+  background-color:#F8FAFD;
+}
+.pluginCellText {
+  color:#636363;
+  font-weight:normal;
+}
+.pluginHeader {
+  color:#204275;
+  font-weight:bolder;
+  padding-top:3px;
+  padding-bottom:3px;
+}
+.pluginFooter, .pluginFooter td {
+  background-color:#507AA1;
+  color:#FFFFFF;
+  }
+.pluginAlert {
+  padding:5px 15px 5px 15px;
+  color:#D8010E;
+  background-color:#FEF1B4;
+  font-weight:bold;
+}
+.pluginInfo {
+  padding:5px 15px 5px 15px;
+  color:#707070;
+  background-color:#FEF1B4;
+  font-weight:normal;
+}
+.pluginAjaxStatus {
+    background-color:#F6FEE7;
+    color:#E6002E;
+    padding:5px;
+}
+
+.pluginSubTable {
+  color:#000000;
+  background-color:#CCCCCC;
+  font-weight:normal;
+  border:1px solid #CCCCCC;
+}
+.pluginSubTable th {
+  color:#000000;
+  background-color:#C9D1E4;
+  padding:5px;
+  text-align:left;
+}
+.pluginSubTable tr {
+  vertical-align:top;
+}
+.pluginSolidOutline {
+  background-color:#CCCCCC;
+}
+.pluginSolidFill {
+  background-color:#1A3955;
+}
+.pluginTitle {
+  background-color:#507AA1;
+  color:#F5F9FF;
+  padding:4px;
+  padding-left:6px;
+  padding-right:6px;
+}
+.pluginCellSubTitle {
+  background-color:#F7F7F7;
+  color:#000000;
+  padding:4px;
+  padding-left:6px;
+  padding-right:6px;
+}
+.pluginReportTitle {
+  font-size:1.2em;
+  background-color:#F2F2F2;
+  color:#0066A7;
+  text-align:center;
+  padding:5px;
+}
+.pluginTinyText {
+  font-size:0.70em;
+}
+.pluginSmallText {
+  font-size:0.8em;
+}
+.pluginMediumText {
+  font-size:1em;
+}
+.pluginLargeText {
+  font-size:1.25em;
+}
+.pluginAltText {
+  color:#FFFFFF;
+}
+.pluginRow1, .pluginRow1 td {
+  color:#000000;
+  background-color:#F7F7F7;
+  line-height:120%;
+}
+.pluginRow2, .pluginRow2 td {
+  color:#000000;
+  background-color:#E7E7E7;
+  line-height: 120%;
+}
+.pluginRow1 .pluginRollOver,
+.pluginRow2 .pluginRollOver,
+.pluginRollOver {
+  color:#000000;
+  background-color:#FFFFFF;
+  line-height:120%;
+}
+.pluginRow1 .pluginRollOut,
+.pluginRow2 .pluginRollOut,
+.pluginRollOut {
+  color:#000000;
+  background-color:#F7F7F7;
+  line-height:120%;
+}
+.pluginLinks A:link {
+  color:#000000;
+  font-style:normal;
+  font-weight:normal;
+  text-decoration:none;
+}
+.pluginLinks A:visited {
+  color:#000000;
+  font-style:normal;
+  font-weight:normal;
+  text-decoration:none;
+}
+.pluginLinks A:hover {
+  color:#000000;
+  font-style:normal;
+  font-weight:normal;
+  text-decoration:underline;
+}
+.pluginBreadCrumbs,
+.pluginBreadCrumbs A:link {
+  color:#FFFFFF;
+  font-style:normal;
+  font-weight:normal;
+  text-decoration:none;
+}
+.pluginBreadCrumbs A:visited {
+  color:#FFFFFF;
+  font-style:normal;
+  font-weight:normal;
+  text-decoration:none;
+}
+.pluginBreadCrumbs A:hover {
+  color:#FFFFFF;
+  font-style:normal;
+  font-weight:normal;
+  text-decoration:none;
+}
+a.pluginButton:link, a.pluginButton:visited {
+  color:#000000;
+  text-align:center;
+  padding-top:2px;
+  display:block;
+  height:19px;
+  text-decoration:none;
+  background-color:transparent;
+}
+a.pluginButton:hover {
+  color:blue;
+  text-align:center;
+  padding-top:2px;
+  background:center url(navbar/images/button_over.gif);
+  background-repeat:repeat-x;
+  display:block;
+  height:19px;
+  text-decoration:none;
+  background-color:transparent;
+}
+
+/* Navbar Class CSS ***********************************************************/
+#navcontainer {
+  float:left;
+  width:100%;
+  background:#F4F4F4;
+  font-size:93%;
+  line-height:normal;
+  border-bottom:1px solid #24618E;
+  }
+#navcontainer ul {
+  margin:0px;
+  padding:10px 10px 0 50px;
+  list-style:none;
+}
+#navcontainer li {
+  display:inline;
+  margin:0px;
+  padding:0px;
+}
+#navcontainer a {
+  float:left;
+  background:url("navbar/images/tableftJ.gif") no-repeat left top;
+  margin:0px;
+  padding:0px 0px 0px 5px;
+  text-decoration:none;
+}
+#navcontainer a span {
+  float:left;
+  display:block;
+  background:url("navbar/images/tabrightJ.gif") no-repeat right top;
+  padding:5px 15px 4px 6px;
+  color:#24618E;
+}
+/* Commented Backslash Hack hides rule from IE5-Mac \*/
+#navcontainer a span {
+  float:none;
+}
+/* End IE5-Mac hack */
+#navcontainer a:hover span {
+  color:#FFFFFF;
+}
+#navcontainer a:hover {
+  background-position:0% -42px;
+}
+#navcontainer a:hover span {
+  background-position:100% -42px;
+}
+#navcontainer a#current span {
+  background:url("navbar/images/tabrightI.gif") no-repeat left top;
+  background-position:100% -42px;
+  color:#FFFFFF;
+}
+#navcontainer a:link#current,
+#navcontainer a:visited#current,
+#navcontainer a:hover#current {
+  background:url("navbar/images/tableftI.gif") no-repeat left top;
+  background-position:0% -42px;
+}
+
+A.navsubmenu,
+A.navsubmenu:visited,
+A.navsubmenu:link {
+  padding:2px 5px 2px 5px;
+  text-decoration: none;
+  color:black;
+}
+
+A.navsubmenu:hover,
+A.navsubmenu:focus  {
+  background-color: #55516B;
+  color: white;
+  text-decoration:none;
+}
+
+a.navsubcurrent,
+a.navsubcurrent:visited,
+a.navsubcurrent:link  {
+  padding: 2px 5px 2px 5px;
+  background-color: #667AB3;
+  text-decoration: none;
+  color: white;
+}
+a.navsubcurrent:hover  {
+  background-color: #55516B;
+  color: white;
+}
+
+
+
+/* End of Common Plugin CSS */
+
+/* Poll Plugin ****************************************************************/
+.poll-vote,
+.poll-vote-results {
+  background:transparent;
+  color:#000000;
+  font-size:smaller;
+}
+
+
+/* Common CSS for on-hover tooltip feature */
+a.tooltip {
+  position: relative; /*this is the key*/
+  z-index:10;
+  color:#000;
+  text-decoration:none;
+}
+a.tooltip:hover  {
+  z-index:100;
+  text-decoration:none
+}
+a.tooltip span {
+  display: none;
+}
+a.tooltip:hover span {
+  /*the span will display just on :hover state*/
+  z-index:100;
+  color:#033666;
+  font-style:normal;
+  font-size:.8em;
+  line-height: 125%;
+  display:block;
+  position:absolute;
+  border:1px solid #C8DAF7;
+  background-color:#E5EFFF;
+  padding:4px;
+  text-align: left;
+  text-decoration:none;
+  left:-20px;
+  top:10px;
+  min-width:150px;
+}
+/* End of common CSS for on-hover info feature */
+
+/* End of Common Plugin CSS */
+
+
+/* site customized CSS */
+ul.homepagelists {
+  padding: 0px;
+  margin-left: 15px;
+}
+
+ul.homepagelists li{
+  list-style-type: disc;
+  list-style-position:outside;
+}
+
+/* End of site customized CSS */
+
+
+
+
+/* Start of nexPro CSS Definitions */
+/* Older tooltip or on-hover css styles */
+a.info{
+  position:relative; /*this is the key*/
+  z-index:24;
+  color:#000;
+  text-decoration:none
+}
+
+a.info:hover  {
+  z-index:25;
+  padding-top:5px;
+  padding-bottom:5px;
+  text-decoration:none
+}
+
+a.info span{display: none}
+
+a.info:hover span { /*the span will display just on :hover state*/
+  font-family:Verdana, Tahoma, Arial;
+  font-style:normal;
+  font-size: 7pt;
+  display:block;
+  position:absolute;
+  top:3em; left:-15em; width:22em;
+  border:1px solid #5D96B9;
+  background-color:#FFFFA0; color:#555;
+  padding:2px;
+  text-align: left;
+  text-decoration:none
+}
+/* End of older tooltip CSS styles */
+
+ul.homepagelists {
+  padding: 0px;
+  margin-left: 15px;
+}
+
+ul.homepagelists li{
+  list-style-type: disc;
+  list-style-position:outside;
+}
+/* End of nexPro CSS Definitions */
+
+/* nexContent Plugin */
+.content {
+  font-family: verdana, tahoma, helvetica, arial, sans-serif;
+  font-size: 12px;
+  line-height: 16pt;
+  vertical-align:top;
+}
+.contentTitle {
+  font-family: verdana, tahoma, helvetica, arial, sans-serif;
+  font-weight:bold;
+  font-size: 14px;
+  line-height: 20pt;
+}
+
+/* nexContent CSS */
+.nexcontentPageHeading { font-size:140%; font-weight:bold; padding-top:10px; padding-bottom:5px; padding-left:10px;}
+
+#nexcontent_navcontainer {
+  float:left;
+  width:100%;
+  background:#F4F4F4;
+  font-size:93%;
+  line-height:normal;
+  border-bottom:1px solid #24618E;
+  margin-top:5px;
+  }
+#nexcontent_navcontainer ul {
+  margin:0px;
+  padding:10px 10px 0 50px;
+  list-style:none;
+}
+#nexcontent_navcontainer li {
+  display:inline;
+  margin:0px;
+  padding:0px;
+}
+#nexcontent_navcontainer a {
+  float:left;
+  margin:0px;
+  padding:0px 0px 0px 5px;
+  text-decoration:none;
+}
+#nexcontent_navcontainer a span {
+  float:left;
+  display:block;
+  padding:0px 15px 4px 6px;
+  color:#24618E;
+}
+
+#nexcontent_navcontainer a span {
+  float:none;
+}
+/* End IE5-Mac hack */
+#nexcontent_navcontainer a:hover span {
+  color:#FFFFFF;
+  background-color:#D84C16;
+}
+
+#nexcontent_navcontainer a#current span {
+  color:#FFFFFF;
+  padding:0px 15px 4px 6px;
+  background-color:#003871;
+}
+
+/* End of nexContent CSS */
+
+/* nexflow Plugin CSS */
+.flowsTable {
+  font-family:Verdana, Tahoma, Arial;
+  font-style:normal;
+  font-size: 8pt;
+  border-collapse:collapse;
+  border: solid black 1px;
+}
+
+.flowsRows{
+  font-family:Verdana, Tahoma, Arial;
+  font-style:normal;
+  font-size: 8pt;
+  border-top: solid black 1px;
+  border-bottom: solid black 1px;
+}
+
+.nexflowTBD {
+  font-family:Verdana;
+  background-color: #ffffff;
+  border: solid black 1px;
+}
+
+.nexflowTBD1 {
+  font-family:Verdana;
+  background-color: #FFFFA0;
+  border: solid black 1px;
+}
+
+.nexflowTBD2 {
+  font-family:Verdana;
+  background-color: #B3E0FF;
+  border: solid black 1px;
+}
+
+.nexflowTBD3 {
+  font-family:Verdana;
+  background-color: #BEFFA8;
+  border: solid black 1px;
+}
+
+.nexflowTBD4 {
+  font-family:Verdana;
+  background-color: #FFA385;
+  border: solid black 1px;
+}
+
+.nexflowButton{
+  border: solid black 1px;
+}
+
+.nexflowEditTask td {
+  border:2px solid red
+};
+.taskconsolesummary td {
+  padding:5px !important;
+}
+.taskconsoleInlineActionRec {
+  background-color: #FEF1B4;
+  border:1px solid #CCCCCC;
+  margin:5px;padding:10px;
+}
+.taskconsoleActionRec {
+  background-color: #E4E4E4;
+  border:1px solid #CCCCCC;
+  margin:5px;padding:10px;
+}
+.taskconsoleActionRec  td {
+  background-color: #FEF1B4;
+  padding:10px;
+}
+.taskconsole_outstanding a:link {
+  color:black;
+  text-decoration:underline
+}
+.taskconsole_outstanding a:visited {
+  color:black;
+  text-decoration:underline
+}
+.taskconsole_outstanding a:active {
+  color:black;
+  text-decoration:underline
+}
+.taskconsole_outstanding a:hover {
+  color:#4358e1;
+  text-decoration:underline
+}
+.taskconsole_otasks div {
+  display:inline;
+  position:absolute;
+  right:40px;
+}
+
+.taskconsoleSubTable {
+  border-collapse:collapse;
+}
+.taskconsoleSubTable td {
+  background-color:#E7FFCC;
+  color:#333;
+  border:1px dashed #CCC;
+  padding:10px;
+}
+
+.taskdetail fieldset legend {
+  padding: 0.2em 0.5em;
+  border:1px solid #A0A0A0;
+  color: #000000;
+  text-align:right;
+  margin-top:5px;
+}
+
+div.tabs {
+  background: transparent;
+  border-collapse: collapse;
+  border-bottom-color: #8CACBB;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  padding: 0.5em 0em 0em .5em;
+  white-space: nowrap;
+}
+
+div.tabs a {
+  background: transparent;
+  border-color: #8CACBB;
+  border-width: 1px;
+  border-style: solid solid none solid;
+  color: #436976;
+  font-weight: normal;
+  margin-right: 0.5em;
+  padding: 0.5em .5em 0em .5em;
+  text-decoration : none;}
+
+div.tabs a.selected {
+  background: #F3FFE5;
+  border: 1px solid #8CACBB;
+  border-bottom: #F3FFE5 1px solid;
+  color: #436976;
+  font-weight: normal;
+}
+
+div.tabs a:hover {
+    background: #DEEFEC;
+    border-color: #8CACBB;
+    border-bottom-color: #DEE7EC;
+    color: #436976;
+}
+
+.comment {
+    padding: 2px;
+}
+div.boxed {
+    border: dashed 1px #CCC;
+    overflow: auto;
+}
+.boxed p {
+    padding: 5px;
+    margin: 0px;
+}
+.elementUpdated {
+    background-color: rgb(255, 255, 225);
+}
+
+.nf_start {
+  background: url(nexflow/images/admin/header-green-bg.png);
+  background-repeat: repeat-x;
+  height: 22px;
+}
+
+.nf_end {
+  background: url(nexflow/images/admin/header-red-bg.png);
+  background-repeat: repeat-x;
+  height: 22px;
+}
+
+.nf_if {
+  background: url(nexflow/images/admin/header-yellow-bg.png);
+  background-repeat: repeat-x;
+  height: 22px;
+}
+
+.nf_interactive {
+  background: url(nexflow/images/admin/header-blue-bg.png);
+  background-repeat: repeat-x;
+  height: 22px;
+}
+
+.nf_noninteractive {
+  background: url(nexflow/images/admin/header-gray-bg.png);
+  background-repeat: repeat-x;
+  height: 22px;
+}
+
+.nf_task {
+  border: 1px solid #0F367B;
+  border-collapse: collapse;
+  margin: 0px;
+  padding: 0px;
+  width: 220px;
+  position: relative;
+  z-index: 1;
+}
+
+.nf_task_div {
+  width: 220px;
+}
+
+.nf_task_header {
+  text-align: left;
+  color: #FFFFFF;
+  font-weight: bold;
+  padding: 0px 3px 0px 3px;
+  height: 22px;
+  white-space: nowrap;
+}
+
+.nf_task_header:hover {
+  cursor: move;
+}
+
+.nf_task_body {
+  background: #FFFFFF;
+  height: 30px;
+  padding: 3px;
+  vertical-align: top;
+}
+
+.nf_workflow_container {
+  position: relative;
+  background: #FFFFFF;
+  border: 3px solid #0F367B;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+.nf_contextmenu {
+  background: transparent;
+  background-image: url(nexflow/images/admin/dropshadow.png);
+  background-position: bottom right;
+  padding: 0px 5px 5px 0px;
+  margin: 0px;
+  border: 0px;
+  /*opacity: .85;
+  *filter: alpha(opacity=85);*/
+}
+
+.nf_contextmenu div {
+  background: #FFFFFF;
+  margin: 0px;
+  padding: 2px;
+  border: 1px solid #A7A6AA;
+}
+
+.nf_contextmenu div h6 {
+  margin: 0px;
+  padding: 2px 3px 2px 15px;
+  background: #FFFFFF;
+  color: #A7A6AA;
+  border-bottom: 1px solid #A7A6AA;
+  font: 9pt calibri;
+}
+
+.nf_contextmenu div ul {
+  margin: 0px;
+  padding: 3px 0px 0px 0px;
+  list-style-position: outside;
+  font: 9pt calibri;
+  list-style: none;
+}
+
+.nf_contextmenu div li a:link,
+.nf_contextmenu div li a:visited,
+.nf_contextmenu div li a:active {
+  margin: 0px;
+  background: #FFFFFF;
+  color: #000000;
+  text-decoration: none;
+  font: 9pt calibri;
+}
+
+.nf_contextmenu div li a:hover {
+  margin: 0px;
+  background: #335EA8;
+  color: #FFFFFF;
+  text-decoration: none;
+  font: 9pt calibri;
+}
+
+.nf_panel {
+  border-collapse: collapse;
+  border: 1px solid #0F367B;
+  padding: 0px;
+  margin: 0px;
+}
+
+.nf_panel_header {
+  line-height: 22px;
+  background: url(nexflow/images/admin/header-blue-bg.png);
+  background-repeat: repeat-x;
+  color: #FFFFFF;
+  font-weight: bold;
+  padding-left: 5px;
+}
+
+.nf_panel_nav {
+  margin: 0px;
+  padding: 0px;
+  border-bottom: 1px solid #A7A6AA;
+  border-top: 1px solid #254394;
+}
+.nf_panel_nav div {
+  margin: 0px;
+  padding: 0px;
+  background: #F2F2F4;
+}
+.nf_panel_nav div div {
+  margin: 0px;
+  padding: 0px !important;
+}
+.nf_panel_nav div div ul {
+  margin: 0px;
+  padding: 0px;
+}
+.nf_panel_nav div div ul li {
+  margin: 0px;
+  padding: 0px;
+}
+.nf_panel_nav div div ul li a {
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  padding: 4px 8px 4px 8px !important;
+}
+.nf_panel_nav div div ul li a:link,
+.nf_panel_nav div div ul li a:visited {
+  background: #F2F2F4;
+  color: #000000;
+  text-decoration: none;
+}
+.nf_panel_nav div div ul li a:hover,
+.nf_panel_nav div div ul li a:active {
+  background: #335EA8;
+  color: #FFFFFF;
+  text-decoration: none;
+}
+.nf_panel_nav div div ul li a em {
+  background-image: none !important;
+  height: 0px !important;
+  width: 0px !important;
+  text-indent: 0px !important;
+}
+.nf_panel_nav div div ul li div {
+  border: 0px;
+  background: transparent;
+  position: relative;
+  top: -2px;
+  left: -2px;
+}
+.nf_panel_nav div div ul li div div {
+  background: transparent;
+  background-image: url(nexflow/images/admin/dropshadow.png);
+  background-position: bottom right;
+  padding: 0px 5px 5px 0px !important;
+  margin: 0px;
+  border: 0px;
+  width: 120px;
+}
+.nf_panel_nav div div ul li div div ul {
+  margin: 0px;
+  padding: -1px 0px 0px 0px;
+  list-style-position: outside;
+  list-style: none;
+  border: 1px solid #A7A6AA !important;
+}
+.nf_panel_nav div div ul li div div ul li a:link,
+.nf_panel_nav div div ul li div div ul li a:visited {
+  margin: 0px;
+  padding: 0px 10px 0px 20px;
+  background: #FFFFFF;
+  color: #000000;
+  text-decoration: none;
+  font: 9pt calibri;
+  line-height: 20px;
+}
+.nf_panel_nav div div ul li div div ul li a:hover,
+.nf_panel_nav div div ul li div div ul li a:active {
+  margin: 0px;
+  padding: 0px 10px 0px 20px;
+  background: #335EA8;
+  color: #FFFFFF;
+  text-decoration: none;
+  font: 9pt calibri;
+  line-height: 20px;
+}
+.nf_panel_nav div div ul li div div ul li a.checked:link,
+.nf_panel_nav div div ul li div div ul li a.checked:visited {
+  background: #FFFFFF url(nexflow/images/admin/checked_off.png) no-repeat top left;
+  line-height: 20px;
+  height: 20px;
+}
+.nf_panel_nav div div ul li div div ul li a.checked:hover,
+.nf_panel_nav div div ul li div div ul li a.checked:active {
+  background: #335EA8 url(nexflow/images/admin/checked_on.png) no-repeat top left;
+  line-height: 20px;
+  height: 20px;
+}
+
+.nf_panel_body {
+  padding: 8px;
+  background: #FFFFFF;
+  color: #000000;
+}
+
+.nf_panel span.container-close {
+  background: url(nexflow/images/admin/close_sm.png) no-repeat;
+  height: 14px;
+  width: 14px;
+}
+
+.nf_task_edit_left {
+  font: 1em calibri bold;
+  padding-right: 15px;
+}
+.nf_task_edit_right {
+  width: 100%;
+}
+.nf_task_edit_other {
+  font: 1em calibri bold;
+}
+.nf_edit_fieldset {
+  padding-top: 10px;
+  border: 1px solid #0F367B;
+}
+.nf_edit_legend {
+  font: 1.2em calibri bold;
+  border: 1px solid #0F367B;
+  padding: 1px 5px 1px 5px;
+}
+.nf_progress_bar {
+  z-index: 1000;
+  background: #FFFFFF;
+  width: 30px;
+  height: 16px;
+  padding: 3px;
+  position: absolute;
+  position: fixed;
+  top: 0px;
+  right: 0px;
+}
+
+
+/* admin css */
+
+.flowsTable {
+    font-family:Verdana, Tahoma, Arial;
+    font-style:normal;
+    font-size: 8pt;
+    border-collapse:collapse;
+    border: solid black 1px;
+}
+
+.flowsRows{
+    font-family:Verdana, Tahoma, Arial;
+    font-style:normal;
+    font-size: 8pt;
+    border-top: solid black 1px;
+    border-bottom: solid black 1px;
+}
+
+.nexflowTBD {
+    font-family:Verdana;
+    background-color: #ffffff;
+    border: solid black 1px;
+}
+
+.nexflowTBD1 {
+    font-family:Verdana;
+    background-color: #FFFFA0;
+    border: solid black 1px;
+}
+
+.nexflowTBD2 {
+    font-family:Verdana;
+    background-color: #B3E0FF;
+    border: solid black 1px;
+}
+
+.nexflowTBD3 {
+    font-family:Verdana;
+    background-color: #BEFFA8;
+    border: solid black 1px;
+}
+
+.nexflowTBD4 {
+    font-family:Verdana;
+    background-color: #FFA385;
+    border: solid black 1px;
+}
+
+.nexflowButton{
+    border: solid black 1px;
+}
+
+.nexflowEditTask td {
+  border:2px solid red
+};
+.taskconsolesummary td {
+  padding:4px;
+}
+.taskconsoleActionRec {
+  background-color: #E4E4E4;
+  border:1px solid #CCCCCC;
+  margin:5px;padding:10px;
+}
+.taskconsoleActionRec  td {
+  background-color: #FEF1B4;
+  padding:10px;
+}
+.taskconsole_outstanding a:link {
+  color:black;
+  text-decoration:underline
+}
+.taskconsole_outstanding a:visited {
+  color:black;
+  text-decoration:underline
+}
+.taskconsole_outstanding a:active {
+  color:black;
+  text-decoration:underline
+}
+.taskconsole_outstanding a:hover {
+  color:#4358e1;
+  text-decoration:underline
+}
+.taskconsole_otasks div {
+  display:inline;
+  position:absolute;
+  right:40px;
+}
+
+.taskconsoleSubTable {
+    border-collapse:collapse;
+}
+.taskconsoleSubTable td {
+    background-color:#E7FFCC;
+    color:#333;
+    border:1px dashed #CCC;
+    padding:10px;
+}
+
+.taskdetail fieldset legend {
+    padding: 0.2em 0.5em;
+    border:1px solid #A0A0A0;
+    color: #000000;
+    text-align:right;
+    margin-top:5px;
+}
+
+div.tabs {
+  background: transparent;
+  border-collapse: collapse;
+  border-bottom-color: #8CACBB;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  padding: 0.5em 0em 0em .5em;
+  white-space: nowrap;
+}
+
+div.tabs a {
+  background: transparent;
+  border-color: #8CACBB;
+  border-width: 1px;
+  border-style: solid solid none solid;
+  color: #436976;
+  font-weight: normal;
+  margin-right: 0.5em;
+  padding: 0.5em .5em 0em .5em;
+  text-decoration : none;
+}
+
+div.tabs a.selected {
+  background: #F3FFE5;
+  border: 1px solid #8CACBB;
+  border-bottom: #F3FFE5 1px solid;
+  color: #436976;
+  font-weight: normal;
+}
+
+div.tabs a:hover {
+    background: #DEEFEC;
+    border-color: #8CACBB;
+    border-bottom-color: #DEE7EC;
+    color: #436976;
+}
+
+.comment {
+    padding: 2px;
+}
+div.boxed {
+    border: dashed 1px #CCC;
+    overflow: auto;
+}
+.boxed p {
+    padding: 5px;
+    margin: 0px;
+}
+.elementUpdated {
+    background-color: rgb(255, 255, 225);
+}
+
+.nf_start {
+  background: url(nexflow/images/admin/header-green-bg.png);
+  background-repeat: repeat-x;
+  height: 22px;
+}
+
+.nf_end {
+  background: url(nexflow/images/admin/header-red-bg.png);
+  background-repeat: repeat-x;
+  height: 22px;
+}
+
+.nf_if {
+  background: url(nexflow/images/admin/header-yellow-bg.png);
+  background-repeat: repeat-x;
+  height: 22px;
+}
+
+.nf_interactive {
+  background: url(nexflow/images/admin/header-blue-bg.png);
+  background-repeat: repeat-x;
+  height: 22px;
+}
+
+.nf_noninteractive {
+  background: url(nexflow/images/admin/header-gray-bg.png);
+  background-repeat: repeat-x;
+  height: 22px;
+}
+
+.nf_task {
+  border: 1px solid #0F367B;
+  border-collapse: collapse;
+  margin: 0px;
+  padding: 0px;
+  width: 220px;
+  position: relative;
+  z-index: 1;
+}
+
+.nf_task_div {
+  width: 220px;
+}
+
+.nf_task_header {
+  text-align: left;
+  color: #FFFFFF;
+  font-weight: bold;
+  padding: 0px 3px 0px 3px;
+  height: 22px;
+  white-space: nowrap;
+}
+
+.nf_task_header:hover {
+  cursor: move;
+}
+
+.nf_task_body {
+  background: #FFFFFF;
+  height: 30px;
+  padding: 3px;
+  vertical-align: top;
+}
+
+.nf_workflow_container {
+  position: relative;
+  background: #FFFFFF;
+  border: 3px solid #0F367B;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+.nf_contextmenu {
+  background: transparent;
+  background-image: url(nexflow/images/admin/dropshadow.png);
+  background-position: bottom right;
+  padding: 0px 5px 5px 0px;
+  margin: 0px;
+  border: 0px;
+  /*opacity: .85;
+  *filter: alpha(opacity=85);*/
+}
+
+.nf_contextmenu div {
+  background: #FFFFFF;
+  margin: 0px;
+  padding: 2px;
+  border: 1px solid #A7A6AA;
+}
+
+.nf_contextmenu div h6 {
+  margin: 0px;
+  padding: 2px 3px 2px 15px;
+  background: #FFFFFF;
+  color: #A7A6AA;
+  border-bottom: 1px solid #A7A6AA;
+  font: 9pt calibri;
+}
+
+.nf_contextmenu div ul {
+  margin: 0px;
+  padding: 3px 0px 0px 0px;
+  list-style-position: outside;
+  font: 9pt calibri;
+  list-style: none;
+}
+
+.nf_contextmenu div li a:link,
+.nf_contextmenu div li a:visited,
+.nf_contextmenu div li a:active {
+  margin: 0px;
+  background: #FFFFFF;
+  color: #000000;
+  text-decoration: none;
+  font: 9pt calibri;
+}
+
+.nf_contextmenu div li a:hover {
+  margin: 0px;
+  background: #335EA8;
+  color: #FFFFFF;
+  text-decoration: none;
+  font: 9pt calibri;
+}
+
+.nf_panel {
+  border-collapse: collapse;
+  border: 1px solid #0F367B;
+  padding: 0px;
+  margin: 0px;
+}
+
+.nf_panel_header {
+  line-height: 22px;
+  background: url(nexflow/images/admin/header-blue-bg.png);
+  background-repeat: repeat-x;
+  color: #FFFFFF;
+  font-weight: bold;
+  padding-left: 5px;
+}
+
+.nf_panel_nav {
+  margin: 0px;
+  padding: 0px;
+  border-bottom: 1px solid #A7A6AA;
+  border-top: 1px solid #254394;
+}
+.nf_panel_nav div {
+  margin: 0px;
+  padding: 0px;
+  background: #F2F2F4;
+}
+.nf_panel_nav div div {
+  margin: 0px;
+  padding: 0px;
+}
+.nf_panel_nav div div ul {
+  margin: 0px;
+  padding: 0px;
+}
+.nf_panel_nav div div ul li {
+  margin: 0px;
+  padding: 0px;
+}
+.nf_panel_nav div div ul li a {
+  margin: 0px;
+  padding: 0px;
+}
+
+.nf_panel_body {
+  padding: 8px;
+  background: #FFFFFF;
+  color: #000000;
+}
+
+.nf_panel span.container-close {
+  background: url(nexflow/images/admin/close_sm.png) no-repeat;
+  height: 14px;
+  width: 14px;
+}
+
+/* End of Nexflow CSS */
+
+
+/* Nexform CSS Begins */
+.frm {
+  border:1px solid #CCC;
+  background-color:#EFEFEF;
+}
+
+.frm_topheader {
+  height:120px;
+  background: #091215 url(nexform/images/formheader.jpg) no-repeat;
+}
+
+.frm_topheader td {
+  font-size:24pt;
+  Color: #793138;
+  font-weight: bold;
+  margin-top:20px;
+  text-align:center;
+}
+
+.frm_label1 {
+  white-space: normal;
+  font-weight: normal;
+  font-style: normal;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  border-bottom: 0px solid #ccc;
+  position:relative;
+  bottom:3px;
+  min-width:120px;
+}
+
+/* Bold */
+.frm_label2 {
+  white-space: normal;
+  font-weight: bolder;
+  position:relative;
+  top:5px;
+  min-width:120px;
+}
+
+/* Regualar */
+.frm_label3 {
+  white-space: normal;
+  font-weight: normal;
+  position:relative;
+  bottom:3px;
+  min-width:120px;
+}
+
+/* Highlighted */
+.frm_label4 {
+  color: #336699;
+  font-weight: bold;
+  white-space: normal;
+  position:relative;
+  bottom:3px;
+  min-width:120px;
+}
+
+
+
+/* Large Heading */
+.frm_h1 {
+  font: bold 150% verdana,helvetica,Arial;
+  color: #660000;
+  margin: 5px 5px 5px 0px;
+}
+
+/* Medium Heading1 */
+.frm_h2 {
+  font: bold 125% verdana,helvetica,Arial;
+  color: #000000;
+  margin: 8px 5px 7px 0px;
+}
+
+/* Small Heading */
+.frm_h3 {
+  font: bold 100% verdana,helvetica,Arial;
+  margin: 8px 5px 7px 0px;
+}
+
+.frmRow1 {
+  background-color: #EFEFEF;
+  padding:5px 5px 5px 5px;
+}
+.frmRow2 {
+  background-color: #EFEFEF;
+  padding:5px 5px 5px 5px;
+}
+
+
+.frm_legend {
+  padding: 0.2em 0.5em;
+  border:1px solid #003366;
+  color: #003366;
+  font-size:9pt;
+  font-weight:bold;
+  margin-top:5px;
+  margin-bottom:10px;
+}
+
+/* End of Nexform CSS */
+
+
+/* Forum Plugin specific CSS */
+.codeblock  {
+  background-color:#ECE9D8;
+  color:#000;
+  width: 550px;
+  height: 160px;
+  overflow: auto;
+  min-height: 50px;
+  max-height: 120px;
+  margin: 5px 0px 5px 5px;
+  padding:5px;
+  border: 1px dashed black;
+}
+.quotemain
+{
+  background:#FAFCFE url('forum/image_set/img_quote.gif') no-repeat top right;
+  border: 1px dotted #000;
+  border-left: 4px solid #8394B2;
+  color:#465584;
+  padding: 4px;
+  margin: 5px auto 8px auto;
+}
+
+/* CSS Declarations for Code block feature - default will use the .php one */
+div .php { max-height:400px; overflow:auto; height:auto; width:auto; min-height:100px; }
+div .html { height:300px; overflow:auto; width:auto; min-height:100px; }
+div .css { height:300px; overflow:auto; width:auto; min-height:100px; }
+
+/* END of Forum Plugin CSS */
+
+
+.floatleft       { float                : left;
+                   padding              : 0 10px 0 0;
+                 }
+.fl100           { float                : left;
+                   width                : 100%;
+                 }
+
+.divfix          { clear                : both;
+                   width                : 100%;
+                   display              : table;
+                 }
+
+
+
+
+/* nexContent Plugin */
+.content {
+    font-family: verdana, tahoma, helvetica, arial, sans-serif;
+    font-size: 12px;
+    line-height: 16pt;
+    vertical-align:top;
+}
+.contentTitle {
+    font-family: verdana, tahoma, helvetica, arial, sans-serif;
+    font-weight:bold;
+    font-size: 14px;
+    line-height: 20pt;
+}
+
+/* nexContent CSS */
+.nexcontentPageHeading { font-size:140%; font-weight:bold; padding-top:10px; padding-bottom:5px; padding-left:10px;}
+
+#nexcontent_navcontainer {
+  float:left;
+  width:100%;
+  background:#F4F4F4;
+  font-size:93%;
+  line-height:normal;
+  border-bottom:1px solid #24618E;
+  margin-top:5px;
+  }
+#nexcontent_navcontainer ul {
+  margin:0px;
+  padding:10px 10px 0 50px;
+  list-style:none;
+}
+#nexcontent_navcontainer li {
+  display:inline;
+  margin:0px;
+  padding:0px;
+}
+#nexcontent_navcontainer a {
+  float:left;
+  margin:0px;
+  padding:0px 0px 0px 5px;
+  text-decoration:none;
+}
+#nexcontent_navcontainer a span {
+  float:left;
+  display:block;
+  padding:0px 15px 4px 6px;
+  color:#24618E;
+}
+/* Commented Backslash Hack hides rule from IE5-Mac \*/
+#nexcontent_navcontainer a span {
+  float:none;
+}
+/* End IE5-Mac hack */
+#nexcontent_navcontainer a:hover span {
+  color:#FFFFFF;
+  background-color:#D84C16;
+}
+
+#nexcontent_navcontainer a#current span {
+  color:#FFFFFF;
+  padding:0px 15px 4px 6px;
+  background-color:#003871;
+}
+
+/* End of nexContent CSS */
+
+/* Nexfile CSS */
+
+
+/* YUI Uploader styles that were not working for IE when I had them inline on page.thtml
+   Also needed to add the !important as there must be some other YUI styles that had an effect
+*/
+#fileProgress {
+    border:1px solid #CCC;
+    width:220px;
+    height:20px;
+    float:left;
+}
+#fileName {
+    text-align:center;
+    padding:0px !important;
+    margin:0px !important;
+    width:220px;
+    height:15px;
+}
+.uploaderprogress {
+    padding:0px !important;
+    margin:0px !important;
+    height:5px;
+    width:220px;
+    background-color:#CCC;
+}
+
+.formtable td {
+    padding-top:3px;
+    padding-bottom:2px;
+    vertical-align:top;
+}
+#filedetails td {
+    padding:5px;
+    text-align:left;
+}
+
+.required {
+  padding-left:5px;
+  color:red;
+}
+
+#filelisting {
+    width:100%
+}
+
+#filelistingheader .heading {
+    font-size:12pt;
+    background-color: #DAE0ED;
+    color:#333;
+    clear:both;
+    display:inline-block;
+    width:100%;
+    padding:5px;
+}
+
+#filelistingheader .heading a {
+    font-size:9pt !important;
+    position:relative;bottom:2px;
+    text-decoration:none;
+}
+
+#filelisting_container {
+    padding-bottom:20px;
+}
+#filelisting_container .listing_record {
+    clear:both;
+    display:inline-block;
+    width:100%;
+    background-color:#EBEBEB;
+    padding-top:5px;
+    padding-left:5px;
+}
+
+#filelisting_container .oddrow {
+    background-color:#FFFFFF;
+}
+
+#filelisting_container .evenrow {
+    background-color:#EBEBEB;
+}
+
+#filelisting_container .listing_record .filedesc {
+    clear:both;
+    padding-top:5px;
+    padding-left:75px;
+    padding-bottom:5px !important;
+    font-size:9pt;
+    color:#666;
+}
+
+#filelisting_container .loading {
+    background-color:#FFEFAD;
+    color: #FA0032;
+    font-size:85%;
+    font-weight:bold;
+    padding:5px;
+}
+
+a.morefolderdata {
+    color: #666;
+    text-decoration:none;
+}
+a.morefolderdata:hover {
+    color: #000;
+    text-decoration:underline;
+}
+
+.listing_record div.tags {
+    padding-bottom:2px;
+    float:left;
+}
+
+.filedesc div.tags span {
+    padding-left:5px;
+}
+
+
+
+#filelisting_container .subfolder_container {
+    width:100%;
+}
+
+#filelisting_container .subfolder_container listing_record {
+    clear:both;
+    display:inline-block;
+    width:100%;
+}
+
+.yui-skin-sam .yui-ac-container {
+    position:relative;
+    top:1.5em;
+    width:100%;
+}
+
+.nexfile_alert {
+  padding-left:15px;
+  color:#D8010E;
+  background-color:#FEF1B4;
+  font-weight:bold;
+  height:30px;
+}
+.nexfile_alert div {
+   padding:5px;
+}
+
+.removetag a {
+    font-size:14px;
+    padding:4px 3px 4px 3px;
+    text-decoration:none;
+    color:black;
+    line-height: 30px;
+}
+.removetag a:hover {
+    font-size:20px;
+    padding:2px 1px 4px 2px;
+    text-decoration: underline;
+    line-height: 22px;
+}
+
+
+#autocomplete {
+    width:285px; /* set width for widget here */
+    padding-bottom:0em;
+}
+
+/* Over-ride CSS in YUI container.css */
+.button-group button:active,
+.button-group button:hover,
+.button-group button.hover {
+    background-color:#FF8822;
+    border-top-color:#FFF;
+    border-left-color:#FFF;
+}
+
+.inlineblock {
+  display: inline-block;
+}
+
+.nexfiletoolbar {
+  background-color: #013763;
+  height:25px;
+  padding-top:5px;
+}
+
+.nexfiletoolbar .toolbaricons {
+  background-image: url(nexfile/images/icons_6.png);
+  background-repeat: no-repeat;
+  display:inline-block;
+  float:left;
+}
+
+
+.nexfiletoolbar .newfoldercmd {
+  background-position: 0px 50%;
+  width:16px;
+  position:relative;
+  left:10px;
+}
+
+.nexfiletoolbar .uploadcmd {
+  background-position: -16px 50%;
+  width:16px;
+  position:relative;
+  left:50px;
+}
+
+
+.icon-folderclosed { width:18px; background: transparent url(nexfile/images/icons_6.png) -384px 0px no-repeat; cursor:pointer !important;}
+.icon-folderopen { width:18px; background: transparent url(nexfile/images/icons_6.png) -400px 0px no-repeat; cursor:pointer !important;}
+.icon-starnotselected { width:18px; background: transparent url(nexfile/images/icons_6.png) -288px 0px no-repeat !important; }
+.icon-files { display:block; padding-left:25px; background: transparent url(nexfile/images/homefolder-16x16.png) no-repeat !important; }
+.icon-fileowned { display:block;  padding-left:25px; background: transparent url(nexfile/images/member-16x16.png) no-repeat !important; }
+.icon-filelocked { display:block;  padding-left:25px; background: transparent url(nexfile/images/lock-16x16.png) no-repeat !important; }
+.icon-fileflagged { display:block;  padding-left:25px; background: transparent url(nexfile/images/staron-16x16.gif) no-repeat !important; }
+.icon-allfolders { display:block;  padding-left:25px; background: transparent url(nexfile/images/allfolders-16x16.png) no-repeat !important; }
+.icon-filelisting { display:block;  padding-left:25px; background: transparent url(nexfile/images/filelisting-16x16.png) no-repeat !important; }
+
+.cancelbutton {
+    display: block;
+    height: 14px;
+    width: 14px;
+    background-image: url(nexfile/images/cancelbutton.gif) !important;
+    background-repeat: no-repeat;
+    background-position: -14px 0px;
+    float: right;
+}
+
+a.cancelbutton:hover {
+    background-position: 0px 0px;
+}
+
+.htmlnodelabel { margin-left: 20px; }
+
+
+.downloadlink a {
+    text-decoration: none;
+    color: #000;
+}
+
+.folderlink a  {
+    text-decoration: underline;
+    color: #013763;
+}
+.folderlink a:hover  {
+    text-decoration: underline;
+    color: #000;
+}
+
+.tagsearchboxcontainer {
+    float:right;
+    padding-top:9px;
+}
+#tagsearchbox {
+    min-width:120px;
+    height:20px;
+    text-align:left;
+    margin-top:0px;
+    padding-bottom:5px;
+    padding-top:0px;
+    padding-left:5px;
+}
+#showsearchtags { color:#CCC;text-decoration: underline; }
+#showsearchtags:hover { color:#FFF; text-decoration:underline; }
+
+.tagcloud span { padding-left:2px;padding-right:2px; white-space:nowrap;}
+.tagcloud span a { color:#003DF5; text-decoration:underline; }
+.tagcloud span a:hover { color:#248F00; }
+.tagsearchbox span { }
+
+
+.searchtag {
+    font-size:90%;
+    text-decoration:underline;
+}
+
+#navbardialogs {
+    position:relative;
+    top:50px;
+    left:50px;
+}
+
+#newfolderdialog .bd div,
+#newfiledialog .bd div {
+    margin-top:7px;
+}
+
+#activefolder a {
+    color: #006677;
+    background-color:#FFFFFF;
+    font-weight:bold;
+    padding:5px 10px 5px 2px;
+    text-decoration:none;
+}
+#activefolder a:hover {
+    color: #333;
+    background-color:#FFF2CC;
+    font-weight:bold;
+    padding:4px 10px 5px 1px;
+    border-top: 1px solid #666;
+    border-left: 1px solid #666;
+}
+#edit_activefolder td { padding:3px; }
+#folderperms td { padding:2px; }
+
+#frmFileDetails input { font-size:9pt; }
+#frmFileDetails label { font-weight:normal; font-size:9pt; }
+
+.disabled_element { color: #ABABAB; }
+.enabled_element { color: #000000; }
+
+.listing_activetag { float:left; margin: 0px 2px; padding:2px 5px; font-weight:bold; }
+.listing_searchtag { float:left; margin: 0px 2px; padding:2px 5px; background-color: #CCE3FF; }
+.listing_searchtag a { color: #006AEB; }
+.listing_searchtag a:hover { color: #000000; }
+
+.deletebuttonborder {
+    margin:0px;
+    padding:5px 0px 5px 3px;
+    border:1px solid red;
+}

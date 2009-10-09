@@ -1,0 +1,9 @@
+<tr style="{hide_weekly_totals}text-align:center">
+    <td colspan=6 style="text-align:right;font-weight:bold">{weekly_totals}&nbsp;&nbsp;&nbsp;&nbsp;</td>{weekly_numbers}
+</tr>
+<tr><td colspan=30><br /></td></tr>
+<tr style="{hide_grand_totals}text-align:center">
+    <td colspan=6 style="text-align:right;font-weight:bold">{grand_totals}&nbsp;&nbsp;&nbsp;&nbsp;</td>{grand_numbers}
+</tr>
+</table>
+<div style="width:100%;text-align:center;padding-top:5px;display:{disabled_style}"><input type="button" value="{save_all_button}" onclick="saveTimesheet();" style="display:{disabled_style}"></div>
