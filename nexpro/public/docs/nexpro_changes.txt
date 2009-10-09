@@ -1,7 +1,14 @@
+Oct 9/2009 (Randy)
+    Updates to nexcontent and nexpro plugins to use autoinstall/uninstall
+    Removal of config.php for nexcontent.
+
 Oct 8/2009 (Blaine)
     Added a new API to nexflow to allow custom code to change tha task name
     API is called: PLG_Nexflow_taskname();
     Fixed an issue in nexflow.class.php in how it set the taskname. If task is set to have a Dynamic Taskname
+          and the code does not return a name, maybe process variable is not set, then use the fixed name.
+	  The PLG_Nexflow_taskname is called after that and can replace or append to the name as required.
+
           and the code does not return a name, maybe process variable is not set, then use the fixed name.
 	  The PLG_Nexflow_taskname is called after that and can replace or append to the name as required.
 

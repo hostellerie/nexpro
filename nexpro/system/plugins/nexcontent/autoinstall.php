@@ -47,32 +47,6 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
 */
 function plugin_autoinstall_nexcontent($pi_name)
 {
-    global $_TABLES, $_CONF, $CONF_SE_PREREQUISITE;
-
-    //prereq testing
-    $install_flag=true;
-    //  so lets test out to see if the nexPro plugin is installed.  If not, bail out with an error
-    $nxpro=intval(DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'"));
-    if ($nxpro==0) {     //install nexpro first
-        if (DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'") == '0') {     //nexpro disabled?
-            COM_errorLog ('The nexpro plugin must be enabled for nexContent to work.  Please enable the nexpro it before continuing to install nexContent');
-        }else{
-            COM_errorLog ('The nexpro plugin is not installed.  Please install it before continuing to install nexContent');
-        }
-        $install_flag=false;
-    }
-
-    //test if data directory has write permissions
-    $fp = @fopen($CONF_SE_PREREQUISITE['uploadpath'] . 'test.txt', 'w');
-    if ($fp != NULL) {
-        fclose($fp);
-        unlink($CONF_SE_PREREQUISITE['uploadpath'] . 'test.txt');
-    }
-    else {
-        COM_errorLog("nexContent requires the {$CONF_SE_PREREQUISITE['uploadpath']} file location to be write enabled before installing.");
-        $install_flag=false;
-    }
-
     $pi_name         = 'nexcontent';
     $pi_display_name = 'nexContent';
     $pi_admin        = $pi_display_name . ' Admin';
@@ -113,11 +87,7 @@ function plugin_autoinstall_nexcontent($pi_name)
         'tables'    => $tables
     );
 
-    if($install_flag){
-        return $inst_parms;
-    }else{
-        return null;
-    }
+    return $inst_parms;
 }
 
 /**
@@ -168,16 +138,40 @@ function plugin_postinstall_nexcontent($pi_name)
 */
 function plugin_compatible_with_this_version_nexcontent($pi_name)
 {
-    global $_CONF, $_DB_dbms;
+    global $_CONF, $_DB_dbms, $_TABLES, $CONF_SE_PREREQUISITE;
 
+    //prereq testing
+    $install_flag=true;
+    //  so lets test out to see if the nexPro plugin is installed.  If not, bail out with an error
+    $nxpro=intval(DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'"));
+    if ($nxpro==0) {     //install nexpro first
+        if (DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'") == '0') {     //nexpro disabled?
+            COM_errorLog ('The nexpro plugin must be enabled for nexContent to work.  Please enable the nexpro it before continuing to install nexContent');
+        }else{
+            COM_errorLog ('The nexpro plugin is not installed.  Please install it before continuing to install nexContent');
+        }
+        $install_flag=false;
+    }
+
+    //test if data directory has write permissions
+    $fp = @fopen($CONF_SE_PREREQUISITE['uploadpath'] . 'test.txt', 'w');
+    if ($fp != NULL) {
+        fclose($fp);
+        unlink($CONF_SE_PREREQUISITE['uploadpath'] . 'test.txt');
+    }
+    else {
+        COM_errorLog("nexContent requires the {$CONF_SE_PREREQUISITE['uploadpath']} file location to be write enabled before installing.");
+        $install_flag=false;
+    }
     // check if we support the DBMS the site is running on
     $dbFile = $_CONF['path'] . 'plugins/' . $pi_name . '/sql/'
             . $_DB_dbms . '_install.php';
     if (! file_exists($dbFile)) {
-        return false;
+        $install_flag=false;
     }
 
-    return true;
+    return $install_flag;
+
 }
 
 ?>
