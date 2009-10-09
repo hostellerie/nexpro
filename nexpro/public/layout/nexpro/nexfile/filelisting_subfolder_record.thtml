@@ -1,0 +1,29 @@
+            <div id="subfolder{folder_id}" class="subfolder listing_record parentfolder{parent_folder_id}">
+                <div style="padding-right:20px;">
+                    <div class="folder_withhover" style="width:100%;">
+                        <div class="floatleft">
+                            <input type="checkbox" name="chkfolder" value="{folder_id}" onclick="toggleCheckedItems(this,'{folder_files}');">
+                            <span id="subfolder_icon{folder_id}" class="icon-folderclosed" style="padding:0px 5px;" onClick="togglefolder({folder_id});">&nbsp;</span>
+                            <span style="padding-left:{folder_padding_left}px;"><a href="#"><img src="{layout_url}/nexfile/images/allfolders-16x16.png"></a></span>
+                            <span style="padding-left:5px;padding-right:5px;color:#666;">{folder_number}</span>
+                            <span class="folderlink"><a href="#" onClick="makeAJAXGetFolderListing({folder_id});return false;" TITLE="Folder id: {folder_id}  Parent:{parent_folder_id}">{folder_name}</a></span>
+                        </div>
+                        <div class="floatright" style="padding-right:0px;width:125px;">{last_modified_date}&nbsp;</div>
+                        {onhover_move_options}
+                    </div>
+                    <!--
+                    <div id="folder_{folder_id}_desc" class="filedesc" style="padding-left:{folder_desc_padding_left}px;display:none;">
+                        <div style="float:left;width:3%">
+                            <a href="#" onClick="makeAJAXToggleFileNotification(0,{folder_id});"><img id="folderNotifyIconRec{folder_id}" src="{imgset}/{folder_notification_status_image}" TITLE="{folder_notification_status}"></a>
+                        </div>
+                        <div style="float:left;width:97%">{folder_description}</div>
+                        <div class="clearboth"></div>
+                    </div>
+                    -->
+                </div>
+            </div>
+            <div class="subfolder_container" id="subfolder{folder_id}_contents" style="display:none;">
+                {folder_contents}
+                <div id="subfolderlisting{folder_id}_bottom"></div>
+            </div> <!-- end of subfolder container -->
+            <div id="subfolder{folder_id}_bottom"></div>

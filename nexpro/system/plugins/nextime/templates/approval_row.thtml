@@ -1,0 +1,7 @@
+<tr id="row{id}" style="{hide_for_partially_complete};{background_colour}">
+    <td><a href="approvals.php?emp={emp}&start_date={date}&end_date={dateto}&showAsTimesheet=1">{date}</a></td>
+    <td><a href="approvals.php?emp={emp}&start_date={date}&end_date={dateto}&showAsTimesheet=1">{dateto}</a></td>
+    <td><input type="checkbox" name="approve{id}" id="approve{id}" {chk_approve} {is_disabled} onclick="approveItem('{emp}','{startdatestamp}','{enddatestamp}',this.checked);" title="{approval_check_title}" style="display:none">{approval_note}</td>
+    <td><input type="checkbox" name="lock{id}" id="lock{id}" {chk_lock} {is_lock_disabled} onclick="lockItem('{emp}','{startdatestamp}','{enddatestamp}',this);" title="{lock_check_title}">{lock_note}</td>
+    <td>{stats}</td>
+</tr>

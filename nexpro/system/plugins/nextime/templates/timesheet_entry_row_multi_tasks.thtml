@@ -1,0 +1,47 @@
+<tr id="row{rownumber}" class="{evenodd}"  title="{rejected_note}">
+    <td style="display:none"><input type="text" size="2"  name="id{rownumber}" id="id{rownumber}" value="{id}"></td>
+    <td style="display:none"><input type="text" size="2"  name="uid{rownumber}" id="uid{rownumber}" value="{uid}"></td>
+    <td style="display:none"><input type="text" size="2"  name="datestamp{rownumber}" id="datestamp{rownumber}" value="{datestamp}"></td>
+    <td style="display:none"><input type="text" size="2"  name="isSecondaryRow{rownumber}" id="isSecondaryRow{rownumber}" value="1"></td>
+    <td></td>
+    <td class="entryRowLeftCell" style="{rejected_style}"><input type="checkbox" {disable_on_lock} name="chk{rownumber}" id="chk{rownumber}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}" id="activityTD">
+        <select name="nextime_activity_id{rownumber}" id="nextime_activity_id{rownumber}"  onchange="changeflag();selectProject(this.value,'{rownumber}');selectTask(this.value,'{rownumber}');" {disable_on_lock} style="width:120px">
+            {nextime_activity_options}
+        </select>
+    </td>
+    <td class="entryRowMiddleCell" style="{rejected_style}" id="projectTD{rownumber}">
+        <select name="project_id{rownumber}" id="project_id{rownumber}" onchange="changeflag()" {disable_on_lock} style="width:120px">
+            {project_options}
+        </select>
+    </td>
+    <td class="entryRowMiddleCell" style="{rejected_style}" id="taskTD{rownumber}">
+        <select name="task_id{rownumber}"  id="task_id{rownumber}" onchange="changeflag()" {disable_on_lock} style="width:120px">
+            {task_options}
+        </select>
+    </td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" {disable_on_lock} onchange="changeflag();roundVal(this);" size="2"  name="regular_time{rownumber}" value="{regular_time}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" {disable_on_lock} onchange="changeflag();roundVal(this);" size="2"  name="time_1_5{rownumber}" value="{time_1_5}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" {disable_on_lock} onchange="changeflag();roundVal(this);" size="2"  name="time_2_0{rownumber}" value="{time_2_0}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" {disable_on_lock} onchange="changeflag();roundVal(this);" size="2"  name="evening_hours{rownumber}" value="{evening_hours}"></td>
+<td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" {disable_on_lock} onchange="changeflag();roundVal(this);" size="2"  name="stat_time{rownumber}" value="{stat_time}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" {disable_on_lock} onchange="changeflag();roundVal(this);" size="2"  name="vacation_time_used{rownumber}" value="{vacation_time_used}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" {disable_on_lock} onchange="changeflag();roundVal(this);" size="2"  name="floater{rownumber}" value="{floater}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" {disable_on_lock} onchange="changeflag();roundVal(this);" size="2"  name="sick_time{rownumber}" value="{sick_time}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" {disable_on_lock} onchange="changeflag();roundVal(this);" size="2"  name="bereavement{rownumber}" value="{bereavement}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" {disable_on_lock} onchange="changeflag();roundVal(this);" size="2"  name="jury_duty{rownumber}" value="{jury_duty}"></td>
+
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" {disable_on_lock} onchange="changeflag();roundVal(this);" size="2"  name="other{rownumber}" value="{other}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text"  onchange="changeflag()" size="10" name="comment{rownumber}" id="comment{rownumber}" value="{comment}" readonly onclick="commentPanel(this);"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" readonly size="2"  name="totalhrs{rownumber}" value="{totalhrs}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" readonly size="2"  name="OThrs{rownumber}" value="{OThrs}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style}"><input type="text" {disable_on_lock} onchange="changeflag();roundVal(this);" size="2"  name="unpaid_hrs{rownumber}" value="{unpaid_hrs}"></td>
+    
+    <td class="entryRowMiddleCell" style="{rejected_style}{enable_on_lock}"><input type="text" onchange="changeflag();roundVal(this);" size="2"  name="adjustment{rownumber}" value="{adjustment}" style="{enable_on_lock}"></td>
+    <td style="display:none"><input type="text" {disable_on_lock} size="2"  name="rejected{rownumber}" id="rejected{rownumber}" value="{rejected}"></td>
+    <td style="display:none"><input type="text" {disable_on_lock} size="2"  name="locked{rownumber}" id="locked{rownumber}" value="{locked}"></td>
+    <td style="display:none"><input type="text" {disable_on_lock} size="2"  name="approved{rownumber}" id="approved{rownumber}" value="{approved}"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style};display:{display_for_approval}"><input type="checkbox" {xdisable_on_lock} name="chkapproval{rownumber}" id="chkapproval{rownumber}" value="1" {chkapproval_checked} {disable_if_approved} onclick="doApprovalPageApprove('chkapproval{rownumber}','chkreject{rownumber}','{rownumber}','{id}');"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style};display:{display_for_approval}"><input type="checkbox" {xdisable_on_lock}  name="chkreject{rownumber}" id="chkreject{rownumber}" value="1" {chkreject_checked} onclick="doApprovalPageReject('chkapproval{rownumber}','chkreject{rownumber}','{rownumber}','{id}');"></td>
+    <td class="entryRowMiddleCell" style="{rejected_style};display:{display_for_entry_rejection}"><input type="button"  id="btnCheckReject{rownumber}" value="Reason" onclick="showReason('{id}')"><input type="button" id="btnClearReject{rownumber}" value="Clear" onclick="clearReject('{id}','{uid}')" style="font-size:7pt"></td>
+</tr>

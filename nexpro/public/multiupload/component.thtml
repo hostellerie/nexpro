@@ -1,0 +1,78 @@
+<link href="{site_url}/multiupload/css/default.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="{site_url}/multiupload/js/swfupload.js"></script>
+<script type="text/javascript" src="{site_url}/multiupload/js/swfupload.swfobject.js"></script>
+<script type="text/javascript" src="{site_url}/multiupload/js/swfupload.queue.js"></script>
+<script type="text/javascript" src="{site_url}/multiupload/js/fileprogress.js"></script>
+<script type="text/javascript" src="{site_url}/multiupload/js/handlers.js"></script>
+<script type="text/javascript">
+	var swfu;
+
+    window.onload = function () {
+        var settings = {
+		    flash_url : "{site_url}/multiupload/flash/swfupload.swf",
+		    upload_url: "{upload_handler}",	// Relative to the SWF file
+		    post_params: {"PHPSESSID" : ""},
+		    file_size_limit : "{file_size_limit}",
+		    file_types : "{file_types}",
+		    file_types_description : "{file_types_desc}",
+		    file_upload_limit : {file_upload_limit},
+		    file_queue_limit : {file_queue_limit},
+		    custom_settings : {
+			    progressTarget : "fsUploadProgress",
+			    divStatus : "divStatus",
+			    cancelButtonId : "btnCancel",
+                form_id : "multiupload"
+		    },
+		    debug: false,
+
+            // Button Settings
+            button_image_url : "{site_url}/multiupload/XPButtonUploadText_61x22.png",    // Relative to the SWF file
+            button_placeholder_id : "spanButtonPlaceholder",
+            button_width: 61,
+            button_height: 22,
+
+		    // The event handler functions are defined in handlers.js
+		    file_queued_handler : fileQueued,
+		    file_queue_error_handler : fileQueueError,
+		    file_dialog_complete_handler : fileDialogComplete,
+		    upload_start_handler : uploadStart,
+		    upload_progress_handler : uploadProgress,
+		    upload_error_handler : uploadError,
+		    upload_success_handler : uploadSuccess,
+		    upload_complete_handler : uploadComplete,
+		    queue_complete_handler : queueComplete,	// Queue plugin event
+
+            // SWFObject settings
+            minimum_flash_version : "9.0.28",
+            swfupload_pre_load_handler : dummy,
+            swfupload_load_failed_handler : dummy
+	    };
+
+        swfu = new SWFUpload(settings);
+    }
+
+    function dummy() {
+    }
+</script>
+
+<div id="content">
+    <form id="multiupload" action="index.php" method="post" enctype="multipart/form-data">
+        <div id="divSWFUploadUI">
+            <div class="fieldset  flash" id="fsUploadProgress">
+            <span class="twhite">Upload Queue</span>
+            </div>
+            <p id="divStatus" style="color: #FFFFFF;">0 Files Uploaded</p>
+            <p>
+                <span id="spanButtonPlaceholder" style="background-color:#000000;"></span>
+                <span class="gui-btn">
+                	<span>
+                	<span>Cancel All Uploads</span>
+                		<input id="btnCancel" type="button" value="Cancel All Uploads" disabled="disabled" style="margin-left: 2px; height: 22px; font-size: 8pt;" />
+                	</span>
+                </span>
+                
+                <br />
+            </p>
+        </div>
+    </form>
+</div>

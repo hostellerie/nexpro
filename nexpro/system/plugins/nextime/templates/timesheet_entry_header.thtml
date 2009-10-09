@@ -1,0 +1,35 @@
+<br>
+
+<table style="margin-left:15px;border-collapse:collapse">
+<tr>
+    <th style="display:none">{id}</th>
+    <th style="display:none">{uid}</th>
+    <th style="display:none">{date}</th>
+    <th >{date}</th>
+    <th>&nbsp;</th>
+    <th><img  src="{site_url}/nextime/images/del.png"  border =0 onclick="{onclick}" title="{delete_entry}"></th>
+    <th class="verticalText">{nextime_activity_id}</th>
+    <th class="verticalText">{project_id}</th>
+    <th class="verticalText">{task_id}</th>
+    <th class="verticalText">{regular_time}</th>
+    <th class="verticalText">{time_1_5}</th>
+    <th class="verticalText">{time_2_0}</th>
+    <th class="verticalText">{evening_hours}</th>
+    <th class="verticalText">{stat_time}</th>
+    <th class="verticalText">{vacation_time_used}</th>
+    <th class="verticalText">{floater}</th>
+    <th class="verticalText">{sick_time}</th>
+    <th class="verticalText">{bereavement}</th>
+    <th class="verticalText">{jury_duty}</th>
+
+    <th class="verticalText">{other}</th>
+    <th class="verticalText">{comment}</th>
+
+    <th class="verticalText">{totalhrs}</th>
+    <th class="verticalText">{othrs}</th>
+    <th class="verticalText">{unpaid_hrs}</th>
+    <th class="verticalText" style="{enable_on_lock}">{adjustment}</th>
+
+    {header_item_for_approval}
+    {header_item_for_reject}
+</tr>
