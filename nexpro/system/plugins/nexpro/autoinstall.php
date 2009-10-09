@@ -31,7 +31,9 @@
 //
 
 require_once ($_CONF['path'] . 'plugins/nexpro/autouninstall.php');
-
+if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
+    die('This file can not be used on its own!');
+}
 /**
 * Autoinstall API functions for the nexList plugin
 *
@@ -119,6 +121,9 @@ function plugin_load_configuration_nexpro($pi_name)
 function plugin_postinstall_nexpro($pi_name)
 {
     global $_DB_dbms, $_CONF, $_DB_table_prefix, $_TABLES ;
+    $pi_version='2.1.0';
+    $gl_version='1.6.0';
+    $pi_url='http://www.nextide.ca';
     // silently delete an existing entry
     DB_delete ($_TABLES['plugins'], 'pi_name', $pi_name);
 
