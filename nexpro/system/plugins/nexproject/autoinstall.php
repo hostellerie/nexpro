@@ -52,28 +52,9 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
 function plugin_autoinstall_nexproject($pi_name)
 {
 
-    global $_TABLES, $_CONF;
     $pi_name         = 'nexproject';
     $pi_display_name = 'nexProject';
     $pi_admin        = $pi_display_name . ' Admin';
-
-    $install_flag=true;
-    //  so lets test out to see if the nexPro,nexFile, nexList and forum plugins are installed.  If not, bail out with an error
-    $nxpro=intval(DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'"));
-    if ($nxpro==0) {     //install nexpro first
-        if (DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'") == '0') {     //nexpro disabled?
-            COM_errorLog ('The nexpro plugin must be enabled for nexProject to work.  Please enable the nexpro it before continuing to install nexProject', 1);
-        }else{
-            COM_errorLog ('The nexpro plugin is not installed.  Please install it before continuing to install nexProject', 1);
-        }
-        $install_flag=false;
-    }
-
-    if(!function_exists("nexlistValue")){
-        COM_errorLog ('The nexList plugin is not installed.  Please install it before continuing to install nexProject', 1);
-        $install_flag=false;
-    }
-
 
     $info = array(
         'pi_name'         => $pi_name,
@@ -122,11 +103,7 @@ function plugin_autoinstall_nexproject($pi_name)
         'tables'    => $tables
     );
 
-    if($install_flag){
-        return $inst_parms;
-    }else{
-        return false;
-    }
+    return $inst_parms;
 
 }
 
@@ -306,16 +283,32 @@ function plugin_postinstall_nexproject($pi_name)
 */
 function plugin_compatible_with_this_version_nexproject($pi_name)
 {
-    global $_CONF, $_DB_dbms;
+    global $_CONF, $_DB_dbms, $_TABLES, $_CONF;
 
+    $install_flag=true;
+    //  so lets test out to see if the nexPro,nexFile, nexList and forum plugins are installed.  If not, bail out with an error
+    $nxpro=intval(DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'"));
+    if ($nxpro==0) {     //install nexpro first
+        if (DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'") == '0') {     //nexpro disabled?
+            COM_errorLog ('The nexpro plugin must be enabled for nexProject to work.  Please enable the nexpro it before continuing to install nexProject', 1);
+        }else{
+            COM_errorLog ('The nexpro plugin is not installed.  Please install it before continuing to install nexProject', 1);
+        }
+        $install_flag=false;
+    }
+
+    if(!function_exists("nexlistValue")){
+        COM_errorLog ('The nexList plugin is not installed.  Please install it before continuing to install nexProject', 1);
+        $install_flag=false;
+    }
     // check if we support the DBMS the site is running on
     $dbFile = $_CONF['path'] . 'plugins/' . $pi_name . '/sql/'
             . $_DB_dbms . '_install.php';
     if (! file_exists($dbFile)) {
-        return false;
+        $install_flag=false;
     }
 
-    return true;
+    return $install_flag;
 }
 
 ?>
