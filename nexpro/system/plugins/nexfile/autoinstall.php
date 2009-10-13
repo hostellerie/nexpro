@@ -47,16 +47,17 @@ require_once ($_CONF['path'] . 'plugins/nexfile/autouninstall.php');
 */
 function plugin_autoinstall_nexfile($pi_name)
 {
-    $pi_name         = 'nexfile';
-    $pi_display_name = 'nexfile';
+    global $_FMCONF;
+
+    $pi_display_name = $_FMCONF['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';
 
     $info = array(
-        'pi_name'         => $pi_name,
         'pi_display_name' => $pi_display_name,
-        'pi_version'      => '3.0.0',
-        'pi_gl_version'   => '1.6.0',
-        'pi_homepage'     => 'http://www.nextide.ca/'
+        'pi_name'         => $_FMCONF['pi_name'],
+        'pi_version'      => $_FMCONF['version'],
+        'pi_gl_version'   => $_FMCONF['gl_version'],
+        'pi_homepage'     => $_FMCONF['pi_url']
     );
 
     $groups = array(
