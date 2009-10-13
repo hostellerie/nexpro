@@ -28,6 +28,15 @@
 // +---------------------------------------------------------------------------+
 //
 
+
+// Plugin information
+$_FMCONF['pi_display_name'] = 'nexfile';
+$_FMCONF['pi_name']         = 'nexfile';
+$_FMCONF['gl_version']      = '1.6.1';
+$_FMCONF['version']         = '3.0.0';
+$_FMCONF['pi_url']          = 'http://www.nextide.ca/';
+
+
 // Should not need to change this setting but we have made it a define
 // Used to create unique filename when using the upload/replace functionality
 $_FMCONF['upload_prefix_character_count']   =   18;

@@ -6,7 +6,6 @@
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
 // | functions.inc                                                             |
-// | $Id: functions.inc,v 1.33 2009/10/07 16:34:58 blaine.lang Exp $|
 // +---------------------------------------------------------------------------+
 // | Copyright (C) 2007-2008 by the following authors:                         |
 // | Blaine Lang            - Blaine.Lang@nextide.ca                           |
@@ -49,8 +48,6 @@ if (!isset($_FMCONF['storage_path'])) {
 }
 
 require_once ($_CONF['path'] . 'plugins/nexfile/nexfile.php');
-
-$_FMCONF['version'] = '3.0.0';          // Plugin Version
 
 
 /**

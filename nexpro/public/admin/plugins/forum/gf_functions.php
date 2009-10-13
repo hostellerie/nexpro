@@ -4,14 +4,14 @@
 // | Geeklog Forums Plugin 2.6 for Geeklog - The Ultimate Weblog               |
 // | Release date: Oct 30,2006                                                 |
 // +---------------------------------------------------------------------------+
-// | gb_functions.php                                                          | 
+// | gb_functions.php                                                          |
 // +---------------------------------------------------------------------------+
 // | Copyright (C) 2000,2001,2002,2003 by the following authors:               |
 // | Geeklog Author: Tony Bibbs       - tony@tonybibbs.com                     |
 // +---------------------------------------------------------------------------+
 // | Plugin Authors                                                            |
 // | Blaine Lang,                  blaine@portalparts.com, www.portalparts.com |
-// | Version 1.0 co-developer:     Matthew DeWyer, matt@mycws.com              |   
+// | Version 1.0 co-developer:     Matthew DeWyer, matt@mycws.com              |
 // | Prototype & Concept :         Mr.GxBlock, www.gxblock.com                 |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
@@ -46,26 +46,25 @@ if (!SEC_hasRights('forum.edit')) {
 
 $navbarMenu = array(
     $LANG_GF06['1']   => $_CONF['site_admin_url'] .'/plugins/forum/index.php',
-    $LANG_GF06['2']   => $_CONF['site_admin_url'] .'/plugins/forum/settings.php',
-    $LANG_GF06['3']   => $_CONF['site_admin_url'] .'/plugins/forum/boards.php',
-    $LANG_GF06['4']   => $_CONF['site_admin_url'] .'/plugins/forum/mods.php',
-    $LANG_GF06['5']   => $_CONF['site_admin_url'] .'/plugins/forum/migrate.php',
-    $LANG_GF06['6']   => $_CONF['site_admin_url'] .'/plugins/forum/messages.php',
-    $LANG_GF06['7']   => $_CONF['site_admin_url'] .'/plugins/forum/ips.php',
+    $LANG_GF06['2']   => $_CONF['site_admin_url'] .'/plugins/forum/boards.php',
+    $LANG_GF06['3']   => $_CONF['site_admin_url'] .'/plugins/forum/mods.php',
+    $LANG_GF06['4']   => $_CONF['site_admin_url'] .'/plugins/forum/migrate.php',
+    $LANG_GF06['5']   => $_CONF['site_admin_url'] .'/plugins/forum/messages.php',
+    $LANG_GF06['6']   => $_CONF['site_admin_url'] .'/plugins/forum/ips.php',
 );
 
 // Site admin can add common footer code here
 function adminfooter() {
     global $_CONF, $LANG_GF01;
-    
+
     $footertemplate = new Template($_CONF['path_layout'] . 'forum/layout/admin');
     $footertemplate->set_file (array ('footertemplate'=>'footer.thtml'));
-    
+
     $footertemplate->set_var ('forumname', $LANG_GF01['forumname']);
-    
+
     $footertemplate->parse ('output', 'footertemplate');
     echo $footertemplate->finish ($footertemplate->get_var('output'));
-    
+
 }
 
 
