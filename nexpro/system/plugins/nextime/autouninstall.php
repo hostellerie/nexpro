@@ -32,7 +32,7 @@
 // |                                                                             |
 // +-----------------------------------------------------------------------------+
 //
-global $_TABLES,$_DB_table_prefix;
+global $_TABLES,$_DB_table_prefix,$CONF_NEXTIME;
 require_once ($_CONF['path'] . 'plugins/nextime/nextime.php');
 
 if (strpos(strtolower($_SERVER['PHP_SELF']), 'autouninstall.php') !== false) {

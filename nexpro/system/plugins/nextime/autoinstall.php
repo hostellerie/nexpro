@@ -52,18 +52,19 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
 function plugin_autoinstall_nextime($pi_name)
 {
 
-    $pi_name         = 'nextime';
-    $pi_display_name = 'nexTime';
+    global $CONF_NEXTIME;
+    $pi_name         = $CONF_NEXTIME['pi_name'];
+    $pi_display_name = $CONF_NEXTIME['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';
     $pi_user         = $pi_display_name . ' USER';
     $pi_supervisor   = $pi_display_name . ' Supervisors';
     $pi_finance      = $pi_display_name . ' Finance';
 
     $info = array(
-        'pi_name'         => $pi_name,
-        'pi_display_name' => $pi_display_name,
-        'pi_version'      => '1.2.0',
-        'pi_gl_version'   => '1.6.0',
+        'pi_name'         => $CONF_NEXTIME['pi_name'],
+        'pi_display_name' => $CONF_NEXTIME['pi_display_name'],
+        'pi_version'      => $CONF_NEXTIME['version'],
+        'pi_gl_version'   => $CONF_NEXTIME['gl_version'],
         'pi_homepage'     => 'http://www.nextide.ca/'
     );
 
@@ -257,24 +258,30 @@ function plugin_postinstall_nextime($pi_name)
 */
 function plugin_compatible_with_this_version_nextime($pi_name)
 {
-    global $_CONF, $_DB_dbms, $_TABLES, $_CONF;
+    global $_CONF, $_DB_dbms, $_TABLES, $CONF_NEXTIME;
 
     $install_flag=true;
-    //  so lets test out to see if the nexPro,nexFile, nexList and forum plugins are installed.  If not, bail out with an error
-    $nxpro=intval(DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'"));
-    if ($nxpro==0) {     //install nexpro first
-        if (DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'") == '0') {     //nexpro disabled?
-            COM_errorLog ('The nexpro plugin must be enabled for nexTime to work.  Please enable the nexpro it before continuing to install nexTime');
-        }else{
-            COM_errorLog ('The nexpro plugin is not installed.  Please install it before continuing to install nexTime');
+    foreach($CONF_NEXTIME['dependent_plugins'] as $plugin=>$required_version){
+        $sql="SELECT pi_enabled, pi_version from {$_TABLES['plugins']} WHERE pi_name='{$plugin}'";
+        $res=DB_query($sql);
+        list($pi_enabled, $pi_version)=DB_fetchArray($res);
+        $pi_enabled=intval($pi_enabled);
+        $pi_version=floatval($pi_version);
+
+        $arr=array($pi_version,$required_version);
+        $arr=nextime_match_version_number_size($arr);
+
+        if(!version_compare($arr[0], $arr[1],">=")){
+            COM_errorLog ('The ' . $plugin . ' plugin must have a minimum of ' . $required_version . ' for nexTime to work.  Please install and enable the '. $plugin .' v'.$required_version.' plugin before continuing to install nexTime');
+            $install_flag=false;
         }
-        $install_flag=false;
+        if($pi_enabled==0){
+           COM_errorLog ('The ' . $plugin . ' plugin must be installed/enabled for nexTime to work.  Please install and enable the '. $plugin .' v'.$required_version.' plugin before continuing to install nexTime');
+           $install_flag=false;
+        }
+
     }
 
-    if(!function_exists("nexlistValue")){
-        COM_errorLog ('The nexList plugin is not installed.  Please install it before continuing to install nexTime');
-        $install_flag=false;
-    }
     // check if we support the DBMS the site is running on
     $dbFile = $_CONF['path'] . 'plugins/' . $pi_name . '/sql/'
             . $_DB_dbms . '_install.php';
@@ -283,6 +290,38 @@ function plugin_compatible_with_this_version_nextime($pi_name)
     }
 
     return $install_flag;
+}
+
+/**
+* Takes an incoming 2 element array and makes their version number sizes identical.
+*
+* @param    array  $version_array an array with 2 elements which are version strings. e.g. array('1.1','1.2.0')
+* @return   array  Returns the 2 elements in the array both with the identical number of major/minor/sub version designations.  False if not successful.
+*
+*/
+function nextime_match_version_number_size($version_array){
+    if(count($version_array)<2 || count($version_array)>2){
+        return false;
+    }
+    $v1=$version_array[0];
+    $v2=$version_array[1];
+
+    $a1=explode(".",$v1);
+    $a2=explode(".",$v2);
+
+    if(count($a1) < count($a2)){  //less test nodes in the current version
+        for($cntr=0;$cntr<(count($a2)-count($a1));$cntr++){
+            $a1[]=0;
+        }
+    }elseif(count($a2) < count($a1)){
+        for($cntr=0;$cntr<(count($a1)-count($a2));$cntr++){
+            $a2[]=0;
+        }
+    }
+    $v1=implode('.',$a1);
+    $v2=implode('.',$a2);
+
+    return array($v1,$v2);
 }
 
 ?>
