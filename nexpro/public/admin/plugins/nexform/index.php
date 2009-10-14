@@ -79,7 +79,7 @@ function displayFormRecords() {
     $navbar->add_menuitem($LANG_NAVBAR['2'], $_CONF['site_admin_url'] .'/plugins/nexform/index.php?op=editform&mode=add');
     $navbar->add_menuitem($LANG_NAVBAR['12'], $_CONF['site_admin_url'] .'/plugins/nexform/import.php');
 
-    $query = DB_query("SELECT id,name,date,responses,status,comments FROM {$_TABLES['formDefinitions']} ORDER BY $orderby $direction");
+    $query = DB_query("SELECT id,name,date,responses,status,comments FROM {$_TABLES['nxform_definitions']} ORDER BY $orderby $direction");
 
     $page = new Template($_CONF['path_layout'] . 'nexform/admin');
     $page->set_file (array ('page' => 'formdetail.thtml', 'msgline' => 'alertline.thtml', 'records'=>'formrecords.thtml'));
@@ -159,10 +159,10 @@ function editFormRecord($mode) {
             'fset_record' => 'fieldset_record.thtml'));
 
     $page->set_var ('field1_options',
-        COM_optionList($_TABLES['formFields'],'tfid,label,fieldorder','',2,
+        COM_optionList($_TABLES['nxform_fields'],'tfid,label,fieldorder','',2,
             "formid='{$id}' AND type NOT IN ('submit','cancel','hidden')"));
     $page->set_var ('field2_options',
-        COM_optionList($_TABLES['formFields'],'tfid,label,fieldorder','',2,
+        COM_optionList($_TABLES['nxform_fields'],'tfid,label,fieldorder','',2,
             "formid='{$id}' AND type NOT IN ('submit','cancel','hidden')"));
 
     $page->set_var ('showtab3','none');
@@ -177,7 +177,7 @@ function editFormRecord($mode) {
         $fields .= 'before_formid,after_formid,show_as_tab,tab_label,intro_text,after_post_text,';
         $fields .= 'on_submit,return_url,perms_view,perms_access,perms_edit,status,comments,';
         $fields .= 'show_mandatory_note';
-        $query = DB_query("SELECT $fields FROM {$_TABLES['formDefinitions']} WHERE id='{$id}'");
+        $query = DB_query("SELECT $fields FROM {$_TABLES['nxform_definitions']} WHERE id='{$id}'");
         list (
             $id,$name,$shortname,$date,$responses,$template,$post_method,$post_option,
             $before_formid,$after_formid,$show_as_tab,$tab_label,$intro_text,$post_text,$on_submit,
@@ -189,18 +189,18 @@ function editFormRecord($mode) {
 
         if ($delfsetid >= 0) {
             /* Un-encode the fieldset definitions and remove the requested one */
-            $afieldset  = DB_getItem($_TABLES['formDefinitions'],'fieldsets',"id='{$id}'");
+            $afieldset  = DB_getItem($_TABLES['nxform_definitions'],'fieldsets',"id='{$id}'");
             if ($afieldset != '') {
                 $fieldsets = unserialize($afieldset);  // Retrieve array of fieldsets
                 unset($fieldsets[$delfsetid]);
                 $fieldsets = serialize($fieldsets);
-                DB_query("UPDATE {$_TABLES['formDefinitions']} SET fieldsets='{$fieldsets}' WHERE id='$id'");
+                DB_query("UPDATE {$_TABLES['nxform_definitions']} SET fieldsets='{$fieldsets}' WHERE id='$id'");
             }
         }
 
         if ($editfsetid > 0) {
             /* Un-encode the fieldset definitions and display them as records if any exist */
-            $afieldset  = DB_getItem($_TABLES['formDefinitions'],'fieldsets',"id='{$id}'");
+            $afieldset  = DB_getItem($_TABLES['nxform_definitions'],'fieldsets',"id='{$id}'");
             if ($afieldset != '') {
                 $fieldsets = unserialize($afieldset);  // Retrieve array of fieldsets
                 $page->set_var('fset_id',$editfsetid);
@@ -208,10 +208,10 @@ function editFormRecord($mode) {
                 $statusmsg = 'Edit Form Fieldset Details';
                 $page->set_var('fsetid',$editfsetid);
                 $page->set_var ('field1_options',
-                    COM_optionList($_TABLES['formFields'],'tfid,label,fieldorder',
+                    COM_optionList($_TABLES['nxform_fields'],'tfid,label,fieldorder',
                         $fieldsets[$editfsetid]['begin'],2,"formid='{$id}' AND type NOT IN ('submit','cancel')"));
                 $page->set_var ('field2_options',
-                   COM_optionList($_TABLES['formFields'],'tfid,label,fieldorder',
+                   COM_optionList($_TABLES['nxform_fields'],'tfid,label,fieldorder',
                         $fieldsets[$editfsetid]['end'],2,"formid='{$id}' AND type NOT IN ('submit','cancel')"));
                 $page->set_var('fieldset_label',$fieldsets[$editfsetid]['label']);
             }
@@ -265,8 +265,8 @@ function editFormRecord($mode) {
         //$page->set_var('template_options',$templateoptions);
 
 
-        $page->set_var ('formlisting1_options',COM_optionList($_TABLES['formDefinitions'],'id,name',$before_formid,1,"name != '$name'"));
-        $page->set_var ('formlisting2_options',COM_optionList($_TABLES['formDefinitions'],'id,name',$after_formid,1,"name != '$name'"));
+        $page->set_var ('formlisting1_options',COM_optionList($_TABLES['nxform_definitions'],'id,name',$before_formid,1,"name != '$name'"));
+        $page->set_var ('formlisting2_options',COM_optionList($_TABLES['nxform_definitions'],'id,name',$after_formid,1,"name != '$name'"));
 
         $navbar = new navbar();
         $navbar->add_menuitem($LANG_NAVBAR['1'], $_CONF['site_admin_url'] .'/plugins/nexform/index.php');
@@ -276,15 +276,15 @@ function editFormRecord($mode) {
         $navbar->add_menuitem($LANG_NAVBAR['9'], $_CONF['site_admin_url'] .'/plugins/nexform/report.php?&formid='.$id);
 
         /* Un-encode the fieldset definitions and display them as records if any exist */
-        $afieldsets  = unserialize(DB_getItem($_TABLES['formDefinitions'],'fieldsets',"id='{$id}'"));
+        $afieldsets  = unserialize(DB_getItem($_TABLES['nxform_definitions'],'fieldsets',"id='{$id}'"));
         if ($afieldsets != '') {
             $actionurl = $_CONF['site_admin_url'] . '/plugins/nexform/index.php';
             $actionurl .= '?op=editform&mode=edit&id='.$id;
             foreach ($afieldsets as $fset_id => $fieldset) {
                     $page->set_var('fset_id',$fset_id);
                     $page->set_var('fset_label',$fieldset['label']);
-                    $page->set_var('fset_field1', DB_getItem($_TABLES['formFields'],'label',"tfid='{$fieldset['begin']}' AND formid='{$id}'") );
-                    $page->set_var('fset_field2', DB_getItem($_TABLES['formFields'],'label',"tfid='{$fieldset['end']}' AND formid='{$id}'") );
+                    $page->set_var('fset_field1', DB_getItem($_TABLES['nxform_fields'],'label',"tfid='{$fieldset['begin']}' AND formid='{$id}'") );
+                    $page->set_var('fset_field2', DB_getItem($_TABLES['nxform_fields'],'label',"tfid='{$fieldset['end']}' AND formid='{$id}'") );
                     $page->set_var('fset_editlink',"<a href=\"{$actionurl}&editfset={$fset_id}\">[Edit]</a>");
                     $page->set_var('fset_deletelink',"<a href=\"{$actionurl}&delfset={$fset_id}\">[Delete]</a>");
                     $page->set_var ('cssid',$i%2);
@@ -312,7 +312,7 @@ function editFormRecord($mode) {
         $page->set_var ('chkstatus','CHECKED=CHECKED');
         $page->set_var ('LANG_submit','Add Record');
         $post_method = 'dbsave';
-        $page->set_var ('formlisting_options',COM_optionList($_TABLES['formDefinitions'],'id,name'));
+        $page->set_var ('formlisting_options',COM_optionList($_TABLES['nxform_definitions'],'id,name'));
 
         $navbar = new navbar();
         $navbar->add_menuitem($LANG_NAVBAR['1'], $_CONF['site_admin_url'] .'/plugins/nexform/index.php');
@@ -439,7 +439,7 @@ function updateFormRecord($mode) {
         $fields = 'gid,name,shortname,date,template,post_method,post_option,fieldsets,';
         $fields .= 'before_formid,after_formid,show_as_tab,tab_label,intro_text,after_post_text,';
         $fields .= 'on_submit,return_url,perms_view,perms_access,perms_edit,status,comments,show_mandatory_note';
-        $sql = "INSERT INTO {$_TABLES['formDefinitions']} ($fields) VALUES (";
+        $sql = "INSERT INTO {$_TABLES['nxform_definitions']} ($fields) VALUES (";
         $sql .= "'$gid','$name','$shortname','$date','$template','$post_method','$fieldset','$post_option',";
         $sql .= "'$before_formid','$after_formid','$show_as_tab','$tab_label','$intro_text','$post_text',";
         $sql .= "'$on_submit','$return_url','$perms_view','$perms_access','$perms_edit',";
@@ -450,10 +450,10 @@ function updateFormRecord($mode) {
 
         $GLOBALS['statusmsg'] = 'Record Added';
 
-    } elseif (DB_count($_TABLES['formDefinitions'],"id",$id) == 1) {
-        $oname = DB_getItem($_TABLES['formDefinitions'],'name',"id='{$id}'");
+    } elseif (DB_count($_TABLES['nxform_definitions'],"id",$id) == 1) {
+        $oname = DB_getItem($_TABLES['nxform_definitions'],'name',"id='{$id}'");
 
-        DB_query("UPDATE {$_TABLES['formDefinitions']} SET
+        DB_query("UPDATE {$_TABLES['nxform_definitions']} SET
             name='{$name}', shortname='{$shortname}',date='{$date}', post_method='{$post_method}', post_option='{$post_option}',
             before_formid='{$before_formid}',after_formid='{$after_formid}',show_as_tab='{$show_as_tab}',
             tab_label='{$tab_label}',template='{$template}', intro_text='{$intro_text}',
@@ -467,14 +467,14 @@ function updateFormRecord($mode) {
             if ($fsetid > 0) {
 
                 // Retrieve original fieldset record and replace definition in array
-                $fieldsets  = DB_getItem($_TABLES['formDefinitions'],'fieldsets',"id='{$id}'");
+                $fieldsets  = DB_getItem($_TABLES['nxform_definitions'],'fieldsets',"id='{$id}'");
                 if ($fieldsets != '') {
                     $afieldsets = unserialize($fieldsets);  // Retrieve array of fieldsets
                     $afieldsets[$fsetid] = array('begin' => "$field1",'end' => "$field2", 'label' => "$fieldset_label");
                 }
             } else { // User wants to add a new defintion
                 // Retrieve original fieldset record and replace definition in array
-                $fieldsets  = DB_getItem($_TABLES['formDefinitions'],'fieldsets',"id='{$id}'");
+                $fieldsets  = DB_getItem($_TABLES['nxform_definitions'],'fieldsets',"id='{$id}'");
                 if ($fieldsets != '') {
                     $afieldsets = unserialize($fieldsets);  // Retrieve array of fieldsets
                     if (count($afieldsets) == 0 ) {
@@ -488,7 +488,7 @@ function updateFormRecord($mode) {
                 }
             }
             $fieldset = serialize($afieldsets);
-            DB_query("UPDATE {$_TABLES['formDefinitions']} SET fieldsets='{$fieldset}' WHERE id='$id'");
+            DB_query("UPDATE {$_TABLES['nxform_definitions']} SET fieldsets='{$fieldset}' WHERE id='$id'");
         }
 
         $GLOBALS['statusmsg'] = 'Record Updated';
@@ -502,7 +502,7 @@ function updateFormRecord($mode) {
 function copyFormRecord() {
     global $_CONF, $_TABLES, $CONF_FE, $id, $_DB_name;
     $sourceform = $id;
-    $query = DB_query("SELECT * FROM {$_TABLES['formDefinitions']} WHERE id='{$sourceform}'");
+    $query = DB_query("SELECT * FROM {$_TABLES['nxform_definitions']} WHERE id='{$sourceform}'");
     if (DB_numRows($query) == 1) {
         $A = DB_fetchArray($query);
         $A['intro_text'] = addslashes($A['intro_text']);
@@ -512,20 +512,20 @@ function copyFormRecord() {
         $gid = uniqid($_DB_name,FALSE);
         $date = time();
 
-        $sql  = "INSERT INTO {$_TABLES['formDefinitions']} ";
+        $sql  = "INSERT INTO {$_TABLES['nxform_definitions']} ";
         $sql .= "( gid,name,date,template,post_method,post_option,before_formid,after_formid,fieldsets,intro_text,after_post_text,on_submit,status,comments,show_mandatory_note ) ";
         $sql .= "VALUES ( '$gid','{$A['name']} - copy', '$date', '{$A['template']}', '{$A['post_method']}', '{$A['post_option']}', '{$A['before_formid']}', '{$A['after_formid']}', '{$A['fieldsets']}','{$A['intro_text']}','{$A['after_post_text']}', '{$A['on_submit']}', '{$A['status']}','{$A['comments']}','{$A['show_mandatory_note']}' )";
         DB_query($sql);
 
         $targetform = DB_insertID();
         /* Now copy all the fields that are defined for this original form */
-        $query = DB_query("SELECT * FROM {$_TABLES['formFields']} WHERE formid='{$sourceform}'");
+        $query = DB_query("SELECT * FROM {$_TABLES['nxform_fields']} WHERE formid='{$sourceform}'");
         while( $B = DB_fetchArray($query)) {
             $B['javascript'] = addslashes($B['javascript']);
             $B['field_values'] = addslashes($B['field_values']);
 	        $B['label'] = addslashes($B['label']);
             $B['fieldorder'] = COM_applyFilter($B['fieldorder'], true);
-            DB_query("INSERT INTO {$_TABLES['formFields']}
+            DB_query("INSERT INTO {$_TABLES['nxform_fields']}
             (
                formid, tfid,type, fieldorder,  label, style, layout, is_vertical, is_newline,
                is_mandatory, is_searchfield, value_by_function,is_resultsfield,
@@ -538,7 +538,7 @@ function copyFormRecord() {
 
              $id = DB_insertID();
              $fieldname = "{$CONF_FE['fieldtypes'][$B['type']][0]}{$B['formid']}_{$id}";
-             DB_query("UPDATE {$_TABLES['formFields']} SET field_name = '$fieldname' WHERE id=$id;");
+             DB_query("UPDATE {$_TABLES['nxform_fields']} SET field_name = '$fieldname' WHERE id=$id;");
         }
 
         $GLOBALS['statusmsg'] = 'Form copied successfully';
@@ -549,9 +549,9 @@ function deleteFormRecord() {
     global $_CONF, $_TABLES, $id;
 
     /* Need to check if any linked records have used this ID. If so don't delete record, just set status inactive */
-    if (DB_count($_TABLES['formDefinitions'],"id",$id) == 1) {
-        DB_query("DELETE FROM {$_TABLES['formDefinitions']} WHERE id='$id'");
-        DB_query("DELETE FROM {$_TABLES['formFields']} WHERE formid='$id'");
+    if (DB_count($_TABLES['nxform_definitions'],"id",$id) == 1) {
+        DB_query("DELETE FROM {$_TABLES['nxform_definitions']} WHERE id='$id'");
+        DB_query("DELETE FROM {$_TABLES['nxform_fields']} WHERE formid='$id'");
 
         $GLOBALS['statusmsg'] = 'Form Definition and Field Records Deleted';
    } else {
@@ -572,7 +572,7 @@ function displayFieldRecords($formid,$lastfield='') {
     $navbar->add_menuitem($LANG_NAVBAR['7'], $_CONF['site_admin_url'] .'/plugins/nexform/preview.php?&id='.$formid);
     $navbar->add_menuitem($LANG_NAVBAR['9'], $_CONF['site_admin_url'] .'/plugins/nexform/report.php?&formid='.$formid);
 
-    $query = DB_query("SELECT id,tfid,fieldorder,label,type,field_name,field_values,is_mandatory,is_resultsfield,is_vertical,is_newline,is_reverseorder,is_internaluse FROM {$_TABLES['formFields']} WHERE formid='{$formid}' ORDER BY fieldorder");
+    $query = DB_query("SELECT id,tfid,fieldorder,label,type,field_name,field_values,is_mandatory,is_resultsfield,is_vertical,is_newline,is_reverseorder,is_internaluse FROM {$_TABLES['nxform_fields']} WHERE formid='{$formid}' ORDER BY fieldorder");
 
     $page = new Template($_CONF['path_layout'] . 'nexform/admin');
     $page->set_file (array ('page' => 'formfields.thtml', 'msgline' => 'alertline.thtml', 'records'=>'fieldrecords.thtml'));
@@ -619,7 +619,7 @@ function displayFieldRecords($formid,$lastfield='') {
             = DB_fetchArray($query))
     {
         if ($order != $nextOrder) {
-            DB_query("UPDATE {$_TABLES['formFields']} SET fieldorder = '$nextOrder' WHERE id = '$id'");
+            DB_query("UPDATE {$_TABLES['nxform_fields']} SET fieldorder = '$nextOrder' WHERE id = '$id'");
             $order = $nextOrder;
         }
         $nextOrder += $stepNumber;
@@ -684,7 +684,7 @@ function displayFieldRecords($formid,$lastfield='') {
 function editFieldRecord($mode,$selectedtab=1) {
     global $_CONF,$_TABLES,$formid,$fieldid,$CONF_FE,$LANG_NAVBAR;
 
-    $formname = DB_getItem($_TABLES['formDefinitions'],"name","id='$formid'");
+    $formname = DB_getItem($_TABLES['nxform_definitions'],"name","id='$formid'");
     $page = new Template($_CONF['path_layout'] . 'nexform/admin');
     $page->set_file (array ('page' => 'editfield.thtml'));
 
@@ -693,7 +693,7 @@ function editFieldRecord($mode,$selectedtab=1) {
         $fields .= 'is_newline,is_mandatory,is_searchfield,is_resultsfield,is_reverseorder,';
         $fields .= 'is_htmlfiltered, is_internaluse,hidelabel,';
         $fields .= 'field_attributes,field_help,field_values,value_by_function,validation,javascript';
-        $query = DB_query("SELECT $fields FROM {$_TABLES['formFields']} WHERE id='{$fieldid}'");
+        $query = DB_query("SELECT $fields FROM {$_TABLES['nxform_fields']} WHERE id='{$fieldid}'");
         list ($id,$formid,$tfid,$type,$fieldname,$fieldorder,$label,$style,$layout,$col_width,$col_padding,$label_padding,$is_vertical,
               $is_newline,$is_mandatory,$is_searchfield,$is_resultsfield,$is_reverseorder,$is_filtered, $is_internaluse,$hidelabel,$field_attributes,$field_help,$field_values,$function_used,$validation,$javascript)
             = DB_fetchArray($query);
@@ -713,7 +713,7 @@ function editFieldRecord($mode,$selectedtab=1) {
 
         $onclick = 'onclick="document.frm_edit.op.value=\'editfield\';document.frm_edit.fieldid.value=\'%s\';document.frm_edit.submit();"';
 
-        $qprev = DB_query("SELECT id,fieldorder FROM {$_TABLES['formFields']} WHERE formid='{$formid}' AND fieldorder < '{$fieldorder}' ORDER BY fieldorder DESC LIMIT 1");
+        $qprev = DB_query("SELECT id,fieldorder FROM {$_TABLES['nxform_fields']} WHERE formid='{$formid}' AND fieldorder < '{$fieldorder}' ORDER BY fieldorder DESC LIMIT 1");
         list ($previd, $prevorder) = DB_fetchArray($qprev);
 
         if ( $prevorder > 0 AND $prevorder < $fieldorder) {
@@ -721,7 +721,7 @@ function editFieldRecord($mode,$selectedtab=1) {
         } else {
             $page->set_var ('prev','');
         }
-        $qnext = DB_query("SELECT id,fieldorder FROM {$_TABLES['formFields']} WHERE formid='{$formid}' AND fieldorder > '{$fieldorder}' ORDER BY fieldorder ASC LIMIT 1");
+        $qnext = DB_query("SELECT id,fieldorder FROM {$_TABLES['nxform_fields']} WHERE formid='{$formid}' AND fieldorder > '{$fieldorder}' ORDER BY fieldorder ASC LIMIT 1");
         list ($nextid, $nextorder) = DB_fetchArray($qnext);
         if ( $nextorder > 0 AND $nextorder > $fieldorder) {
             $nextlink = '<a href="#" '.sprintf($onclick,$nextid).' " TITLE="Select Next Field">Next</a>';
@@ -734,7 +734,7 @@ function editFieldRecord($mode,$selectedtab=1) {
             $page->set_var ('next','');
         }
 
-        if (DB_getItem($_TABLES['formDefinitions'], 'post_method',"id='$formid'") == 'posturl') {
+        if (DB_getItem($_TABLES['nxform_definitions'], 'post_method',"id='$formid'") == 'posturl') {
             $page->set_var ('enablefname','');
             if ($fieldname != '') {
                 $page->set_var ('form_fieldname',$fieldname);
@@ -833,7 +833,7 @@ function editFieldRecord($mode,$selectedtab=1) {
     } else {
         $page->set_var ('fieldid',0);
         $page->set_var ('helpmsg','Form: <b>'.$formname.'</b>. Create new Field Definition - Complete all required fields');
-        if (DB_getItem($_TABLES['formDefinitions'], 'post_method',"id='$formid'") == 'posturl') {
+        if (DB_getItem($_TABLES['nxform_definitions'], 'post_method',"id='$formid'") == 'posturl') {
             $page->set_var ('show_fieldid','');
         } else {
             $page->set_var ('show_fieldid','none');
@@ -916,7 +916,7 @@ function editFieldRecord($mode,$selectedtab=1) {
 
     /* Determine if Multiple File type field is already used - only one allowed per form */
     $mfileused = false;
-    if (DB_count($_TABLES['formFields'],array('formid','type'), array($formid,'mfile')) > 0 ) {
+    if (DB_count($_TABLES['nxform_fields'],array('formid','type'), array($formid,'mfile')) > 0 ) {
         //$mfileused = true;
     }
     /* Set the field type options dropdown - not showing mfile type if already used and not editing that field */
@@ -1002,46 +1002,46 @@ function updateFieldRecord($mode) {
         $values .= "'{$is_internaluse}','{$hidelabel}','{$field_attributes}','{$field_help}','{$field_values}','{$function_used}',";
         $values .= "'{$validation}','{$javascript}'";
 
-        DB_query("INSERT INTO {$_TABLES['formFields']}( $fields ) VALUES ( $values )");
+        DB_query("INSERT INTO {$_TABLES['nxform_fields']}( $fields ) VALUES ( $values )");
         $fieldid = DB_insertID();
 
         $date = time();
-        DB_query("UPDATE {$_TABLES['formDefinitions']} SET date='{$date}' WHERE id='$formid'");
+        DB_query("UPDATE {$_TABLES['nxform_definitions']} SET date='{$date}' WHERE id='$formid'");
 
         $GLOBALS['statusmsg'] = 'Record Added';
 
         // Set the template field id now - incremental id per form
-        $query = DB_query("SELECT max(tfid) FROM {$_TABLES['formFields']} WHERE formid='$formid'");
+        $query = DB_query("SELECT max(tfid) FROM {$_TABLES['nxform_fields']} WHERE formid='$formid'");
         list ($maxtfid) = DB_fetchArray($query);
         $tfid = $maxtfid + 1;
-        DB_query("UPDATE {$_TABLES['formFields']} SET tfid='{$tfid}' WHERE id='{$fieldid}'");
+        DB_query("UPDATE {$_TABLES['nxform_fields']} SET tfid='{$tfid}' WHERE id='{$fieldid}'");
 
         if ($fieldname == '') {
             // BL Note: Use tfid to set fieldname
             $fieldname = "{$CONF_FE['fieldtypes'][$type][0]}{$formid}_{$fieldid}";
-            DB_query("UPDATE {$_TABLES['formFields']} SET field_name='{$fieldname}' WHERE id='{$fieldid}'");
+            DB_query("UPDATE {$_TABLES['nxform_fields']} SET field_name='{$fieldname}' WHERE id='{$fieldid}'");
         }
 
         if ($fieldorder == '') {
-            $query = DB_query("SELECT max(fieldorder) FROM {$_TABLES['formFields']} WHERE formid='$formid'");
+            $query = DB_query("SELECT max(fieldorder) FROM {$_TABLES['nxform_fields']} WHERE formid='$formid'");
             list ($maxorder) = DB_fetchArray($query);
             $order = $maxorder + 10;
-            DB_query("UPDATE {$_TABLES['formFields']} SET fieldorder='{$order}' WHERE id='{$fieldid}'");
+            DB_query("UPDATE {$_TABLES['nxform_fields']} SET fieldorder='{$order}' WHERE id='{$fieldid}'");
         }
 
-    } elseif (DB_count($_TABLES['formFields'],"id",$fieldid) == 1) {
+    } elseif (DB_count($_TABLES['nxform_fields'],"id",$fieldid) == 1) {
         // Set the template field id if it was not set (earlier bug) - incremental id per form
-        if (DB_getItem($_TABLES['formFields'],'tfid',"id='{$fieldid}'") == 0) {
-            $query = DB_query("SELECT max(tfid) FROM {$_TABLES['formFields']} WHERE formid='$formid'");
+        if (DB_getItem($_TABLES['nxform_fields'],'tfid',"id='{$fieldid}'") == 0) {
+            $query = DB_query("SELECT max(tfid) FROM {$_TABLES['nxform_fields']} WHERE formid='$formid'");
             list ($maxtfid) = DB_fetchArray($query);
             $tfid = $maxtfid + 1;
-            DB_query("UPDATE {$_TABLES['formFields']} SET tfid='{$tfid}' WHERE id='{$fieldid}'");
+            DB_query("UPDATE {$_TABLES['nxform_fields']} SET tfid='{$tfid}' WHERE id='{$fieldid}'");
         }
         if ($fieldname == '') {
             // BL Note: Use tfid to set fieldname
             $fieldname = "{$CONF_FE['fieldtypes'][$type][0]}{$formid}_{$fieldid}";
         } else {  // Check and see if fieldtype has changed
-            if (DB_getItem($_TABLES['formFields'], 'type',"id='$fieldid'") != $type) {
+            if (DB_getItem($_TABLES['nxform_fields'], 'type',"id='$fieldid'") != $type) {
                 $fieldname = "{$CONF_FE['fieldtypes'][$type][0]}{$formid}_{$fieldid}";
             }
         }
@@ -1054,11 +1054,11 @@ function updateFieldRecord($mode) {
         $data .= "is_newline='{$is_newline}',is_mandatory='{$is_mandatory}',";
         $data .= "is_searchfield='{$is_searchfield}',is_resultsfield='{$is_resultsfield}',";
         $data .= "hidelabel='{$hidelabel}'";
-        //echo "UPDATE {$_TABLES['formFields']} SET $data  WHERE id='$fieldid'";
-        DB_query("UPDATE {$_TABLES['formFields']} SET $data  WHERE id='$fieldid'");
+        //echo "UPDATE {$_TABLES['nxform_fields']} SET $data  WHERE id='$fieldid'";
+        DB_query("UPDATE {$_TABLES['nxform_fields']} SET $data  WHERE id='$fieldid'");
 
         $date = time();
-        DB_query("UPDATE {$_TABLES['formDefinitions']} SET date='{$date}' WHERE id='$formid'");
+        DB_query("UPDATE {$_TABLES['nxform_definitions']} SET date='{$date}' WHERE id='$formid'");
 
         $GLOBALS['statusmsg'] = 'Record Updated';
     } else {
@@ -1067,29 +1067,29 @@ function updateFieldRecord($mode) {
     }
 
     if (is_numeric($col_width)) {
-        DB_query("UPDATE {$_TABLES['formFields']} SET col_width = '$col_width' WHERE id='$fieldid'");
+        DB_query("UPDATE {$_TABLES['nxform_fields']} SET col_width = '$col_width' WHERE id='$fieldid'");
     } else {
-        DB_query("UPDATE {$_TABLES['formFields']} SET col_width = NULL WHERE id='$fieldid'");
+        DB_query("UPDATE {$_TABLES['nxform_fields']} SET col_width = NULL WHERE id='$fieldid'");
     }
 
     if (is_numeric($col_padding)) {
-        DB_query("UPDATE {$_TABLES['formFields']} SET col_padding = '$col_padding' WHERE id='$fieldid'");
+        DB_query("UPDATE {$_TABLES['nxform_fields']} SET col_padding = '$col_padding' WHERE id='$fieldid'");
     } else {
-        DB_query("UPDATE {$_TABLES['formFields']} SET col_padding = NULL WHERE id='$fieldid'");
+        DB_query("UPDATE {$_TABLES['nxform_fields']} SET col_padding = NULL WHERE id='$fieldid'");
     }
 
     if (is_numeric($label_padding)) {
-        DB_query("UPDATE {$_TABLES['formFields']} SET label_padding = '$label_padding' WHERE id='$fieldid'");
+        DB_query("UPDATE {$_TABLES['nxform_fields']} SET label_padding = '$label_padding' WHERE id='$fieldid'");
     } else {
-        DB_query("UPDATE {$_TABLES['formFields']} SET label_padding = NULL WHERE id='$fieldid'");
+        DB_query("UPDATE {$_TABLES['nxform_fields']} SET label_padding = NULL WHERE id='$fieldid'");
     }
 
     /* Now check and verify that only a max of XX fields have option for report enabled */
-    $q = DB_query("SELECT id FROM {$_TABLES['formFields']} WHERE formid='$formid' AND is_resultsfield='1' ORDER BY fieldorder");
+    $q = DB_query("SELECT id FROM {$_TABLES['nxform_fields']} WHERE formid='$formid' AND is_resultsfield='1' ORDER BY fieldorder");
     $i = 1;
     while(list($id) = DB_fetchArray($q)) {
         if ($i > $CONF_FE['result_summary_fields'])
-            DB_query("UPDATE {$_TABLES['formFields']} SET is_resultsfield='0' WHERE id='$fieldid'");
+            DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_resultsfield='0' WHERE id='$fieldid'");
         $i++;
     } // while
 
@@ -1099,8 +1099,8 @@ function deleteFieldRecord() {
     global $_CONF, $_TABLES, $fieldid;
 
     /* Need to check if any linked records have used this ID. If so don't delete record, just set status inactive */
-    if (DB_count($_TABLES['formFields'],"id",$fieldid) == 1) {
-        DB_query("DELETE FROM {$_TABLES['formFields']} WHERE id='$fieldid'");
+    if (DB_count($_TABLES['nxform_fields'],"id",$fieldid) == 1) {
+        DB_query("DELETE FROM {$_TABLES['nxform_fields']} WHERE id='$fieldid'");
         $GLOBALS['statusmsg'] = 'Form Field Deleted';
    } else {
         $GLOBALS['statusmsg'] = 'Error: Form Editor plugin, unable to delete field: $fieldid';
@@ -1116,7 +1116,7 @@ $redirectActions = array ('preview','report');
 
 if (!in_array($op,$redirectActions)) {
     echo COM_siteHeader();
-    $formname = DB_getItem($_TABLES['formDefinitions'],'name',"id='$id'");
+    $formname = DB_getItem($_TABLES['nxform_definitions'],'name',"id='$id'");
     if ($formname != '') {
         echo COM_startBlock("Form Field Editor: \"$formname\" Administration",'','nexform/admin/pluginheader.thtml',true);
     } else {
@@ -1178,8 +1178,8 @@ switch ($op) {
 
     case "savefieldnext" :
         updateFieldRecord($mode);
-        $curfieldorder = DB_getItem($_TABLES['formFields'],'fieldorder', "id='$fieldid'");
-        $sql = "SELECT id FROM {$_TABLES['formFields']} WHERE formid='$formid' AND fieldorder > $curfieldorder ORDER BY fieldorder LIMIT 1";
+        $curfieldorder = DB_getItem($_TABLES['nxform_fields'],'fieldorder', "id='$fieldid'");
+        $sql = "SELECT id FROM {$_TABLES['nxform_fields']} WHERE formid='$formid' AND fieldorder > $curfieldorder ORDER BY fieldorder LIMIT 1";
         $query = DB_query($sql);
         if (DB_numRows($query) > 0) {
             list ($fieldid) = DB_fetchArray($query);
@@ -1188,35 +1188,35 @@ switch ($op) {
         break;
 
     case "delfield" :
-        $formid = DB_getItem($_TABLES['formFields'],'formid',"id='{$fieldid}'");
+        $formid = DB_getItem($_TABLES['nxform_fields'],'formid',"id='{$fieldid}'");
         deleteFieldRecord();
         echo displayFieldRecords($formid);
         break;
 
     case "moveup" :
-        $query = DB_query("SELECT id FROM {$_TABLES['formFields']} WHERE id='$fieldid'");
+        $query = DB_query("SELECT id FROM {$_TABLES['nxform_fields']} WHERE id='$fieldid'");
         if (DB_numRows($query) > 0) {
-            DB_query("UPDATE {$_TABLES['formFields']} SET fieldorder = fieldorder -11 WHERE id = '$fieldid'");
+            DB_query("UPDATE {$_TABLES['nxform_fields']} SET fieldorder = fieldorder -11 WHERE id = '$fieldid'");
         }
         echo displayFieldRecords($formid,$fieldid);
         break;
 
     case "movedn" :
-        $query = DB_query("SELECT id FROM {$_TABLES['formFields']} WHERE id='$fieldid'");
+        $query = DB_query("SELECT id FROM {$_TABLES['nxform_fields']} WHERE id='$fieldid'");
         if (DB_numRows($query) > 0) {
-            DB_query("UPDATE {$_TABLES['formFields']} SET fieldorder = fieldorder +11 WHERE id = '$fieldid'");
+            DB_query("UPDATE {$_TABLES['nxform_fields']} SET fieldorder = fieldorder +11 WHERE id = '$fieldid'");
         }
         echo displayFieldRecords($formid,$fieldid);
         break;
 
     case "setmandatory" :
-        $query = DB_query("SELECT id FROM {$_TABLES['formFields']} WHERE id='$fieldid'");
+        $query = DB_query("SELECT id FROM {$_TABLES['nxform_fields']} WHERE id='$fieldid'");
         if (DB_numRows($query) > 0) {
             if ($chkmandatory[$fieldid]) {
-                DB_query("UPDATE {$_TABLES['formFields']} SET is_mandatory = '1' WHERE id = '$fieldid'");
+                DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_mandatory = '1' WHERE id = '$fieldid'");
                 $statusmsg = "Field validation set to mandatory";
             } else {
-                DB_query("UPDATE {$_TABLES['formFields']} SET is_mandatory = '0' WHERE id = '$fieldid'");
+                DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_mandatory = '0' WHERE id = '$fieldid'");
                 $statusmsg = "Field set to be optional";
             }
         }
@@ -1224,20 +1224,20 @@ switch ($op) {
         break;
 
     case "setreport" :
-        $query = DB_query("SELECT formid FROM {$_TABLES['formFields']} WHERE id='$fieldid'");
+        $query = DB_query("SELECT formid FROM {$_TABLES['nxform_fields']} WHERE id='$fieldid'");
         if (DB_numRows($query) > 0) {
             /* Now check and verify that only a max of XX fields have option for report enabled */
             $is_resultsfield = ($chkreport[$fieldid]) ? 1 : 0;
             if ($is_resultsfield) {
-                $q = DB_query("SELECT id FROM {$_TABLES['formFields']} WHERE formid='$id' AND is_resultsfield='1' ORDER BY fieldorder");
+                $q = DB_query("SELECT id FROM {$_TABLES['nxform_fields']} WHERE formid='$id' AND is_resultsfield='1' ORDER BY fieldorder");
                 if (DB_numRows($q) <= $CONF_FE['result_summary_fields']) {
-                        DB_query("UPDATE {$_TABLES['formFields']} SET is_resultsfield='1' WHERE id='$fieldid'");
+                        DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_resultsfield='1' WHERE id='$fieldid'");
                         $statusmsg = "Field report status enabled";
                 } else {
                     $statusmsg = "Maximum report fields set - status not changed";
                 }
             } else {
-                DB_query("UPDATE {$_TABLES['formFields']} SET is_resultsfield = '0' WHERE id = '$fieldid'");
+                DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_resultsfield = '0' WHERE id = '$fieldid'");
                 $statusmsg = "Field report status disabled";
             }
         }
@@ -1245,13 +1245,13 @@ switch ($op) {
         break;
 
     case "setnewline" :
-        $query = DB_query("SELECT id FROM {$_TABLES['formFields']} WHERE id='$fieldid'");
+        $query = DB_query("SELECT id FROM {$_TABLES['nxform_fields']} WHERE id='$fieldid'");
         if (DB_numRows($query) > 0) {
             if ($chknewline[$fieldid]) {
-                DB_query("UPDATE {$_TABLES['formFields']} SET is_newline = '1' WHERE id = '$fieldid'");
+                DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_newline = '1' WHERE id = '$fieldid'");
                 $statusmsg = "Field newline status enabled";
             } else {
-                DB_query("UPDATE {$_TABLES['formFields']} SET is_newline = '0' WHERE id = '$fieldid'");
+                DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_newline = '0' WHERE id = '$fieldid'");
                 $statusmsg = "Field newline status disabled";
             }
         }
@@ -1259,13 +1259,13 @@ switch ($op) {
         break;
 
     case "setvertical" :
-        $query = DB_query("SELECT id FROM {$_TABLES['formFields']} WHERE id='$fieldid'");
+        $query = DB_query("SELECT id FROM {$_TABLES['nxform_fields']} WHERE id='$fieldid'");
         if (DB_numRows($query) > 0) {
             if ($chkvertical[$fieldid]) {
-                DB_query("UPDATE {$_TABLES['formFields']} SET is_vertical = 1 WHERE id = '$fieldid'");
+                DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_vertical = 1 WHERE id = '$fieldid'");
                 $statusmsg = "Field orientation set to vertical";
             } else {
-                DB_query("UPDATE {$_TABLES['formFields']} SET is_vertical = 0 WHERE id = '$fieldid'");
+                DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_vertical = 0 WHERE id = '$fieldid'");
                 $statusmsg = "Field orientaton set to horizontal";
             }
         }
@@ -1273,13 +1273,13 @@ switch ($op) {
         break;
 
     case "setreverselabel" :
-        $query = DB_query("SELECT id FROM {$_TABLES['formFields']} WHERE id='$fieldid'");
+        $query = DB_query("SELECT id FROM {$_TABLES['nxform_fields']} WHERE id='$fieldid'");
         if (DB_numRows($query) > 0) {
             if ($chkreverse[$fieldid]) {
-                DB_query("UPDATE {$_TABLES['formFields']} SET is_reverseorder = '1' WHERE id = '$fieldid'");
+                DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_reverseorder = '1' WHERE id = '$fieldid'");
                 $statusmsg = "Label will be shown before field";
             } else {
-                DB_query("UPDATE {$_TABLES['formFields']} SET is_reverseorder = '0' WHERE id = '$fieldid'");
+                DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_reverseorder = '0' WHERE id = '$fieldid'");
                 $statusmsg = "Label will be shown after field";
             }
         }

@@ -167,7 +167,7 @@ if (DB_numRows($query) == 0) {
     while($PD = DB_fetchArray($query)) {
 
         // Get project create and edit information
-        $sql = "SELECT date,last_updated_date,uid,last_updated_uid FROM {$_TABLES['formResults']} WHERE id={$PD['results_id']}";
+        $sql = "SELECT date,last_updated_date,uid,last_updated_uid FROM {$_TABLES['nxform_results']} WHERE id={$PD['results_id']}";
         list ($createdDate,$lastUpdatedDate,$createdUid,$lastUpdatedUid) = DB_fetchArray(DB_query($sql));
 
         $createdDate = strftime("%Y-%m-%d %H:%M", $createdDate);
@@ -175,7 +175,7 @@ if (DB_numRows($query) == 0) {
         $form_date = "<b>[C]</b> $createdDate";
         $form_details = '';
         if (strpos($A['formtype'],'RFI') !== false) {
-            $sql = "SELECT b.field_data FROM {$_TABLES['formFields']} a LEFT JOIN {$_TABLES['formResData']} b ON a.id=b.field_id ";
+            $sql = "SELECT b.field_data FROM {$_TABLES['nxform_fields']} a LEFT JOIN {$_TABLES['nxform_resdata']} b ON a.id=b.field_id ";
             $sql .= "WHERE label LIKE 'TITLE' AND b.result_id={$A['results_id']};";
             list ($rfi_title) = DB_fetchArray(DB_query($sql));
             $form_details = "RFI Title: $rfi_title<br>";

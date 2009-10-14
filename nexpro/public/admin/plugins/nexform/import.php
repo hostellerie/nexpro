@@ -47,7 +47,7 @@ function nexform_importForm($_SQL,$cntr) {
        Insert the new records and then update to match the new form definition
     */
 
-    DB_query("DELETE FROM {$_TABLES['formFields']} WHERE formid='$cntr'");
+    DB_query("DELETE FROM {$_TABLES['nxform_fields']} WHERE formid='$cntr'");
     next($_SQL);  // Increment to the field definition records
 
     for ($i = 1; $i < count($_SQL); $i++) {
@@ -60,13 +60,13 @@ function nexform_importForm($_SQL,$cntr) {
         next($_SQL);
     }
 
-    DB_query("UPDATE {$_TABLES['formFields']} set formid='$newformid' WHERE formid='$cntr'");
+    DB_query("UPDATE {$_TABLES['nxform_fields']} set formid='$newformid' WHERE formid='$cntr'");
 
     // Need to cycle thru the fields now and update any fieldnames if auto fieldname used
-    $query = DB_query("SELECT id,type FROM {$_TABLES['formFields']} WHERE formid='$newformid' AND field_name LIKE '%_frm%'");
+    $query = DB_query("SELECT id,type FROM {$_TABLES['nxform_fields']} WHERE formid='$newformid' AND field_name LIKE '%_frm%'");
     while (list ($fieldid, $fieldtype) = DB_fetchArray($query)) {
        $fieldname = "{$CONF_FE['fieldtypes'][$fieldtype][0]}{$newformid}_{$fieldid}";
-       DB_query("UPDATE {$_TABLES['formFields']} set field_name='$fieldname' WHERE id='$fieldid'");
+       DB_query("UPDATE {$_TABLES['nxform_fields']} set field_name='$fieldname' WHERE id='$fieldid'");
     }
 }
 

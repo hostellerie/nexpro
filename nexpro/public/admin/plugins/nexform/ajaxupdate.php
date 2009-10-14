@@ -43,17 +43,17 @@ $setting = COM_applyFilter($_GET['setting']);
 
 if ($mode == 'field') {
 
-    if (DB_count($_TABLES['formFields'],'id',"$rec") == 1) {
+    if (DB_count($_TABLES['nxform_fields'],'id',"$rec") == 1) {
         switch ($op) {
             case 'newline':
                 $setting = (is_string($setting)) ?  strtolower($setting) : $setting;
                 if ($setting == 'true' or $setting == 1) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_newline = '1' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_newline = '1' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set newline to $setting for record: $rec");
                     }
                 } elseif ($setting == 'false' OR $setting == 0) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_newline = '0' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_newline = '0' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set newline to $setting for record: $rec");
                     }
@@ -63,12 +63,12 @@ if ($mode == 'field') {
             case 'manditory':
                 $setting = (is_string($setting)) ?  strtolower($setting) : $setting;
                 if ($setting == 'true' or $setting == 1) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_mandatory = '1' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_mandatory = '1' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field manditory to $setting for record: $rec");
                     }
                 } elseif ($setting == 'false' OR $setting == 0) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_mandatory = '0' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_mandatory = '0' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field manditory to $setting for record: $rec");
                     }
@@ -78,12 +78,12 @@ if ($mode == 'field') {
             case 'vertical':
                 $setting = (is_string($setting)) ?  strtolower($setting) : $setting;
                 if ($setting == 'true' or $setting == 1) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_vertical = '1' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_vertical = '1' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field vertical layout to $setting for record: $rec");
                     }
                 } elseif ($setting == 'false' OR $setting == 0) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_vertical = '0' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_vertical = '0' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field vertical layout to $setting for record: $rec");
                     }
@@ -93,12 +93,12 @@ if ($mode == 'field') {
             case 'reverse':
                 $setting = (is_string($setting)) ?  strtolower($setting) : $setting;
                 if ($setting == 'true' or $setting == 1) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_reverseorder = '1' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_reverseorder = '1' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field reverse order to $setting for record: $rec");
                     }
                 } elseif ($setting == 'false' OR $setting == 0) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_reverseorder = '0' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_reverseorder = '0' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field reverse order to $setting for record: $rec");
                     }
@@ -108,12 +108,12 @@ if ($mode == 'field') {
             case 'report':
                 $setting = (is_string($setting)) ?  strtolower($setting) : $setting;
                 if ($setting == 'true' or $setting == 1) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_resultsfield = '1' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_resultsfield = '1' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field report mode to $setting for record: $rec");
                     }
                 } elseif ($setting == 'false' OR $setting == 0) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_resultsfield = '0' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_resultsfield = '0' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field report mode to $setting for record: $rec");
                     }

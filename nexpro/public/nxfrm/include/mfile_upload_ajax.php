@@ -53,7 +53,7 @@ function upload_file() {
         $retval = '';
         $retval .= "&nbsp;<a href=\"{$CONF_FE['public_url']}/download.php?id=$rec\" target=\"_new\">";
         $retval .= "<img src=\"{$CONF_FE['image_url']}/document_sm.gif\" border=\"0\">{$uploadfile['name'][0]}</a>&nbsp;";
-        $edit_group = DB_getItem($_TABLES['formDefinitions'],'perms_edit',"id='$form_id'");
+        $edit_group = DB_getItem($_TABLES['nxform_definitions'],'perms_edit',"id='$form_id'");
         if (SEC_inGroup($edit_group)) {
             $retval .= "<a href=\"#\" onClick='ajaxDeleteFile($fieldID,$rec,\"$field_name\"); return false;'>";
             $retval .= "<img src=\"{$CONF_FE['image_url']}/delete.gif\" border=\"0\"></a>&nbsp;";

@@ -52,10 +52,10 @@ function generateSQL($t,$formid,$cntr) {
     global $_TABLES;
 
     if ($t == 'formDefinitions') {
-        $table = $_TABLES['formDefinitions'];
+        $table = $_TABLES['nxform_definitions'];
         $query = DB_query("SELECT * from {$table} WHERE id='$formid'");
     } else {
-        $table = $_TABLES['formFields'];
+        $table = $_TABLES['nxform_fields'];
         $query = DB_query("SELECT * from {$table} WHERE formid='$formid'");
     }
 
@@ -102,7 +102,7 @@ if (count($exportforms)  > 0) {
 
     $date =  COM_getUserDateTimeFormat();
     $exportscript .= '<?php' . LB;
-    $exportscript .= '// Export Form Defintion for: ' . DB_getItem($_TABLES['formDefinitions'], 'name', "id='$formid'") . LB;
+    $exportscript .= '// Export Form Defintion for: ' . DB_getItem($_TABLES['nxform_definitions'], 'name', "id='$formid'") . LB;
     $exportscript .= '// Date: ' . $date[0] . LB . LB;
 
     $i = 1;

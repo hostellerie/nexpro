@@ -254,7 +254,7 @@ case 'get_panel_form':
     case 8: //nexform
         $prefix = 'nfm_';
 
-        $ifRes = DB_query("SELECT id, name FROM {$_TABLES['formDefinitions']}");
+        $ifRes = DB_query("SELECT id, name FROM {$_TABLES['nxform_definitions']}");
         $select = "<select name=\"formid\">\n<option value=\"0\">{$LANG_NF03['choose_form']}</option>\n";
         while (list ($key, $value) = DB_fetchArray($ifRes)) {
             $value = htmlspecialchars($value);
@@ -286,7 +286,7 @@ case 'get_panel_form':
         $select .= "</select>\n";
         $p->set_var('variableToSet', $select);
 
-        $spvRes = DB_query("SELECT id, name FROM {$_TABLES['formDefinitions']}");
+        $spvRes = DB_query("SELECT id, name FROM {$_TABLES['nxform_definitions']}");
         $select = "<select id=\"formValue\" name=\"formValue\" onChange=\"updateFieldList(this.value, 0);\">\n<option value=\"0\">{$LANG_NF03['choose_form']}</option>\n";
         while (list ($key, $value) = DB_fetchArray($spvRes)) {
             if ($A['formid'] == $key) {
@@ -299,7 +299,7 @@ case 'get_panel_form':
         $select .= "</select>\n";
         $p->set_var('selectForm', $select);
 
-        $spvRes = DB_query("SELECT id, formid, label, field_name FROM {$_TABLES['formFields']}");
+        $spvRes = DB_query("SELECT id, formid, label, field_name FROM {$_TABLES['nxform_fields']}");
         $select = "<select id=\"fieldValueCpy\" name=\"fieldValueCpy\">\n<option value=\"0\">{$LANG_NF03['choose_field']}</option>\n";
         while (list ($key, $fid, $label, $value) = DB_fetchArray($spvRes)) {
             if ($label == '') {

@@ -37,7 +37,7 @@ ppGetData($myvars,true);
 
 $fe_errmg = '';    // Form Editor Error Message - if errors occur during form processing
 
-$returnURL = DB_getItem($_TABLES['formDefinitions'],"return_url", "id='{$form_id}'");
+$returnURL = DB_getItem($_TABLES['nxform_definitions'],"return_url", "id='{$form_id}'");
 if (trim($returnURL) == '') {
     $returnURL = $_CONF['site_url'] . '/index.php';
 }
@@ -72,8 +72,8 @@ if ($_POST['formhandler'] == 'dbsave') {
         nexform_dbsave($form_id);
     }
     /* Update the hit or results counter */
-    DB_query("UPDATE {$_TABLES['formDefinitions']} SET responses = responses + 1 WHERE id='$form_id'");
-    $completion_msg = DB_getItem($_TABLES['formDefinitions'], 'after_post_text', "id=$form_id");
+    DB_query("UPDATE {$_TABLES['nxform_definitions']} SET responses = responses + 1 WHERE id='$form_id'");
+    $completion_msg = DB_getItem($_TABLES['nxform_definitions'], 'after_post_text', "id=$form_id");
     if ($completion_msg == '') {
         echo COM_refresh($returnURL . '?msg=1&plugin=nexform');
     }
@@ -88,8 +88,8 @@ if ($_POST['formhandler'] == 'dbsave') {
      nexform_emailresults();
 
     /* Update the hit or results counter */
-    DB_query("UPDATE {$_TABLES['formDefinitions']} SET responses = responses + 1 WHERE id='$form_id'");
-    $completion_msg = DB_getItem($_TABLES['formDefinitions'], 'after_post_text', "id=$form_id");
+    DB_query("UPDATE {$_TABLES['nxform_definitions']} SET responses = responses + 1 WHERE id='$form_id'");
+    $completion_msg = DB_getItem($_TABLES['nxform_definitions'], 'after_post_text', "id=$form_id");
     if ($completion_msg == '') {
         echo COM_refresh($returnURL . '?msg=1&plugin=nexform');
     }
@@ -115,8 +115,8 @@ if ($_POST['formhandler'] == 'dbsave') {
      nexform_emailresults();
 
     /* Update the hit or results counter */
-    DB_query("UPDATE {$_TABLES['formDefinitions']} SET responses = responses + 1 WHERE id='$form_id'");
-    $completion_msg = DB_getItem($_TABLES['formDefinitions'], 'after_post_text', "id=$form_id");
+    DB_query("UPDATE {$_TABLES['nxform_definitions']} SET responses = responses + 1 WHERE id='$form_id'");
+    $completion_msg = DB_getItem($_TABLES['nxform_definitions'], 'after_post_text', "id=$form_id");
     if ($completion_msg == '') {
         echo COM_refresh($returnURL . '?msg=1&plugin=nexform');
     }
@@ -126,7 +126,7 @@ if ($_POST['formhandler'] == 'dbsave') {
     exit();
 
 } else {
-    if (DB_count($_TABLES['formDefinitions'],'id',$id) == 1) {
+    if (DB_count($_TABLES['nxform_definitions'],'id',$id) == 1) {
         echo COM_siteHeader();
         if (isset($_GET['processid']) and isset($_GET['taskid'])) {
             $parms = array(

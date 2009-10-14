@@ -29,7 +29,7 @@
 // +---------------------------------------------------------------------------+
 //
 
-$_SQL[] = "CREATE TABLE {$_TABLES['formDefinitions']} (
+$_SQL[] = "CREATE TABLE {$_TABLES['nxform_definitions']} (
   `id` mediumint(8) NOT NULL auto_increment,
   `name` varchar(128) NOT NULL default '',
   `shortname` varchar(32) NOT NULL default '',
@@ -60,7 +60,7 @@ $_SQL[] = "CREATE TABLE {$_TABLES['formDefinitions']} (
   KEY `name` (`name`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;";
 
-$_SQL[] = "CREATE TABLE {$_TABLES['formFields']} (
+$_SQL[] = "CREATE TABLE {$_TABLES['nxform_fields']} (
   `id` mediumint(8) NOT NULL auto_increment,
   `formid` mediumint(8) NOT NULL default '0',
   `tfid` mediumint(8) NOT NULL default '0',
@@ -93,7 +93,7 @@ $_SQL[] = "CREATE TABLE {$_TABLES['formFields']} (
   KEY `fieldorder` (`fieldorder`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;";
 
-$_SQL[] = "CREATE TABLE {$_TABLES['formResults']} (
+$_SQL[] = "CREATE TABLE {$_TABLES['nxform_results']} (
   `id` int(11) NOT NULL auto_increment,
   `form_id` mediumint(8) NOT NULL default '0',
   `uid` mediumint(8) NOT NULL default '0',
@@ -105,7 +105,7 @@ $_SQL[] = "CREATE TABLE {$_TABLES['formResults']} (
   KEY `uid` (`uid`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;";
 
-$_SQL[] = "CREATE TABLE {$_TABLES['formResData']} (
+$_SQL[] = "CREATE TABLE {$_TABLES['nxform_resdata']} (
   `id` int(11) NOT NULL auto_increment,
   `result_id` mediumint(8) NOT NULL default '0',
   `field_id` mediumint(8) NOT NULL default '0',
@@ -117,7 +117,7 @@ $_SQL[] = "CREATE TABLE {$_TABLES['formResData']} (
 ) TYPE=MyISAM ;";
 
 
-$_SQL[] = "CREATE TABLE {$_TABLES['formResText']} (
+$_SQL[] = "CREATE TABLE {$_TABLES['nxform_restext']} (
   `result_id` mediumint(11) NOT NULL default '0',
   `field_id` mediumint(8) NOT NULL default '0',
   `field_data` longtext NOT NULL,
@@ -129,7 +129,7 @@ $_SQL[] = "CREATE TABLE {$_TABLES['formResText']} (
 
 // Temp tables used exclusively in the public/nexform/print.php
 
-$_SQL[] = "CREATE TABLE {$_TABLES['formResultsTmp']} (
+$_SQL[] = "CREATE TABLE {$_TABLES['nxform_results_tmp']} (
   `id` int(11) NOT NULL auto_increment,
   `form_id` mediumint(8) NOT NULL default '0',
   `uid` mediumint(8) NOT NULL default '0',
@@ -139,7 +139,7 @@ $_SQL[] = "CREATE TABLE {$_TABLES['formResultsTmp']} (
   KEY `uid` (`uid`)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;";
 
-$_SQL[] = "CREATE TABLE {$_TABLES['formResDataTmp']} (
+$_SQL[] = "CREATE TABLE {$_TABLES['nxform_resdata_tmp']} (
   `id` int(11) NOT NULL auto_increment,
   `result_id` mediumint(8) NOT NULL default '0',
   `field_id` mediumint(8) NOT NULL default '0',
@@ -151,7 +151,7 @@ $_SQL[] = "CREATE TABLE {$_TABLES['formResDataTmp']} (
 ) TYPE=MyISAM ;";
 
 
-$_SQL[] = "CREATE TABLE {$_TABLES['formResTextTmp']} (
+$_SQL[] = "CREATE TABLE {$_TABLES['nxform_restext_tmp']} (
   `result_id` mediumint(11) NOT NULL default '0',
   `field_id` mediumint(8) NOT NULL default '0',
   `field_data` longtext NOT NULL,
@@ -159,15 +159,15 @@ $_SQL[] = "CREATE TABLE {$_TABLES['formResTextTmp']} (
   KEY `field_id` (`field_id`)
 ) TYPE=MyISAM ;";
 
-$_SQL[] = "INSERT INTO {$_TABLES['formDefinitions']} VALUES (1, 'Install Test','Install Test' ,1121781422, 33, 'defaultform.thtml', 'dbsave', '','', 0, 0, 1, '', 0, 0x5468697320697320612074657374206f662074686520706c7567696e20696e7374616c6c202d206a75737420736f6d652072616e646f6d206669656c64732e, '', '', '', 2, 2, 2, 1, '', '', '', 0);";
+$_SQL[] = "INSERT INTO {$_TABLES['nxform_definitions']} VALUES (1, 'Install Test','Install Test' ,1121781422, 33, 'defaultform.thtml', 'dbsave', '','', 0, 0, 1, '', 0, 0x5468697320697320612074657374206f662074686520706c7567696e20696e7374616c6c202d206a75737420736f6d652072616e646f6d206669656c64732e, '', '', '', 2, 2, 2, 1, '', '', '', 0);";
 
-$_SQL[] = "INSERT INTO {$_TABLES['formFields']} VALUES (1, 1, 1, 'select', 10, 'sel_frm1_1', 'Salutation', '1', '', NULL, NULL,NULL, 0, 1, 0, 0, 1, 0, 0, 0, 0, '', '', 'nx_getSalutations', 1, '', '');";
-$_SQL[] = "INSERT INTO {$_TABLES['formFields']} VALUES (2, 1, 2, 'text', 20, 'txt_frm1_2', 'Name', '2', '', NULL, NULL,NULL, 0, 1, 0, 0, 1, 0, 0, 0, 0, '', '', '', 0, '', '');";
-$_SQL[] = "INSERT INTO {$_TABLES['formFields']} VALUES (3, 1, 3, 'text', 30, 'txt_frm1_3', 'Address1', '1', '', NULL, NULL,NULL, 0, 1, 1, 0, 1, 0, 0, 0, 0, 'size=\"60\" maxlength=\"40\"', '', 'your address here', 0, '', 'realname=\"Full address is required\"');";
-$_SQL[] = "INSERT INTO {$_TABLES['formFields']} VALUES (5, 1, 4, 'textarea1', 40, 'ta1_frm1_5', 'Comments', '1', '', NULL, NULL,NULL, 0, 1, 0, 0, 1, 0, 0, 0, 0, 'cols=\"50\" rows=\"3\"', '', 'This will clear when you click on field. Testing adding JS to the field', 0, '', 'onFocus=''this.value=\"\"''');";
-$_SQL[] = "INSERT INTO {$_TABLES['formFields']} VALUES (7, 1, 7, 'text', 50, 'txt_frm1_7', 'Age', '1', '', NULL, NULL,NULL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'size=&quot;3&quot;', '', '', 0, '', '');";
-$_SQL[] = "INSERT INTO {$_TABLES['formFields']} VALUES (6, 1, 9, 'checkbox', 70, 'chk_frm1_6', 'Sign up for newsletter', '1', '', NULL, NULL,NULL, 0, 1, 0, 0, 0, 0, 0, 0, 0, '', '', 'yes', 0, '', '');";
-$_SQL[] = "INSERT INTO {$_TABLES['formFields']} VALUES (8, 1, 10, 'submit', 80, 'sub_frm1_8', '', '1', '', NULL, NULL,NULL, 0, 1, 0, 0, 0, 0, 0, 0, 0, '', '', 'Submit', 0, '', '');";
+$_SQL[] = "INSERT INTO {$_TABLES['nxform_fields']} VALUES (1, 1, 1, 'select', 10, 'sel_frm1_1', 'Salutation', '1', '', NULL, NULL,NULL, 0, 1, 0, 0, 1, 0, 0, 0, 0, '', '', 'nx_getSalutations', 1, '', '');";
+$_SQL[] = "INSERT INTO {$_TABLES['nxform_fields']} VALUES (2, 1, 2, 'text', 20, 'txt_frm1_2', 'Name', '2', '', NULL, NULL,NULL, 0, 1, 0, 0, 1, 0, 0, 0, 0, '', '', '', 0, '', '');";
+$_SQL[] = "INSERT INTO {$_TABLES['nxform_fields']} VALUES (3, 1, 3, 'text', 30, 'txt_frm1_3', 'Address1', '1', '', NULL, NULL,NULL, 0, 1, 1, 0, 1, 0, 0, 0, 0, 'size=\"60\" maxlength=\"40\"', '', 'your address here', 0, '', 'realname=\"Full address is required\"');";
+$_SQL[] = "INSERT INTO {$_TABLES['nxform_fields']} VALUES (5, 1, 4, 'textarea1', 40, 'ta1_frm1_5', 'Comments', '1', '', NULL, NULL,NULL, 0, 1, 0, 0, 1, 0, 0, 0, 0, 'cols=\"50\" rows=\"3\"', '', 'This will clear when you click on field. Testing adding JS to the field', 0, '', 'onFocus=''this.value=\"\"''');";
+$_SQL[] = "INSERT INTO {$_TABLES['nxform_fields']} VALUES (7, 1, 7, 'text', 50, 'txt_frm1_7', 'Age', '1', '', NULL, NULL,NULL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'size=&quot;3&quot;', '', '', 0, '', '');";
+$_SQL[] = "INSERT INTO {$_TABLES['nxform_fields']} VALUES (6, 1, 9, 'checkbox', 70, 'chk_frm1_6', 'Sign up for newsletter', '1', '', NULL, NULL,NULL, 0, 1, 0, 0, 0, 0, 0, 0, 0, '', '', 'yes', 0, '', '');";
+$_SQL[] = "INSERT INTO {$_TABLES['nxform_fields']} VALUES (8, 1, 10, 'submit', 80, 'sub_frm1_8', '', '1', '', NULL, NULL,NULL, 0, 1, 0, 0, 0, 0, 0, 0, 0, '', '', 'Submit', 0, '', '');";
 
 
 

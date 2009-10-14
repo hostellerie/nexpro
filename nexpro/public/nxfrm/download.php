@@ -35,10 +35,10 @@ $rec = COM_applyFilter($_GET['id'], true);
 $rid = COM_applyFilter($_GET['rid'], true);
 
 if ($rid != 0) {    //file field
-    $sql = "SELECT field_data FROM {$_TABLES['formResData']} WHERE result_id=$rid AND field_id=$rec;";
+    $sql = "SELECT field_data FROM {$_TABLES['nxform_resdata']} WHERE result_id=$rid AND field_id=$rec;";
 }
 else {  //mfile field
-    $sql = "SELECT field_data FROM {$_TABLES['formResData']} WHERE id=$rec;";
+    $sql = "SELECT field_data FROM {$_TABLES['nxform_resdata']} WHERE id=$rec;";
 }
 $res = DB_query($sql);
 $A = DB_fetchArray($res);

@@ -36,6 +36,8 @@ if (file_exists ($langfile)) {
     include_once ($_CONF['path'] . 'plugins/nexform/language/english.php');
 }
 
+include_once ($_CONF['path'] . 'plugins/nexform/autouninstall.php');
+
 /*
 * Check and see if we need to load the plugin configuration
 */
@@ -46,8 +48,7 @@ if (!isset($CONF_FE['post_url'])) {
     $CONF_FE = $nexform_config->get_config('nexform');
 }
 
-$CONF_FE['version'] = '2.2.0';          // Plugin Version
-require_once ($_CONF['path'] . 'plugins/nexform/config.php');
+require_once ($_CONF['path'] . 'plugins/nexform/nexform.php');
 require_once ($_CONF['path'] . 'plugins/nexform/library.php');
 
 /**
@@ -59,7 +60,7 @@ function plugin_getadminoption_nexform()
     global $_TABLES, $_CONF,$LANG_FE01;
 
     if (SEC_hasRights('nexform.edit')) {
-    $numrecords = DB_getITEM($_TABLES['formDefinitions'],"count(*)");
+    $numrecords = DB_getITEM($_TABLES['nxform_definitions'],"count(*)");
     return array($LANG_FE01['adminmenutitle'], $_CONF['site_admin_url'] . '/plugins/nexform/index.php', $numrecords);
     }
 
@@ -139,34 +140,6 @@ function plugin_chkVersion_nexform() {
 }
 
 
-/**
-* Automatic uninstall function for plugins
-*
-* @return   array
-*
-* This code is automatically uninstalling the plugin.
-* It passes an array to the core code function that removes
-* tables, groups, features and php blocks from the tables.
-* Additionally, this code can perform special actions that cannot be
-* foreseen by the core code (interactions with other plugins for example)
-*
-*/
-function plugin_autouninstall_nexform ()
-{
-    $out = array (
-        /* give the name of the tables, without $_TABLES[] */
-        'tables' => array('formDefinitions','formFields','formResults','formResData','formResText','formResultsTmp','formResDataTmp','formResTextTmp'),
-        /* give the full name of the group, as in the db */
-        'groups' => array('nexform Admin'),
-        /* give the full name of the feature, as in the db */
-        'features' => array('nexform.edit'),
-        /* give the full name of the block, including 'phpblock_', etc */
-        'php_blocks' => array(''),
-        /* give all vars with their name */
-        'vars'=> array()
-    );
-    return $out;
-}
 
 
 function plugin_upgrade_nexform() {
@@ -179,7 +152,7 @@ function plugin_upgrade_nexform() {
     switch ($curversion) {
         case '2.0.0':
             if (upgrade_201() == 0 )  {
-                DB_query("ALTER TABLE {$_TABLES['formFields']} ADD `label_padding` SMALLINT( 1 ) NULL AFTER `col_padding`");
+                DB_query("ALTER TABLE {$_TABLES['nxform_fields']} ADD `label_padding` SMALLINT( 1 ) NULL AFTER `col_padding`");
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.0.1', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexform' LIMIT 1");
                 if (upgrade_22() == 0) {
                     DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.2.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexform' LIMIT 1");
@@ -229,7 +202,7 @@ function plugin_autotags_nexform($op,$content='',$tag='') {
     if ($op == 'tagname' ) {
         return 'form';
     } elseif ($op == 'parse') {
-       if (DB_count($_TABLES['formDefinitions'],'id',$tag['parm1']) == 1) {
+       if (DB_count($_TABLES['nxform_definitions'],'id',$tag['parm1']) == 1) {
            // Set the option to not show the print links with the form
            $parms = array(
                 'noprint' => true

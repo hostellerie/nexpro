@@ -39,7 +39,7 @@ ppGetData($myvars,true);
 if ($_GET['op'] == 'print')
     $noheader = 1;
 
-$view_group = DB_getItem($_TABLES['formDefinitions'],'perms_view',"id='$formid'");
+$view_group = DB_getItem($_TABLES['nxform_definitions'],'perms_view',"id='$formid'");
 if (!SEC_inGroup($view_group) && !SEC_inGroup('Root')) {
     echo COM_siteHeader();
     echo COM_startBlock("Access Error");
@@ -54,7 +54,7 @@ if (!SEC_inGroup($view_group) && !SEC_inGroup('Root')) {
 
 $editrights = false;
 if (SEC_hasRights('nexform.edit')) {
-    $edit_group = DB_getItem($_TABLES['formDefinitions'],'perms_edit',"id='$formid'");
+    $edit_group = DB_getItem($_TABLES['nxform_definitions'],'perms_edit',"id='$formid'");
     if (SEC_inGroup($edit_group)) {
         $editrights = true;
     }
@@ -89,13 +89,13 @@ function nexform_getExportArrays($formid, &$fieldIDArray, &$labelArray, &$formID
 */
 function nexform_export_recursive_GetToHead($formID, &$fieldIDArray, &$labelArray, &$formIDArray, &$ignoreFields, $mainResultID, $isFirst=FALSE, $isDynamic=FALSE){
     global $_TABLES;
-    $sql="select before_formID from {$_TABLES['formDefinitions']} where id=$formID";
+    $sql="select before_formID from {$_TABLES['nxform_definitions']} where id=$formID";
     $res=DB_query($sql);
     list($beforeID)=DB_fetchArray($res);
     if($beforeID!='' and $beforeID!='0'){
         nexform_export_recursive_GetToHead($beforeID,$fieldIDArray, $labelArray, $formIDArray, $ignoreFields, $mainResultID);
         if(!$isFirst){
-            $sql="SELECT id,label, type, field_values FROM {$_TABLES['formFields']} WHERE formid=$formID AND type NOT IN ($ignoreFields) ORDER BY fieldorder";
+            $sql="SELECT id,label, type, field_values FROM {$_TABLES['nxform_fields']} WHERE formid=$formID AND type NOT IN ($ignoreFields) ORDER BY fieldorder";
             $res=DB_query($sql);
             while (list ($field_id, $heading, $fieldType, $fieldValue) = DB_fetchArray($res)) {
                 if($fieldType=='dynamic'){
@@ -114,7 +114,7 @@ function nexform_export_recursive_GetToHead($formID, &$fieldIDArray, &$labelArra
                 }
             }
     } else {
-        $sql="SELECT id,label, type, field_values FROM {$_TABLES['formFields']} WHERE formid=$formID AND type NOT IN ($ignoreFields) ORDER BY fieldorder";
+        $sql="SELECT id,label, type, field_values FROM {$_TABLES['nxform_fields']} WHERE formid=$formID AND type NOT IN ($ignoreFields) ORDER BY fieldorder";
         $res=DB_query($sql);
         while (list ($field_id, $heading, $fieldType, $fieldValue) = DB_fetchArray($res)) {
             if($fieldType=='dynamic'){
@@ -140,11 +140,11 @@ function nexform_export_recursive_GetToHead($formID, &$fieldIDArray, &$labelArra
 */
 function nexform_export_recursive_GetToEnd($formID, &$fieldIDArray, &$labelArray, &$formIDArray, &$ignoreFields, $mainResultID, $isFirst=FALSE, $isDynamic=FALSE){
     global $_TABLES;
-    $sql="select after_formID from {$_TABLES['formDefinitions']} where id=$formID";
+    $sql="select after_formID from {$_TABLES['nxform_definitions']} where id=$formID";
     $res=DB_query($sql);
     list($afterID)=DB_fetchArray($res);
     if($afterID!='' and $afterID!='0'){
-        $sql="SELECT id,label, type, field_values FROM {$_TABLES['formFields']} WHERE formid=$formID AND type NOT IN ($ignoreFields) ORDER BY fieldorder";
+        $sql="SELECT id,label, type, field_values FROM {$_TABLES['nxform_fields']} WHERE formid=$formID AND type NOT IN ($ignoreFields) ORDER BY fieldorder";
         $res=DB_query($sql);
         while (list ($field_id, $heading, $fieldType, $fieldValue) = DB_fetchArray($res)) {
              if($fieldType=='dynamic') {
@@ -162,7 +162,7 @@ function nexform_export_recursive_GetToEnd($formID, &$fieldIDArray, &$labelArray
         }
         nexform_export_recursive_GetToEnd($afterID,$fieldIDArray, $labelArray, $formIDArray, $ignoreFields,$mainResultID);
     } else {
-        $sql="SELECT id,label , type, field_values FROM {$_TABLES['formFields']} WHERE formid=$formID AND type NOT IN ($ignoreFields) ORDER BY fieldorder";
+        $sql="SELECT id,label , type, field_values FROM {$_TABLES['nxform_fields']} WHERE formid=$formID AND type NOT IN ($ignoreFields) ORDER BY fieldorder";
         $res=DB_query($sql);
         if(!$isFirst){
             while (list ($field_id, $heading, $fieldType, $fieldValue) = DB_fetchArray($res)) {
@@ -225,7 +225,7 @@ function show_formresults($formid) {
                 'records'=>'reportrecords.thtml',
                 'field' => 'report_recordfield.thtml'));
 
-        $sql = "SELECT count(*) as numpages FROM {$_TABLES['formResults']} WHERE form_id='$formid' ";
+        $sql = "SELECT count(*) as numpages FROM {$_TABLES['nxform_results']} WHERE form_id='$formid' ";
         if ($sdate > 0) {
             $sql .= "AND date >= '$sconvdate' ";
         }
@@ -245,7 +245,7 @@ function show_formresults($formid) {
         }
         /* Retrieve the fields that are setup to be headings */
         $ignorefields = "'submit','cancel','file','mfile'";
-        $sql = "SELECT id,label FROM {$_TABLES['formFields']} WHERE formid='$formid' AND is_resultsfield ";
+        $sql = "SELECT id,label FROM {$_TABLES['nxform_fields']} WHERE formid='$formid' AND is_resultsfield ";
         $sql .= "AND type NOT IN ($ignorefields) ORDER BY fieldorder";
         $q1 = DB_query($sql);
 
@@ -284,7 +284,7 @@ function show_formresults($formid) {
         $reportpage->set_var ('LANG_USER','User');
         $reportpage->set_var ('LANG_ACTION','Action');
 
-        $sql = "SELECT id,uid,date,last_updated_date FROM {$_TABLES['formResults']} WHERE form_id='$formid' ";
+        $sql = "SELECT id,uid,date,last_updated_date FROM {$_TABLES['nxform_results']} WHERE form_id='$formid' ";
         if ($sdate > 0) {
             $sql .= "AND date >= '$sconvdate' ";
         }
@@ -314,12 +314,12 @@ function show_formresults($formid) {
                 *  Use the array reportfields then as the key to which data to report */
 
                 $sorted_data=array();
-                $sql = "SELECT field_id,field_data FROM {$_TABLES['formResData']} WHERE result_id='$resultid'";
+                $sql = "SELECT field_id,field_data FROM {$_TABLES['nxform_resdata']} WHERE result_id='$resultid'";
                 $q1 = DB_query($sql);
                 while (list ($field_id, $field_data) = DB_fetchArray($q1)) {
                     $sorted_data[$field_id] = $field_data;
                 }
-                $sql = "SELECT field_id, field_data FROM {$_TABLES['formResText']} WHERE result_id='$resultid'";
+                $sql = "SELECT field_id, field_data FROM {$_TABLES['nxform_restext']} WHERE result_id='$resultid'";
                 $q2 = DB_query($sql);
                 while (list ($field_id, $field_data) = DB_fetchArray($q2)) {
                     $sorted_data[$field_id] = $field_data;
@@ -367,7 +367,7 @@ function show_formresults($formid) {
 
 $LANG_NAVBAR = $LANG_FRM_ADMIN_NAVBAR;
 
-$formname = DB_getItem($_TABLES['formDefinitions'],'name',"id='$formid'");
+$formname = DB_getItem($_TABLES['nxform_definitions'],'name',"id='$formid'");
 $sdate = COM_applyfilter($_REQUEST['sdate']);
 $edate = COM_applyfilter($_REQUEST['edate']);
 
@@ -423,7 +423,7 @@ switch($op){
         break;
 
     case 'update':
-        if ($editrights AND DB_count($_TABLES['formResults'],'id',$id) > 0) {
+        if ($editrights AND DB_count($_TABLES['nxform_results'],'id',$id) > 0) {
             nexform_dbupdate($formid,$id);
             $report_results = show_formresults($formid);
         } else {
@@ -433,7 +433,7 @@ switch($op){
 
     case 'delete':
         if ($editrights) {
-            DB_query("DELETE FROM {$_TABLES['formResults']} WHERE id='$id'");
+            DB_query("DELETE FROM {$_TABLES['nxform_results']} WHERE id='$id'");
         }
         $report_results = show_formresults($formid);
         break;
@@ -466,7 +466,7 @@ switch($op){
             $i++;
             }
         $cntr=0;
-        $sql = "SELECT id,uid, date,related_results FROM {$_TABLES['formResults']} WHERE form_id='$formid' ";
+        $sql = "SELECT id,uid, date,related_results FROM {$_TABLES['nxform_results']} WHERE form_id='$formid' ";
         if ($sdate > 0) {
             $sql .= "AND date >= '$sconvdate' ";
         }
@@ -492,17 +492,17 @@ switch($op){
                     $label=$labelArray[$cntr];
                     $formID=$formIDArray[$cntr];
 
-                    $sql="SELECT type from {$_TABLES['formFields']} where id={$fieldID}";
+                    $sql="SELECT type from {$_TABLES['nxform_fields']} where id={$fieldID}";
                     $typeRes=DB_query($sql);
                     list($typeOfField)=DB_fetchArray($typeRes);
                     if( $typeOfField!='textarea2' && $typeOfField!='textarea1' ){//if its not large text data
                         if($formID!=$formid and $relatedResults!=''){
-                                $sql="SELECT id FROM {$_TABLES['formResults']} where form_id={$formID} and id in ({$relatedResults})";
+                                $sql="SELECT id FROM {$_TABLES['nxform_results']} where form_id={$formID} and id in ({$relatedResults})";
                                 $q3=DB_query($sql);
                                 list($newResultID)=DB_fetchArray($q3);
-                                $sql = "SELECT field_data FROM {$_TABLES['formResData']} WHERE result_id='$newResultID' and field_id='$fieldID'";
+                                $sql = "SELECT field_data FROM {$_TABLES['nxform_resdata']} WHERE result_id='$newResultID' and field_id='$fieldID'";
                         } else {
-                            $sql = "SELECT field_data FROM {$_TABLES['formResData']} WHERE result_id='$resultid' and field_id='$fieldID'";
+                            $sql = "SELECT field_data FROM {$_TABLES['nxform_resdata']} WHERE result_id='$resultid' and field_id='$fieldID'";
                         }
                         $q1 = DB_query($sql);
                         list($data)=DB_fetchArray($q1);
@@ -511,19 +511,19 @@ switch($op){
                         }
                     } else {   //we're trying to report on large text data
                         if($formID!=$formid and $relatedResults!=''){
-                            $sql="SELECT id FROM {$_TABLES['formResults']} where form_id={$formID} and id in ({$relatedResults})";
+                            $sql="SELECT id FROM {$_TABLES['nxform_results']} where form_id={$formID} and id in ({$relatedResults})";
                             $q3=DB_query($sql);
                             list($newResultID)=DB_fetchArray($q3);
-                            $sql = "SELECT field_data FROM {$_TABLES['formResText']} WHERE result_id='$newResultID' and field_id='$fieldID'";
+                            $sql = "SELECT field_data FROM {$_TABLES['nxform_restext']} WHERE result_id='$newResultID' and field_id='$fieldID'";
 
                         } else {
-                            $sql = "SELECT field_data FROM {$_TABLES['formResText']} WHERE result_id='$resultid' and field_id='$fieldID'";
+                            $sql = "SELECT field_data FROM {$_TABLES['nxform_restext']} WHERE result_id='$resultid' and field_id='$fieldID'";
                         }
                         $q2 = DB_query($sql);
                         list($data)=DB_fetchArray($q2);
                         }
 
-                    $sql="SELECT field_values from {$_TABLES['formFields']} where id={$fieldID} and value_by_function=1";
+                    $sql="SELECT field_values from {$_TABLES['nxform_fields']} where id={$fieldID} and value_by_function=1";
                     $typeRes=DB_query($sql);
                     list($fieldValue)=DB_fetchArray($typeRes);
                     if($fieldValue!='') {   //we have an alist or custom function

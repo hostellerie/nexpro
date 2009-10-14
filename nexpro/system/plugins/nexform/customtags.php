@@ -57,7 +57,7 @@ function nx_getSalutations($p,$fieldid='') {
     $resultsid = COM_applyFilter($_GET['result'],true);
 
     if ($resultsid > 0 AND $fieldid != '') {
-        $value = DB_getItem($_TABLES['formResData'], 'field_data',"result_id='$resultsid' AND field_id='$fieldid'");
+        $value = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='$fieldid'");
         return $value;
     } else {
         return 'Mr,Mrs,Miss,Dr';
@@ -88,7 +88,7 @@ function nx_getusers ($parms,$fieldid) {
     $resultsid = COM_applyFilter($_GET['result'],true);
     $curvalue = 0;
     if ($resultsid > 0 AND $fieldid != '') {
-        $curvalue = DB_getItem($_TABLES['formResData'], 'field_data',"result_id='$resultsid' AND field_id='$fieldid'");
+        $curvalue = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='$fieldid'");
     }
     $query = DB_query("SELECT uid FROM {$_TABLES['users']} order by $order");
     $retval = array();
@@ -122,7 +122,7 @@ function nx_getgroupusers ($p1,$fieldid) {
     $resultsid = COM_applyFilter($_GET['result'],true);
     $curvalue = 0;
     if ($resultsid > 0 AND $fieldid != '') {
-        $curvalue = DB_getItem($_TABLES['formResData'], 'field_data',"result_id='$resultsid' AND field_id='$fieldid'");
+        $curvalue = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='$fieldid'");
     }
 
     $to_check = array ();
@@ -190,19 +190,19 @@ function pullform($parms,$formFieldID='') {
 
     $retval = '';
     // Retrieve the fieldid for this logical fieldid
-    $query = DB_query("SELECT id,type From {$_TABLES['formFields']} WHERE  formid='{$aparms[0]}' AND tfid='{$aparms[1]}'");
+    $query = DB_query("SELECT id,type From {$_TABLES['nxform_fields']} WHERE  formid='{$aparms[0]}' AND tfid='{$aparms[1]}'");
     list ($fieldid, $field_type) = DB_fetchArray($query);
 
     if ($resultsid > 0) {
           if ($field_type == 'textarea1' OR $field_type == 'textarea2') {
-              $retval = DB_getItem($_TABLES['formResText'], 'field_data',"result_id='$resultsid' AND field_id='{$formFieldID}'");
+              $retval = DB_getItem($_TABLES['nxform_restext'], 'field_data',"result_id='$resultsid' AND field_id='{$formFieldID}'");
               if (trim($retval) == '') {
                 //Form results has nothing for this field - pull from the source form referenced in lookup.
                 $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
-                $retval = DB_getItem($_TABLES['formResText'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
+                $retval = DB_getItem($_TABLES['nxform_restext'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
               }
           } elseif ($field_type == 'multicheck') {
-                $options = DB_getItem($_TABLES['formFields'], 'field_values',"formid='{$aparms[0]}' AND tfid='{$aparms[1]}'");
+                $options = DB_getItem($_TABLES['nxform_fields'], 'field_values',"formid='{$aparms[0]}' AND tfid='{$aparms[1]}'");
                 $start = strpos($options, '[pullform:');
                 if ($start !== FALSE) {
                     $len = strlen($options) - 11;
@@ -213,7 +213,7 @@ function pullform($parms,$formFieldID='') {
                     $aoptions = explode(',',$options);
                     // Retrieve the results from the source form referenced in lookup.
                     $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
-                    $selected = DB_getItem($_TABLES['formResData'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
+                    $selected = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
                     $aselected = explode(',',$selected);
                     $retval = array();
                     foreach ($aoptions as $option) {
@@ -225,7 +225,7 @@ function pullform($parms,$formFieldID='') {
                     }
                 }
           } elseif ($field_type == 'radio') {
-                $options = DB_getItem($_TABLES['formFields'], 'field_values',"formid='{$aparms[0]}' AND tfid='{$aparms[1]}'");
+                $options = DB_getItem($_TABLES['nxform_fields'], 'field_values',"formid='{$aparms[0]}' AND tfid='{$aparms[1]}'");
                 $start = strpos($options, '[pullform:');
                 if ($start !== FALSE) {
                     $len = strlen($options) - 11;
@@ -236,7 +236,7 @@ function pullform($parms,$formFieldID='') {
                     $aoptions = explode(',',$options);
                     // Retrieve the results from the source form referenced in lookup.
                     $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
-                    $selected = DB_getItem($_TABLES['formResData'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
+                    $selected = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
                     $aselected = explode(',',$selected);
                     $retval = array();
                     foreach ($aoptions as $option) {
@@ -249,7 +249,7 @@ function pullform($parms,$formFieldID='') {
                 }
 
           } elseif ($field_type == 'select') {
-                $options = DB_getItem($_TABLES['formFields'], 'field_values',"formid='{$aparms[0]}' AND tfid='{$aparms[1]}'");
+                $options = DB_getItem($_TABLES['nxform_fields'], 'field_values',"formid='{$aparms[0]}' AND tfid='{$aparms[1]}'");
                 $start = strpos($options, '[pullform:');
                 if ($start !== FALSE) {
                     $len = strlen($options) - 11;
@@ -260,7 +260,7 @@ function pullform($parms,$formFieldID='') {
                     $aoptions = explode(',',$options);
                     // Retrieve the results from the source form referenced in lookup.
                     $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
-                    $selected = DB_getItem($_TABLES['formResData'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
+                    $selected = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
                     $aselected = explode(',',$selected);
                     $retval = array();
                     foreach ($aoptions as $option) {
@@ -273,7 +273,7 @@ function pullform($parms,$formFieldID='') {
                 }
 
           } elseif ($field_type == 'mfile') {
-                $mquery = DB_query("SELECT id,field_data FROM {$_TABLES['formResData']} WHERE result_id='$resultsid' AND field_id='$fieldid'");
+                $mquery = DB_query("SELECT id,field_data FROM {$_TABLES['nxform_resdata']} WHERE result_id='$resultsid' AND field_id='$fieldid'");
                 $usetable = false;
                 if (DB_numRows($mquery) > 0) {
                     $field_html = '<table><tr style="vertical-align:top;">';
@@ -313,11 +313,11 @@ function pullform($parms,$formFieldID='') {
                 $template->set_var ('field_id',$formFieldID);  // Set this to the field ID for the form being generated
                 $template->set_var ('form_id',$formid);
 
-                $field_value = DB_getItem($_TABLES['formResText'], 'field_data', "result_id='$resultsid' AND field_id='$formFieldID'");
+                $field_value = DB_getItem($_TABLES['nxform_restext'], 'field_data', "result_id='$resultsid' AND field_id='$formFieldID'");
                 if (trim($field_value) == '') {
                     //Form results has nothing for this field - pull from the source form referenced in lookup.
                      $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
-                     $field_value = DB_getItem($_TABLES['formResText'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
+                     $field_value = DB_getItem($_TABLES['nxform_restext'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
                 }
                 $field_value = unserialize($field_value);
                 $i = 0;
@@ -338,17 +338,17 @@ function pullform($parms,$formFieldID='') {
                 } while(isset($custom_value[$i]));
 
           } else {
-              $retval = DB_getItem($_TABLES['formResData'], 'field_data',"result_id='$resultsid' AND field_id='{$formFieldID}'");
+              $retval = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='{$formFieldID}'");
               if (trim($retval) == '') {
                 //Form results has nothing for this field - pull from the source form referenced in lookup.
                 $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
-                $retval = DB_getItem($_TABLES['formResData'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
+                $retval = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
               }
           }
 
     } elseif ($field_type == 'radio') {
         // No existing result but we want to show the default lables for thee options
-        $options = DB_getItem($_TABLES['formFields'], 'field_values',"formid='{$aparms[0]}' AND tfid='{$aparms[1]}'");
+        $options = DB_getItem($_TABLES['nxform_fields'], 'field_values',"formid='{$aparms[0]}' AND tfid='{$aparms[1]}'");
         $aoptions = explode(',',$options);
         $retval = array();
         foreach ($aoptions as $option) {
@@ -356,7 +356,7 @@ function pullform($parms,$formFieldID='') {
         }
     } elseif ($field_type == 'multicheck') {
         // No existing result but we want to show the default lables for thee options
-        $options = DB_getItem($_TABLES['formFields'], 'field_values',"formid='{$aparms[0]}' AND tfid='{$aparms[1]}'");
+        $options = DB_getItem($_TABLES['nxform_fields'], 'field_values',"formid='{$aparms[0]}' AND tfid='{$aparms[1]}'");
         $aoptions = explode(',',$options);
         $retval = array();
         foreach ($aoptions as $option) {

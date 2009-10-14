@@ -74,21 +74,21 @@ function nexform_check4files($result_id=0, $single_file='') {
              $field_id  = (int) $parts['3'];
              $instance  = (int) $parts['4'];
              $is_dynamicfield_result = true;
-             $dynamicForm = DB_getItem($_TABLES['formFields'],'formid',"id='$field_id'");
+             $dynamicForm = DB_getItem($_TABLES['nxform_fields'],'formid',"id='$field_id'");
              // Get the results currently recorded for the source form field
-             $dynamicResults = explode('|',DB_getItem($_TABLES['formResData'],'field_data',"result_id='$result_id' AND field_id='$sfield_id'"));
+             $dynamicResults = explode('|',DB_getItem($_TABLES['nxform_resdata'],'field_data',"result_id='$result_id' AND field_id='$sfield_id'"));
              // Check if this instance of the dynamic form is already created as a result.
              if ((isset($dynamicResults[$instance])) AND ($dynamicResults[0] != '') AND (count($dynamicResults) > 0)) {
                  $dynamicResult = $dynamicResults[$instance];
              } else {
                  // User must be submitting the form with a new instance of this dynamic subform (field)
                  // Need to create a new result record and update relating fields with the new resultid
-                DB_query("INSERT INTO {$_TABLES['formResults']} (form_id,uid,date)
+                DB_query("INSERT INTO {$_TABLES['nxform_results']} (form_id,uid,date)
                                 VALUES ('$dynamicForm','$userid','$date') ");
                 $dynamicResult = DB_insertID();
                 $dynamicResults[$instance] = $dynamicResult;
                 $relatedFieldResults = implode ('|',$dynamicResults);
-                DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$relatedFieldResults' WHERE result_id='$result_id' AND field_id='$sfield_id'");
+                DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$relatedFieldResults' WHERE result_id='$result_id' AND field_id='$sfield_id'");
 
                 // Now need to update the related Results field in the main results records
              }
@@ -123,13 +123,13 @@ function nexform_check4files($result_id=0, $single_file='') {
                         $realfilename = $filename;
                         $filename = "$filename:{$upload_newfile['name']}";
                         if ($is_dynamicfield_result) {
-                            DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                            DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                                 VALUES ('$dynamicResult','$field_id','$filename',1) ");
                             if ($single_file != '') {
                                 $retval = DB_insertID();
                             }
                         } else {
-                            DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data)
+                            DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data)
                                 VALUES ('$result_id','$field_id','$filename') ");
                             if ($single_file != '') {
                                 $retval = DB_insertID();
@@ -159,18 +159,18 @@ function nexform_check4files($result_id=0, $single_file='') {
                     // Store both the created filename and the real file source filename
                     $realfilename = $filename;
                     $filename = "$filename:{$uploadfile['name']}";
-                    if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
-                        DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$filename' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
+                    if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
+                        DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$filename' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
                     } else {
                         if ($is_dynamicfield_result) {
-                            if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
-                                DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$filename' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
+                            if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
+                                DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$filename' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
                             } else {
-                                DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                                DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                                     VALUES ('$dynamicResult','$field_id','$filename',1) ");
                             }
                         } else {
-                            DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data)
+                            DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data)
                                 VALUES ('$result_id','$field_id','$filename') ");
                         }
                     }

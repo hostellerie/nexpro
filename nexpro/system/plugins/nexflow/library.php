@@ -650,17 +650,17 @@ function nf_getFormResultData($result,$field_id) {
 
     $retval = '';
     // Check if the field is part of the result record - else it may be part of a related form (Dynamic Form)
-    if (DB_count($_TABLES['formResData'],array(result_id,field_id),array($result,$field_id)) == 1) {
-        $retval = DB_getItem($_TABLES['formResData'],'field_data',"result_id='$result' AND field_id='$field_id'");
-    } elseif (DB_count($_TABLES['formResText'],array(result_id,field_id),array($result,$field_id)) == 1) {
-        $retval = DB_getItem($_TABLES['formResText'],'field_data',"result_id='$result' AND field_id='$field_id'");
+    if (DB_count($_TABLES['nxform_resdata'],array(result_id,field_id),array($result,$field_id)) == 1) {
+        $retval = DB_getItem($_TABLES['nxform_resdata'],'field_data',"result_id='$result' AND field_id='$field_id'");
+    } elseif (DB_count($_TABLES['nxform_restext'],array(result_id,field_id),array($result,$field_id)) == 1) {
+        $retval = DB_getItem($_TABLES['nxform_restext'],'field_data',"result_id='$result' AND field_id='$field_id'");
         $retval = stripslashes($retval);
     } else {
        // Check if there is a related form as part of this result
-       $related = explode(',',DB_getItem($_TABLES['formResults'],'related_results',"id='$result'"));
+       $related = explode(',',DB_getItem($_TABLES['nxform_results'],'related_results',"id='$result'"));
        foreach ($related as $relatedResult) {
-            if (DB_count($_TABLES['formResData'],array(result_id,field_id),array($relatedResult,$field_id)) == 1) {
-                $retval = DB_getItem($_TABLES['formResData'],'field_data',"result_id='$relatedResult' AND field_id='$field_id'");
+            if (DB_count($_TABLES['nxform_resdata'],array(result_id,field_id),array($relatedResult,$field_id)) == 1) {
+                $retval = DB_getItem($_TABLES['nxform_resdata'],'field_data',"result_id='$relatedResult' AND field_id='$field_id'");
                 break;
             }
        }
@@ -674,14 +674,14 @@ function nf_updateFormResultData($result,$id,$value) {
 
     if ($result > 0 AND $id > 0 AND $value != '') {
         // Check if the field is part of the result record - else it may be part of a related form (Dynamic Form)
-        if (DB_count($_TABLES['formResData'],array(result_id,field_id),array($result,$id)) == 1) {
-            DB_query("UPDATE {$_TABLES['formResData']} SET field_data = '$value' WHERE result_id='$result' AND field_id='$id'");
+        if (DB_count($_TABLES['nxform_resdata'],array(result_id,field_id),array($result,$id)) == 1) {
+            DB_query("UPDATE {$_TABLES['nxform_resdata']} SET field_data = '$value' WHERE result_id='$result' AND field_id='$id'");
         } else {
            // Check if there is a related form as part of this result
-           $related = explode(',',DB_getItem($_TABLES['formResults'],'related_results',"id='$result'"));
+           $related = explode(',',DB_getItem($_TABLES['nxform_results'],'related_results',"id='$result'"));
            foreach ($related as $relatedResult) {
-                if (DB_count($_TABLES['formResData'],array(result_id,field_id),array($relatedResult,$id)) == 1) {
-                    DB_query("UPDATE {$_TABLES['formResData']} SET field_data = '$value' WHERE result_id='$relatedResult' AND field_id='$id'");
+                if (DB_count($_TABLES['nxform_resdata'],array(result_id,field_id),array($relatedResult,$id)) == 1) {
+                    DB_query("UPDATE {$_TABLES['nxform_resdata']} SET field_data = '$value' WHERE result_id='$relatedResult' AND field_id='$id'");
                     break;
                 }
            }

@@ -40,7 +40,7 @@ $dynamicforms_used = array();
 function nexform_getlinkedform($formid,&$list,$linkedforms) {
     global $_TABLES;
 
-    $query = DB_query("SELECT id,before_formid,after_formid FROM {$_TABLES['formDefinitions']} WHERE id='$formid'");
+    $query = DB_query("SELECT id,before_formid,after_formid FROM {$_TABLES['nxform_definitions']} WHERE id='$formid'");
     list ($id,$before,$after) = DB_fetchArray($query);
     if (!in_array($id, $list)) {
         if ($before > 0 AND ($linkedforms == 'all' OR $linkedforms == 'beforeonly') ) {
@@ -70,7 +70,7 @@ function nexform_getdynamicforms($formid,&$list) {
         $list[] = $formid;
     }
 
-    $res = DB_query("SELECT field_values FROM {$_TABLES['formFields']} WHERE type='dynamic' AND formid=$formid");
+    $res = DB_query("SELECT field_values FROM {$_TABLES['nxform_fields']} WHERE type='dynamic' AND formid=$formid");
     while (list ($value) = DB_fetchArray($res)) {
         $v_arr = explode (',', $value);
         $fid = $v_arr[0];
@@ -110,22 +110,22 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
     $fields .= 'is_vertical,is_newline,is_mandatory,is_searchfield,is_resultsfield,is_reverseorder,field_help,';
     $fields .= 'field_attributes,field_values,value_by_function,validation,javascript,is_internaluse,hidelabel';
 
-    $fieldquery = DB_query("SELECT $fields FROM {$_TABLES['formFields']} WHERE formid='$formid' ORDER BY fieldorder");
+    $fieldquery = DB_query("SELECT $fields FROM {$_TABLES['nxform_fields']} WHERE formid='$formid' ORDER BY fieldorder");
     $prevnewline = false;
     $is_lastfield = false;
     $is_firstfield = true;
     $cssid = 1;
 
-    $groupEditAccess = DB_getItem($_TABLES['formDefinitions'],'perms_edit', "id='$formid'");
+    $groupEditAccess = DB_getItem($_TABLES['nxform_definitions'],'perms_edit', "id='$formid'");
 
-    if ($mode != 'print' AND DB_getItem($_TABLES['formDefinitions'],'show_mandatory_note',"id='{$formid}'") == 1) {
+    if ($mode != 'print' AND DB_getItem($_TABLES['nxform_definitions'],'show_mandatory_note',"id='{$formid}'") == 1) {
         $show_mandatory = true;
     } else {
         $show_mandatory = false;
     }
 
     /* Un-encode the fieldset definitions and display them as records if any exist */
-    $ofieldset  = DB_getItem($_TABLES['formDefinitions'],'fieldsets',"id='{$formid}'");
+    $ofieldset  = DB_getItem($_TABLES['nxform_definitions'],'fieldsets',"id='{$formid}'");
     if (trim($ofieldset != '')) {
         $afieldsets = unserialize($ofieldset);  // Array of fieldset definitions
     }
@@ -141,7 +141,7 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
 
             $label = stripslashes($label);
             $field_attributes = stripslashes($field_attributes);
-            $nextfieldquery = DB_query("SELECT is_newline,type FROM {$_TABLES['formFields']} WHERE formid='$formid' AND fieldorder > $fieldorder  AND type NOT IN ('cancel','submit','hidden') ORDER BY fieldorder LIMIT 1");
+            $nextfieldquery = DB_query("SELECT is_newline,type FROM {$_TABLES['nxform_fields']} WHERE formid='$formid' AND fieldorder > $fieldorder  AND type NOT IN ('cancel','submit','hidden') ORDER BY fieldorder LIMIT 1");
             if (DB_numRows($nextfieldquery) == 0) {
                 $is_lastfield = true;
             }
@@ -325,7 +325,7 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
                     $template->set_var('cell_padding', '20');
                 }
 
-            if (DB_getItem($_TABLES['formDefinitions'], 'post_method', "id='$formid'") == 'posturl') {
+            if (DB_getItem($_TABLES['nxform_definitions'], 'post_method', "id='$formid'") == 'posturl') {
                 $customfieldmode = true;
             } else {
                 $customfieldmode = false;
@@ -336,11 +336,11 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
                 switch($type){
                     case 'textarea1':
                     case 'textarea2':
-                        $field_value = DB_getItem($_TABLES['formResText'], 'field_data', "result_id='$resultid' AND field_id='$fieldID'");
+                        $field_value = DB_getItem($_TABLES['nxform_restext'], 'field_data', "result_id='$resultid' AND field_id='$fieldID'");
                         $field_value = stripslashes($field_value);
                         break;
                     case 'file':        // generate link to uploaded file
-                        $field_value = DB_getItem($_TABLES['formResData'], 'field_data', "result_id='$resultid' AND field_id='$fieldID'");
+                        $field_value = DB_getItem($_TABLES['nxform_resdata'], 'field_data', "result_id='$resultid' AND field_id='$fieldID'");
                         $filename = explode(':',$field_value);
                         //echo "<br>fieldid:$fieldID, result id:$resultid, field_value:$field_value";
                         if (!empty($field_value)) {
@@ -350,7 +350,7 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
                         }
                         break;
                     case 'mfile':        // generate link to uploaded file
-                        $mquery = DB_query("SELECT id,field_data FROM {$_TABLES['formResData']} WHERE result_id='$resultid' AND field_id='$fieldID'");
+                        $mquery = DB_query("SELECT id,field_data FROM {$_TABLES['nxform_resdata']} WHERE result_id='$resultid' AND field_id='$fieldID'");
                         if ($CONF_FE['debug']) {
                             COM_errorLOG("Displaying form result:$resultid - field:$fieldID");
                         }
@@ -401,9 +401,9 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
                     default:
                         // Check if custom field - if so then data is in text field table
                         if (array_key_exists($type,$CONF_FE['customfieldmap'])) {
-                            $field_value = DB_getItem($_TABLES['formResText'], 'field_data', "result_id='$resultid' AND field_id='$fieldID'");
+                            $field_value = DB_getItem($_TABLES['nxform_restext'], 'field_data', "result_id='$resultid' AND field_id='$fieldID'");
                         } else {
-                            $field_value = DB_getItem($_TABLES['formResData'], 'field_data', "result_id='$resultid' AND field_id='$fieldID'");
+                            $field_value = DB_getItem($_TABLES['nxform_resdata'], 'field_data', "result_id='$resultid' AND field_id='$fieldID'");
                         }
 
                         break;
@@ -416,7 +416,7 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
 
             if ($use_function) {
                 if ($resultid > 0) {
-                    $fvalue = DB_getItem($_TABLES['formFields'], "field_values", "id='$fieldID'");
+                    $fvalue = DB_getItem($_TABLES['nxform_fields'], "field_values", "id='$fieldID'");
                     // Check if autotag is being used for value
                     if (strpos($fvalue,'[' === FALSE)) {
                         $function = explode(':',$fvalue);
@@ -867,7 +867,7 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
                             if ($function_datavalues != '') {
                                 $options = explode(',',$function_datavalues);
                             } else {
-                                $default_value = DB_getItem($_TABLES['formFields'], 'field_values', "id='$fieldID'");
+                                $default_value = DB_getItem($_TABLES['nxform_fields'], 'field_values', "id='$fieldID'");
                                 $options = explode(',',$default_value);
                             }
                             foreach ($options as $option) {
@@ -1054,7 +1054,7 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
                         $field_value = $function_datavalues;
                     }
 
-                    $default_value = DB_getItem($_TABLES['formFields'], 'field_values', "id='$fieldID'");
+                    $default_value = DB_getItem($_TABLES['nxform_fields'], 'field_values', "id='$fieldID'");
                     if ($default_value == '') {
                         $default_value = 1;
                     }
@@ -1116,7 +1116,7 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
                             $default_values = explode(',',$function_datavalues);
                         }
                     } else {
-                        $default_values = explode(',',DB_getItem($_TABLES['formFields'], 'field_values', "id='$fieldID'"));
+                        $default_values = explode(',',DB_getItem($_TABLES['nxform_fields'], 'field_values', "id='$fieldID'"));
                     }
                     if ($resultid > 0) {
                         $result_values = explode(',',$field_value);
@@ -1204,7 +1204,7 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
                             $default_values = explode(',',$function_datavalues);
                         }
                     } else {
-                        $default_values = explode(',',DB_getItem($_TABLES['formFields'], 'field_values', "id='$fieldID'"));
+                        $default_values = explode(',',DB_getItem($_TABLES['nxform_fields'], 'field_values', "id='$fieldID'"));
                     }
                     $field_html = '';
                     if ($setresult) {
@@ -1492,7 +1492,7 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
                     } else {
                         $dynamicFormResults = explode('|',$field_value);
                         // Determine which form is to be used - in form definition
-                        $dynamicFormID = DB_getItem($_TABLES['formFields'],'field_values',"id='$fieldID'");
+                        $dynamicFormID = DB_getItem($_TABLES['nxform_fields'],'field_values',"id='$fieldID'");
                         $instance = 0;
                         $resultCount =  count($dynamicFormResults) -1;  // Want to show the [add/remove] field after the last form instance
                         foreach ($dynamicFormResults as $dynamicResult) {
@@ -1504,7 +1504,7 @@ function nexform_showFormFields($formid,$form_action,&$template,$resultid=0,$mod
                             $instance++;
                         }
                     }
-                    $values = DB_getItem($_TABLES['formFields'], 'field_values', "id=$fieldID");
+                    $values = DB_getItem($_TABLES['nxform_fields'], 'field_values', "id=$fieldID");
                     $v_arr = explode(',', $values);
                     $v2 = $v_arr[1];
                     if (($mode == 'edit' || $mode == 'view') && $v2 != 1) {
@@ -1661,12 +1661,12 @@ function nexform_showform($formid,$resultid=0,$mode='view',$parms='',$linkedform
 
     $forms_used[$formid] = 0;
 
-    $groupAccess = DB_getItem($_TABLES['formDefinitions'],'perms_access', "id='$formid'");
+    $groupAccess = DB_getItem($_TABLES['nxform_definitions'],'perms_access', "id='$formid'");
 
     if (SEC_inGroup($groupAccess)) {  // Does user have access to this form
         $fields = 'name,post_method,post_option,intro_text,before_formid,after_formid,';
         $fields .= 'template,on_submit,show_mandatory_note';
-        $formquery = DB_query("SELECT $fields FROM {$_TABLES['formDefinitions']} WHERE id='$formid'");
+        $formquery = DB_query("SELECT $fields FROM {$_TABLES['nxform_definitions']} WHERE id='$formid'");
         list ($formname,$post_method,$post_option,$intro_text,$before_form,$after_form,$maintemplate,$onsubmit,$show_mandatory) = DB_fetchArray($formquery);
 
         // Check that template to be used exists - else use default
@@ -1729,11 +1729,11 @@ function nexform_showform($formid,$resultid=0,$mode='view',$parms='',$linkedform
          }
         if ($resultid > 0) {
 
-            $groupEditAccess = DB_getItem($_TABLES['formDefinitions'],'perms_edit', "id='$formid'");
+            $groupEditAccess = DB_getItem($_TABLES['nxform_definitions'],'perms_edit', "id='$formid'");
 
             /* Need to add additional check for edit permissions for this form */
             // The customActionURL is a future use field - UI is not saving it currently
-            //$customActionURL = DB_getItem($_TABLES['formDefinitions'],'admin_url', "id='$formid'");
+            //$customActionURL = DB_getItem($_TABLES['nxform_definitions'],'admin_url', "id='$formid'");
             // if ($customActionURL == '' OR $post_method == 'posturl') {
 
             $currentURL = COM_getCurrentURL();
@@ -1806,7 +1806,7 @@ function nexform_showform($formid,$resultid=0,$mode='view',$parms='',$linkedform
         /* Determine if more then 1 linked form has the tabbed feature enabled */
         $formCntWithTabs = 0;
         foreach ($allforms as $chkformID) {
-            if (DB_getItem($_TABLES['formDefinitions'],'show_as_tab',"id='$chkformID'")) $formCntWithTabs++;
+            if (DB_getItem($_TABLES['nxform_definitions'],'show_as_tab',"id='$chkformID'")) $formCntWithTabs++;
         }
 
         $postmethod = '';
@@ -1816,9 +1816,9 @@ function nexform_showform($formid,$resultid=0,$mode='view',$parms='',$linkedform
         $prediv_open = false;
         $CONF_FE['dynamicSelect'] = false;
         foreach ($allforms as $showform) {
-            $fquery = DB_query("SELECT id,name,show_as_tab,tab_label FROM {$_TABLES['formDefinitions']} WHERE id=$showform");
+            $fquery = DB_query("SELECT id,name,show_as_tab,tab_label FROM {$_TABLES['nxform_definitions']} WHERE id=$showform");
             list ($linkid,$formname,$taboption,$tablabel) = DB_fetchArray($fquery);
-            $groupAccess = DB_getItem($_TABLES['formDefinitions'],'perms_access', "id='$linkid'");
+            $groupAccess = DB_getItem($_TABLES['nxform_definitions'],'perms_access', "id='$linkid'");
 
             if (SEC_inGroup($groupAccess)) {  // Does user have access to this form
                 if (count($allforms) > 1 AND $mode != 'print' AND $formCntWithTabs > 1 AND $taboption == 1 AND !$tab_active) {
@@ -1845,7 +1845,7 @@ function nexform_showform($formid,$resultid=0,$mode='view',$parms='',$linkedform
                     $page->parse('tab_navbar','navbar');
                     $nexformid = $allforms[$i];
                     /* Check if next form is also a tabbed form */
-                    $nexformTabType = DB_getItem($_TABLES['formDefinitions'],'show_as_tab',"id='$nexformid'");
+                    $nexformTabType = DB_getItem($_TABLES['nxform_definitions'],'show_as_tab',"id='$nexformid'");
                     if ($nexformTabType == 1) {
                         $page->set_var('div_end','</div>');
                     } else {
@@ -1868,16 +1868,16 @@ function nexform_showform($formid,$resultid=0,$mode='view',$parms='',$linkedform
                 $frms = array();
                 $frms = nexform_getdynamicforms($showform, $frms);
                 foreach ($frms as $frmid) {
-                    $filequery = DB_query("SELECT * FROM {$_TABLES['formFields']} WHERE formid='$frmid' AND (type = 'file' OR type='mfile')");
+                    $filequery = DB_query("SELECT * FROM {$_TABLES['nxform_fields']} WHERE formid='$frmid' AND (type = 'file' OR type='mfile')");
                     if (DB_fetchArray($filequery) != '') {
                         $postmethod = "\"post\" enctype=\"multipart/form-data\"";
                         $page->parse('mfile_js_functions','mfilejs');
                     }
-                    $filequery = DB_query("SELECT * FROM {$_TABLES['formFields']} WHERE formid='$frmid' AND (type = 'mtxt')");
+                    $filequery = DB_query("SELECT * FROM {$_TABLES['nxform_fields']} WHERE formid='$frmid' AND (type = 'mtxt')");
                     if (DB_fetchArray($filequery) != '') {
                         $page->parse('mfield_js_functions','mfieldjs');
                     }
-                    $filequery = DB_query("SELECT * FROM {$_TABLES['formFields']} WHERE formid='$frmid' AND (type = 'textarea2')");
+                    $filequery = DB_query("SELECT * FROM {$_TABLES['nxform_fields']} WHERE formid='$frmid' AND (type = 'textarea2')");
                     if (DB_fetchArray($filequery) != '') {
                         $page->parse('advancededitor', 'editor');
                     }
@@ -1893,7 +1893,7 @@ function nexform_showform($formid,$resultid=0,$mode='view',$parms='',$linkedform
 
         $page->set_var ('introtext',$intro_text);
 
-        if ($mode != 'print' AND $show_mandatory AND DB_count($_TABLES['formFields'],array('formid','is_mandatory'),array($formid,'1')) > 1) {
+        if ($mode != 'print' AND $show_mandatory AND DB_count($_TABLES['nxform_fields'],array('formid','is_mandatory'),array($formid,'1')) > 1) {
             $page->set_var ('msg_mandatory','Note: * Indicates mandatory Field');
         } else {
             $page->set_var ('msg_mandatory','');
@@ -2012,8 +2012,8 @@ function nexform_getAutotagValues($autotag,$fieldtype,$selected='',$fieldID='') 
         } // switch
 
     } else {
-        return PLG_replaceTags ($autotag,'nexlist');
     }
+        return PLG_replaceTags ($autotag,'nexlist');
 
 }
 
@@ -2105,7 +2105,7 @@ function nexform_dbsave($form_id,$postUID=0,$check4files=true) {
         $userid = $_USER['uid'];
     }
 
-    DB_query("INSERT INTO {$_TABLES['formResults']} (form_id,uid,date)
+    DB_query("INSERT INTO {$_TABLES['nxform_results']} (form_id,uid,date)
                     VALUES ('$form_id','$userid','$date') ");
     $result = DB_insertID();
 
@@ -2126,16 +2126,16 @@ function nexform_dbsave($form_id,$postUID=0,$check4files=true) {
                  $dynamicFieldInstance = $parts['4'];
                  $field_id = (int) $parts['3'];
                  $is_dynamicfield_result = true;
-                 $dynamicForm = DB_getItem($_TABLES['formFields'],'formid',"id='$field_id'");
+                 $dynamicForm = DB_getItem($_TABLES['nxform_fields'],'formid',"id='$field_id'");
                  // Need to create a new result record for each instance of the dynamic form
                  if (!array_key_exists($parts['2'],$dynamicForms)) {
-                    DB_query("INSERT INTO {$_TABLES['formResults']} (form_id,uid,date)
+                    DB_query("INSERT INTO {$_TABLES['nxform_results']} (form_id,uid,date)
                                     VALUES ('$dynamicForm','$userid','$date') ");
                     $dynamicResult = DB_insertID();
                     $relatedResults[] = $dynamicResult;
                     $dynamicForms[$parts['2']] = array($dynamicFieldInstance => $dynamicResult);
                  } elseif (!array_key_exists($dynamicFieldInstance,$dynamicForms[$parts['2']])) {
-                    DB_query("INSERT INTO {$_TABLES['formResults']} (form_id,uid,date)
+                    DB_query("INSERT INTO {$_TABLES['nxform_results']} (form_id,uid,date)
                                     VALUES ('$dynamicForm','$userid','$date') ");
                     $dynamicResult = DB_insertID();
                     $relatedResults[] = $dynamicResult;
@@ -2161,24 +2161,24 @@ function nexform_dbsave($form_id,$postUID=0,$check4files=true) {
                     }
                     $value = addslashes($value);
                     if ($is_dynamicfield_result) {
-                        DB_query("INSERT INTO {$_TABLES['formResText']} (result_id,field_id,field_data,is_dynamicfield_result)
+                        DB_query("INSERT INTO {$_TABLES['nxform_restext']} (result_id,field_id,field_data,is_dynamicfield_result)
                             VALUES ('$dynamicResult','$field_id','$value','1') ");
                     } else {
-                        DB_query("INSERT INTO {$_TABLES['formResText']} (result_id,field_id,field_data,is_dynamicfield_result)
+                        DB_query("INSERT INTO {$_TABLES['nxform_restext']} (result_id,field_id,field_data,is_dynamicfield_result)
                             VALUES ('$result','$field_id','$value','0') ");
                     }
 
                 } elseif ($fieldtype == 'hid') {
                     // check for custom use fields
-                    if (DB_getItem($_TABLES['formFields'],'label', "id='$field_id'") == 'filetype' )  {
-                        $uploadFileTypesAllowed  = DB_getItem($_TABLES['formFields'],'field_attributes', "id='$field_id'");
+                    if (DB_getItem($_TABLES['nxform_fields'],'label', "id='$field_id'") == 'filetype' )  {
+                        $uploadFileTypesAllowed  = DB_getItem($_TABLES['nxform_fields'],'field_attributes', "id='$field_id'");
                     }
                     $value = addslashes($value);
                     if ($is_dynamicfield_result) {
-                        DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                        DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                             VALUES ('$dynamicResult','$field_id','$value','1') ");
                     } else {
-                        DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                        DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                             VALUES ('$result','$field_id','$value','0') ");
                     }
 
@@ -2190,10 +2190,10 @@ function nexform_dbsave($form_id,$postUID=0,$check4files=true) {
                         $value = addslashes($value);
                     }
                     if ($is_dynamicfield_result) {
-                        DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                        DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                             VALUES ('$dynamicResult','$field_id','$value','1') ");
                     } else {
-                        DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                        DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                             VALUES ('$result','$field_id','$value','0') ");
                     }
 
@@ -2206,10 +2206,10 @@ function nexform_dbsave($form_id,$postUID=0,$check4files=true) {
                         $value = addslashes($value);
                     }
                     if ($is_dynamicfield_result) {
-                        DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                        DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                             VALUES ('$dynamicResult','$field_id','$value','1') ");
                     } else {
-                        DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                        DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                             VALUES ('$result','$field_id','$value','0') ");
                     }
 
@@ -2218,18 +2218,18 @@ function nexform_dbsave($form_id,$postUID=0,$check4files=true) {
                         if (!get_magic_quotes_gpc()) {
                             $value = addslashes($value);
                         }
-                        if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($result,$field_id)) > 0) {
-                            DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
+                        if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($result,$field_id)) > 0) {
+                            DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
                         } else {
                             if ($is_dynamicfield_result) {
-                                if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
-                                    DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
+                                if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
+                                    DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
                                 } else {
-                                    DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                                    DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                                         VALUES ('$dynamicResult','$field_id','$value','1') ");
                                 }
                             } else {
-                                DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data)
+                                DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data)
                                     VALUES ('$result','$field_id','$value') ");
                             }
                         }
@@ -2251,10 +2251,10 @@ function nexform_dbsave($form_id,$postUID=0,$check4files=true) {
                     $value = COM_checkWords(COM_checkHTML(COM_killJS($value)));
                     $value = addslashes($value);
                     if ($is_dynamicfield_result) {
-                        DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                        DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                             VALUES ('$dynamicResult','$field_id','$value','1') ");
                     } else {
-                        DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                        DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                             VALUES ('$result','$field_id','$value','0') ");
                     }
                 }
@@ -2268,7 +2268,7 @@ function nexform_dbsave($form_id,$postUID=0,$check4files=true) {
                 // Use the | character as the field deliminter as this is unlikly to be entered by user.
                 $value = implode('|',$value);
             }
-            DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+            DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                 VALUES ('$result','$field_id','$value','0') ");
         }
     }
@@ -2280,10 +2280,10 @@ function nexform_dbsave($form_id,$postUID=0,$check4files=true) {
                 $value = addslashes($value);
             }
             if ($is_dynamicfield_result) {
-                DB_query("INSERT INTO {$_TABLES['formResText']} (result_id,field_id,field_data,is_dynamicfield_result)
+                DB_query("INSERT INTO {$_TABLES['nxform_restext']} (result_id,field_id,field_data,is_dynamicfield_result)
                     VALUES ('$dynamicResult','$field_id','$value','1') ");
             } else {
-                DB_query("INSERT INTO {$_TABLES['formResText']} (result_id,field_id,field_data,is_dynamicfield_result)
+                DB_query("INSERT INTO {$_TABLES['nxform_restext']} (result_id,field_id,field_data,is_dynamicfield_result)
                     VALUES ('$result','$field_id','$value','0') ");
             }
         }
@@ -2300,7 +2300,7 @@ function nexform_dbsave($form_id,$postUID=0,$check4files=true) {
 
     // Update the related form_results field for the main results record
     $related_results = implode (',',$relatedResults);
-    DB_query("UPDATE {$_TABLES['formResults']} set related_results='$related_results' WHERE id='$result'");
+    DB_query("UPDATE {$_TABLES['nxform_results']} set related_results='$related_results' WHERE id='$result'");
 
     return $result;
 
@@ -2312,7 +2312,7 @@ function nexform_dbupdate($id,$result,$postUID=0) {
     require_once('lib-uploadfiles.php');
 
     /* Identify all the checkmark fields */
-    $sql = "SELECT id,label FROM {$_TABLES['formFields']} WHERE formid='$id' ";
+    $sql = "SELECT id,label FROM {$_TABLES['nxform_fields']} WHERE formid='$id' ";
     $sql .= "AND type IN ('checkbox') ";
     $q1 = DB_query($sql);
 
@@ -2344,21 +2344,21 @@ function nexform_dbupdate($id,$result,$postUID=0) {
                  $field_id  = (int) $parts['3'];
                  $instance  = (int) $parts['4'];
                  $is_dynamicfield_result = true;
-                 $dynamicForm = DB_getItem($_TABLES['formFields'],'formid',"id='$field_id'");
+                 $dynamicForm = DB_getItem($_TABLES['nxform_fields'],'formid',"id='$field_id'");
                  // Get the results currently recorded for the source form field
-                 $dynamicResults = explode('|',DB_getItem($_TABLES['formResData'],'field_data',"result_id='$result' AND field_id='$sfield_id'"));
+                 $dynamicResults = explode('|',DB_getItem($_TABLES['nxform_resdata'],'field_data',"result_id='$result' AND field_id='$sfield_id'"));
                  // Check if this instance of the dynamic form is already created as a result.
                  if (isset($dynamicResults[$instance])) {
                      $dynamicResult = $dynamicResults[$instance];
                  } else {
                      // User must be submitting the form with a new instance of this dynamic subform (field)
                      // Need to create a new result record and update relating fields with the new resultid
-                    DB_query("INSERT INTO {$_TABLES['formResults']} (form_id,uid,date)
+                    DB_query("INSERT INTO {$_TABLES['nxform_results']} (form_id,uid,date)
                                     VALUES ('$dynamicForm','$userid','$date') ");
                     $dynamicResult = DB_insertID();
                     $dynamicResults[$instance] = $dynamicResult;
                     $relatedFieldResults = implode ('|',$dynamicResults);
-                    DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$relatedFieldResults' WHERE result_id='$result' AND field_id='$sfield_id'");
+                    DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$relatedFieldResults' WHERE result_id='$result' AND field_id='$sfield_id'");
 
                     // Now need to update the related Results field in the main results records
                  }
@@ -2382,18 +2382,18 @@ function nexform_dbupdate($id,$result,$postUID=0) {
                         $value = COM_checkWords(COM_killJS($value));
                     }
                     $value = addslashes($value);
-                    if (DB_count($_TABLES['formResText'],array('result_id','field_id'), array($result,$field_id)) > 0) {
-                        DB_query("UPDATE {$_TABLES['formResText']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
+                    if (DB_count($_TABLES['nxform_restext'],array('result_id','field_id'), array($result,$field_id)) > 0) {
+                        DB_query("UPDATE {$_TABLES['nxform_restext']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
                     } else {
                         if ($is_dynamicfield_result) {
-                            if (DB_count($_TABLES['formResText'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
-                                DB_query("UPDATE {$_TABLES['formResText']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
+                            if (DB_count($_TABLES['nxform_restext'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
+                                DB_query("UPDATE {$_TABLES['nxform_restext']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
                             } else {
-                                DB_query("INSERT INTO {$_TABLES['formResText']} (result_id,field_id,field_data,is_dynamicfield_result)
+                                DB_query("INSERT INTO {$_TABLES['nxform_restext']} (result_id,field_id,field_data,is_dynamicfield_result)
                                     VALUES ('$dynamicResult','$field_id','$value','1') ");
                             }
                         } else {
-                            DB_query("INSERT INTO {$_TABLES['formResText']} (result_id,field_id,field_data)
+                            DB_query("INSERT INTO {$_TABLES['nxform_restext']} (result_id,field_id,field_data)
                                 VALUES ('$result','$field_id','$value') ");
                         }
                     }
@@ -2404,18 +2404,18 @@ function nexform_dbupdate($id,$result,$postUID=0) {
                     if (!get_magic_quotes_gpc()) {
                         $value = addslashes($value);
                     }
-                    if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($result,$field_id)) > 0) {
-                        DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
+                    if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($result,$field_id)) > 0) {
+                        DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
                     } else {
                         if ($is_dynamicfield_result) {
-                            if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
-                                DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
+                            if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
+                                DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
                             } else {
-                                DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                                DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                                     VALUES ('$dynamicResult','$field_id','$value','1') ");
                             }
                         } else {
-                            DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data)
+                            DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data)
                                 VALUES ('$result','$field_id','$value') ");
                         }
                     }
@@ -2425,18 +2425,18 @@ function nexform_dbupdate($id,$result,$postUID=0) {
                         if (!get_magic_quotes_gpc()) {
                             $value = addslashes($value);
                         }
-                        if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($result,$field_id)) > 0) {
-                            DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
+                        if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($result,$field_id)) > 0) {
+                            DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
                         } else {
                             if ($is_dynamicfield_result) {
-                                if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
-                                    DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
+                                if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
+                                    DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
                                 } else {
-                                    DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                                    DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                                         VALUES ('$dynamicResult','$field_id','$value','1') ");
                                 }
                             } else {
-                                DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data)
+                                DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data)
                                     VALUES ('$result','$field_id','$value') ");
                             }
                         }
@@ -2450,18 +2450,18 @@ function nexform_dbupdate($id,$result,$postUID=0) {
                     if (!get_magic_quotes_gpc()) {
                         $value = addslashes($value);
                     }
-                    if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($result,$field_id)) > 0) {
-                        DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
+                    if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($result,$field_id)) > 0) {
+                        DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
                     } else {
                         if ($is_dynamicfield_result) {
-                            if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
-                                DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
+                            if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
+                                DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
                             } else {
-                                DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                                DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                                     VALUES ('$dynamicResult','$field_id','$value','1') ");
                             }
                         } else {
-                            DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data)
+                            DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data)
                                 VALUES ('$result','$field_id','$value') ");
                         }
                     }
@@ -2481,18 +2481,18 @@ function nexform_dbupdate($id,$result,$postUID=0) {
                 } elseif ($fieldtype != 'sub' and $fieldtype != 'btn') {
                     $value = COM_checkWords(COM_checkHTML(COM_killJS($value)));
                     $value = addslashes($value);
-                    if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($result,$field_id)) > 0) {
-                        DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
+                    if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($result,$field_id)) > 0) {
+                        DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
                     } else {
                         if ($is_dynamicfield_result) {
-                            if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
-                                DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
+                            if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
+                                DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
                             } else {
-                                DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                                DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                                     VALUES ('$dynamicResult','$field_id','$value','1') ");
                             }
                         } else {
-                            DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data)
+                            DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data)
                                 VALUES ('$result','$field_id','$value') ");
                         }
                     }
@@ -2506,18 +2506,18 @@ function nexform_dbupdate($id,$result,$postUID=0) {
     foreach ($checkmark_fields as $key) {
         if (!in_array($key, $processed_fields)) {
             /* Update results for this checkmark field - just enter a blank to indicate not checked */
-            if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($result,$key)) > 0) {
-                DB_query("UPDATE {$_TABLES['formResData']} set field_data = '' WHERE result_id='$result' AND field_id='$key'");
+            if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($result,$key)) > 0) {
+                DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '' WHERE result_id='$result' AND field_id='$key'");
             } else {
                 if ($is_dynamicfield_result) {
-                    if (DB_count($_TABLES['formResData'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
-                        DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$key'");
+                    if (DB_count($_TABLES['nxform_resdata'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
+                        DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$key'");
                     } else {
-                        DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data,is_dynamicfield_result)
+                        DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data,is_dynamicfield_result)
                             VALUES ('$dynamicResult','$key','$value','1') ");
                     }
                 } else {
-                    DB_query("INSERT INTO {$_TABLES['formResData']} (result_id,field_id,field_data)
+                    DB_query("INSERT INTO {$_TABLES['nxform_resdata']} (result_id,field_id,field_data)
                         VALUES ('$result','$key','$value') ");
                 }
             }
@@ -2530,18 +2530,18 @@ function nexform_dbupdate($id,$result,$postUID=0) {
             if (!get_magic_quotes_gpc()) {
                 $value = addslashes($value);
             }
-            if (DB_count($_TABLES['formResText'],array('result_id','field_id'), array($result,$field_id)) > 0) {
-                DB_query("UPDATE {$_TABLES['formResText']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
+            if (DB_count($_TABLES['nxform_restext'],array('result_id','field_id'), array($result,$field_id)) > 0) {
+                DB_query("UPDATE {$_TABLES['nxform_restext']} set field_data = '$value' WHERE result_id='$result' AND field_id='$field_id'");
             } else {
                 if ($is_dynamicfield_result) {
-                    if (DB_count($_TABLES['formResText'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
-                        DB_query("UPDATE {$_TABLES['formResData']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
+                    if (DB_count($_TABLES['nxform_restext'],array('result_id','field_id'), array($dynamicResult,$field_id)) > 0) {
+                        DB_query("UPDATE {$_TABLES['nxform_resdata']} set field_data = '$value' WHERE result_id='$dynamicResult' AND field_id='$field_id'");
                     } else {
-                        DB_query("INSERT INTO {$_TABLES['formResText']} (result_id,field_id,field_data,is_dynamicfield_result)
+                        DB_query("INSERT INTO {$_TABLES['nxform_restext']} (result_id,field_id,field_data,is_dynamicfield_result)
                             VALUES ('$dynamicResult','$field_id','$value','1') ");
                     }
                 } else {
-                    DB_query("INSERT INTO {$_TABLES['formResText']} (result_id,field_id,field_data)
+                    DB_query("INSERT INTO {$_TABLES['nxform_restext']} (result_id,field_id,field_data)
                         VALUES ('$result','$field_id','$value') ");
                 }
             }
@@ -2552,7 +2552,7 @@ function nexform_dbupdate($id,$result,$postUID=0) {
     nexform_check4files($result, $dynamicForms);
 
     /* Update the results date field - so it's lastupdated timestamp */
-    DB_query("UPDATE {$_TABLES['formResults']} set last_updated_date=UNIX_TIMESTAMP(), last_updated_uid=$userid where id=$result");
+    DB_query("UPDATE {$_TABLES['nxform_results']} set last_updated_date=UNIX_TIMESTAMP(), last_updated_uid=$userid where id=$result");
 }
 
 
@@ -2568,7 +2568,7 @@ function nexform_emailresults() {
     }
 
     $date = COM_getUserDateTimeFormat();
-    $formname = DB_getItem($_TABLES['formDefinitions'],'name',"id='$form_id'");
+    $formname = DB_getItem($_TABLES['nxform_definitions'],'name',"id='$form_id'");
     $heading =  'Results from submitted form => Form name: '.$formname;
     $page = new Template($_CONF['path_layout'] . 'nexform');
     $page->set_file (array ('page' => 'emailform.thtml', 'records'=>'emailrecords.thtml'));
@@ -2594,7 +2594,7 @@ function nexform_emailresults() {
                 } else {
                     $value = COM_checkWords(COM_killJS($value));
                 }
-                $label = DB_getItem($_TABLES['formFields'],'label',"id='$field_id'");
+                $label = DB_getItem($_TABLES['nxform_fields'],'label',"id='$field_id'");
                 $page->set_var ('label',$label);
                 $page->set_var ('field_value',$value);
                 $page->parse('email_records','records',true);
@@ -2602,13 +2602,13 @@ function nexform_emailresults() {
                 if (is_array($value)) {
                     $value = implode(',',$value);
                 }
-                $label = DB_getItem($_TABLES['formFields'],'label',"id='$field_id'");
+                $label = DB_getItem($_TABLES['nxform_fields'],'label',"id='$field_id'");
                 $page->set_var ('label',$label);
                 $page->set_var ('field_value',$value);
                 $page->parse('email_records','records',true);
             } elseif ($fieldtype != 'sub' and $fieldtype != 'btn') {
                 $value = COM_checkWords(COM_checkHTML(COM_killJS($value)));
-                $label = DB_getItem($_TABLES['formFields'],'label',"id='$field_id'");
+                $label = DB_getItem($_TABLES['nxform_fields'],'label',"id='$field_id'");
                 $page->set_var ('label',$label);
                 $page->set_var ('field_value',$value);
                 $page->parse('email_records','records',true);
@@ -2628,7 +2628,7 @@ function nexform_emailresults() {
     $message =  $page->finish ($page->get_var('output'));
     //echo "<br>Send message:<br>$message";
 
-    $to = DB_getItem($_TABLES['formDefinitions'],'post_option',"id='$form_id'");
+    $to = DB_getItem($_TABLES['nxform_definitions'],'post_option',"id='$form_id'");
 
     COM_mail($to, $heading, $message);
 }
@@ -2657,7 +2657,7 @@ function nexform_replaceFieldTags($formid, $dynamic, $string) {
 function nexform_getFieldName($pfid, $formid, $templateid, $instance=-1, $dynamic) {
     global $_TABLES, $CONF_FE;
 
-    $q = DB_query("SELECT * FROM {$_TABLES['formFields']} WHERE formid='$formid' AND tfid='$templateid';");
+    $q = DB_query("SELECT * FROM {$_TABLES['nxform_fields']} WHERE formid='$formid' AND tfid='$templateid';");
     $R = DB_fetchArray($q);
     $len = DB_numRows($q); //should be 1
 
@@ -2670,7 +2670,7 @@ function nexform_getFieldName($pfid, $formid, $templateid, $instance=-1, $dynami
         return $retval;
     }
     else if ($pfid != $formid) {
-        $dfsql = "SELECT id FROM {$_TABLES['formFields']} WHERE";
+        $dfsql = "SELECT id FROM {$_TABLES['nxform_fields']} WHERE";
         $dfsql .= " formid=$pfid AND type='dynamic' AND";
         $dfsql .= " (field_values='$formid' OR field_values LIKE '$formid,%');";
         $dfq = DB_query($dfsql);

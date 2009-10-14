@@ -106,7 +106,7 @@ function nfCustomSearchProjects($project_id,$searchopt,$searchkey) {
      $sfields = implode(',',array_values($NF_CONF['searchoptions'][$searchopt]));
      $q1 = DB_query("SELECT results_id FROM {$_TABLES['nfproject_forms']} WHERE project_id='$project_id' AND form_id in ($sforms)");
      while (list ($results_id) = DB_fetchArray($q1)) {
-        $sql = "SELECT field_data FROM {$_TABLES['formResData']} WHERE result_id='$results_id' AND field_id in ($sfields)";
+        $sql = "SELECT field_data FROM {$_TABLES['nxform_resdata']} WHERE result_id='$results_id' AND field_id in ($sfields)";
         $q2 = DB_query($sql);
         if (DB_numRows($q2) > 0) {
             list ($field_data) = DB_fetchArray($q2);
