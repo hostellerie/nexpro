@@ -115,6 +115,7 @@ $CONF_FE_DEFAULT['max_uploadfile_size']      = '6553600';     // 6.400 MB
 function plugin_initconfig_nexform()
 {
     global $CONF_FE, $CONF_FE_DEFAULT;
+    @include_once ($_CONF['path'] . 'plugins/nexform/config.php');
 
     if (is_array($CONF_FE) && (count($CONF_FE) > 1)) {
         $CONF_FE_DEFAULT = array_merge($CONF_FE_DEFAULT, $CONF_FE);

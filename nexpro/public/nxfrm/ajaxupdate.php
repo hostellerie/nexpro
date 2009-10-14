@@ -42,11 +42,11 @@ if ($CONF_FE['debug']) {
 
 if ($mode == 'field') {
 
-    if (DB_count($_TABLES['formFields'],'id',"$rec") == 1) {
+    if (DB_count($_TABLES['nxform_fields'],'id',"$rec") == 1) {
 
         // Check and see if user has edit rights to this form
-        $formid = DB_getItem($_TABLES['formFields'],'formid',"id='$rec'");
-        $edit_group = DB_getItem($_TABLES['formDefinitions'],'perms_edit',"id='$formid'");
+        $formid = DB_getItem($_TABLES['nxform_fields'],'formid',"id='$rec'");
+        $edit_group = DB_getItem($_TABLES['nxform_definitions'],'perms_edit',"id='$formid'");
         if (!SEC_inGroup($edit_group)) {
             COM_accessLog("No access rights, attempt to edit form:$formid");
             print ('No access rights');
@@ -57,12 +57,12 @@ if ($mode == 'field') {
             case 'newline':
                 $setting = (is_string($setting)) ?  strtolower($setting) : $setting;
                 if ($setting == 'true' or $setting == 1) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_newline = '1' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_newline = '1' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set newline to $setting for record: $rec");
                     }
                 } elseif ($setting == 'false' OR $setting == 0) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_newline = '0' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_newline = '0' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set newline to $setting for record: $rec");
                     }
@@ -72,12 +72,12 @@ if ($mode == 'field') {
             case 'manditory':
                 $setting = (is_string($setting)) ?  strtolower($setting) : $setting;
                 if ($setting == 'true' or $setting == 1) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_mandatory = '1' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_mandatory = '1' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field manditory to $setting for record: $rec");
                     }
                 } elseif ($setting == 'false' OR $setting == 0) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_mandatory = '0' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_mandatory = '0' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field manditory to $setting for record: $rec");
                     }
@@ -87,12 +87,12 @@ if ($mode == 'field') {
             case 'vertical':
                 $setting = (is_string($setting)) ?  strtolower($setting) : $setting;
                 if ($setting == 'true' or $setting == 1) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_vertical = '1' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_vertical = '1' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field vertical layout to $setting for record: $rec");
                     }
                 } elseif ($setting == 'false' OR $setting == 0) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_vertical = '0' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_vertical = '0' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field vertical layout to $setting for record: $rec");
                     }
@@ -102,12 +102,12 @@ if ($mode == 'field') {
             case 'reverse':
                 $setting = (is_string($setting)) ?  strtolower($setting) : $setting;
                 if ($setting == 'true' or $setting == 1) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_reverseorder = '1' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_reverseorder = '1' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field reverse order to $setting for record: $rec");
                     }
                 } elseif ($setting == 'false' OR $setting == 0) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_reverseorder = '0' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_reverseorder = '0' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field reverse order to $setting for record: $rec");
                     }
@@ -117,12 +117,12 @@ if ($mode == 'field') {
             case 'report':
                 $setting = (is_string($setting)) ?  strtolower($setting) : $setting;
                 if ($setting == 'true' or $setting == 1) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_resultsfield = '1' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_resultsfield = '1' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field report mode to $setting for record: $rec");
                     }
                 } elseif ($setting == 'false' OR $setting == 0) {
-                    DB_query("UPDATE {$_TABLES['formFields']} SET is_resultsfield = '0' WHERE id='$rec'");
+                    DB_query("UPDATE {$_TABLES['nxform_fields']} SET is_resultsfield = '0' WHERE id='$rec'");
                     if ($CONF_FE['debug']) {
                         COM_errorLog("Set field report mode to $setting for record: $rec");
                     }
@@ -146,19 +146,19 @@ if ($mode == 'field') {
     $formid = str_replace('frm', '', $params[1]);
 
     // Check and see if user has edit rights to this form
-    $edit_group = DB_getItem($_TABLES['formDefinitions'],'perms_edit',"id='$formid'");
+    $edit_group = DB_getItem($_TABLES['nxform_definitions'],'perms_edit',"id='$formid'");
     if (!SEC_inGroup($edit_group)) {
         COM_accessLog("No access rights, attempt to edit form:$formid");
         print ('No access rights');
         exit();
     }
-    $resultid = DB_getItem($_TABLES['formResData'],'result_id',"id='$rec'");
-    $isDynamic = DB_getItem($_TABLES['formResData'],'is_dynamicfield_result',"id='$rec'");
+    $resultid = DB_getItem($_TABLES['nxform_resdata'],'result_id',"id='$rec'");
+    $isDynamic = DB_getItem($_TABLES['nxform_resdata'],'is_dynamicfield_result',"id='$rec'");
     if ($isDynamic == 1) {
-        $sourceFormid = DB_getItem($_TABLES['formFields'],'formid',"id='{$params[2]}'");
+        $sourceFormid = DB_getItem($_TABLES['nxform_fields'],'formid',"id='{$params[2]}'");
     }
     else {
-        $sourceFormid = DB_getItem($_TABLES['formResults'],'form_id',"id='$resultid'");
+        $sourceFormid = DB_getItem($_TABLES['nxform_results'],'form_id',"id='$resultid'");
     }
 
 
@@ -169,28 +169,28 @@ if ($mode == 'field') {
 
     if ($sourceFormid == $formid) {
         $phantomRec = 0;
-        DB_query("DELETE FROM {$_TABLES['formResData']} WHERE id='$rec'");
-        $query = DB_query("SELECT id,field_data FROM {$_TABLES['formResData']} WHERE result_id='$resultid' AND field_id='$field'");
+        DB_query("DELETE FROM {$_TABLES['nxform_resdata']} WHERE id='$rec'");
+        $query = DB_query("SELECT id,field_data FROM {$_TABLES['nxform_resdata']} WHERE result_id='$resultid' AND field_id='$field'");
     } else {
         $phantomRec = $rec;
         // We are showing files for a different form - as a result of the [pullform] feature
         // Need to get the source form result information
 
         // Get original [pullform autotag and decode
-        $autotag = DB_getItem($_TABLES['formFields'],'field_values',"id='$field'");
+        $autotag = DB_getItem($_TABLES['nxform_fields'],'field_values',"id='$field'");
         $autotag = str_replace('[','',$autotag);
         $autotag = str_replace(']','',$autotag);
         $atag = explode(':',$autotag);
         $formparms = explode(',',$atag[1]);
-        $sourceFieldId = DB_getItem($_TABLES['formFields'],'id',"formid={$formparms[0]} AND tfid={$formparms[1]}");
+        $sourceFieldId = DB_getItem($_TABLES['nxform_fields'],'id',"formid={$formparms[0]} AND tfid={$formparms[1]}");
         if ($sourceFieldId > 0) {
-            $query = DB_query("SELECT id,field_data FROM {$_TABLES['formResData']} WHERE result_id='$resultid' AND field_id='$sourceFieldId'");
+            $query = DB_query("SELECT id,field_data FROM {$_TABLES['nxform_resdata']} WHERE result_id='$resultid' AND field_id='$sourceFieldId'");
         } else {
             // Hum .. Dont' expect this but should trap for an invalid source field id
             if ($CONF_FE['debug']) {
                 COM_errorLog("Form update - delete mfile - of a result that does not yet exist - temp result from [pullform]. Form:$formid, field:$field, rec:$rec");
             }
-            $query = DB_query("SELECT id,field_data FROM {$_TABLES['formResData']} WHERE result_id='$resultid' AND field_id='$field'");
+            $query = DB_query("SELECT id,field_data FROM {$_TABLES['nxform_resdata']} WHERE result_id='$resultid' AND field_id='$field'");
         }
     }
 

@@ -89,12 +89,12 @@ function nf_updateRequestProjectInfo($id,$result_id) {
 
 
 /* MAIN CODE */
-if ($form_id > 0 AND DB_count($_TABLES['formDefinitions'],'id',$form_id) == 1) {
-        $form_name = DB_getItem($_TABLES['formDefinitions'], 'name',"id='$form_id'");
+if ($form_id > 0 AND DB_count($_TABLES['nxform_definitions'],'id',$form_id) == 1) {
+        $form_name = DB_getItem($_TABLES['nxform_definitions'], 'name',"id='$form_id'");
 
         // Results id is returned via the formhandler as $id
         // Check if this is an update of an existing form
-        if (DB_count($_TABLES['formResults'],'id',$id) == 1 AND $newform != 1) {
+        if (DB_count($_TABLES['nxform_results'],'id',$id) == 1 AND $newform != 1) {
 
             nexform_dbupdate($form_id,$id,$postUID);
 
@@ -152,7 +152,7 @@ if ($form_id > 0 AND DB_count($_TABLES['formDefinitions'],'id',$form_id) == 1) {
 
             /* Save results to Database */
             /* Get formtype from posted form - should be a hidden field in form definition */
-            $formtype = DB_getItem($_TABLES['formFields'],'field_values', "formid='$form_id' AND field_name='formtype'");
+            $formtype = DB_getItem($_TABLES['nxform_fields'],'field_values', "formid='$form_id' AND field_name='formtype'");
             $taskid = intval($taskid);
             $dup_form_check = DB_getItem($_TABLES['nfproject_forms'], 'id', "created_by_taskid=$taskid AND formtype='$formtype'");
             if ($dup_form_check !== NULL) {  //form already exists
@@ -177,7 +177,7 @@ if ($form_id > 0 AND DB_count($_TABLES['formDefinitions'],'id',$form_id) == 1) {
             $nfclass= new nexflow($processid,$postUID);
 
             /* Update the hit or results counter */
-            DB_query("UPDATE {$_TABLES['formDefinitions']} SET responses = responses + 1 WHERE id='$form_id'");
+            DB_query("UPDATE {$_TABLES['nxform_definitions']} SET responses = responses + 1 WHERE id='$form_id'");
             $newproject = false;
             if ($processid > 0 AND $taskid > 0) {
                 $project_id = $nfclass->get_ProcessVariable('PID');
@@ -199,7 +199,7 @@ if ($form_id > 0 AND DB_count($_TABLES['formDefinitions'],'id',$form_id) == 1) {
 
             // Create new form tracking record for this project
             /* Get formtype from posted form - should be a hidden field in form definition */
-            $formtype = DB_getItem($_TABLES['formDefinitions'],'shortname', "id='$form_id'");
+            $formtype = DB_getItem($_TABLES['nxform_definitions'],'shortname', "id='$form_id'");
 
             DB_query("INSERT INTO {$_TABLES['nfproject_forms']} (project_id,form_id,formtype,results_id,created_by_taskid,created_by_uid)
                  VALUES ('$project_id','$form_id','$formtype','$result_id','$taskid','$postUID') ");
@@ -248,7 +248,7 @@ if ($form_id > 0 AND DB_count($_TABLES['formDefinitions'],'id',$form_id) == 1) {
                 $query = DB_query($sql);
                 if (DB_numRows($query) == 1) {
                     list ($newresult_id) = DB_fetchArray($query);
-                    $sql  = "SELECT name as description FROM {$_TABLES['formDefinitions']} ";
+                    $sql  = "SELECT name as description FROM {$_TABLES['nxform_definitions']} ";
                     $sql .= "WHERE id='$form_id'";
                     list ($description) = DB_fetchArray(DB_query($sql));
                     if(!get_magic_quotes_gpc() ) {

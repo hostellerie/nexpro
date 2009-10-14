@@ -35,7 +35,7 @@ $fid = intval($_GET['id']);
 
 echo COM_siteHeader();
 
-$sql = "SELECT after_post_text FROM {$_TABLES['formDefinitions']} WHERE id=$fid;";
+$sql = "SELECT after_post_text FROM {$_TABLES['nxform_definitions']} WHERE id=$fid;";
 $q = DB_query($sql);
 $res = DB_fetchArray($q);
 

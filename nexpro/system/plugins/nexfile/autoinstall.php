@@ -45,9 +45,15 @@ require_once ($_CONF['path'] . 'plugins/nexfile/autouninstall.php');
 * @return   array               Plugin information
 *
 */
+/**
+ * @param $pi_name
+ * @return unknown_type
+ */
 function plugin_autoinstall_nexfile($pi_name)
 {
-    global $_FMCONF;
+    global $_CONF;
+
+    include ($_CONF['path'] . 'plugins/nexfile/nexfile.php');
 
     $pi_display_name = $_FMCONF['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';
@@ -149,7 +155,18 @@ function plugin_postinstallnexfile($pi_name)
 */
 function plugin_compatible_with_this_version_nexfile($pi_name)
 {
-    global $_CONF, $_DB_dbms;
+    global $_CONF, $_DB_dbms, $_TABLES;
+
+    //  so lets test out to see if the nexPro is installed.  If not, bail out with an error
+    $nxpro=intval(DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'"));
+    if ($nxpro==0) {     //install nexpro first
+        if (DB_getItem($_TABLES['plugins'], 'pi_enabled', "pi_name='nexpro'") == '0') {     //nexpro disabled?
+            COM_errorLog ('The nexpro plugin must be enabled for nexfile to work.  Please enable the nexpro it before continuing to install nexfile.');
+        }else{
+            COM_errorLog ('The nexpro plugin is not installed.  Please install it before continuing to install nexfile');
+        }
+        return false;
+    }
 
     // check if we support the DBMS the site is running on
     $dbFile = $_CONF['path'] . 'plugins/' . $pi_name . '/sql/'

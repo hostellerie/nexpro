@@ -434,7 +434,7 @@ if ($templateID > 0 ) {
                 $p->set_var ('task_handler','<span class="pluginTinyText" style="color:red">[&nbsp;Dynamic Form Using: ' .$dynVar.' variable&nbsp;]</span>');
                 
             }else{
-                $formname = DB_getItem($_TABLES['formDefinitions'],'name',"id='{$A['formid']}'");
+                $formname = DB_getItem($_TABLES['nxform_definitions'],'name',"id='{$A['formid']}'");
                 $p->set_var ('task_handler',"[form:{$A['formid']}] - $formname");
             }
             
@@ -602,7 +602,7 @@ if ($templateID > 0 ) {
 
         $p->set_var ('edit_task_name',htmlspecialchars(stripslashes($taskRec['taskname'])));
         $p->set_var('steptype_options',COM_optionList($_TABLES['nfsteptype'],'id,stepType',$taskRec['nf_stepType'],0));
-        $p->set_var('form_options', COM_optionList($_TABLES['formDefinitions'],'id,name'));
+        $p->set_var('form_options', COM_optionList($_TABLES['nxform_definitions'],'id,name'));
         $p->set_var ('optional_parm',DB_getItem($_TABLES['nftemplatedata'], 'optionalParm', "id='{$taskID}'"));
 
         if ($taskRec['isDynamicTaskName'] == 1) {
@@ -670,7 +670,7 @@ if ($templateID > 0 ) {
             }else{
                 $p->set_var('show_form','none');
             }
-            $formOptions=nf_makeDropDownWithSelected("id", "name", $_TABLES['formDefinitions'], $task_formid,'',1);
+            $formOptions=nf_makeDropDownWithSelected("id", "name", $_TABLES['nxform_definitions'], $task_formid,'',1);
             $p->set_var ('form_options',$formOptions);
 
         } elseif ($taskRec['nf_stepType'] == 1 OR $taskRec['nf_stepType'] == 4) {
@@ -883,7 +883,7 @@ if ($templateID > 0 ) {
         $p->set_var ('logical_task_id', $logical_taskid);
                 
         $p->set_var ('steptype_options',COM_optionList($_TABLES['nfsteptype'],'id,stepType','',0));
-        $p->set_var('form_options', COM_optionList($_TABLES['formDefinitions'],'id,name'));
+        $p->set_var('form_options', COM_optionList($_TABLES['nxform_definitions'],'id,name'));
         $p->set_var ('task_handler_selection', nf_makeDropDown("id", "handler", $_TABLES['nfhandlers'] ) );
         $p->set_var('next_tasks','');
 

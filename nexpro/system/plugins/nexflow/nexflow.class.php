@@ -1261,7 +1261,7 @@ class nexflow {
                                     $resid = intval (DB_getItem($_TABLES['nfproject_forms'], 'results_id', "project_id=$pid AND form_id=$formid"));
 
                                     //now get the result from the field id
-                                    $setvalue = DB_getItem($_TABLES['formResData'], 'field_data', "result_id=$resid AND field_id=$fieldid");
+                                    $setvalue = DB_getItem($_TABLES['nxform_resdata'], 'field_data', "result_id=$resid AND field_id=$fieldid");
                                     DB_query("UPDATE {$_TABLES['nfprocessvariables']} SET variableValue='$setvalue' WHERE nf_processID=$processID AND nf_templateVariableID=$vartoset");
                                 }
                                 else if ($incvalue != 0) {  //set by increment

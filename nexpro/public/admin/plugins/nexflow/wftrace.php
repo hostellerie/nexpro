@@ -274,7 +274,7 @@ if (DB_numRows($query) > 0) {
                 break;
             case 8:     // Form Function
                 $task_formid = DB_getItem($_TABLES['nftemplatedata'], 'formid', "id={$A['nf_templateDataID']}");              
-                $form_name = DB_getItem($_TABLES['formDefinitions'],'name',"id=$task_formid");
+                $form_name = DB_getItem($_TABLES['nxform_definitions'],'name',"id=$task_formid");
                 $p->set_var ('task_related_information', "<tr class=\"pluginRow2\"><td width=\"40%\"><label>Form:</label></td><td>$form_name</td></tr>");
                 $interactive_task = true;                
                 break;

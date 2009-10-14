@@ -42,15 +42,15 @@ ppGetData($myvars,true);
 //modify the table names temporarily, so uses the temp tables.  This way the main
 //function does all the same work as it would have done in the first place
 if ($epm == 1) {
-    $_TABLES['formResults'] .= '_tmp';
-    $_TABLES['formResData'] .= '_tmp';
-    $_TABLES['formResText'] .= '_tmp';
+    $_TABLES['nxform_results'] .= '_tmp';
+    $_TABLES['nxform_resdata'] .= '_tmp';
+    $_TABLES['nxform_restext'] .= '_tmp';
 }
 
 require_once($_CONF['path'] . 'plugins/nexform/library.php');  // Main nexform functions library
 require_once($_CONF['path'] . 'plugins/nexform/lib-uploadfiles.php');  // Functions for managing uploading of files
 
-$view_group = DB_getItem($_TABLES['formDefinitions'],'perms_view',"id='$id'");
+$view_group = DB_getItem($_TABLES['nxform_definitions'],'perms_view',"id='$id'");
 if (!SEC_inGroup($view_group)) {
     echo COM_siteHeader();
     echo COM_startBlock("Access Error");
@@ -64,7 +64,7 @@ if (!SEC_inGroup($view_group)) {
 }
 
 $LANG_NAVBAR = $LANG_FRM_ADMIN_NAVBAR;
-$formname = DB_getItem($_TABLES['formDefinitions'],'name',"id='$id'");
+$formname = DB_getItem($_TABLES['nxform_definitions'],'name',"id='$id'");
 
 if ($epm == 1) {
     $resid = nexform_dbsave($id);
@@ -76,17 +76,17 @@ $report_results = "<link rel=\"stylesheet\" href=\"{$_CONF['layout_url']}/style.
 $report_results .= nexform_showform($id,$result,'print','','',$style);
 //now we can delete from the temporary tables now that we are done displaying them.
 if ($epm == 1) {
-    $tmpres = DB_getItem($_TABLES['formResults'], 'related_results', "id=$resid");
-    DB_query("DELETE FROM {$_TABLES['formResults']} WHERE id=$resid;");
-    DB_query("DELETE FROM {$_TABLES['formResData']} WHERE result_id=$resid;");
-    DB_query("DELETE FROM {$_TABLES['formResText']} WHERE result_id=$resid;");
+    $tmpres = DB_getItem($_TABLES['nxform_results'], 'related_results', "id=$resid");
+    DB_query("DELETE FROM {$_TABLES['nxform_results']} WHERE id=$resid;");
+    DB_query("DELETE FROM {$_TABLES['nxform_resdata']} WHERE result_id=$resid;");
+    DB_query("DELETE FROM {$_TABLES['nxform_restext']} WHERE result_id=$resid;");
 
     if ($tmpres != '') {
         $resids = explode(',', $tmpres);
         foreach ($resids as $resid) {
-            DB_query("DELETE FROM {$_TABLES['formResults']} WHERE id=$resid;");
-            DB_query("DELETE FROM {$_TABLES['formResData']} WHERE result_id=$resid;");
-            DB_query("DELETE FROM {$_TABLES['formResText']} WHERE result_id=$resid;");
+            DB_query("DELETE FROM {$_TABLES['nxform_results']} WHERE id=$resid;");
+            DB_query("DELETE FROM {$_TABLES['nxform_resdata']} WHERE result_id=$resid;");
+            DB_query("DELETE FROM {$_TABLES['nxform_restext']} WHERE result_id=$resid;");
         }
     }
 }
