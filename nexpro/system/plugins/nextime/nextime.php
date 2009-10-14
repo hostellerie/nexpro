@@ -37,6 +37,15 @@ require_once $_CONF['path_system'] . 'classes/config.class.php';
 
 $CONF_NEXTIME=array();
 $CONF_NEXTIME['version']='1.2.0';
+$CONF_NEXTIME['gl_version']='1.6.0';
+$CONF_NEXTIME['pi_name']='nextime';
+$CONF_NEXTIME['pi_display_name']='nexTime';
+
+$CONF_NEXTIME['dependent_plugins']=array(
+    'nexpro'    => '2.2.0',
+    'nexlist'   => '2.2.0'
+
+);
 
 //The following settings are not to be altered.
 //You do not have to alter anything below here.
