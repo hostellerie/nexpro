@@ -1,4 +1,8 @@
-Oct 14/2209 (Blaine)
+Oct 14/2009 (Randy)
+    Nextime installation routine redone to use dependencies and version checking for dependent plugins.
+    Change to lib-nextide for new NXCOM function for normalizing version numbers.
+
+Oct 14/2009 (Blaine)
     Nexform plugin updates to add the autoinstall and autouninstall scripts.
     Required that all nexform table references be changed so that the $_TABLES['tablename'] match the created table names.
        Some of the $_TABLES key names were a combination of upper and lowercase as well. All lower case now.
