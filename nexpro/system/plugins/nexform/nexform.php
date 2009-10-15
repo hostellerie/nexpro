@@ -30,11 +30,11 @@
 
 
 // Plugin information
-$_FMCONF['pi_display_name'] = 'nexform';
-$_FMCONF['pi_name']         = 'nexform';
-$_FMCONF['gl_version']      = '1.6.1';
-$_FMCONF['version']         = '2.2.0';
-$_FMCONF['pi_url']          = 'http://www.nextide.ca/';
+$CONF_FE['pi_display_name'] = 'nexform';
+$CONF_FE['pi_name']         = 'nexform';
+$CONF_FE['gl_version']      = '1.6.1';
+$CONF_FE['version']         = '2.2.0';
+$CONF_FE['pi_url']          = 'http://www.nextide.ca/';
 
 
 define('FE_CHMOD_FILES', '0755');  // Needs to be a string for the upload class use.

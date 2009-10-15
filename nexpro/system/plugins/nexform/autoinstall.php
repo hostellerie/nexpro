@@ -55,15 +55,15 @@ function plugin_autoinstall_nexform($pi_name)
 
     include ($_CONF['path'] . 'plugins/nexform/nexform.php');
 
-    $pi_display_name = $_FMCONF['pi_display_name'];
+    $pi_display_name = $CONF_FE['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';
 
     $info = array(
         'pi_display_name' => $pi_display_name,
-        'pi_name'         => $_FMCONF['pi_name'],
-        'pi_version'      => $_FMCONF['version'],
-        'pi_gl_version'   => $_FMCONF['gl_version'],
-        'pi_homepage'     => $_FMCONF['pi_url']
+        'pi_name'         => $CONF_FE['pi_name'],
+        'pi_version'      => $CONF_FE['version'],
+        'pi_gl_version'   => $CONF_FE['gl_version'],
+        'pi_homepage'     => $CONF_FE['pi_url']
     );
 
     $groups = array(
