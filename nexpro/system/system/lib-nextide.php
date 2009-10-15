@@ -403,5 +403,35 @@ function mail_attachment($to,$from,$subject,$message,$directory,$filename) {
     return $retval;
  }
 
+/**
+* Takes an incoming 2 element array and makes their version number sizes identical.
+*
+* @param    array  $version_array an array with 2 elements which are version strings. e.g. array('1.1','1.2.0')
+* @return   array  Returns the 2 elements in the array both with the identical number of major/minor/sub version designations.  False if not successful.
+*
+*/
+function NXCOM_normalizeVersionNumbers($version_array){
+    if(count($version_array)<2 || count($version_array)>2){
+        return false;
+    }
+    $v1=$version_array[0];
+    $v2=$version_array[1];
 
+    $a1=explode(".",$v1);
+    $a2=explode(".",$v2);
+
+    if(count($a1) < count($a2)){  //less test nodes in the current version
+        for($cntr=0;$cntr<(count($a2)-count($a1));$cntr++){
+            $a1[]=0;
+        }
+    }elseif(count($a2) < count($a1)){
+        for($cntr=0;$cntr<(count($a1)-count($a2));$cntr++){
+            $a2[]=0;
+        }
+    }
+    $v1=implode('.',$a1);
+    $v2=implode('.',$a2);
+
+    return array($v1,$v2);
+}
 ?>
