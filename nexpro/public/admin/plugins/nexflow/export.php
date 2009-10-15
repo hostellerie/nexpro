@@ -46,23 +46,23 @@ $newline= LB;
 
 
 //begin by exporting the template entry
-$sql="SELECT * from {$_TABLES['nftemplate']} where id={$origTemplate}";
+$sql="SELECT * from {$_TABLES['nf_template']} where id={$origTemplate}";
 $res=DB_query($sql);
 list($id,$templateName,$useProject,$AppGroup)=DB_fetchArray($res);
 
 $templateName=htmlspecialchars($templateName);
-$output .="{$prefix}['template']=\"INSERT INTO {$_TABLES['nftemplate']} (templateName, useProject, appgroup) values ('{$templateName}',{$useProject},{$AppGroup})\";";
+$output .="{$prefix}['template']=\"INSERT INTO {$_TABLES['nf_template']} (templateName, useProject, appgroup) values ('{$templateName}',{$useProject},{$AppGroup})\";";
 $output .=$newline;
 
 //now, output the variables
-$sql="SELECT * from {$_TABLES['nftemplatevariables']} where nf_templateID={$origTemplate}";
+$sql="SELECT * from {$_TABLES['nf_templatevariables']} where nf_templateID={$origTemplate}";
 $res=DB_query($sql);
 $cntr=0;
 $id='';
 while(list($id,$nf_templateID,$nf_variableTypeID,$variableName,$variableValue)=DB_fetchArray($res)){
     $output .="{$prefix}['variables'][{$cntr}]['origid']=\"{$id}\";";
     $output .=$newline;
-    $output .="{$prefix}['variables'][{$cntr}]['SQL']=\"INSERT INTO {$_TABLES['nftemplatevariables']} (nf_templateID,nf_variableTypeID,variableName,variableValue  ) values ({templateID},{$nf_variableTypeID},'{$variableName}','{$variableValue}')\";";
+    $output .="{$prefix}['variables'][{$cntr}]['SQL']=\"INSERT INTO {$_TABLES['nf_templatevariables']} (nf_templateID,nf_variableTypeID,variableName,variableValue  ) values ({templateID},{$nf_variableTypeID},'{$variableName}','{$variableValue}')\";";
     $output .=$newline;
     $output .="{$prefix}['variables'][{$cntr}]['newid']=\"\";";
     $output .=$newline;
@@ -70,14 +70,14 @@ while(list($id,$nf_templateID,$nf_variableTypeID,$variableName,$variableValue)=D
 }
 
 //now output the templatedata
-$sql="SELECT * from {$_TABLES['nftemplatedata']} where nf_templateID={$origTemplate}";
+$sql="SELECT * from {$_TABLES['nf_templatedata']} where nf_templateID={$origTemplate}";
 $res=DB_query($sql);
 $cntr=0;
 $tids='';
 while(list($fid,$nf_templateID,$logicalID,$nf_stepType,$nf_handlerId,$firstTask,$taskname,$assignedByVariable,$argumentVariable,$argumentProcess,$operator,$ifValue,$regenerate,$regenAllLiveTasks,$isDynamicForm,$dynamicFormVariableID,$isDynamicTaskName,$dynamicTaskNameVariableID,$function,$formid,$optionalParm,$reminderInterval,$subsequentReminderInterval,$last_updated,$prenotify_message,$postnotify_message,$reminder_message,$numReminders,$escalateVariableID )=DB_fetchArray($res)){
     $output .="{$prefix}['templatedata'][{$cntr}]['origid']=\"{$fid}\";";
     $output .=$newline;
-    $output .="{$prefix}['templatedata'][{$cntr}]['SQL']=\"INSERT INTO {$_TABLES['nftemplatedata']} (";
+    $output .="{$prefix}['templatedata'][{$cntr}]['SQL']=\"INSERT INTO {$_TABLES['nf_templatedata']} (";
     $output .="nf_templateID,logicalID,nf_stepType,nf_handlerId,firstTask,taskname, assignedByVariable,argumentVariable,argumentProcess,";
     $output .="operator,ifValue,regenerate,regenAllLiveTasks,isDynamicForm, dynamicFormVariableID,isDynamicTaskName,dynamicTaskNameVariableID,";
     $output .="function,formid,optionalParm,reminderInterval,subsequentReminderInterval, last_updated,prenotify_message,postnotify_message,";
@@ -109,13 +109,13 @@ $arr=split(",",$tids);
 $len=count($arr);
 for($loop=0;$loop<$len;$loop++){
     $temp=$arr[$loop];
-    $sql="SELECT * from {$_TABLES['nftemplatedatanextstep']} where nf_templateDataFrom={$temp}";
+    $sql="SELECT * from {$_TABLES['nf_templatedatanextstep']} where nf_templateDataFrom={$temp}";
     $res=DB_query($sql);
     while(list($id,$nf_templateDataFrom,$nf_templateDataTo,$nf_templateDataToFalse)=DB_fetchArray($res)){
         //now have a row of data that we have to create an entry for
         $output .="{$prefix}['nextstep'][{$cntr}]['origid']=\"{$id}\";";
         $output .=$newline;
-        $output .="{$prefix}['nextstep'][{$cntr}]['SQL']=\"INSERT INTO {$_TABLES['nftemplatedatanextstep']} (";
+        $output .="{$prefix}['nextstep'][{$cntr}]['SQL']=\"INSERT INTO {$_TABLES['nf_templatedatanextstep']} (";
         $output .="nf_templateDataFrom,nf_templateDataTo,nf_templateDataToFalse";
         $output .=") values (";
         if($nf_templateDataToFalse==''){
@@ -134,12 +134,12 @@ for($loop=0;$loop<$len;$loop++){
 //now to do template Assignments
 //$arr already holds our template IDs.
 $cntr=0;
-$sql="SELECT * FROM {$_TABLES['nftemplateassignment']}  WHERE `nf_templateDataID` IN ({$tids})";
+$sql="SELECT * FROM {$_TABLES['nf_templateassignment']}  WHERE `nf_templateDataID` IN ({$tids})";
 $res=DB_query($sql);
 while(list($id,$nf_templateDataID,$uid,$gid,$nf_processVariable,$nf_prenotifyVariable,$nf_postnotifyVariable,$nf_remindernotifyVariable)=DB_fetchArray($res)){
     $output .="{$prefix}['assignments'][{$cntr}]['origid']=\"{$id}\";";
     $output .=$newline;
-    $output .="{$prefix}['assignments'][{$cntr}]['SQL']=\"INSERT INTO {$_TABLES['nftemplateassignment']} (";
+    $output .="{$prefix}['assignments'][{$cntr}]['SQL']=\"INSERT INTO {$_TABLES['nf_templateassignment']} (";
     $output .="nf_templateDataID,uid,gid,nf_processVariable,nf_prenotifyVariable,nf_postnotifyVariable,nf_remindernotifyVariable";
     $output .=") values (";
     $output .="{templatedataid:'{$nf_templateDataID}'},$uid,$gid,{processvariable:'$nf_processVariable'},{prenotifyvariable:'$nf_prenotifyVariable'},{postnotifyvariable:'$nf_postnotifyVariable'},{remindernotifyvariable:'$nf_remindernotifyVariable'}";

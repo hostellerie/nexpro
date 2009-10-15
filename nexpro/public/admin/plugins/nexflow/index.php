@@ -124,7 +124,7 @@ switch (strtolower($op ) ) {
         $ifProcessItem = COM_applyFilter($_POST['ifTaskidifTasklabel'], true );
         $ifOperator = COM_applyFilter($_POST['ifTaskidifTaskoperator'], true );
         $ifArgumentValue = COM_applyFilter($_POST['nfIfTaskArgumentValue'], false );
-        $taskType = strtolower(DB_getItem($_TABLES['nfsteptype'], 'steptype', "id=" . $stepID ) );
+        $taskType = strtolower(DB_getItem($_TABLES['nf_steptype'], 'steptype', "id=" . $stepID ) );
         $notifyinterval = COM_applyFilter($_POST['notifyinterval'], true );
         $numReminders = COM_applyFilter($_POST['numReminders'], true);
         $escUser = COM_applyFilter($_POST['esc_user'], true);
@@ -142,14 +142,14 @@ switch (strtolower($op ) ) {
 
                     if ($ifVariable == 0 ) { // check for the presence of the processItem..
                         if ($ifProcessItem != 0 ) { // if this is here, then we have a scenario where they've chosen the process item as the argument
-                            $sql = "UPDATE {$_TABLES['nftemplatedata']} set argumentProcess='$ifProcessItem', argumentVariable='', ";
+                            $sql = "UPDATE {$_TABLES['nf_templatedata']} set argumentProcess='$ifProcessItem', argumentVariable='', ";
                             $sql .= "operator='$ifOperator', ifValue='$ifArgumentValue' where id=$editid";
                             $result = DB_Query($sql ); 
                             // exit(0);
                         } 
                         // if we're in here, they've not chosen anything from the process or variable IF task drop downs..
                     } else { // they've chosen the variable as the argument
-                        $sql = "UPDATE {$_TABLES['nftemplatedata']} set argumentProcess='', argumentVariable='$ifVariable', ";
+                        $sql = "UPDATE {$_TABLES['nf_templatedata']} set argumentProcess='', argumentVariable='$ifVariable', ";
                         $sql .= "operator='$ifOperator', ifValue='$ifArgumentValue' where id=$editid";
                         $result = DB_Query($sql );
                     } 
@@ -167,7 +167,7 @@ switch (strtolower($op ) ) {
                             $numberSteps = $numberStepsTrue;
                         } 
 
-                        $sql = "DELETE FROM {$_TABLES['nftemplatedatanextstep']} WHERE nf_templateDataFrom=$editid";
+                        $sql = "DELETE FROM {$_TABLES['nf_templatedatanextstep']} WHERE nf_templateDataFrom=$editid";
                         $result = DB_Query($sql );
                         for($cntr = 0;$cntr < $numberSteps;$cntr++ ) {
                             if ($nextStepsTrue[$cntr] == null ) {
@@ -180,17 +180,17 @@ switch (strtolower($op ) ) {
                             $nextStepsFalse[$cntr] = COM_applyFilter($nextStepsFalse[$cntr],true);
                             $templateToStep = lidtonfid($nextStepsTrue[$cntr], $templateID );
                             $templateToStepFalse = lidtonfid($nextStepsFalse[$cntr], $templateID );
-                            $sql = "INSERT INTO {$_TABLES['nftemplatedatanextstep']} (nf_templateDataFrom,nf_templateDataTo,nf_templateDataToFalse ) ";
+                            $sql = "INSERT INTO {$_TABLES['nf_templatedatanextstep']} (nf_templateDataFrom,nf_templateDataTo,nf_templateDataToFalse ) ";
                             $sql .= "VALUES ('$editid', '$templateToStep', '$templateToStepFalse')";
                             $result = DB_Query($sql );
                         } 
                     } else {
                         // trying to remove the next steps then as there are none listed!
-                        $sql = "DELETE FROM {$_TABLES['nftemplatedatanextstep']} WHERE nf_templateDataFrom=$editid";                         
+                        $sql = "DELETE FROM {$_TABLES['nf_templatedatanextstep']} WHERE nf_templateDataFrom=$editid";                         
                         $result = DB_Query($sql );
                     } 
                     // have to save the operator, arguments and values
-                    $sql  = "UPDATE {$_TABLES['nftemplatedata']} set argumentVariable='$ifVariable', ";
+                    $sql  = "UPDATE {$_TABLES['nf_templatedata']} set argumentVariable='$ifVariable', ";
                     $sql .= "argumentProcess='$ifProcessItem', ";
                     $sql .= "operator='$ifOperator', ";
                     $sql .= "ifValue='$ifArgumentValue', ";
@@ -206,24 +206,24 @@ switch (strtolower($op ) ) {
                     if (strlen($nextSteps ) > 0 ) {
                         $nextSteps = split(",", $nextSteps );
                         $numberSteps = count($nextSteps );
-                        $sql = "DELETE FROM {$_TABLES['nftemplatedatanextstep']} WHERE nf_templateDataFrom='$editid'";
+                        $sql = "DELETE FROM {$_TABLES['nf_templatedatanextstep']} WHERE nf_templateDataFrom='$editid'";
                         $result = DB_Query($sql );
                         for($cntr = 0;$cntr < $numberSteps;$cntr++ ) {
                             $templateNextStep = lidtonfid(COM_applyFilter($nextSteps[$cntr],true), $templateID);
-                            $sql  = "INSERT INTO {$_TABLES['nftemplatedatanextstep']} (nf_templateDataFrom,nf_templateDataTo ) ";
+                            $sql  = "INSERT INTO {$_TABLES['nf_templatedatanextstep']} (nf_templateDataFrom,nf_templateDataTo ) ";
                             $sql .= "VALUES ('$editid','$templateNextStep')";
                             $result = DB_Query($sql );
                         } 
                     } else {
                         // trying to remove the next steps then as there are none listed!
-                        $sql = "DELETE FROM {$_TABLES['nftemplatedatanextstep']} WHERE nf_templateDataFrom='$editid'";
+                        $sql = "DELETE FROM {$_TABLES['nf_templatedatanextstep']} WHERE nf_templateDataFrom='$editid'";
                         $result = DB_Query($sql );
                     } 
 
                     break;
             } //end switch 
             // continue on merrily saving the task.
-            $sql = "UPDATE {$_TABLES['nftemplatedata']} SET nf_stepType='$stepID'";
+            $sql = "UPDATE {$_TABLES['nf_templatedata']} SET nf_stepType='$stepID'";
             if (($stepID == 1 OR $stepID == 4) AND $handlerID > 0 ) {
                 $sql .= ", nf_handlerID='$handlerID'";
             } else {
@@ -255,9 +255,9 @@ switch (strtolower($op ) ) {
 
             /* Update Task Assignment Options */
             if ($taskassigntype == 'user') {
-                DB_Query("UPDATE {$_TABLES['nftemplatedata']} set assignedByVariable=0 where id='$editid'");
+                DB_Query("UPDATE {$_TABLES['nf_templatedata']} set assignedByVariable=0 where id='$editid'");
             } else {
-                DB_Query("UPDATE {$_TABLES['nftemplatedata']} set assignedByVariable=1 where id='$editid'");
+                DB_Query("UPDATE {$_TABLES['nf_templatedata']} set assignedByVariable=1 where id='$editid'");
             }
             $sql .= ", taskname='$taskName'";
             $sql .= ", reminderInterval='$notifyinterval'";
@@ -281,16 +281,16 @@ switch (strtolower($op ) ) {
                 $lID = 1;     // Check if new logical Task ID = 0 - not allowed
             }
             // lets determine if there are any other tasks in this workflow.. otherwise we have to set the first task bit..
-            $sql = "SELECT count( * ) FROM {$_TABLES['nftemplatedata']} WHERE nf_templateID = '$templateID'";
+            $sql = "SELECT count( * ) FROM {$_TABLES['nf_templatedata']} WHERE nf_templateID = '$templateID'";
             $fields = 'logicalID, nf_templateID,nf_stepType, nf_handlerId, function, formid, optionalParm, firstTask, taskname, regenerate,reminderInterval';
             if (DB_numRows(DB_Query($sql))) {
                 // no rows.. thus first task
-                $sql = "INSERT INTO {$_TABLES['nftemplatedata']} ($fields) ";
+                $sql = "INSERT INTO {$_TABLES['nf_templatedata']} ($fields) ";
                 $sql .= "VALUES ('$lID','$templateID','$stepID','$handlerID','$taskFunction','$task_formid','$optionalParm',1,'$taskName','$regen','$notifyinterval')";
                 $result = DB_Query($sql );
                 $taskID = DB_insertID();
             } else {
-                $sql = "INSERT INTO {$_TABLES['nftemplatedata']} ($fields) ";
+                $sql = "INSERT INTO {$_TABLES['nf_templatedata']} ($fields) ";
                 $sql .= "VALUES ('$lID','$templateID','$stepID','$handlerID','$taskFunction','$task_formid','$optonalParm',0,'$taskName','$regen','$notifyinterval')";
                 $result = DB_Query($sql );
                 $taskID = DB_insertID();
@@ -299,36 +299,36 @@ switch (strtolower($op ) ) {
         } 
         // Update the timestamp - used to sort records if we have duplicates that need to be re-ordered
         // Assume the latest updated record should have the logical ID entered - in case of new duplicate
-        DB_query("UPDATE {$_TABLES['nftemplatedata']} set last_updated = now() WHERE id='$taskID'");
+        DB_query("UPDATE {$_TABLES['nf_templatedata']} set last_updated = now() WHERE id='$taskID'");
 
         // Check and see if we have any duplicate logical ID's and need to reorder
-        $sql = "SELECT id FROM {$_TABLES['nftemplatedata']} WHERE nf_templateID='$templateID' AND logicalID = '$lID'";
+        $sql = "SELECT id FROM {$_TABLES['nf_templatedata']} WHERE nf_templateID='$templateID' AND logicalID = '$lID'";
 
         if (DB_numRows(DB_query($sql)) > 1) {
-            $sql  = "SELECT id,logicalID FROM {$_TABLES['nftemplatedata']} WHERE nf_templateID='$templateID' ";
+            $sql  = "SELECT id,logicalID FROM {$_TABLES['nf_templatedata']} WHERE nf_templateID='$templateID' ";
             $sql .= "AND logicalID >= '$lID' ORDER BY logicalID ASC, last_updated DESC";
             $query = DB_query($sql);
             $id = $lID;
             while ($A = DB_fetchArray($query)) {  // Reset field firstTask 
-                DB_query("UPDATE {$_TABLES['nftemplatedata']} set logicalID='$id',firstTask=0 WHERE id='{$A['id']}'");
+                DB_query("UPDATE {$_TABLES['nf_templatedata']} set logicalID='$id',firstTask=0 WHERE id='{$A['id']}'");
                 $id++;
             }
         }
 
         // Set the firstTask Flag for just the first logical id
         // Reset all to 0 and then set the flag to 1 for the first logical task
-        DB_query("UPDATE {$_TABLES['nftemplatedata']} set firstTask=0 WHERE nf_templateID='$templateID'");
-        $sql = "SELECT id FROM {$_TABLES['nftemplatedata']} WHERE nf_templateID='$templateID' ORDER BY logicalID  Limit 1";
+        DB_query("UPDATE {$_TABLES['nf_templatedata']} set firstTask=0 WHERE nf_templateID='$templateID'");
+        $sql = "SELECT id FROM {$_TABLES['nf_templatedata']} WHERE nf_templateID='$templateID' ORDER BY logicalID  Limit 1";
         list ($first_taskID)  = DB_fetchArray(DB_query($sql));
-        DB_query("UPDATE {$_TABLES['nftemplatedata']} set firstTask=1 WHERE id='$first_taskID'");
+        DB_query("UPDATE {$_TABLES['nf_templatedata']} set firstTask=1 WHERE id='$first_taskID'");
 
 
         break;
 
     case 'delete':
-        DB_query("DELETE FROM {$_TABLES['nftemplatedatanextstep']} WHERE nf_templateDataFrom = '{$taskID}'");
-        DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_templateDataID='{$taskID}'");
-        DB_query("DELETE FROM {$_TABLES['nftemplatedata']} WHERE id='{$taskID}'");
+        DB_query("DELETE FROM {$_TABLES['nf_templatedatanextstep']} WHERE nf_templateDataFrom = '{$taskID}'");
+        DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_templateDataID='{$taskID}'");
+        DB_query("DELETE FROM {$_TABLES['nf_templatedata']} WHERE id='{$taskID}'");
         echo COM_refresh("index.php?templateID=" . $templateID);
         break;
 } 
@@ -372,10 +372,10 @@ if ($templateID > 0 ) {
     $p->set_var ('LANG_help2','Checking this will assign this task to a variable\'s value regardless of who\'s physically assigned to it above');    
     $p->set_var ('LANG_help3','Checking this in combimation with the \'Regenerate This Task\' option will signal the nexFlow engine to carry all<BR>currently in-production tasks to the newly regenerated process.');
     
-    $sql  = "SELECT a.templateName,b.steptype, c.*, d.handler FROM {$_TABLES['nftemplatedata']} c ";
-    $sql .= "INNER JOIN {$_TABLES['nfsteptype']} b ON c.nf_steptype=b.id ";
-    $sql .= "INNER JOIN {$_TABLES['nftemplate']} a on c.nf_templateID=a.id ";
-    $sql .= "LEFT OUTER JOIN {$_TABLES['nfhandlers']} d on d.id=c.nf_handlerID ";
+    $sql  = "SELECT a.templateName,b.steptype, c.*, d.handler FROM {$_TABLES['nf_templatedata']} c ";
+    $sql .= "INNER JOIN {$_TABLES['nf_steptype']} b ON c.nf_steptype=b.id ";
+    $sql .= "INNER JOIN {$_TABLES['nf_template']} a on c.nf_templateID=a.id ";
+    $sql .= "LEFT OUTER JOIN {$_TABLES['nf_handlers']} d on d.id=c.nf_handlerID ";
     $sql .= "WHERE 1=1";
     if ($templateID != null ) {
         $sql .= " AND a.id='$templateID'";
@@ -398,7 +398,7 @@ if ($templateID > 0 ) {
         $p->set_var ('task_name',$A['taskname']);
         
         if($A['isDynamicTaskName']==1){
-            $dynSQL="SELECT variableName from {$_TABLES['nftemplatevariables']} where id='{$A['dynamicTaskNameVariableID']}'";
+            $dynSQL="SELECT variableName from {$_TABLES['nf_templatevariables']} where id='{$A['dynamicTaskNameVariableID']}'";
             $dynRes=DB_query($dynSQL);
             list($dynVar)=DB_fetchArray($dynRes);
             $p->set_var ('show_has_dynamic_name','<span class="pluginTinyText" style="color:red"><BR>[&nbsp;Dynamic Task Name Using: ' .$dynVar.'&nbsp;]</span>');
@@ -426,7 +426,7 @@ if ($templateID > 0 ) {
             $p->set_var ('task_handler',$A['function']);
         } elseif ($A['steptype'] == 'nexform') {
             if($A['isDynamicForm']==1){
-                $dynSQL="SELECT variableName from {$_TABLES['nftemplatevariables']} where id='{$A['dynamicFormVariableID']}'";
+                $dynSQL="SELECT variableName from {$_TABLES['nf_templatevariables']} where id='{$A['dynamicFormVariableID']}'";
                 $dynRes=DB_query($dynSQL);
                 list($dynVar)=DB_fetchArray($dynRes);
                 
@@ -443,11 +443,11 @@ if ($templateID > 0 ) {
         } elseif ($A['steptype'] == 'if') {
             $p->set_var ('LANG_Handler','Condition');
             if ($A['argumentVariable'] > 0) {
-                $variableName = DB_getItem($_TABLES['nftemplatevariables'], 'variableName', "id='{$A['argumentVariable']}'");
-                $operator = DB_getItem($_TABLES['nfifoperators'], 'operator', "id='{$A['operator']}'");
+                $variableName = DB_getItem($_TABLES['nf_templatevariables'], 'variableName', "id='{$A['argumentVariable']}'");
+                $operator = DB_getItem($_TABLES['nf_ifoperators'], 'operator', "id='{$A['operator']}'");
                 $if_task_condition = "{$variableName} {$operator} {$A['ifValue']}";
             } else {
-                $if_task_condition = DB_getItem($_TABLES['nfifprocessarguments'],'label',"id='{$A['argumentProcess']}'");
+                $if_task_condition = DB_getItem($_TABLES['nf_ifprocessarguments'],'label',"id='{$A['argumentProcess']}'");
             } 
             $p->set_var ('task_handler',$if_task_condition);
         } elseif ($A['steptype'] == 'or' OR $A['steptype'] == 'and') {
@@ -475,7 +475,7 @@ if ($templateID > 0 ) {
             $p->set_var ('css_option','4');
         }
 
-        $sql  = "SELECT b.* FROM {$_TABLES['nftemplateassignment']}  a, {$_TABLES['users']} b ";
+        $sql  = "SELECT b.* FROM {$_TABLES['nf_templateassignment']}  a, {$_TABLES['users']} b ";
         $sql .= "WHERE a.uid=b.uid AND a.nf_templateDataId='{$A['id']}'";
 
         $assignedUsers = DB_query($sql );
@@ -491,8 +491,8 @@ if ($templateID > 0 ) {
         } else {
             $variables = array();             
             if ($A['assignedByVariable'] == 1) {
-                $asql  = "SELECT variableName FROM {$_TABLES['nftemplateassignment']} a ";
-                $asql .= "INNER JOIN {$_TABLES['nftemplatevariables']} b ON a.nf_processVariable=b.id ";
+                $asql  = "SELECT variableName FROM {$_TABLES['nf_templateassignment']} a ";
+                $asql .= "INNER JOIN {$_TABLES['nf_templatevariables']} b ON a.nf_processVariable=b.id ";
                 $asql .= "WHERE a.nf_templateDataID='{$A['id']}' ";
                 $aquery = DB_query($asql);
                 while (list ($assignmentVariableName) = DB_fetchArray($aquery)) {
@@ -507,9 +507,9 @@ if ($templateID > 0 ) {
         } 
         $p->set_var ('task_assigned',$task_assigned);
 
-        $csql =  "SELECT count(*) FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['nftemplatevariables']} b ";
+        $csql =  "SELECT count(*) FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['nf_templatevariables']} b ";
         $csql .= "WHERE a.nf_prenotifyVariable=b.id AND a.nf_templateDataID='{$A['id']}'";
-        $taskOwnerNotification = DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_prenotifyVariable'),array($A['id'],999));
+        $taskOwnerNotification = DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_prenotifyVariable'),array($A['id'],999));
         list($count) = DB_fetchArray(DB_query($csql));
         if ($count > 0 OR $taskOwnerNotification == 1) {
             $p->set_var ('notify1', $notify1_image);
@@ -517,9 +517,9 @@ if ($templateID > 0 ) {
             $p->set_var ('notify1','');
         }
 
-        $csql =  "SELECT count(*) FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['nftemplatevariables']} b ";
+        $csql =  "SELECT count(*) FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['nf_templatevariables']} b ";
         $csql .= "WHERE a.nf_postnotifyVariable=b.id AND a.nf_templateDataID='{$A['id']}'";
-        $taskOwnerNotification = DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_postnotifyVariable'),array($A['id'],999));         
+        $taskOwnerNotification = DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_postnotifyVariable'),array($A['id'],999));         
         list($count) = DB_fetchArray(DB_query($csql));
         if ($count > 0 OR $taskOwnerNotification == 1) {
             $p->set_var ('notify2', $notify2_image);
@@ -527,9 +527,9 @@ if ($templateID > 0 ) {
             $p->set_var ('notify2','');
         }
 
-        $csql =  "SELECT count(*) FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['nftemplatevariables']} b ";
+        $csql =  "SELECT count(*) FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['nf_templatevariables']} b ";
         $csql .= "WHERE a.nf_remindernotifyVariable=b.id AND a.nf_templateDataID='{$A['id']}'";
-        $taskOwnerNotification = DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_remindernotifyVariable'),array($A['id'],999));         
+        $taskOwnerNotification = DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_remindernotifyVariable'),array($A['id'],999));         
         list($count) = DB_fetchArray(DB_query($csql));
         if ($count > 0 OR $taskOwnerNotification == 1) {
             $p->set_var ('reminder', $reminder_image);
@@ -537,7 +537,7 @@ if ($templateID > 0 ) {
             $p->set_var ('reminder','');
         }
 
-        $sql = "SELECT * FROM {$_TABLES['nftemplatedatanextstep']} WHERE nf_templateDataFrom='{$A['id']}' ";
+        $sql = "SELECT * FROM {$_TABLES['nf_templatedatanextstep']} WHERE nf_templateDataFrom='{$A['id']}' ";
         $query_nextTasks = DB_query($sql);
         $numTasks = DB_numRows($query_nextTasks );
 
@@ -581,9 +581,9 @@ if ($templateID > 0 ) {
 
     /* Format the right hand side of the display  - Edit Task Details */
     if ($taskID != null || $taskID != 0 || $taskID != '' ) {
-        $taskRec = DB_fetchArray (DB_query("SELECT * FROM {$_TABLES['nftemplatedata']} WHERE id='$taskID'"));
+        $taskRec = DB_fetchArray (DB_query("SELECT * FROM {$_TABLES['nf_templatedata']} WHERE id='$taskID'"));
         
-        $variableOptions=nf_makeDropDownWithSelected("id", "variableName", $_TABLES['nftemplatevariables'], $taskRec['dynamicTaskNameVariableID'],"WHERE nf_templateID={$templateID}",1);
+        $variableOptions=nf_makeDropDownWithSelected("id", "variableName", $_TABLES['nf_templatevariables'], $taskRec['dynamicTaskNameVariableID'],"WHERE nf_templateID={$templateID}",1);
         $p->set_var ('available_taskvariablesOptions',$variableOptions);
         
         /* Is this an interactive Task */
@@ -601,9 +601,9 @@ if ($templateID > 0 ) {
         }
 
         $p->set_var ('edit_task_name',htmlspecialchars(stripslashes($taskRec['taskname'])));
-        $p->set_var('steptype_options',COM_optionList($_TABLES['nfsteptype'],'id,stepType',$taskRec['nf_stepType'],0));
+        $p->set_var('steptype_options',COM_optionList($_TABLES['nf_steptype'],'id,stepType',$taskRec['nf_stepType'],0));
         $p->set_var('form_options', COM_optionList($_TABLES['nxform_definitions'],'id,name'));
-        $p->set_var ('optional_parm',DB_getItem($_TABLES['nftemplatedata'], 'optionalParm', "id='{$taskID}'"));
+        $p->set_var ('optional_parm',DB_getItem($_TABLES['nf_templatedata'], 'optionalParm', "id='{$taskID}'"));
 
         if ($taskRec['isDynamicTaskName'] == 1) {
             $p->set_var ('chk_isDynamicName','CHECKED=CHECKED');
@@ -642,7 +642,7 @@ if ($templateID > 0 ) {
         }
         
         if ($taskRec['dynamicFormVariableID'] != '' && $taskRec['dynamicFormVariableID'] != '0') {
-            $variableOptions=nf_makeDropDownWithSelected("id", "variableName", $_TABLES['nftemplatevariables'], $taskRec['dynamicFormVariableID'],"WHERE nf_templateID={$templateID}",1);
+            $variableOptions=nf_makeDropDownWithSelected("id", "variableName", $_TABLES['nf_templatevariables'], $taskRec['dynamicFormVariableID'],"WHERE nf_templateID={$templateID}",1);
             $p->set_var ('available_formvariablesOptions',$variableOptions);
         } 
         
@@ -661,10 +661,10 @@ if ($templateID > 0 ) {
             $p->set_var ('show_if',''); 
         } elseif ($taskRec['nf_stepType'] == 6 or $taskRec['nf_stepType'] == 7) {
             $p->set_var('show_function','');
-            $task_function = DB_getItem($_TABLES['nftemplatedata'], 'function', "id='{$taskID}'");
+            $task_function = DB_getItem($_TABLES['nf_templatedata'], 'function', "id='{$taskID}'");
             $p->set_var ('task_function',$task_function); 
         } elseif ($taskRec['nf_stepType'] == 8)  {
-            $task_formid = DB_getItem($_TABLES['nftemplatedata'], 'formid', "id=" . $taskID );
+            $task_formid = DB_getItem($_TABLES['nf_templatedata'], 'formid', "id=" . $taskID );
             if($taskRec['isDynamicForm'] == 0){
                 $p->set_var('show_form','');
             }else{
@@ -677,7 +677,7 @@ if ($templateID > 0 ) {
             $p->set_var('show_handler','');
         }
 
-        $p->set_var ('task_handler_selection', nf_makeDropDownWithSelected("id", "handler", $_TABLES['nfhandlers'],$taskRec['nf_handlerId']) );
+        $p->set_var ('task_handler_selection', nf_makeDropDownWithSelected("id", "handler", $_TABLES['nf_handlers'],$taskRec['nf_handlerId']) );
         
         $p->set_var ('pre_notify_message', $taskRec['prenotify_message']);
         $p->set_var ('post_notify_message', $taskRec['postnotify_message']);         
@@ -687,11 +687,11 @@ if ($templateID > 0 ) {
         $userOptions = COM_optionList($_TABLES['users'],'uid,fullname','',1,"fullname <> ''");
         $p->set_var ('available_userOptions', $userOptions);
 
-        $variableOptions = COM_optionList($_TABLES['nftemplatevariables'],'id,variableName','',1,"nf_templateID='{$templateID}'");
+        $variableOptions = COM_optionList($_TABLES['nf_templatevariables'],'id,variableName','',1,"nf_templateID='{$templateID}'");
         $p->set_var ('available_variablesOptions',$variableOptions);
 
         // Set task assigned users dropdown list options
-        $sql  = "SELECT b.uid, b.fullname FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['users']} b ";
+        $sql  = "SELECT b.uid, b.fullname FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['users']} b ";
         $sql .= "WHERE a.uid=b.uid AND a.nf_templateDataID='{$taskID}' ORDER BY b.fullname";
         $q = DB_query($sql);
         $options = '';
@@ -701,7 +701,7 @@ if ($templateID > 0 ) {
         $p->set_var('assigned_usersOptions',$options);
 
         // Set task assigned variables dropdown list options
-        $sql =  "SELECT b.id, b.variableName FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['nftemplatevariables']} b ";
+        $sql =  "SELECT b.id, b.variableName FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['nf_templatevariables']} b ";
         $sql .= "WHERE a.nf_processVariable=b.id AND a.nf_templateDataID='{$taskID}'";
         $q = DB_query($sql);
         $options = '';
@@ -711,11 +711,11 @@ if ($templateID > 0 ) {
         $p->set_var('assigned_variableOptions',$options);
         
         // Set task pre-notify variables dropdown list options
-        $sql =  "SELECT b.id, b.variableName FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['nftemplatevariables']} b ";
+        $sql =  "SELECT b.id, b.variableName FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['nf_templatevariables']} b ";
         $sql .= "WHERE a.nf_prenotifyVariable=b.id AND a.nf_templateDataID='{$taskID}'";
         $q = DB_query($sql);
         $options = '';
-        if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_prenotifyVariable'),array($taskID,999)) == 1) {  
+        if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_prenotifyVariable'),array($taskID,999)) == 1) {  
            $options = "<option value=\"999\">TASK_OWNER</option>";
         }         
         while (list($id, $label) = DB_fetchArray($q)) {
@@ -724,11 +724,11 @@ if ($templateID > 0 ) {
         $p->set_var('assigned_preNotifyVariables',$options);
         
         // Set task pre-notify variables dropdown list options
-        $sql =  "SELECT b.id, b.variableName FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['nftemplatevariables']} b ";
+        $sql =  "SELECT b.id, b.variableName FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['nf_templatevariables']} b ";
         $sql .= "WHERE a.nf_postnotifyVariable=b.id AND a.nf_templateDataID='{$taskID}'";
         $q = DB_query($sql);
         $options = '';
-        if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_postnotifyVariable'),array($taskID,999)) == 1) {  
+        if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_postnotifyVariable'),array($taskID,999)) == 1) {  
            $options = "<option value=\"999\">TASK_OWNER</option>";
         }
         while (list($id, $label) = DB_fetchArray($q)) {
@@ -737,11 +737,11 @@ if ($templateID > 0 ) {
         $p->set_var('assigned_postNotifyVariables',$options); 
 
         // Set task reminder notify variables dropdown list options
-        $sql =  "SELECT b.id, b.variableName FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['nftemplatevariables']} b ";
+        $sql =  "SELECT b.id, b.variableName FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['nf_templatevariables']} b ";
         $sql .= "WHERE a.nf_remindernotifyVariable=b.id AND a.nf_templateDataID='{$taskID}'";
         $q = DB_query($sql);
         $options = '';
-        if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_remindernotifyVariable'),array($taskID,999)) == 1) {  
+        if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_remindernotifyVariable'),array($taskID,999)) == 1) {  
            $options = "<option value=\"999\">TASK_OWNER</option>";
         }                 
         while (list($id, $label) = DB_fetchArray($q)) {
@@ -752,7 +752,7 @@ if ($templateID > 0 ) {
         // Set Next-tasks field
         $next_tasks = '';
         if ($taskID != null ) {
-            $sql = "Select nf_templateDataTo FROM {$_TABLES['nftemplatedatanextstep']} WHERE nf_templateDataFrom={$taskID} ";
+            $sql = "Select nf_templateDataTo FROM {$_TABLES['nf_templatedatanextstep']} WHERE nf_templateDataFrom={$taskID} ";
             $sql .= "ORDER BY nf_templateDataTo";
             $tempvar = DB_query($sql);
             $numTasks = DB_numRows($tempvar );
@@ -789,7 +789,7 @@ if ($templateID > 0 ) {
         
         $p->set_var ('subsequentIntervalOptions',$options);          
 
-        $sql = "SELECT * FROM {$_TABLES['nftemplatevariables']} WHERE nf_templateID = '{$taskRec['nf_templateID']}';";
+        $sql = "SELECT * FROM {$_TABLES['nf_templatevariables']} WHERE nf_templateID = '{$taskRec['nf_templateID']}';";
         $result = DB_query($sql);
         $numrows = DB_numRows($result);
         $options = "<option value=\"0\">No Escalation</option>\n";
@@ -808,34 +808,34 @@ if ($templateID > 0 ) {
         // Set task IF Options if required
         if ($taskRec['argumentVariable'] > 0) {
             
-            $sql = "{$_TABLES['nftemplatevariables']} ifTask ";
+            $sql = "{$_TABLES['nf_templatevariables']} ifTask ";
             $p->set_var('if_task_variables', nf_makeDropDownWithSelected("ifTask.id", "ifTask.variableName", $sql ,$taskRec['argumentVariable']," WHERE nf_templateID='$templateID'") );
         } else {
-            $sql = "{$_TABLES['nftemplatevariables']} ifTask WHERE ifTask.nf_templateID='{$templateID}'";
+            $sql = "{$_TABLES['nf_templatevariables']} ifTask WHERE ifTask.nf_templateID='{$templateID}'";
             $p->set_var('if_task_variables', nf_makeDropDownSql("ifTask.id", "ifTask.variableName", $sql, 1 ) );
         } 
 
         if ($taskRec['argumentProcess'] > 0) {
-            $sql = "{$_TABLES['nfifprocessarguments']} ifTask ";
+            $sql = "{$_TABLES['nf_ifprocessarguments']} ifTask ";
             $p->set_var('if_task_option', nf_makeDropDownWithSelected("ifTask.id", "ifTask.label", $sql, $taskRec['argumentProcess']) );
         } else {
-            $sql = "{$_TABLES['nfifprocessarguments']} ifTask ";
+            $sql = "{$_TABLES['nf_ifprocessarguments']} ifTask ";
             $p->set_var('if_task_option', nf_makeDropDownSql("ifTask.id", "ifTask.label", $sql , 1 ) );
         }
 
         if ($taskRec['operator'] > 0 ) { 
-            $sql = "{$_TABLES['nfifoperators']} ifTask ";
+            $sql = "{$_TABLES['nf_ifoperators']} ifTask ";
             $p->set_var('if_task_operator', nf_makeDropDownWithSelected("ifTask.id", "ifTask.operator", $sql, $taskRec['operator']) );
         } else {
-            $sql = "{$_TABLES['nfifoperators']} ifTask ";
+            $sql = "{$_TABLES['nf_ifoperators']} ifTask ";
             $p->set_var('if_task_operator', nf_makeDropDownSql("ifTask.id", "ifTask.operator", $sql, 1) );
         } 
 
-        $p->set_var('if_option_value', DB_getItem($_TABLES['nftemplatedata'], 'ifValue', "id='{$taskID}'") );
+        $p->set_var('if_option_value', DB_getItem($_TABLES['nf_templatedata'], 'ifValue', "id='{$taskID}'") );
 
         $task_true_value = '';
         if ($taskID != null ) {
-            $sql = "Select nf_templateDataTo FROM {$_TABLES['nftemplatedatanextstep']} WHERE nf_templateDataFrom={$taskID} ";
+            $sql = "Select nf_templateDataTo FROM {$_TABLES['nf_templatedatanextstep']} WHERE nf_templateDataFrom={$taskID} ";
             $sql .= "ORDER BY nf_templateDataTo ";
             $tempvar = DB_query($sql);
             $numTasks = DB_numRows($tempvar );
@@ -857,7 +857,7 @@ if ($templateID > 0 ) {
 
         $task_false_value = '';
         if ($taskID != null ) {
-            $sql = "Select nf_templateDataToFalse FROM {$_TABLES['nftemplatedatanextstep']} WHERE nf_templateDataFrom={$taskID} ";
+            $sql = "Select nf_templateDataToFalse FROM {$_TABLES['nf_templatedatanextstep']} WHERE nf_templateDataFrom={$taskID} ";
             $sql .= "ORDER BY nf_templateDataToFalse ";
 
             $tempvar = DB_query($sql);
@@ -882,21 +882,21 @@ if ($templateID > 0 ) {
         $logical_taskid = getnextlid($templateID );
         $p->set_var ('logical_task_id', $logical_taskid);
                 
-        $p->set_var ('steptype_options',COM_optionList($_TABLES['nfsteptype'],'id,stepType','',0));
+        $p->set_var ('steptype_options',COM_optionList($_TABLES['nf_steptype'],'id,stepType','',0));
         $p->set_var('form_options', COM_optionList($_TABLES['nxform_definitions'],'id,name'));
-        $p->set_var ('task_handler_selection', nf_makeDropDown("id", "handler", $_TABLES['nfhandlers'] ) );
+        $p->set_var ('task_handler_selection', nf_makeDropDown("id", "handler", $_TABLES['nf_handlers'] ) );
         $p->set_var('next_tasks','');
 
         $userOptions = COM_optionList($_TABLES['users'],'uid,fullname','',1,"fullname <> '' AND uid > 1");
         $p->set_var ('available_userOptions', $userOptions);
-        $variableOptions=nf_makeDropDownWithSelected("id", "variableName", $_TABLES['nftemplatevariables'], $taskRec['dynamicFormVariableID'],'',1);
+        $variableOptions=nf_makeDropDownWithSelected("id", "variableName", $_TABLES['nf_templatevariables'], $taskRec['dynamicFormVariableID'],'',1);
         $p->set_var ('available_variablesOptions',$variableOptions);         
         
-        $sql = "{$_TABLES['nftemplatevariables']} ifTask WHERE ifTask.nf_templateID='{$templateID}'";
+        $sql = "{$_TABLES['nf_templatevariables']} ifTask WHERE ifTask.nf_templateID='{$templateID}'";
         $p->set_var('if_task_variables', nf_makeDropDownSql("ifTask.id", "ifTask.variableName", $sql, 1 ) );
-        $sql = "{$_TABLES['nfifprocessarguments']} ifTask ";
+        $sql = "{$_TABLES['nf_ifprocessarguments']} ifTask ";
         $p->set_var('if_task_option', nf_makeDropDownSql("ifTask.id", "ifTask.label", $sql , 1 ) );
-        $sql = "{$_TABLES['nfifoperators']} ifTask ";
+        $sql = "{$_TABLES['nf_ifoperators']} ifTask ";
         $p->set_var('if_task_operator', nf_makeDropDownSql("ifTask.id", "ifTask.operator", $sql, 1) ); 
         
         $options = '';

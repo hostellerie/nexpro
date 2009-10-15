@@ -63,7 +63,7 @@ function taskconsoleShowNavbar($selected='My Tasks') {
 function nf_updateStatusLog($id,$formid,$message) {
     global $_TABLES,$_USER;
 
-    $sql = "INSERT INTO {$_TABLES['nfproject_timestamps']} (project_id,project_formid,statusmsg,timestamp,uid) ";
+    $sql = "INSERT INTO {$_TABLES['nf_projecttimestamps']} (project_id,project_formid,statusmsg,timestamp,uid) ";
     $sql .= "VALUES ('$id','$formid','$message',UNIX_TIMESTAMP(),'{$_USER['uid']}') ";
     DB_query($sql);
 }
@@ -72,7 +72,7 @@ function nf_updateStatusLog($id,$formid,$message) {
 function nf_taskhistoryComplete($id,$status) {
     global $_TABLES;
 
-    $sql = "UPDATE {$_TABLES['nfproject_taskhistory']} SET date_completed = UNIX_TIMESTAMP(), ";
+    $sql = "UPDATE {$_TABLES['nf_projecttaskhistory']} SET date_completed = UNIX_TIMESTAMP(), ";
     $sql .= "status='$status' WHERE task_id='$id'";
     DB_query($sql);
 }
@@ -104,7 +104,7 @@ function nfCustomSearchProjects($project_id,$searchopt,$searchkey) {
 
      $sforms = implode(',',array_keys($NF_CONF['searchoptions'][$searchopt]));
      $sfields = implode(',',array_values($NF_CONF['searchoptions'][$searchopt]));
-     $q1 = DB_query("SELECT results_id FROM {$_TABLES['nfproject_forms']} WHERE project_id='$project_id' AND form_id in ($sforms)");
+     $q1 = DB_query("SELECT results_id FROM {$_TABLES['nf_projectforms']} WHERE project_id='$project_id' AND form_id in ($sforms)");
      while (list ($results_id) = DB_fetchArray($q1)) {
         $sql = "SELECT field_data FROM {$_TABLES['nxform_resdata']} WHERE result_id='$results_id' AND field_id in ($sfields)";
         $q2 = DB_query($sql);
@@ -157,13 +157,13 @@ function display_wfFlowsTabular($uid=0,$allflows=true){
     $actionurl = $_CONF['site_url'] .'/nexflow/index.php';
 
     //search/filter area setup
-    $appGroupDDL = COM_optionList($_TABLES['nfappgroups'],'id,AppGroup');
+    $appGroupDDL = COM_optionList($_TABLES['nf_appgroups'],'id,AppGroup');
 
     $tmplt->set_var('show_selectappfield','none');
     $tmplt->set_var('show_searchtextfield','');
     switch(strtolower($srchFilter)){
         case 'appgroup':
-            $appGroupDDL = COM_optionList($_TABLES['nfappgroups'],'id,AppGroup',$idForAppGroup);
+            $appGroupDDL = COM_optionList($_TABLES['nf_appgroups'],'id,AppGroup',$idForAppGroup);
             $tmplt->set_var('srchselappgroup','selected');
             $tmplt->set_var('show_selectappfield','');
             $tmplt->set_var('show_searchtextfield','none');
@@ -177,7 +177,7 @@ function display_wfFlowsTabular($uid=0,$allflows=true){
     $tmplt->set_var('srchApplicationGroups', $appGroupDDL);
 
     $relatedProcesses = '';
-    $sql = "SELECT related_processes from {$_TABLES['nfprojects']}";
+    $sql = "SELECT related_processes from {$_TABLES['nf_projects']}";
     $res = DB_query($sql);
     while($B = DB_fetchArray($res)) {
         if($B['related_processes'] != '') {
@@ -192,19 +192,19 @@ function display_wfFlowsTabular($uid=0,$allflows=true){
     //this statement produces a view from which we can determine all of the rows this USER has initiated
     $sql  = "SELECT DISTINCT a.id as nf_processID, a.nf_templateID, a.complete, a.initiator_uid, a.initiatedDate, ";
     $sql .= "a.completedDate, b.templateName,  f.description as prjDescription,f.id as project_id, a.customFlowName ";
-    $sql .= "FROM {$_TABLES['nfprocess']} a ";
-    $sql .= "INNER JOIN {$_TABLES['nftemplate']} b ON a.nf_templateID = b.id ";
-    $sql .= "INNER JOIN {$_TABLES['nftemplatedata']} c ON b.id = c.nf_templateID ";
-    $sql .= "INNER JOIN {$_TABLES['nfqueue']} d ON (d.nf_templateDataId = c.id AND d.nf_processID = a.id) ";
+    $sql .= "FROM {$_TABLES['nf_process']} a ";
+    $sql .= "INNER JOIN {$_TABLES['nf_template']} b ON a.nf_templateID = b.id ";
+    $sql .= "INNER JOIN {$_TABLES['nf_templatedata']} c ON b.id = c.nf_templateID ";
+    $sql .= "INNER JOIN {$_TABLES['nf_queue']} d ON (d.nf_templateDataId = c.id AND d.nf_processID = a.id) ";
      
     if($srchFilter=='appgroup'){
-        $sql .= "INNER JOIN {$_TABLES['nfappgroups']} i on b.AppGroup=i.id ";
+        $sql .= "INNER JOIN {$_TABLES['nf_appgroups']} i on b.AppGroup=i.id ";
     }
-    $sql .= "LEFT OUTER JOIN {$_TABLES['nfprocessvariables']} e ON ( e.nf_processid = a.id AND c.argumentvariable = e.nf_templateVariableId ) ";
-    $sql .= "LEFT OUTER JOIN {$_TABLES['nfprojects']} f on (f.wf_process_id = a.id) ";
-    $sql .= "LEFT OUTER JOIN {$_TABLES['nftemplatevariables']} g on (e.nf_templateVariableID=g.id) ";
-    $sql .= "LEFT OUTER JOIN {$_TABLES['nfproject_taskhistory']} h on h.process_id=a.id ";
-    $sql .= "LEFT OUTER JOIN {$_TABLES['nfproductionassignments']} j ON (j.task_id = d.id ) ";
+    $sql .= "LEFT OUTER JOIN {$_TABLES['nf_processvariables']} e ON ( e.nf_processid = a.id AND c.argumentvariable = e.nf_templateVariableId ) ";
+    $sql .= "LEFT OUTER JOIN {$_TABLES['nf_projects']} f on (f.wf_process_id = a.id) ";
+    $sql .= "LEFT OUTER JOIN {$_TABLES['nf_templatevariables']} g on (e.nf_templateVariableID=g.id) ";
+    $sql .= "LEFT OUTER JOIN {$_TABLES['nf_projecttaskhistory']} h on h.process_id=a.id ";
+    $sql .= "LEFT OUTER JOIN {$_TABLES['nf_productionassignments']} j ON (j.task_id = d.id ) ";
     $sql .= "WHERE  1=1 ";
     if (!$allflows) {
         $sql .= "AND (d.uid = '{$uid}' OR (e.variableValue = '{$uid}' AND g.variableName='INITIATOR') OR h.assigned_uid='{$uid}' OR j.uid='{$uid}')  ";
@@ -296,7 +296,7 @@ function display_wfFlowsTabular($uid=0,$allflows=true){
         if($A['complete'] != 2) { //don't show the item if its a regen'd process.
             $i++;
             $sql = "SELECT a.id ,a.wf_process_id , a.wf_task_id ,a.originator_uid ,a.description ,a.status ,a.prev_status ,a.related_processes ";
-            $sql .= "FROM {$_TABLES['nfprojects']} a where a.wf_process_id='{$A['nf_processID']}' LIMIT 1";
+            $sql .= "FROM {$_TABLES['nf_projects']} a where a.wf_process_id='{$A['nf_processID']}' LIMIT 1";
                     
             $projRes = DB_query($sql);
             $rowid=$i;
@@ -478,13 +478,13 @@ function display_wfFlowsStatus($uid=0,$allflows=true){
     $tmplt->set_var('flowrecord_initialstate','none');
 
     //search/filter area setup
-    $appGroupDDL = COM_optionList($_TABLES['nfappgroups'],'id,AppGroup');
+    $appGroupDDL = COM_optionList($_TABLES['nf_appgroups'],'id,AppGroup');
 
     $tmplt->set_var('show_selectappfield','none');
     $tmplt->set_var('show_searchtextfield','');
     switch(strtolower($srchFilter)){
         case 'appgroup':
-            $appGroupDDL = COM_optionList($_TABLES['nfappgroups'],'id,AppGroup',$idForAppGroup);
+            $appGroupDDL = COM_optionList($_TABLES['nf_appgroups'],'id,AppGroup',$idForAppGroup);
             $tmplt->set_var('srchselappgroup','selected');
             $tmplt->set_var('show_selectappfield','');
             $tmplt->set_var('show_searchtextfield','none');
@@ -503,7 +503,7 @@ function display_wfFlowsStatus($uid=0,$allflows=true){
     
     $projectProcesses = array();
     $relatedProcesses = '';
-    $sql = "SELECT related_processes from {$_TABLES['nfprojects']} ";
+    $sql = "SELECT related_processes from {$_TABLES['nf_projects']} ";
     $res = DB_query($sql);
     while($B = DB_fetchArray($res)){
         if($B['related_processes'] != ''){
@@ -518,19 +518,19 @@ function display_wfFlowsStatus($uid=0,$allflows=true){
 
     $sql  = "SELECT DISTINCT a.id as nf_processID, a.nf_templateID, a.complete, a.initiator_uid, a.initiatedDate, ";
     $sql .= "a.completedDate, b.templateName,  f.description as prjDescription,f.id as project_id, a.customFlowName ";
-    $sql .= "FROM {$_TABLES['nfprocess']} a ";
-    $sql .= "INNER JOIN {$_TABLES['nftemplate']} b ON a.nf_templateID = b.id ";
-    $sql .= "INNER JOIN {$_TABLES['nftemplatedata']} c ON b.id = c.nf_templateID ";
-    $sql .= "INNER JOIN {$_TABLES['nfqueue']} d ON (d.nf_templateDataId = c.id AND d.nf_processID = a.id) ";
+    $sql .= "FROM {$_TABLES['nf_process']} a ";
+    $sql .= "INNER JOIN {$_TABLES['nf_template']} b ON a.nf_templateID = b.id ";
+    $sql .= "INNER JOIN {$_TABLES['nf_templatedata']} c ON b.id = c.nf_templateID ";
+    $sql .= "INNER JOIN {$_TABLES['nf_queue']} d ON (d.nf_templateDataId = c.id AND d.nf_processID = a.id) ";
      
     if($srchFilter == 'appgroup'){
-        $sql .= "INNER JOIN {$_TABLES['nfappgroups']} i on b.AppGroup=i.id ";
+        $sql .= "INNER JOIN {$_TABLES['nf_appgroups']} i on b.AppGroup=i.id ";
     }
-    $sql .= "LEFT OUTER JOIN {$_TABLES['nfprocessvariables']} e ON ( e.nf_processid = a.id AND c.argumentvariable = e.nf_templateVariableId ) ";
-    $sql .= "LEFT OUTER JOIN {$_TABLES['nfprojects']} f on (f.wf_process_id = a.id) ";
-    $sql .= "LEFT OUTER JOIN {$_TABLES['nftemplatevariables']} g on (e.nf_templateVariableID=g.id) ";
-    $sql .= "LEFT OUTER JOIN {$_TABLES['nfproject_taskhistory']} h on h.process_id=a.id ";
-    $sql .= "LEFT OUTER JOIN {$_TABLES['nfproductionassignments']} j ON (j.task_id = d.id ) ";
+    $sql .= "LEFT OUTER JOIN {$_TABLES['nf_processvariables']} e ON ( e.nf_processid = a.id AND c.argumentvariable = e.nf_templateVariableId ) ";
+    $sql .= "LEFT OUTER JOIN {$_TABLES['nf_projects']} f on (f.wf_process_id = a.id) ";
+    $sql .= "LEFT OUTER JOIN {$_TABLES['nf_templatevariables']} g on (e.nf_templateVariableID=g.id) ";
+    $sql .= "LEFT OUTER JOIN {$_TABLES['nf_projecttaskhistory']} h on h.process_id=a.id ";
+    $sql .= "LEFT OUTER JOIN {$_TABLES['nf_productionassignments']} j ON (j.task_id = d.id ) ";
     $sql .= "WHERE  1=1 ";
     if (!$allflows) {
         $sql .= "AND (d.uid = '{$uid}' OR (e.variableValue = '{$uid}' AND g.variableName='INITIATOR') OR h.assigned_uid='{$uid}' OR j.uid='{$uid}')  ";
@@ -739,10 +739,10 @@ function nf_formatOutstandingTasks($process_id,$projectProcesses,&$tmplt) {
 
             if ($process_id > 0 ) {
                 $sql  = "SELECT distinct a.id, a.nf_processID,d.taskname, d.nf_templateID, a.status, a.archived, ";
-                $sql .= "a.createdDate, c.uid, c.nf_processVariable, a.nf_templateDataID FROM {$_TABLES['nfqueue']} a ";
-                $sql .= "LEFT JOIN {$_TABLES['nftemplateassignment']} b ON a.nf_templateDataID = b.nf_templateDataID ";
-                $sql .= "LEFT JOIN {$_TABLES['nfproductionassignments']} c ON c.task_id = a.id ";
-                $sql .= "LEFT JOIN {$_TABLES['nftemplatedata']} d on a.nf_templateDataID = d.id ";
+                $sql .= "a.createdDate, c.uid, c.nf_processVariable, a.nf_templateDataID FROM {$_TABLES['nf_queue']} a ";
+                $sql .= "LEFT JOIN {$_TABLES['nf_templateassignment']} b ON a.nf_templateDataID = b.nf_templateDataID ";
+                $sql .= "LEFT JOIN {$_TABLES['nf_productionassignments']} c ON c.task_id = a.id ";
+                $sql .= "LEFT JOIN {$_TABLES['nf_templatedata']} d on a.nf_templateDataID = d.id ";
                 $sql .= "WHERE a.nf_processID = '$process_id' AND (a.archived IS NULL OR a.archived = 0)";
                 $sql .= "ORDER BY a.id";
 
@@ -797,8 +797,8 @@ function nf_getProjectOutstandingTasks($uid) {
     global $_TABLES;
 
     // Retrieve any Outstanding Tasks that have been assigned to this user
-    $sql  = "SELECT a.id, a.nf_processID as processid FROM {$_TABLES['nfqueue']} a ";
-    $sql .= "LEFT JOIN {$_TABLES['nfproductionassignments']} b ON a.id=b.task_id WHERE b.uid=$uid";
+    $sql  = "SELECT a.id, a.nf_processID as processid FROM {$_TABLES['nf_queue']} a ";
+    $sql .= "LEFT JOIN {$_TABLES['nf_productionassignments']} b ON a.id=b.task_id WHERE b.uid=$uid";
     $query = DB_query($sql);
 
     $taskProcessIDs = array();
@@ -829,20 +829,20 @@ function nf_getSortedTaskArray($tasks,$taskFilterOptions='',$taskSortOption,$src
 
         $currentTask = array();     // Holds current task detail information
         $nfclass = new nexflow($taskrec['processid']);
-        $templateID = DB_getItem($_TABLES['nfprocess'],'nf_templateID',"id='{$taskrec['processid']}'");
+        $templateID = DB_getItem($_TABLES['nf_process'],'nf_templateID',"id='{$taskrec['processid']}'");
 
-        $sql  = "SELECT a.id FROM {$_TABLES['nfappgroups']} a ";
-        $sql .= "INNER JOIN {$_TABLES['nftemplate']} b ON b.AppGroup=a.id ";
+        $sql  = "SELECT a.id FROM {$_TABLES['nf_appgroups']} a ";
+        $sql .= "INNER JOIN {$_TABLES['nf_template']} b ON b.AppGroup=a.id ";
         $sql .= "WHERE b.id='{$templateID}' LIMIT 1";
         $res = DB_query($sql);
         list($appname) = DB_fetchArray($res);
 
         $currentTask['taskname'] = $taskrec['taskname'];
-        $currentTask['flowname'] = DB_getItem($_TABLES['nftemplate'],'templateName',"id='{$templateID}'");
-        $currentTask['requestdescription'] = DB_getItem($_TABLES['nfprojects'],'description',"wf_process_id='{$taskrec['processid']}'");
+        $currentTask['flowname'] = DB_getItem($_TABLES['nf_template'],'templateName',"id='{$templateID}'");
+        $currentTask['requestdescription'] = DB_getItem($_TABLES['nf_projects'],'description',"wf_process_id='{$taskrec['processid']}'");
         $currentTask['appgroup'] = NXCOM_filterInt($appname);
-        $currentTask['startedDate'] = DB_getItem($_TABLES['nfqueue'], 'startedDate',"id='{$taskrec['id']}'");
-        $currentTask['status'] = DB_getItem($_TABLES['nfqueue'], 'status',"id='{$taskrec['id']}'");
+        $currentTask['startedDate'] = DB_getItem($_TABLES['nf_queue'], 'startedDate',"id='{$taskrec['id']}'");
+        $currentTask['status'] = DB_getItem($_TABLES['nf_queue'], 'status',"id='{$taskrec['id']}'");
 
         if ($taskFilterOptions=='cdate') {
             if ($taskrec['cdate']  >= $filterdate) {

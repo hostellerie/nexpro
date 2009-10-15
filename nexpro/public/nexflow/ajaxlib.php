@@ -53,15 +53,15 @@ if ($CONF_NF['debug']) {
 }
 
 if ($op == 'starttask') {
-    $startedDate = DB_getItem($_TABLES['nfqueue'], 'startedDate',"id='$taskid'");
+    $startedDate = DB_getItem($_TABLES['nf_queue'], 'startedDate',"id='$taskid'");
     if ($startedDate <= 0) {
-        DB_query("UPDATE {$_TABLES['nfqueue']} SET startedDate = NOW() WHERE id='$taskid'");
+        DB_query("UPDATE {$_TABLES['nf_queue']} SET startedDate = NOW() WHERE id='$taskid'");
     }
-    DB_query("UPDATE {$_TABLES['nfproject_taskhistory']} SET date_started = UNIX_TIMESTAMP() WHERE task_id='$taskid'");
+    DB_query("UPDATE {$_TABLES['nf_projecttaskhistory']} SET date_started = UNIX_TIMESTAMP() WHERE task_id='$taskid'");
 
 
 } elseif ($op=='holdtask'){
-        $status= DB_getItem($_TABLES['nfqueue'], 'status',"id='$taskid'");
+        $status= DB_getItem($_TABLES['nf_queue'], 'status',"id='$taskid'");
         $status=NXCOM_filterInt($status);
         if($status!=2){
             $nfclass->hold_task($taskid);
@@ -76,7 +76,7 @@ if ($op == 'starttask') {
 
 
 } elseif ($op=='holdprocess'){
-        $status= DB_getItem($_TABLES['nfprocess'], 'complete',"id='$taskid'");
+        $status= DB_getItem($_TABLES['nf_process'], 'complete',"id='$taskid'");
         $status=NXCOM_filterInt($status);
         if($status==0){
             $nfclass->hold_process($taskid);
@@ -95,15 +95,15 @@ if ($op == 'starttask') {
 } elseif ($op == 'setowner') {
 
     if (SEC_hasRights('nexflow.admin')) {
-        $proessessid = DB_getItem($_TABLES['nfqueue'],'nf_processID',"id=$taskid");
-        $assigneduid = DB_getItem($_TABLES['nfproductionassignments'], 'uid', "task_id=$taskid");
+        $proessessid = DB_getItem($_TABLES['nf_queue'],'nf_processID',"id=$taskid");
+        $assigneduid = DB_getItem($_TABLES['nf_productionassignments'], 'uid', "task_id=$taskid");
         nf_reassign_task($taskid,$taskuser,$assigneduid,$variableid); 
-        $sql = "SELECT a.id, b.taskname FROM {$_TABLES['nfqueue']} a LEFT JOIN {$_TABLES['nftemplatedata']} b ON a.nf_templateDataID=b.id WHERE a.id=$taskid;";
+        $sql = "SELECT a.id, b.taskname FROM {$_TABLES['nf_queue']} a LEFT JOIN {$_TABLES['nf_templatedata']} b ON a.nf_templateDataID=b.id WHERE a.id=$taskid;";
         $res = DB_query($sql);
         $A = DB_fetchArray($res);
         $comment = 'Task Owner change, was '.COM_getDisplayName($assigneduid).', now ';
         $comment .= COM_getDisplayName($taskuser) . " for task: {$A['taskname']}";
-        $sql  = "INSERT INTO {$_TABLES['nfproject_comments']} (project_id, task_id, uid, timestamp, comment) ";
+        $sql  = "INSERT INTO {$_TABLES['nf_projectcomments']} (project_id, task_id, uid, timestamp, comment) ";
         $sql .= "VALUES ('$project_id',{$A['id']},'{$_USER['uid']}',UNIX_TIMESTAMP(),'$comment')";
         DB_query($sql);
     }
@@ -133,14 +133,14 @@ if ($op == 'starttask') {
 
 
 } elseif ($op == 'deleteproject') {
-    if (SEC_hasRights('nexflow.admin') AND $project_id > 0 AND DB_Count($_TABLES['nfprojects'],id,$project_id) == 1) {
-        $res = DB_query("SELECT description, project_num, wf_process_id FROM {$_TABLES['nfprojects']} WHERE id=$project_id");
+    if (SEC_hasRights('nexflow.admin') AND $project_id > 0 AND DB_Count($_TABLES['nf_projects'],id,$project_id) == 1) {
+        $res = DB_query("SELECT description, project_num, wf_process_id FROM {$_TABLES['nf_projects']} WHERE id=$project_id");
         list ($projectTitle, $projectNum, $pid) = DB_fetchArray($res);
 
         nf_changeLog("Nexflow Admin {$_USER['username']} has deleted project id: $project_id. Project# $projectNum, Title:$projectTitle");
 
         $relatedProcesses = '';
-        $sql = "SELECT related_processes from {$_TABLES['nfprojects']}";
+        $sql = "SELECT related_processes from {$_TABLES['nf_projects']}";
         $res = DB_query($sql);
         while($B = DB_fetchArray($res)) {
             if($B['related_processes'] != '') {
@@ -152,21 +152,21 @@ if ($op == 'starttask') {
             }
         }
         if ( $relatedProcesses != '') {
-            $sql = "SELECT id FROM {$_TABLES['nfqueue']} WHERE archived is NULL and nf_processID in ($relatedProcesses) ";
+            $sql = "SELECT id FROM {$_TABLES['nf_queue']} WHERE archived is NULL and nf_processID in ($relatedProcesses) ";
             $query = DB_query($sql);
             while (list($qid) = DB_fetchArray($query)) {
                 nf_changeLog("Nexflow delete project related process queue record:$qid");
-                DB_query("DELETE FROM {$_TABLES['nfqueue']} WHERE id=$qid");
+                DB_query("DELETE FROM {$_TABLES['nf_queue']} WHERE id=$qid");
             }
         }
 
         $nfclass->delete_process($pid);
 
-        DB_query("DELETE FROM {$_TABLES['nfproject_forms']} WHERE project_id=$project_id");
-        DB_query("DELETE FROM {$_TABLES['nfproject_timestamps']} WHERE project_id=$project_id");
-        DB_query("DELETE FROM {$_TABLES['nfproject_comments']} WHERE project_id=$project_id");
-        DB_query("DELETE FROM {$_TABLES['nfproject_taskhistory']} WHERE project_id=$project_id");
-        DB_query("DELETE FROM {$_TABLES['nfprojects']} WHERE id=$project_id ");
+        DB_query("DELETE FROM {$_TABLES['nf_projectforms']} WHERE project_id=$project_id");
+        DB_query("DELETE FROM {$_TABLES['nf_projecttimestamps']} WHERE project_id=$project_id");
+        DB_query("DELETE FROM {$_TABLES['nf_projectcomments']} WHERE project_id=$project_id");
+        DB_query("DELETE FROM {$_TABLES['nf_projecttaskhistory']} WHERE project_id=$project_id");
+        DB_query("DELETE FROM {$_TABLES['nf_projects']} WHERE id=$project_id ");
 
         $html = '<div class="pluginAlert" style="margin:5px 20px 5px 20px ;padding:10px;">Project has been deleted';
         $html .= ' - <a href="'.$CONF_NF['TaskConsole_URL'] .'?op=allprojects">refresh</a> the page.</div>';
@@ -192,10 +192,10 @@ if ($op == 'starttask') {
 
 } else if ($op == 'displaycomments') {
     // Retrieve any Project Comments
-    $sql  = "SELECT a.id,d.taskname,a.timestamp,a.comment, b.username FROM {$_TABLES['nfproject_comments']} a ";
+    $sql  = "SELECT a.id,d.taskname,a.timestamp,a.comment, b.username FROM {$_TABLES['nf_projectcomments']} a ";
     $sql .= "LEFT JOIN {$_TABLES['users']} b on a.uid=b.uid  ";
-    $sql .= "LEFT JOIN {$_TABLES['nfqueue']} c on c.id = a.task_id ";
-    $sql .= "LEFT JOIN {$_TABLES['nftemplatedata']} d on d.id = c.nf_templateDataID ";
+    $sql .= "LEFT JOIN {$_TABLES['nf_queue']} c on c.id = a.task_id ";
+    $sql .= "LEFT JOIN {$_TABLES['nf_templatedata']} d on d.id = c.nf_templateDataID ";
     $sql .= "WHERE project_id='$project_id' ORDER BY timestamp ASC";
     $query = DB_query($sql);
 
@@ -251,15 +251,15 @@ if ($op == 'starttask') {
 
 } else {
     if (isset($taskid) AND $taskid > 0) {
-        DB_query("UPDATE {$_TABLES['nfqueue']} SET startedDate = NOW() WHERE id='$taskid' AND startedDate is null");
-        $processid = DB_getItem($_TABLES['nfqueue'], 'nf_processID',"id='$taskid'");
+        DB_query("UPDATE {$_TABLES['nf_queue']} SET startedDate = NOW() WHERE id='$taskid' AND startedDate is null");
+        $processid = DB_getItem($_TABLES['nf_queue'], 'nf_processID',"id='$taskid'");
     } else {
-        $processid = DB_getItem($_TABLES['nfprojects'], 'wf_process_id',"id='$project_id'");
+        $processid = DB_getItem($_TABLES['nf_projects'], 'wf_process_id',"id='$project_id'");
     }
 
     $A['nf_processID'] = $processid;
 
-    if (DB_count($_TABLES['nfprojects'],'id',$project_id) == 1) {
+    if (DB_count($_TABLES['nf_projects'],'id',$project_id) == 1) {
         include('projectdetails.php');
     } else {
         $projectdetails = '<p class="pluginAlert">Error => Project record: '.$project_id.' does not exist</p>';

@@ -51,11 +51,11 @@ if (!get_magic_quotes_gpc()) {
 // Main Control Section Begins
 
 if ($op == 'add') {
-    DB_query("INSERT into {$_TABLES['nfhandlers']} (handler,description) values('{$handler}','{$description}')");
+    DB_query("INSERT into {$_TABLES['nf_handlers']} (handler,description) values('{$handler}','{$description}')");
     $handler_id = DB_insertID();
 } elseif ($op == 'update') {
         if($rec != NULL){
-            DB_query("UPDATE {$_TABLES['nfhandlers']} SET handler='{$handler}', description='{$description}' WHERE id='{$rec}'");
+            DB_query("UPDATE {$_TABLES['nf_handlers']} SET handler='{$handler}', description='{$description}' WHERE id='{$rec}'");
             $handler_id = $rec;
          } else {
              $handler_id = NULL;

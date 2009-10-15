@@ -139,7 +139,7 @@ function nf_approveForm ($taskrec,&$template,$rowid,$userid) {
         $prj_formid = $projectFormResults['prjformid'];
         $result_id = $projectFormResults['resultid'];
     } elseif ($fid > 0) {
-        $prj_formid = DB_getItem($_TABLES['nfproject_forms'],'id',"project_id=$project_id AND form_id=$fid");
+        $prj_formid = DB_getItem($_TABLES['nf_projectforms'],'id',"project_id=$project_id AND form_id=$fid");
         $form_id = $fid;
         $result_id = $rid;
     }
@@ -158,13 +158,13 @@ function nf_approveForm ($taskrec,&$template,$rowid,$userid) {
 
     if (isset($prj_formid) and $prj_formid > 0)  {
         /* Retrieve the status if user has actioned this form */
-        $sql  = "SELECT status FROM {$_TABLES['nfproject_approvals']} ";
+        $sql  = "SELECT status FROM {$_TABLES['nf_project_approvals']} ";
         $sql .= "WHERE uid='{$userid}' AND form_id='$prj_formid' AND process_id='{$taskrec['processid']}'";
         $query = DB_query($sql);
         list ($status) = DB_fetchArray($query);
 
         // Determine if this task has recorded a comment yet
-        $notes = DB_getItem($_TABLES['nfproject_comments'], 'comment', "project_id='$project_id' AND task_id='{$taskrec['id']}'");
+        $notes = DB_getItem($_TABLES['nf_projectcomments'], 'comment', "project_id='$project_id' AND task_id='{$taskrec['id']}'");
         $template->set_var ('notes',$notes);
         if ($status == 3) {
             $template->set_var ('chk_accept', 'CHECKED');
@@ -191,33 +191,33 @@ function nf_approveForm_posthandler($processid,$taskid,$userid,$projectid) {
     $formid = COM_applyFilter($_POST['formid']);
     $processid = COM_applyFilter($_POST['processid']);
     if ($projectid > 0) {
-        $prj_formid = DB_getItem($_TABLES['nfproject_forms'],'id', "project_id='$projectid' AND form_id='$formid'");
+        $prj_formid = DB_getItem($_TABLES['nf_projectforms'],'id', "project_id='$projectid' AND form_id='$formid'");
     }
 
-    $status = DB_getItem($_TABLES['nfproject_forms'],'status', "id='$prj_formid'");
+    $status = DB_getItem($_TABLES['nf_projectforms'],'status', "id='$prj_formid'");
 
-    if (DB_count($_TABLES['nfproject_approvals'],array('uid','form_id','process_id'), array($userid,$prj_formid,$processid)) == 0) {
-        DB_query("INSERT INTO {$_TABLES['nfproject_approvals']} (process_id,form_id,uid) VALUES ('$processid','$prj_formid','{$userid}')");
+    if (DB_count($_TABLES['nf_project_approvals'],array('uid','form_id','process_id'), array($userid,$prj_formid,$processid)) == 0) {
+        DB_query("INSERT INTO {$_TABLES['nf_project_approvals']} (process_id,form_id,uid) VALUES ('$processid','$prj_formid','{$userid}')");
     }
     if ($actionopt == 'accept') {
-        DB_query("UPDATE {$_TABLES['nfproject_approvals']} SET status='3', date_updated=UNIX_TIMESTAMP() WHERE uid='{$userid}' AND form_id='$prj_formid'");
+        DB_query("UPDATE {$_TABLES['nf_project_approvals']} SET status='3', date_updated=UNIX_TIMESTAMP() WHERE uid='{$userid}' AND form_id='$prj_formid'");
     } elseif ($actionopt == 'reject') {
-        DB_query("UPDATE {$_TABLES['nfproject_approvals']} SET status='6', date_updated=UNIX_TIMESTAMP() WHERE uid='{$userid}' AND form_id='$prj_formid'");
+        DB_query("UPDATE {$_TABLES['nf_project_approvals']} SET status='6', date_updated=UNIX_TIMESTAMP() WHERE uid='{$userid}' AND form_id='$prj_formid'");
     }
 
     if (trim($_POST['notes']) != '' ) {
         $notes =  ppPrepareForDB($_POST['notes']);
-        if (DB_count($_TABLES['nfproject_comments'], array('project_id','task_id'), array($projectid,$taskid)) == 0) {
-            $sql  = "INSERT INTO {$_TABLES['nfproject_comments']} (project_id, task_id, uid, timestamp, comment) ";
+        if (DB_count($_TABLES['nf_projectcomments'], array('project_id','task_id'), array($projectid,$taskid)) == 0) {
+            $sql  = "INSERT INTO {$_TABLES['nf_projectcomments']} (project_id, task_id, uid, timestamp, comment) ";
             $sql .= "VALUES ('$projectid','$taskid','{$userid}',UNIX_TIMESTAMP(),'$notes')";
         } else {
-            $sql  = "UPDATE {$_TABLES['nfproject_comments']} SET comment='$notes', timestamp=UNIX_TIMESTAMP() ";
+            $sql  = "UPDATE {$_TABLES['nf_projectcomments']} SET comment='$notes', timestamp=UNIX_TIMESTAMP() ";
             $sql .= "WHERE project_id='$projectid' AND task_id='$taskid' ";
         }
         DB_query($sql);
     }
 
-    $formtype = DB_getItem($_TABLES['nfproject_forms'],'formtype', "id='$prj_formid'");
+    $formtype = DB_getItem($_TABLES['nf_projectforms'],'formtype', "id='$prj_formid'");
 
     if ($_POST['taskaction'] == 'Complete Task') {
         if ($processid > 0 AND $taskid > 0) {
@@ -225,18 +225,18 @@ function nf_approveForm_posthandler($processid,$taskid,$userid,$projectid) {
             if ($actionopt == 'accept') {
                 $statusmsg = "$formtype approved";
                 nf_updateStatusLog($projectid,$prj_formid,$statusmsg);
-                $status = DB_getItem($_TABLES['nfproject_forms'],'status', "id='$prj_formid'");
+                $status = DB_getItem($_TABLES['nf_projectforms'],'status', "id='$prj_formid'");
                 $nfclass= new nexflow($processid,$userid);
                 // Set Process Variable to true which may be checked in the workflow
                 $nfclass->set_ProcessVariable('Review_Approval',0);
                 $nfclass->complete_task($taskid);
                 // If the form has not yet been rejected by another member then mark it accepted
                 if ($status != 6) {
-                    DB_query("UPDATE {$_TABLES['nfproject_forms']} SET status='3' WHERE id='$prj_formid'");
+                    DB_query("UPDATE {$_TABLES['nf_projectforms']} SET status='3' WHERE id='$prj_formid'");
                 }
 
             } elseif ($actionopt == 'reject') {
-                DB_query("UPDATE {$_TABLES['nfproject_forms']} SET status='6' WHERE id='$prj_formid'");
+                DB_query("UPDATE {$_TABLES['nf_projectforms']} SET status='6' WHERE id='$prj_formid'");
                 $statusmsg = "$formtype Rejected";
                 nf_updateStatusLog($projectid,$prj_formid,$statusmsg);
                 // Set Process Variable to false which may be checked in the workflow
@@ -278,7 +278,7 @@ function nf_approveEditForm ($taskrec,&$template,$rowid,$userid) {
         $prj_formid = $projectFormResults['prjformid'];
         $result_id = $projectFormResults['resultid'];
     } elseif ($fid > 0) {
-        $prj_formid = DB_getItem($_TABLES['nfproject_forms'],'id',"project_id=$project_id AND form_id=$fid");
+        $prj_formid = DB_getItem($_TABLES['nf_projectforms'],'id',"project_id=$project_id AND form_id=$fid");
         $form_id = $fid;
         $result_id = $rid;
     }
@@ -298,13 +298,13 @@ function nf_approveEditForm ($taskrec,&$template,$rowid,$userid) {
 
     if (isset($prj_formid) and $prj_formid > 0)  {
         /* Retrieve the status if user has actioned this form */
-        $sql  = "SELECT status FROM {$_TABLES['nfproject_approvals']} ";
+        $sql  = "SELECT status FROM {$_TABLES['nf_project_approvals']} ";
         $sql .= "WHERE uid='{$userid}' AND form_id='$prj_formid' AND process_id='{$taskrec['processid']}'";
         $query = DB_query($sql);
         list ($status) = DB_fetchArray($query);
 
         // Determine if this task has recorded a comment yet
-        $notes = DB_getItem($_TABLES['nfproject_comments'], 'comment', "project_id='$project_id' AND task_id='{$taskrec['id']}'");
+        $notes = DB_getItem($_TABLES['nf_projectcomments'], 'comment', "project_id='$project_id' AND task_id='{$taskrec['id']}'");
         $template->set_var ('notes',$notes);
         if ($status == 3) {
             $template->set_var ('chk_accept', 'CHECKED');
@@ -331,33 +331,33 @@ function nf_approveEditForm_posthandler($processid,$taskid,$userid,$projectid) {
     $formid = COM_applyFilter($_POST['formid']);
     $processid = COM_applyFilter($_POST['processid']);
     if ($projectid > 0) {
-        $prj_formid = DB_getItem($_TABLES['nfproject_forms'],'id', "project_id='$projectid' AND form_id='$formid'");
+        $prj_formid = DB_getItem($_TABLES['nf_projectforms'],'id', "project_id='$projectid' AND form_id='$formid'");
     }
 
-    $status = DB_getItem($_TABLES['nfproject_forms'],'status', "id='$prj_formid'");
+    $status = DB_getItem($_TABLES['nf_projectforms'],'status', "id='$prj_formid'");
 
-    if (DB_count($_TABLES['nfproject_approvals'],array('uid','form_id','process_id'), array($userid,$prj_formid,$processid)) == 0) {
-        DB_query("INSERT INTO {$_TABLES['nfproject_approvals']} (process_id,form_id,uid) VALUES ('$processid','$prj_formid','{$userid}')");
+    if (DB_count($_TABLES['nf_project_approvals'],array('uid','form_id','process_id'), array($userid,$prj_formid,$processid)) == 0) {
+        DB_query("INSERT INTO {$_TABLES['nf_project_approvals']} (process_id,form_id,uid) VALUES ('$processid','$prj_formid','{$userid}')");
     }
     if ($actionopt == 'accept') {
-        DB_query("UPDATE {$_TABLES['nfproject_approvals']} SET status='3', date_updated=UNIX_TIMESTAMP() WHERE uid='{$userid}' AND form_id='$prj_formid'");
+        DB_query("UPDATE {$_TABLES['nf_project_approvals']} SET status='3', date_updated=UNIX_TIMESTAMP() WHERE uid='{$userid}' AND form_id='$prj_formid'");
     } elseif ($actionopt == 'reject') {
-        DB_query("UPDATE {$_TABLES['nfproject_approvals']} SET status='6', date_updated=UNIX_TIMESTAMP() WHERE uid='{$userid}' AND form_id='$prj_formid'");
+        DB_query("UPDATE {$_TABLES['nf_project_approvals']} SET status='6', date_updated=UNIX_TIMESTAMP() WHERE uid='{$userid}' AND form_id='$prj_formid'");
     }
 
     if (trim($_POST['notes']) != '' ) {
         $notes =  ppPrepareForDB($_POST['notes']);
-        if (DB_count($_TABLES['nfproject_comments'], array('project_id','task_id'), array($projectid,$taskid)) == 0) {
-            $sql  = "INSERT INTO {$_TABLES['nfproject_comments']} (project_id, task_id, uid, timestamp, comment) ";
+        if (DB_count($_TABLES['nf_projectcomments'], array('project_id','task_id'), array($projectid,$taskid)) == 0) {
+            $sql  = "INSERT INTO {$_TABLES['nf_projectcomments']} (project_id, task_id, uid, timestamp, comment) ";
             $sql .= "VALUES ('$projectid','$taskid','{$userid}',UNIX_TIMESTAMP(),'$notes')";
         } else {
-            $sql  = "UPDATE {$_TABLES['nfproject_comments']} SET comment='$notes', timestamp=UNIX_TIMESTAMP() ";
+            $sql  = "UPDATE {$_TABLES['nf_projectcomments']} SET comment='$notes', timestamp=UNIX_TIMESTAMP() ";
             $sql .= "WHERE project_id='$projectid' AND task_id='$taskid' ";
         }
         DB_query($sql);
     }
 
-    $formtype = DB_getItem($_TABLES['nfproject_forms'],'formtype', "id='$prj_formid'");
+    $formtype = DB_getItem($_TABLES['nf_projectforms'],'formtype', "id='$prj_formid'");
 
     if ($_POST['taskaction'] == 'Complete Task') {
         if ($processid > 0 AND $taskid > 0) {
@@ -365,18 +365,18 @@ function nf_approveEditForm_posthandler($processid,$taskid,$userid,$projectid) {
             if ($actionopt == 'accept') {
                 $statusmsg = "$formtype approved";
                 nf_updateStatusLog($projectid,$prj_formid,$statusmsg);
-                $status = DB_getItem($_TABLES['nfproject_forms'],'status', "id='$prj_formid'");
+                $status = DB_getItem($_TABLES['nf_projectforms'],'status', "id='$prj_formid'");
                 $nfclass= new nexflow($processid,$userid);
                 // Set Process Variable to true which may be checked in the workflow
                 $nfclass->set_ProcessVariable('Review_Approval',0);
                 $nfclass->complete_task($taskid);
                 // If the form has not yet been rejected by another member then mark it accepted
                 if ($status != 6) {
-                    DB_query("UPDATE {$_TABLES['nfproject_forms']} SET status='3' WHERE id='$prj_formid'");
+                    DB_query("UPDATE {$_TABLES['nf_projectforms']} SET status='3' WHERE id='$prj_formid'");
                 }
 
             } elseif ($actionopt == 'reject') {
-                DB_query("UPDATE {$_TABLES['nfproject_forms']} SET status='6' WHERE id='$prj_formid'");
+                DB_query("UPDATE {$_TABLES['nf_projectforms']} SET status='6' WHERE id='$prj_formid'");
                 $statusmsg = "$formtype Rejected";
                 nf_updateStatusLog($projectid,$prj_formid,$statusmsg);
                 // Set Process Variable to false which may be checked in the workflow

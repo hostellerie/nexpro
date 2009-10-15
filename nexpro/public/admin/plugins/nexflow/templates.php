@@ -80,7 +80,7 @@ switch(strtolower($operation)) {
             $templateName = COM_applyFilter($_GET['templateName']);
         }
         if( $templateID != NULL ) {
-            DB_query("UPDATE {$_TABLES['nftemplate']} SET templateName='{$templateName}' WHERE id='{$templateID}'");
+            DB_query("UPDATE {$_TABLES['nf_template']} SET templateName='{$templateName}' WHERE id='{$templateID}'");
         } else {
             nf_createNewTemplate($templateName);
         }
@@ -97,20 +97,20 @@ switch(strtolower($operation)) {
             $appGroupName = COM_applyFilter($_GET['appGroupName']);
         }
         if($appGroupName != ''){
-            DB_query("INSERT into {$_TABLES['nfappgroups']} (AppGroup) values ('{$appGroupName}')");
+            DB_query("INSERT into {$_TABLES['nf_appgroups']} (AppGroup) values ('{$appGroupName}')");
         }
         break;
 
     case 'editappgroup':
         //going to delete the app group if possible
         $varID = COM_applyFilter($_GET['deleteAppGroup'],true);
-        $res = DB_query("SELECT id from {$_TABLES['nftemplate']} where AppGroup='{$varID}'");
+        $res = DB_query("SELECT id from {$_TABLES['nf_template']} where AppGroup='{$varID}'");
         if(DB_numRows($res) > 0){
             //warn the user that this can't be done.
             $errorMessage = $LANG_NF00['AppGroupError1'];
         } else {
             $errorMessage = '';
-            DB_query("DELETE FROM {$_TABLES['nfappgroups']} where id='{$varID}'");
+            DB_query("DELETE FROM {$_TABLES['nf_appgroups']} where id='{$varID}'");
         }
         break;
 
@@ -155,7 +155,7 @@ while (list ($templateId, $templateName) = DB_fetchArray($tquery)) {
     
     $editname_link = "[&nbsp;<a href=\"#\" onClick='ajaxUpdateTemplateVar(\"editTemplateName\",{$templateId},{$cntr});'\">Edit</a>&nbsp;]";
 
-    $useProject = DB_getItem($_TABLES['nftemplate'], 'useProject', "id='{$templateId}'");
+    $useProject = DB_getItem($_TABLES['nf_template'], 'useProject', "id='{$templateId}'");
     if(!empty($useProject)) {
         $useProject_check = 'CHECKED';
     } else {
@@ -182,11 +182,11 @@ while (list ($templateId, $templateName) = DB_fetchArray($tquery)) {
     $p->set_var('editNeedPrj_check',$useProject_check);
     $p->set_var('export_template_icon',$export_template_icon);
     
-    $thisAppGroupID = DB_getItem($_TABLES['nftemplate'],'AppGroup',"id='{$templateId}'");
-    $appGroupDDL = nf_makeDropDownWithSelected('id', 'AppGroup', $_TABLES['nfappgroups'], $thisAppGroupID,'',1);
+    $thisAppGroupID = DB_getItem($_TABLES['nf_template'],'AppGroup',"id='{$templateId}'");
+    $appGroupDDL = nf_makeDropDownWithSelected('id', 'AppGroup', $_TABLES['nf_appgroups'], $thisAppGroupID,'',1);
     $p->set_var('editUseApp',$appGroupDDL);
 
-    $appGroupDDL = nf_makeDropDownWithSelected('id', 'AppGroup', $_TABLES['nfappgroups'], '','',1);
+    $appGroupDDL = nf_makeDropDownWithSelected('id', 'AppGroup', $_TABLES['nf_appgroups'], '','',1);
     $p->set_var('deleteAppGroup',$appGroupDDL);
 
     //$p->set_var('copy_template_url',$copy_template_url);
@@ -195,7 +195,7 @@ while (list ($templateId, $templateName) = DB_fetchArray($tquery)) {
     $p->set_var('editname_link',$editname_link);
     $p->set_var('LANG_DELCONFIRM', 'Are you sure you want to delete this definition?');
 
-    $sql = "SELECT * FROM {$_TABLES['nftemplatevariables']} WHERE nf_templateID='{$templateId}' ORDER BY id";
+    $sql = "SELECT * FROM {$_TABLES['nf_templatevariables']} WHERE nf_templateID='{$templateId}' ORDER BY id";
     $query = DB_Query($sql);
     $numrows = DB_numrows($query);
     if ($numrows > 0) {

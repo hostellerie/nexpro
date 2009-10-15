@@ -51,12 +51,12 @@ function PLG_Nexflow_tasknotification($parms,$subject,$message) {
 
     // Example implementation using $NF_MYAPP which is an array I setup to contain custom app config settings
     if ($parms['tid'] > 0 AND $parms['qid'] > 0) {
-        $processid = DB_getItem($_TABLES['nfqueue'],'nf_processID',"id={$parms['qid']}");
+        $processid = DB_getItem($_TABLES['nf_queue'],'nf_processID',"id={$parms['qid']}");
         if ($processid > 0) {
             $fasttrack = 0;
             $nfclass= new nexflow($processid);
             $project_id = $nfclass->get_processVariable('PID');
-            $request_result = DB_getItem($_TABLES['nfproject_forms'],'results_id',
+            $request_result = DB_getItem($_TABLES['nf_projectforms'],'results_id',
                 "project_id='$project_id' AND form_id={$NF_MYAPP['forms']['myform']}");
             if ($request_result > 0) {
                 $fasttrack = nf_getFormResultData($request_result,$NF_MYAPP['formfield']['fast_track'] );
@@ -94,7 +94,7 @@ function PLG_Nexflow_taskname($parms,$taskname) {
             $fasttrack = 0;
             $nfclass= new nexflow($parms['pid']);
             $project_id = $nfclass->get_processVariable('PID');
-            $request_result = DB_getItem($_TABLES['nfproject_forms'],'results_id',
+            $request_result = DB_getItem($_TABLES['nf_projectforms'],'results_id',
                 "project_id='$project_id' AND form_id={$NF_COGECO['forms']['capital_request']}");
             if ($request_result > 0) {
                 $fasttrack = nf_getFormResultData($request_result,$NF_MYAPP['formfield']['fasttrack'] );

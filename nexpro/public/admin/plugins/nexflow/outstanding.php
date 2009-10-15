@@ -69,11 +69,11 @@ if ($page == 0) {
 switch ($op) {
     case 'deltask':
         $assignmentRecId = COM_applyFilter($_REQUEST['taskid'],true);
-        DB_query("DELETE FROM {$_TABLES['nfproductionassignments']} WHERE task_id='$assignmentRecId'");
+        DB_query("DELETE FROM {$_TABLES['nf_productionassignments']} WHERE task_id='$assignmentRecId'");
         // If there are no more assignment records for this task then remove the workflow queue item
-        if (DB_count($_TABLES['nfproductionassignments'],'task_id',$taskid) == 0) {
-            DB_query("DELETE FROM {$_TABLES['nfqueue']} WHERE id='$taskid'");
-            DB_query("DELETE FROM {$_TABLES['nfproject_taskhistory']} WHERE task_id='$taskid'");
+        if (DB_count($_TABLES['nf_productionassignments'],'task_id',$taskid) == 0) {
+            DB_query("DELETE FROM {$_TABLES['nf_queue']} WHERE id='$taskid'");
+            DB_query("DELETE FROM {$_TABLES['nf_projecttaskhistory']} WHERE task_id='$taskid'");
         }
         break;
 
@@ -94,8 +94,8 @@ switch ($op) {
         $email = DB_getItem($_TABLES['users'],'email',"uid='$notifyUID'");
         $message = nl2br($_POST['message']) . "\n\n";
         if ($email != '') {
-            $sql  = "SELECT a.id, a.nf_templateDataID,  b.taskname FROM {$_TABLES['nfqueue']} a ";
-            $sql .= "LEFT JOIN {$_TABLES['nftemplatedata']} b on a.nf_templateDataID = b.id ";
+            $sql  = "SELECT a.id, a.nf_templateDataID,  b.taskname FROM {$_TABLES['nf_queue']} a ";
+            $sql .= "LEFT JOIN {$_TABLES['nf_templatedata']} b on a.nf_templateDataID = b.id ";
             $sql .= "WHERE a.id='$taskid' ";
             $A = DB_fetchArray(DB_query($sql),false);
             $notifyUser = COM_getDisplayName($notifyUID);
@@ -148,13 +148,13 @@ $p->set_var('pagesize_options',$pagesize_options);
 $sql  = "SELECT distinct a.id, a.nf_processID, a.nf_templateDataID, b.nf_templateID, b.taskname, a.createdDate, ";
 $sql .= "b.assignedByVariable, e.id as assignment_rec, e.uid as assigned_uid, e.assignBack_uid, e.nf_processVariable, ";
 $sql .= "f.fullname, a.status, g.AppGroup ";
-$sql .= "FROM {$_TABLES['nfqueue']} a ";
-$sql .= "LEFT JOIN {$_TABLES['nftemplatedata']} b on a.nf_templateDataID = b.id ";
-$sql .= "LEFT JOIN {$_TABLES['nfprocess']} c on a.nf_processID = c.id ";
-$sql .= "LEFT JOIN {$_TABLES['nfsteptype']} d on d.id=b.nf_stepType ";
-$sql .= "INNER JOIN {$_TABLES['nfproductionassignments']} e ON e.task_id = a.id ";   
+$sql .= "FROM {$_TABLES['nf_queue']} a ";
+$sql .= "LEFT JOIN {$_TABLES['nf_templatedata']} b on a.nf_templateDataID = b.id ";
+$sql .= "LEFT JOIN {$_TABLES['nf_process']} c on a.nf_processID = c.id ";
+$sql .= "LEFT JOIN {$_TABLES['nf_steptype']} d on d.id=b.nf_stepType ";
+$sql .= "INNER JOIN {$_TABLES['nf_productionassignments']} e ON e.task_id = a.id ";   
 $sql .= "LEFT JOIN {$_TABLES['users']} f ON f.uid=e.uid ";
-$sql .= "LEFT JOIN {$_TABLES['nftemplate']} g ON g.id=b.nf_templateID ";
+$sql .= "LEFT JOIN {$_TABLES['nf_template']} g ON g.id=b.nf_templateID ";
 $sql .= "WHERE  (c.complete = 0  or c.complete=3) AND (a.status = 0 or a.status=2) ";
 $sql .= "AND d.is_interactiveStepType=1 AND (a.archived <> 1 OR a.archived IS NULL OR a.archived=0) ";
 if ($filterApp != 0) {
@@ -220,7 +220,7 @@ if (isset($filterApp)) {
 $userlink  = '<a href="%s" TITLE="Task assigned to site member: %s, UID:%s">%s</a>';
 
 $sel_filter_applications = '';
-$result = DB_query("SELECT id, AppGroup FROM {$_TABLES['nfappgroups']} ORDER BY AppGroup ASC;");
+$result = DB_query("SELECT id, AppGroup FROM {$_TABLES['nf_appgroups']} ORDER BY AppGroup ASC;");
 while (list ($appid, $appgroup) = DB_fetchArray($result)) {
     if ($appid == $filterApp) {
         $sel_filter_applications .= "<option value=\"$appid\" selected=\"selected\">$appgroup</option>";
@@ -257,7 +257,7 @@ while ($A = DB_fetchArray($query,false)) {
     $nfclass->_nfProcessId = $A['nf_processID'];
     $project_id = $nfclass->get_ProcessVariable('PID');
     
-    $project_status = DB_getItem($_TABLES['nfprojects'],'status', "id='$project_id'");
+    $project_status = DB_getItem($_TABLES['nf_projects'],'status', "id='$project_id'");
     
     $p->set_var ('id',$i);
     $p->set_var ('csscode', ($i%2)+1);    
@@ -268,12 +268,12 @@ while ($A = DB_fetchArray($query,false)) {
 
     $taskdate = explode(' ',$A['createdDate']);
     $p->set_var ('date',$taskdate[0]);
-    $templateName = DB_getItem($_TABLES['nftemplate'],'templateName',"id='{$A['nf_templateID']}'");
-    $project_name = DB_getItem($_TABLES['nfprojects'],'description', "wf_process_id='{$A['nf_processID']}'");
+    $templateName = DB_getItem($_TABLES['nf_template'],'templateName',"id='{$A['nf_templateID']}'");
+    $project_name = DB_getItem($_TABLES['nf_projects'],'description', "wf_process_id='{$A['nf_processID']}'");
     $p->set_var ('assigned_UID',$A['assigned_uid']);
     
     if ($project_name == '') {
-        $project_name = DB_getItem($_TABLES['nfprojects'],'description', "id='$project_id'");
+        $project_name = DB_getItem($_TABLES['nf_projects'],'description', "id='$project_id'");
         if ($project_name == '') {
             $project_name = $templateName;
         }        
@@ -298,11 +298,11 @@ while ($A = DB_fetchArray($query,false)) {
     }
     
     // Check if this task's process has been Regenerated
-    $parentTaskID = DB_getItem($_TABLES['nfprocess'],'pid',"id={$A['nf_processID']}");
+    $parentTaskID = DB_getItem($_TABLES['nf_process'],'pid',"id={$A['nf_processID']}");
     if ($parentTaskID > 0) {
         // Now check if this same template task id was executed in the previous process - if so then it is a recycled task
         // Don't show the re-generated attribute if in this instance of the process we proceed further and are executing new tasks
-        if (DB_count($_TABLES['nfqueue'], array('nf_processID','nf_templateDataId'),array($parentTaskID,$A['nf_templateDataID'])) > 0) {
+        if (DB_count($_TABLES['nf_queue'], array('nf_processID','nf_templateDataId'),array($parentTaskID,$A['nf_templateDataID'])) > 0) {
             $A['taskname'] = '<div style="color:red;padding-right:5px;display:inline;">[R]</div>' . $A['taskname'];
         }
     }
@@ -316,7 +316,7 @@ while ($A = DB_fetchArray($query,false)) {
     $infolink .= "<br><b>Task:&nbsp;</b>{$A['nf_templateDataID']}";
 
     if ($A['assignedByVariable'] == 1) {
-        $variable = DB_getItem($_TABLES['nftemplatevariables'],'variableName',"id='$variableID'");
+        $variable = DB_getItem($_TABLES['nf_templatevariables'],'variableName',"id='$variableID'");
         $infolink .= '<br><b>Assignment by Variable:&nbsp;</b>'.$variable;
     }
     $infolink .= '</span></a>';

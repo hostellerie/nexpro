@@ -61,7 +61,7 @@ function nf_chkLookupListsbeforeDelete($listid, $id) {
     if ($listid = $NF_MYAPP['lookuplists']['expense_request_roles']) {
         // Check and see if this role 'process variable name' is used in a workflows
         $variableName = nexlistValue($listid,$id,0);
-        if (DB_count($_TABLES['nftemplatevariables'],'variableName',$variableName)) {
+        if (DB_count($_TABLES['nf_templatevariables'],'variableName',$variableName)) {
             $retval = 'Nexflow is using this list item to assign workflow tasks';
         }
     }
@@ -82,25 +82,25 @@ function nf_pauseWorkflow($taskid,$processID) {
     $parms = explode(':',$nfclass->get_taskOptionalParm());
 
     // $createdDate in format yyyy-mm-dd hh:mm:ss
-    $createdDate = DB_getItem($_TABLES['nfqueue'],'createdDate',"id='$taskid'");
+    $createdDate = DB_getItem($_TABLES['nf_queue'],'createdDate',"id='$taskid'");
 
     $testdatetime=0;
     $now = time();
     if ($parms[1] > 0) {
         if ($parms[0] == 'month') {
-            $query = DB_query("SELECT UNIX_TIMESTAMP(createdDate + INTERVAL {$parms[1]} MONTH) FROM {$_TABLES['nfqueue']} WHERE id=$taskid");
+            $query = DB_query("SELECT UNIX_TIMESTAMP(createdDate + INTERVAL {$parms[1]} MONTH) FROM {$_TABLES['nf_queue']} WHERE id=$taskid");
             list ($testdatetime) = DB_fetchArray($query);
         } elseif ($parms[0] == 'day') {
-            $query = DB_query("SELECT UNIX_TIMESTAMP(createdDate + INTERVAL {$parms[1]} DAY) FROM {$_TABLES['nfqueue']} WHERE id=$taskid");
+            $query = DB_query("SELECT UNIX_TIMESTAMP(createdDate + INTERVAL {$parms[1]} DAY) FROM {$_TABLES['nf_queue']} WHERE id=$taskid");
             list ($testdatetime) = DB_fetchArray($query);
         } elseif ($parms[0] == 'hr') {
-            $query = DB_query("SELECT UNIX_TIMESTAMP(createdDate + INTERVAL {$parms[1]} HOUR) FROM {$_TABLES['nfqueue']} WHERE id=$taskid");
+            $query = DB_query("SELECT UNIX_TIMESTAMP(createdDate + INTERVAL {$parms[1]} HOUR) FROM {$_TABLES['nf_queue']} WHERE id=$taskid");
             list ($testdatetime) = DB_fetchArray($query);
         } elseif ($parms[0] == 'min') {
-            $query = DB_query("SELECT UNIX_TIMESTAMP(createdDate + INTERVAL {$parms[1]} MINUTE) FROM {$_TABLES['nfqueue']} WHERE id=$taskid");
+            $query = DB_query("SELECT UNIX_TIMESTAMP(createdDate + INTERVAL {$parms[1]} MINUTE) FROM {$_TABLES['nf_queue']} WHERE id=$taskid");
             list ($testdatetime) = DB_fetchArray($query);
         } elseif ($parms[0] == 'sec') {
-            $query = DB_query("SELECT UNIX_TIMESTAMP(createdDate + INTERVAL {$parms[1]} SECOND) FROM {$_TABLES['nfqueue']} WHERE id=$taskid");
+            $query = DB_query("SELECT UNIX_TIMESTAMP(createdDate + INTERVAL {$parms[1]} SECOND) FROM {$_TABLES['nf_queue']} WHERE id=$taskid");
             list ($testdatetime) = DB_fetchArray($query);
         }
 

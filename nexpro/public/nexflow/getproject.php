@@ -45,7 +45,7 @@ if ($nomenu == 1 OR $_GET['singleuse'] == 1) {
     echo COM_siteHeader('menu');
 }
 
-$query  = DB_query("SELECT description,wf_process_id FROM {$_TABLES['nfprojects']} WHERE id='$project_id'");
+$query  = DB_query("SELECT description,wf_process_id FROM {$_TABLES['nf_projects']} WHERE id='$project_id'");
 if (DB_numRows($query) == 1) {
     list ($title,$processid) = db_fetchArray($query);
     echo COM_startBlock("View Project Detail for:  <span style=\"color:red;\">$title</span>",'','blockheader.thtml');

@@ -116,8 +116,8 @@ function display_reassignedTasks() {
     $p->set_var('heading5', 'Actions');
 
     $sql .= "SELECT a.id,a.uid,a.assignBack_uid,a.task_id,a.last_updated,b.nf_processID,b.createdDate,b.startedDate,c.taskname,b.nf_templateDataID,c.nf_templateID ";
-    $sql .= "FROM {$_TABLES['nfproductionassignments']} a LEFT JOIN {$_TABLES['nfqueue']} b on b.id=a.task_id ";
-    $sql .= "LEFT JOIN {$_TABLES['nftemplatedata']} c on c.id=b.nf_templateDataID ";
+    $sql .= "FROM {$_TABLES['nf_productionassignments']} a LEFT JOIN {$_TABLES['nf_queue']} b on b.id=a.task_id ";
+    $sql .= "LEFT JOIN {$_TABLES['nf_templatedata']} c on c.id=b.nf_templateDataID ";
     $sql .= "WHERE assignBack_uid = $usermodeUID ";
     $query = DB_query($sql);
     $project_detailsLink  = '<a href="#" onClick=\'ajaxViewProjectDetails(%s,%s,%s,%s);\'>';
@@ -130,16 +130,16 @@ function display_reassignedTasks() {
         $project_id = $nfclass->get_processVariable('PID');
         // If task is for a project on hold or in a Recycled or Killed status then do not show it
         // There should never be any tasks appearing for Killed as that workflow has been forced to complete state.
-        $project_state = DB_getItem($_TABLES['nfprojects'],'status',"id='$project_id'");
+        $project_state = DB_getItem($_TABLES['nf_projects'],'status',"id='$project_id'");
         if ($project_state != 5 AND $project_state != 6 AND $project_state != 7) {
 
             // Retrieve the project description for this task - used as Project Title
-            $description = DB_getItem($_TABLES['nfprojects'],'description',"id='$project_id'");
-            $project_number = DB_getItem($_TABLES['nfprojects'],'project_num',"id='$project_id'");
+            $description = DB_getItem($_TABLES['nf_projects'],'description',"id='$project_id'");
+            $project_number = DB_getItem($_TABLES['nf_projects'],'project_num',"id='$project_id'");
 
             if (trim($description) == '') {
                 //$description = 'Not Available';
-                $description = DB_getItem($_TABLES['nftemplate'],'templateName',"id='{$reassignRec['nf_templateID']}'");
+                $description = DB_getItem($_TABLES['nf_template'],'templateName',"id='{$reassignRec['nf_templateID']}'");
             } elseif ($project_number != '') {
                 $description = "{$project_number} - $description";
             }
@@ -277,13 +277,13 @@ function display_mytasks() {
     $p->set_var('srchDoSearch',$LANG_NF00['srchDoSearch']);
 
     //search/filter area setup
-    $appGroupDDL = COM_optionList($_TABLES['nfappgroups'],'id,AppGroup');
+    $appGroupDDL = COM_optionList($_TABLES['nf_appgroups'],'id,AppGroup');
 
     $p->set_var('show_selectappfield','none');
     $p->set_var('show_searchtextfield','');
     switch(strtolower($srchFilter)){
         case 'appgroup':
-            $appGroupDDL = COM_optionList($_TABLES['nfappgroups'],'id,AppGroup',$idForAppGroup);
+            $appGroupDDL = COM_optionList($_TABLES['nf_appgroups'],'id,AppGroup',$idForAppGroup);
             $p->set_var('srchselappgroup','selected');
             $p->set_var('show_selectappfield','');
             $p->set_var('show_searchtextfield','none');
@@ -365,7 +365,7 @@ function display_mytasks() {
     //$holdTaskLink = '<a href="#" onclick="ajaxPutOnHold(%s,%s);"><img src="' . $_CONF['layout_url'] . '/nexflow/images/onhold.png" border=0 alt="%s"></a>';
     */
     // Check if this user has any tasks that were reassigned
-    $reassignedTaskCount = DB_count($_TABLES['nfproductionassignments'], 'assignBack_uid', $usermodeUID);
+    $reassignedTaskCount = DB_count($_TABLES['nf_productionassignments'], 'assignBack_uid', $usermodeUID);
     if ($reassignedTaskCount > 0) {
         $reassignment_message .= '<div style="font-weight:normal;padding-left:20px;">';
         if ($reassignedTaskCount == 1) {
@@ -415,8 +415,8 @@ function display_mytasks() {
             $p->set_var ('csscode', ($i%2)+1);
             $p->set_var ('class_newtask','');
 
-            $startedDate = DB_getItem($_TABLES['nfqueue'], 'startedDate',"id='{$taskrec['id']}'");
-            $taskStatus = DB_getItem($_TABLES['nfqueue'], 'status',"id='{$taskrec['id']}'");
+            $startedDate = DB_getItem($_TABLES['nf_queue'], 'startedDate',"id='{$taskrec['id']}'");
+            $taskStatus = DB_getItem($_TABLES['nf_queue'], 'status',"id='{$taskrec['id']}'");
             $p->set_var ('on_hold_notice','');
             if($taskStatus == 2) {
                 $p->set_var ('task_icon','onhold2.png');
@@ -438,14 +438,14 @@ function display_mytasks() {
             $project_id = NXCOM_filterInt($project_id);
             if($project_id == 0) {
                 //lets try to do a simple select in the nfprojects table to ensure no project exists.
-                $sql="SELECT id from {$_TABLES['nfprojects']} where wf_process_id='{$taskrec['processid']}'";
+                $sql="SELECT id from {$_TABLES['nf_projects']} where wf_process_id='{$taskrec['processid']}'";
                 $res=DB_query($sql);
                 list($project_id) = DB_fetchArray($res);
                 $project_id = NXCOM_filterInt($project_id);
             }
             //at this point, if the project_id is still 0, then we have no project data to show
             //show a general task console line item for execution by the end user.
-            $taskStatus = DB_getItem($_TABLES['nfqueue'],'status',"id='{$taskrec['id']}'");
+            $taskStatus = DB_getItem($_TABLES['nf_queue'],'status',"id='{$taskrec['id']}'");
             if (SEC_hasRights('nexflow.admin')) {
                 if($taskStatus == 2) {
                     $p->set_var ('hold', sprintf($holdTaskLink,$i,$taskrec['id'],'Re-activate'));
@@ -463,7 +463,7 @@ function display_mytasks() {
                 $project_detailsLink .= '<img src="'.$_CONF['layout_url'].'/nexflow/images/comment.gif" border="0" TITLE="View Project Comments"></a>&nbsp;';
                 // If task is for a project on hold or in a Recycled or Killed status then do not show it
                 // There should never be any tasks appearing is status is Killed as that workflow should have been forced to complete state.
-                $project_state = DB_getItem($_TABLES['nfprojects'],'status',"id='$project_id'");
+                $project_state = DB_getItem($_TABLES['nf_projects'],'status',"id='$project_id'");
                 if ($project_state != 6 && $project_state != 7 ) {
                     if ($nfclass->_debug ) {
                         $logmsg  = "Row:$i -> Project ID:$project_id,Task ID:{$taskrec['id']}. ";
@@ -476,30 +476,30 @@ function display_mytasks() {
                     $p->set_var ('project_details', sprintf($project_detailsLink,$i,$project_id,$usermodeUID,$taskrec['id'],$i,$project_id,$usermodeUID,$taskrec['id']));
 
                     // Determine if this task is for a regenerated workflow and we need to update the main project/request record
-                    $parentProcessID = DB_getItem($_TABLES['nfprocess'],'pid',"id='{$taskrec['processid']}'");
+                    $parentProcessID = DB_getItem($_TABLES['nf_process'],'pid',"id='{$taskrec['processid']}'");
                     if ($parentProcessID > 0) {
                         // Now check if this same template task id was executed in the previous process - if so then it is a recycled task
                         // Don't show the re-generated attribute if in this instance of the process we proceed further and are executing new tasks
-                        if (DB_count($_TABLES['nfqueue'], array('nf_processID','nf_templateDataId'),array($parentProcessID,$taskrec['templateTaskid'])) > 0) {
+                        if (DB_count($_TABLES['nf_queue'], array('nf_processID','nf_templateDataId'),array($parentProcessID,$taskrec['templateTaskid'])) > 0) {
                             $taskrec['taskname'] = '<div style="color:red;padding-right:5px;display:inline;">[R]</div>' . $taskrec['taskname'];
                         }
                     }
 
-                    $pquery = DB_query("SELECT wf_process_id  FROM {$_TABLES['nfprojects']} WHERE id='$project_id'");
+                    $pquery = DB_query("SELECT wf_process_id  FROM {$_TABLES['nf_projects']} WHERE id='$project_id'");
                     list ($wf_process_id)  = DB_fetchArray($pquery);
                     if ($wf_process_id > 0 AND $wf_process_id == $parentProcessID) {
                         if ($nfclass->_debug ) {
                             COM_errorLog("Taskconsole: Updated wf_process_id for project: $project_id from $wf_process_id to {$taskrec['processid']}");
                         }
-                        DB_query("UPDATE {$_TABLES['nfprojects']} SET wf_process_id='{$taskrec['processid']}' WHERE id='$project_id'");
+                        DB_query("UPDATE {$_TABLES['nf_projects']} SET wf_process_id='{$taskrec['processid']}' WHERE id='$project_id'");
                     }
 
                     $p->set_var ('project_number',$project_id);
 
                     // Retrieve any Project Comments
-                    $comment_count = DB_count($_TABLES['nfproject_comments'],'project_id',$project_id);
+                    $comment_count = DB_count($_TABLES['nf_projectcomments'],'project_id',$project_id);
                     if ($comment_count > 0 ) {
-                        $csql  = "SELECT timestamp, b.username FROM {$_TABLES['nfproject_comments']} a ";
+                        $csql  = "SELECT timestamp, b.username FROM {$_TABLES['nf_projectcomments']} a ";
                         $csql .= "LEFT JOIN {$_TABLES['users']} b on a.uid=b.uid WHERE project_id='$project_id' ";
                         $csql .= "ORDER BY timestamp DESC LIMIT 1";
                         list($timestamp,$username) = DB_fetchArray(DB_query($csql));
@@ -510,18 +510,18 @@ function display_mytasks() {
 
                     // If this this is an interactive tasktype - Check and see if taskhistory record has a "started" timestamp set.
                     if ($taskrec['stepType'] == 1 OR $taskrec['stepType'] == 7 OR $taskrec['stepType'] == 8) {
-                        $q1 = DB_query("SELECT project_id,date_started FROM {$_TABLES['nfproject_taskhistory']} WHERE task_id='{$taskrec['id']}'");
+                        $q1 = DB_query("SELECT project_id,date_started FROM {$_TABLES['nf_projecttaskhistory']} WHERE task_id='{$taskrec['id']}'");
                         if (DB_numRows($q1) == 0) { // No task history record yet
                             $p->set_var ('class_newtask','class="nexflowNewTask"');
-                            $q2 = DB_query("SELECT UNIX_TIMESTAMP(createdDate) FROM {$_TABLES['nfqueue']} WHERE id='{$taskrec['id']}' ");
+                            $q2 = DB_query("SELECT UNIX_TIMESTAMP(createdDate) FROM {$_TABLES['nf_queue']} WHERE id='{$taskrec['id']}' ");
                             list ($date_assigned) = DB_fetchArray($q2);
-                            DB_query("INSERT INTO {$_TABLES['nfproject_taskhistory']} (project_id,process_id,task_id,assigned_uid,date_assigned)
+                            DB_query("INSERT INTO {$_TABLES['nf_projecttaskhistory']} (project_id,process_id,task_id,assigned_uid,date_assigned)
                                 VALUES ('$project_id','{$taskrec['processid']}','{$taskrec['id']}','{$usermodeUID}','$date_assigned') ");
                         } else {
                             list ($xprj_id, $xdate_started) = DB_fetchArray($q1);
                             if ($xprj_id == 0) { // Task history record - but missing project_id
                                $p->set_var ('class_newtask','class="nexflowNewTask"');
-                               DB_query("UPDATE {$_TABLES['nfproject_taskhistory']} SET project_id='$project_id' WHERE task_id='{$taskrec['id']}'");
+                               DB_query("UPDATE {$_TABLES['nf_projecttaskhistory']} SET project_id='$project_id' WHERE task_id='{$taskrec['id']}'");
                             }
                         }
 
@@ -530,15 +530,15 @@ function display_mytasks() {
                     }
 
                     // Retrieve the project description for this task - used as Project Title
-                    $pquery = DB_query("SELECT description,originator_uid FROM {$_TABLES['nfprojects']} WHERE id='$project_id'");
+                    $pquery = DB_query("SELECT description,originator_uid FROM {$_TABLES['nf_projects']} WHERE id='$project_id'");
                     list ($description,$originator) = DB_fetchArray($pquery);
 
-                    $submitted_date = DB_getItem($_TABLES['nfprocess'],'initiatedDate', "id={$taskrec['processid']}");
+                    $submitted_date = DB_getItem($_TABLES['nf_process'],'initiatedDate', "id={$taskrec['processid']}");
                     $submitter_info = COM_getDisplayName($originator) . " / $submitted_date";
 
                     // Retrieve the flow name dynamic custom functions for appending to the display name to be used for the description
-                    $descSQL  ="SELECT b.templateName, a.customFlowName FROM {$_TABLES['nfprocess']} a ";
-                    $descSQL .="INNER JOIN {$_TABLES['nftemplate']} b on b.id=a.nf_templateId ";
+                    $descSQL  ="SELECT b.templateName, a.customFlowName FROM {$_TABLES['nf_process']} a ";
+                    $descSQL .="INNER JOIN {$_TABLES['nf_template']} b on b.id=a.nf_templateId ";
                     $descSQL .="WHERE a.id={$taskrec['processid']} ";
                     $descRes = DB_query($descSQL);
                     list($templateName,$processCustomName) = DB_fetchArray($descRes);
@@ -561,8 +561,8 @@ function display_mytasks() {
                         $form_id = $taskrec['url'];
                         // Check and see if the same form has been submitted for this task yet.
                         $sql  = "SELECT a.id,a.formtype,a.results_id,a.status,a.created_by_taskid, b.nf_templateDataID ";
-                        $sql .= "FROM {$_TABLES['nfproject_forms']} a ";
-                        $sql .= "LEFT JOIN {$_TABLES['nfqueue']} b on b.id=a.created_by_taskid ";
+                        $sql .= "FROM {$_TABLES['nf_projectforms']} a ";
+                        $sql .= "LEFT JOIN {$_TABLES['nf_queue']} b on b.id=a.created_by_taskid ";
                         $sql .= "WHERE project_id='$project_id' AND form_id='$form_id' ";
                         $query = DB_query($sql);
                         $newFormRecord = false;
@@ -576,7 +576,7 @@ function display_mytasks() {
                                 {
                                     // Check and see if the created_by_taskid has been updated - since it will have the original task id
                                     if ($processPID != 0 AND $created_by_taskid != $taskrec['id']) {
-                                        DB_query("UPDATE {$_TABLES['nfproject_forms']} SET created_by_taskid='{$taskrec['id']}' WHERE id='$prj_formid'");
+                                        DB_query("UPDATE {$_TABLES['nf_projectforms']} SET created_by_taskid='{$taskrec['id']}' WHERE id='$prj_formid'");
                                     }
 
                                     $p->set_var ('state', $formstatus_options[$state]);
@@ -592,14 +592,14 @@ function display_mytasks() {
                                             $p->set_var ('task_action_url', "#");
                                         }
                                     }
-                                    $sql  = "SELECT timestamp FROM {$_TABLES['nfproject_timestamps']} ";
+                                    $sql  = "SELECT timestamp FROM {$_TABLES['nf_projecttimestamps']} ";
                                     $sql .= "WHERE project_id=$project_id ORDER BY timestamp DESC LIMIT 1";
                                     $q = DB_query($sql);
                                     list ($timestamp) = DB_fetchArray($q);
                                     if ($timestamp > 0) {
                                         $p->set_var ('date',strftime("%Y-%m-%d", $timestamp));
                                     } else {
-                                        $q2 = DB_query("SELECT UNIX_TIMESTAMP(createdDate) FROM {$_TABLES['nfqueue']} WHERE id='{$taskrec['id']}' ");
+                                        $q2 = DB_query("SELECT UNIX_TIMESTAMP(createdDate) FROM {$_TABLES['nf_queue']} WHERE id='{$taskrec['id']}' ");
                                         list ($date_assigned) = DB_fetchArray($q2);
                                         $p->set_var ('date',strftime("%Y-%m-%d", $date_assigned));
                                     }
@@ -619,12 +619,12 @@ function display_mytasks() {
                                 $p->set_var ('task_action_url', "#");
                             }
 
-                            $q2 = DB_query("SELECT UNIX_TIMESTAMP(createdDate) FROM {$_TABLES['nfqueue']} WHERE id='{$taskrec['id']}' ");
+                            $q2 = DB_query("SELECT UNIX_TIMESTAMP(createdDate) FROM {$_TABLES['nf_queue']} WHERE id='{$taskrec['id']}' ");
                             list ($date_assigned) = DB_fetchArray($q2);
                             $p->set_var ('date',strftime("%Y-%m-%d", $date_assigned));
                         }
 
-                        $q = DB_QUERY("SELECT statusmsg FROM {$_TABLES['nfproject_timestamps']} WHERE project_id = '$project_id' ORDER BY timestamp DESC LIMIT 1");
+                        $q = DB_QUERY("SELECT statusmsg FROM {$_TABLES['nf_projecttimestamps']} WHERE project_id = '$project_id' ORDER BY timestamp DESC LIMIT 1");
                         list ($statusmsg) = DB_fetchArray($q);
                         $p->set_var ('full_statusmsg', $statusmsg);
                         $msglen = strpos($statusmsg,'.');
@@ -645,7 +645,7 @@ function display_mytasks() {
                         /* Task date is in format yyyy-mm-dd hh:mm:ss -- only want to show date portion */
                         $showdate = explode(' ',$taskrec['cdate']);
                         $p->set_var('date',$showdate[0]);
-                        $sql = "SELECT timestamp,statusmsg FROM {$_TABLES['nfproject_timestamps']} ";
+                        $sql = "SELECT timestamp,statusmsg FROM {$_TABLES['nf_projecttimestamps']} ";
                         $sql .= "WHERE project_id = '$project_id' ORDER BY timestamp DESC LIMIT 1";
                         $q = DB_query($sql);
                         list ($timestamp,$statusmsg) = DB_fetchArray($q);
@@ -740,10 +740,10 @@ function display_mytasks() {
                 $p->set_var('id',$taskrec['id']);
                 $p->set_var('process_id',$taskrec['processid']);
                 //get the template name here:
-                $sql  = "SELECT  c.templateName, d.customFlowName FROM {$_TABLES['nfqueue']} a ";
-                $sql .= "inner join {$_TABLES['nftemplatedata']} b on a.nf_templatedataid=b.id ";
-                $sql .= "inner join {$_TABLES['nftemplate']} c on b.nf_templateid=c.id ";
-                $sql .= "inner join {$_TABLES['nfprocess']} d on a.nf_processid=d.id ";
+                $sql  = "SELECT  c.templateName, d.customFlowName FROM {$_TABLES['nf_queue']} a ";
+                $sql .= "inner join {$_TABLES['nf_templatedata']} b on a.nf_templatedataid=b.id ";
+                $sql .= "inner join {$_TABLES['nf_template']} c on b.nf_templateid=c.id ";
+                $sql .= "inner join {$_TABLES['nf_process']} d on a.nf_processid=d.id ";
                 $sql .= "WHERE a.id={$taskrec['id']}";
                 $res2 = DB_query($sql);
                 list($tname, $customDisplay)=DB_fetchArray($res2);
@@ -755,7 +755,7 @@ function display_mytasks() {
                 /* Task date is in format yyyy-mm-dd hh:mm:ss -- only want to show date portion */
                 $showdate = explode(' ',$taskrec['cdate']);
                 $p->set_var('date',$showdate[0]);
-                $q = DB_QUERY("SELECT timestamp,statusmsg FROM {$_TABLES['nfproject_timestamps']} WHERE project_id=$project_id ORDER BY timestamp DESC LIMIT 1");
+                $q = DB_QUERY("SELECT timestamp,statusmsg FROM {$_TABLES['nf_projecttimestamps']} WHERE project_id=$project_id ORDER BY timestamp DESC LIMIT 1");
                 list ($timestamp,$statusmsg) = DB_fetchArray($q);
                 $p->set_var ('full_statusmsg', $statusmsg);
                 $msglen = strpos($statusmsg,'.');
@@ -850,12 +850,12 @@ switch ($op) {
         $prj_id = COM_applyFilter($_GET['projectid'],true);
         $taskid = COM_applyFilter($_GET['taskid'],true);
         if ($prj_id == 0) {
-            $prj_formid = DB_getItem($_TABLES['nfproject_forms'],'id',"form_id='$formid' AND results_id='$result' ");
-            $prj_id = DB_getItem($_TABLES['nfproject_forms'],'project_id',"id='$prj_formid'");
+            $prj_formid = DB_getItem($_TABLES['nf_projectforms'],'id',"form_id='$formid' AND results_id='$result' ");
+            $prj_id = DB_getItem($_TABLES['nf_projectforms'],'project_id',"id='$prj_formid'");
         } else {
             $prj_formid = COM_applyFilter($_GET['formid'],true);
         }
-        $processid = DB_getItem($_TABLES['nfqueue'],'nf_processID', "id='$taskid'");
+        $processid = DB_getItem($_TABLES['nf_queue'],'nf_processID', "id='$taskid'");
         $parms = array(
             'usermodeuid'      => $usermodeUID,
             'project_id'       => $prj_id,
@@ -961,7 +961,7 @@ switch ($op) {
         $id = COM_applyFilter($_REQUEST['id'], true);
         //added assignBack_uid check in sql statement only to ensure authenticated user is requesting task back
         $sql = "SELECT a.task_id, a.uid, a.security_hash, b.fullname, b.email
-            FROM {$_TABLES['nfproductionassignments']} a
+            FROM {$_TABLES['nf_productionassignments']} a
             LEFT JOIN {$_TABLES['users']} b ON a.uid=b.uid
             WHERE id=$id AND assignBack_uid={$_USER['uid']};";
         $res = DB_query($sql);
@@ -976,17 +976,17 @@ switch ($op) {
             }
             else {
                 $security_hash = nf_getRandomString(32);
-                $sql = "UPDATE {$_TABLES['nfproductionassignments']} SET security_hash='$security_hash' WHERE id=$id;";
+                $sql = "UPDATE {$_TABLES['nf_productionassignments']} SET security_hash='$security_hash' WHERE id=$id;";
                 DB_query($sql);
             }
 
             $keep_url = "{$_CONF['site_url']}/nexflow/index.php?op=keepreassignedtask&id=$id&sec=$security_hash";
             $return_url = "{$_CONF['site_url']}/nexflow/index.php?op=returnreassignedtask&id=$id&sec=$security_hash";
             $sql = "SELECT a.task_id, c.taskname, d.description, d.project_num, d.id
-                FROM {$_TABLES['nfproductionassignments']} a
-                LEFT JOIN {$_TABLES['nfqueue']} b ON a.task_id=b.id
-                LEFT JOIN {$_TABLES['nftemplatedata']} c ON b.nf_templateDataID=c.id
-                LEFT JOIN {$_TABLES['nfprojects']} d ON b.nf_processID=d.wf_process_id
+                FROM {$_TABLES['nf_productionassignments']} a
+                LEFT JOIN {$_TABLES['nf_queue']} b ON a.task_id=b.id
+                LEFT JOIN {$_TABLES['nf_templatedata']} c ON b.nf_templateDataID=c.id
+                LEFT JOIN {$_TABLES['nf_projects']} d ON b.nf_processID=d.wf_process_id
                 WHERE a.id=$id;";
 
             $res = DB_query($sql);
@@ -1016,7 +1016,7 @@ switch ($op) {
     case 'keepreassignedtask':
         $security_hash = COM_applyFilter($_GET['sec']);
         $id = COM_applyFilter($_GET['id'], true);
-        $compare_hash = DB_getItem($_TABLES['nfproductionassignments'], 'security_hash', "id=$id");
+        $compare_hash = DB_getItem($_TABLES['nf_productionassignments'], 'security_hash', "id=$id");
 
         if ($security_hash != $compare_hash) {
             echo 'The link you followed in your email has expired.  You have either already kept/returned this task, or a newer email has been sent.';
@@ -1024,7 +1024,7 @@ switch ($op) {
         }
 
         //security check is embedded in the sql, so user must have the correct security hash to keep task
-        $sql = "UPDATE {$_TABLES['nfproductionassignments']} SET assignBack_uid=0, security_hash='' WHERE id=$id AND security_hash='$security_hash';";
+        $sql = "UPDATE {$_TABLES['nf_productionassignments']} SET assignBack_uid=0, security_hash='' WHERE id=$id AND security_hash='$security_hash';";
         DB_query($sql);
 
         echo "You have successfully kept the task for yourself.";
@@ -1033,9 +1033,9 @@ switch ($op) {
     case 'returnreassignedtask':
         $security_hash = COM_applyFilter($_GET['sec']);
         $id = COM_applyFilter($_GET['id'], true);
-        $ruid = DB_getItem($_TABLES['nfproductionassignments'], 'assignBack_uid', "id=$id");
+        $ruid = DB_getItem($_TABLES['nf_productionassignments'], 'assignBack_uid', "id=$id");
         $fullname = DB_getItem($_TABLES['users'], 'fullname', "uid=$ruid");
-        $compare_hash = DB_getItem($_TABLES['nfproductionassignments'], 'security_hash', "id=$id");
+        $compare_hash = DB_getItem($_TABLES['nf_productionassignments'], 'security_hash', "id=$id");
 
         if ($security_hash != $compare_hash) {
             echo 'The link you followed in your email has expired.  You have either already kept/returned this task, or a newer email has been sent.';
@@ -1043,20 +1043,20 @@ switch ($op) {
         }
 
         //security check is embedded in the sql, so user must have the correct security hash to keep task
-        $sql = "UPDATE {$_TABLES['nfproductionassignments']} SET uid=$ruid, assignBack_uid=0, security_hash='' WHERE id=$id AND security_hash='$security_hash';";
+        $sql = "UPDATE {$_TABLES['nf_productionassignments']} SET uid=$ruid, assignBack_uid=0, security_hash='' WHERE id=$id AND security_hash='$security_hash';";
         DB_query($sql);
 
         $sql = "SELECT a.task_id, c.taskname, d.description, d.project_num, d.id
-            FROM {$_TABLES['nfproductionassignments']} a
-            LEFT JOIN {$_TABLES['nfqueue']} b ON a.task_id=b.id
-            LEFT JOIN {$_TABLES['nftemplatedata']} c ON b.nf_templateDataID=c.id
-            LEFT JOIN {$_TABLES['nfprojects']} d ON b.nf_processID=d.wf_process_id
+            FROM {$_TABLES['nf_productionassignments']} a
+            LEFT JOIN {$_TABLES['nf_queue']} b ON a.task_id=b.id
+            LEFT JOIN {$_TABLES['nf_templatedata']} c ON b.nf_templateDataID=c.id
+            LEFT JOIN {$_TABLES['nf_projects']} d ON b.nf_processID=d.wf_process_id
             WHERE a.id=$id;";
 
         $res = DB_query($sql);
         $B = DB_fetchArray($res);
         if ($B['id'] != '') {
-            $sql = "INSERT INTO {$_TABLES['nfproject_comments']} (project_id, task_id, uid, timestamp, comment) VALUES ({$B['id']}, {$B['task_id']}, $ruid, ".time().", 'Task was returned to original owner, $fullname');";
+            $sql = "INSERT INTO {$_TABLES['nf_projectcomments']} (project_id, task_id, uid, timestamp, comment) VALUES ({$B['id']}, {$B['task_id']}, $ruid, ".time().", 'Task was returned to original owner, $fullname');";
             DB_query($sql);
         }
 
@@ -1066,11 +1066,11 @@ switch ($op) {
     case 'delreassignedtask':
         $id = COM_applyFilter($_REQUEST['id'], true);
         //added assignBack_uid check in sql statement only to ensure authenticated user is deleting the reassignment record
-        $sql = "UPDATE {$_TABLES['nfproductionassignments']} SET assignBack_uid=0, security_hash='' WHERE id=$id AND assignBack_uid={$_USER['uid']};";
+        $sql = "UPDATE {$_TABLES['nf_productionassignments']} SET assignBack_uid=0, security_hash='' WHERE id=$id AND assignBack_uid={$_USER['uid']};";
         DB_query($sql);
 
         echo taskconsoleShowNavbar('My Tasks');
-        if (DB_count($_TABLES['nfproductionassignments'], 'assignBack_uid', $_USER['uid']) == 0) {
+        if (DB_count($_TABLES['nf_productionassignments'], 'assignBack_uid', $_USER['uid']) == 0) {
             echo display_mytasks();
         }
         else {

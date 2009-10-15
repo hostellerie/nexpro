@@ -60,28 +60,28 @@ function ajaxhandler_assignedVariables($taskid) {
     global $_TABLES,$op;
 
     $options = '';
-    $sql =  "SELECT b.id, b.variableName FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['nftemplatevariables']} b ";      
+    $sql =  "SELECT b.id, b.variableName FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['nf_templatevariables']} b ";      
     if ($op == 'addAssignVar' OR $op == 'delAssignVar') {
             $sql .= "WHERE a.nf_processVariable=b.id AND a.nf_templateDataID='{$taskid}'";
             $fieldid = 'selvariableassignment';
             $fieldname = 'task_assignedVariables';
     } elseif ($op == 'addPreNotifyVariable' OR $op == 'delPreNotifyVariable' ) {
             $sql .= "WHERE a.nf_prenotifyVariable=b.id AND a.nf_templateDataID='{$taskid}'";
-            if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_prenotifyVariable'),array($taskid,999)) == 1) {  
+            if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_prenotifyVariable'),array($taskid,999)) == 1) {  
                 $options = "<option value=\"999\">TASK_OWNER</option>";                 
             }            
             $fieldid = 'selprenotify';
             $fieldname = 'task_prenotify';                      
     } elseif ($op == 'addPostNotifyVariable' OR $op == 'delPostNotifyVariable' ) {
             $sql .= "WHERE a.nf_postnotifyVariable=b.id AND a.nf_templateDataID='{$taskid}'";
-            if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_postnotifyVariable'),array($taskid,999)) == 1) {  
+            if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_postnotifyVariable'),array($taskid,999)) == 1) {  
                 $options = "<option value=\"999\">TASK_OWNER</option>";                 
             }            
             $fieldid = 'selpostnotify';
             $fieldname = 'task_postnotify';
     } elseif ($op == 'addReminderNotifyVariable' OR $op == 'delReminderNotifyVariable' ) {
             $sql .= "WHERE a.nf_remindernotifyVariable=b.id AND a.nf_templateDataID='{$taskid}'";
-            if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_remindernotifyVariable'),array($taskid,999)) == 1) {  
+            if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_remindernotifyVariable'),array($taskid,999)) == 1) {  
                 $options = "<option value=\"999\">TASK_OWNER</option>";                 
             }
             $fieldid = 'selremindernotify';
@@ -100,7 +100,7 @@ function ajaxhandler_assignedVariables($taskid) {
 /* Client Ajax Response Handler will then update the client page via DOM */
 function ajaxhandler_assignedUsers($taskid) {
     global $_TABLES;
-    $sql  = "SELECT b.uid, b.fullname FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['users']} b ";
+    $sql  = "SELECT b.uid, b.fullname FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['users']} b ";
     $sql .= "WHERE a.uid=b.uid AND a.nf_templateDataID='{$taskid}' ORDER BY b.fullname";    
     $q = DB_query($sql);
     $options = '';
@@ -122,8 +122,8 @@ if ($taskid > 0 AND ($parm1 > 0 OR strpos($op,'Message') > 0) ) {
     switch ($op) {
         
         case 'addAssignVar':
-            if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_processVariable'),array($taskid,$parm1)) == 0) {
-                $sql = "INSERT INTO {$_TABLES['nftemplateassignment']} (nf_templateDataID, nf_processVariable  ) ";
+            if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_processVariable'),array($taskid,$parm1)) == 0) {
+                $sql = "INSERT INTO {$_TABLES['nf_templateassignment']} (nf_templateDataID, nf_processVariable  ) ";
                 $sql .= "values ('$taskid','$parm1')";
                 DB_Query($sql );
             }
@@ -131,13 +131,13 @@ if ($taskid > 0 AND ($parm1 > 0 OR strpos($op,'Message') > 0) ) {
             break;
 
         case 'delAssignVar':
-            DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_templateDataID='$taskid' AND nf_processVariable='$parm1'");
+            DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_templateDataID='$taskid' AND nf_processVariable='$parm1'");
             $retval =  ajaxhandler_assignedVariables($taskid);
             break;
 
         case 'addAssignUser':
-            if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'uid'),array($taskid,$parm1)) == 0) {
-                $sql = "INSERT INTO {$_TABLES['nftemplateassignment']} (nf_templateDataID, uid  ) ";
+            if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'uid'),array($taskid,$parm1)) == 0) {
+                $sql = "INSERT INTO {$_TABLES['nf_templateassignment']} (nf_templateDataID, uid  ) ";
                 $sql .= "values ('$taskid','$parm1')";
                 $result = DB_Query($sql );
             }
@@ -145,13 +145,13 @@ if ($taskid > 0 AND ($parm1 > 0 OR strpos($op,'Message') > 0) ) {
             break;
 
         case 'delAssignUser':
-            DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_templateDataID='$taskid' AND uid='$parm1'");
+            DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_templateDataID='$taskid' AND uid='$parm1'");
             $retval =  ajaxhandler_assignedUsers($taskid);
             break;
 
         case 'addPreNotifyVariable':
-            if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_prenotifyVariable'),array($taskid,$parm1)) == 0) {
-                $sql = "INSERT INTO {$_TABLES['nftemplateassignment']} (nf_templateDataID, nf_prenotifyVariable  ) ";
+            if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_prenotifyVariable'),array($taskid,$parm1)) == 0) {
+                $sql = "INSERT INTO {$_TABLES['nf_templateassignment']} (nf_templateDataID, nf_prenotifyVariable  ) ";
                 $sql .= "values ('$taskid','$parm1')";
                 DB_Query($sql );
             }
@@ -159,13 +159,13 @@ if ($taskid > 0 AND ($parm1 > 0 OR strpos($op,'Message') > 0) ) {
             break;
             
         case 'delPreNotifyVariable':
-            DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_templateDataID='$taskid' AND nf_prenotifyVariable='$parm1'");
+            DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_templateDataID='$taskid' AND nf_prenotifyVariable='$parm1'");
             $retval =  ajaxhandler_assignedVariables($taskid); 
             break;
             
         case 'addPostNotifyVariable':
-            if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_postnotifyVariable'),array($taskid,$parm1)) == 0) {
-                $sql = "INSERT INTO {$_TABLES['nftemplateassignment']} (nf_templateDataID, nf_postnotifyVariable  ) ";
+            if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_postnotifyVariable'),array($taskid,$parm1)) == 0) {
+                $sql = "INSERT INTO {$_TABLES['nf_templateassignment']} (nf_templateDataID, nf_postnotifyVariable  ) ";
                 $sql .= "values ('$taskid','$parm1')";
                 DB_Query($sql );
             }
@@ -173,13 +173,13 @@ if ($taskid > 0 AND ($parm1 > 0 OR strpos($op,'Message') > 0) ) {
             break;
             
         case 'delPostNotifyVariable':
-            DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_templateDataID='$taskid' AND nf_postnotifyVariable='$parm1'");
+            DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_templateDataID='$taskid' AND nf_postnotifyVariable='$parm1'");
             $retval =  ajaxhandler_assignedVariables($taskid);
             break;
               
         case 'addReminderNotifyVariable':
-            if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_remindernotifyVariable'),array($taskid,$parm1)) == 0) {
-                $sql = "INSERT INTO {$_TABLES['nftemplateassignment']} (nf_templateDataID, nf_remindernotifyVariable  ) ";
+            if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_remindernotifyVariable'),array($taskid,$parm1)) == 0) {
+                $sql = "INSERT INTO {$_TABLES['nf_templateassignment']} (nf_templateDataID, nf_remindernotifyVariable  ) ";
                 $sql .= "values ('$taskid','$parm1')";
                 DB_Query($sql );
             }            
@@ -187,92 +187,92 @@ if ($taskid > 0 AND ($parm1 > 0 OR strpos($op,'Message') > 0) ) {
             break;
             
         case 'delReminderNotifyVariable':
-            DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_templateDataID='$taskid' AND nf_remindernotifyVariable='$parm1'");
+            DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_templateDataID='$taskid' AND nf_remindernotifyVariable='$parm1'");
             $retval =  ajaxhandler_assignedVariables($taskid);
             break;                                                                     
             
         case 'setReminderNotifyVariable':
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} SET reminderInterval='$parm1' WHERE id='$taskid'");   
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} SET reminderInterval='$parm1' WHERE id='$taskid'");   
             $retval =  $parm1;
             break;
             
         case 'setSubsequentReminderVariable':
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} SET subsequentReminderInterval='$parm1' WHERE id='$taskid'");   
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} SET subsequentReminderInterval='$parm1' WHERE id='$taskid'");   
             $retval =  $parm1;
             break;
           
         case 'updatePreNotifyMessage':
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} SET prenotify_message='$message' WHERE id='$taskid'");                 
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} SET prenotify_message='$message' WHERE id='$taskid'");                 
             $retval =  '';
             break;
             
         case 'updatePostNotifyMessage':
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} SET postnotify_message='$message' WHERE id='$taskid'");                 
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} SET postnotify_message='$message' WHERE id='$taskid'");                 
             $retval =  '';
             break;
 
         case 'updateReminderMessage':
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} SET reminder_message='$message' WHERE id='$taskid'");                 
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} SET reminder_message='$message' WHERE id='$taskid'");                 
             $retval =  '';
             break;      
             
         case 'setDynamicFormVariable' :
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} set dynamicFormVariableID='$parm1' where id='$taskid'");
-            $varName=DB_getItem($_TABLES['nftemplatevariables'], 'variableName', "id=" . $parm1 );
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} set dynamicFormVariableID='$parm1' where id='$taskid'");
+            $varName=DB_getItem($_TABLES['nf_templatevariables'], 'variableName', "id=" . $parm1 );
             $retval = " " . $varName . "({$parm1})";
             break;
         case 'setDynamicNameVariable' :
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} set dynamicTaskNameVariableID='$parm1' where id='$taskid'");
-            $varName=DB_getItem($_TABLES['nftemplatevariables'], 'variableName', "id=" . $parm1 );
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} set dynamicTaskNameVariableID='$parm1' where id='$taskid'");
+            $varName=DB_getItem($_TABLES['nf_templatevariables'], 'variableName', "id=" . $parm1 );
             $retval = " " . $varName . "({$parm1})";
             break;
             
     }
 } elseif ($op == 'setAssignmentType' AND $taskid > 0 ) {
         if ($mode == 'user' ) {
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} set assignedByVariable=0 where id='$taskid'");
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} set assignedByVariable=0 where id='$taskid'");
         } elseif ($mode == 'variable') {
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} set assignedByVariable=1 where id='$taskid'");
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} set assignedByVariable=1 where id='$taskid'");
         }
         //clear out any existing records
-        DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_templateDataID='$taskid';");
+        DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_templateDataID='$taskid';");
 
         $retval = $mode;
 } elseif ($op == 'setRegenerateOption' AND $taskid > 0 ) {
         if ($mode == 1 ) {
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} set regenerate=1 where id='$taskid'");
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} set regenerate=1 where id='$taskid'");
         } else {
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} set regenerate=0 where id='$taskid'");
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} set regenerate=0 where id='$taskid'");
         }
         $retval = $mode;
 
 } elseif ($op == 'setRegenerateAllOption' AND $taskid > 0 ) {
         if ($mode == 1 ) {
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} set regenAllLiveTasks=1 where id='$taskid'");
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} set regenAllLiveTasks=1 where id='$taskid'");
         } else {
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} set regenAllLiveTasks=0 where id='$taskid'");  
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} set regenAllLiveTasks=0 where id='$taskid'");  
         }
         $retval = $mode;
         
 } elseif ($op == 'setDynamicForm' AND $taskid > 0 ) {
         if ($mode == 1 ) {
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} set isDynamicForm=1 where id='$taskid'");
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} set isDynamicForm=1 where id='$taskid'");
         } else {
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} set isDynamicForm=0 where id='$taskid'");  
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} set isDynamicForm=0 where id='$taskid'");  
         }
         $retval = $mode;
 } elseif ($op == 'setDynamicName' AND $taskid > 0 ) {
         if ($mode == 1 ) {
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} set isDynamicTaskName=1 where id='$taskid'");
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} set isDynamicTaskName=1 where id='$taskid'");
         } else {
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} set isDynamicTaskName=0 where id='$taskid'");  
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} set isDynamicTaskName=0 where id='$taskid'");  
         }
         $retval = $mode;
 }  elseif ($op == 'setReminderNotifyVariable' AND $taskid > 0 ) {            
-    DB_query("UPDATE {$_TABLES['nftemplatedata']} SET reminderInterval='0' WHERE id='$taskid'");  
+    DB_query("UPDATE {$_TABLES['nf_templatedata']} SET reminderInterval='0' WHERE id='$taskid'");  
     $retval =  $parm1;                     
 }elseif ($op == 'onhold' AND $taskid > 0 ) {    
-    $current=DB_getItem($_TABLES['nfqueue'],"status","id='$taskid'");
+    $current=DB_getItem($_TABLES['nf_queue'],"status","id='$taskid'");
     $nf=new nexflow();
     if($current==0){
         $nf->hold_task($taskid, true);
