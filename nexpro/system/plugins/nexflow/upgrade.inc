@@ -72,7 +72,7 @@ function upgrade_300() {
 }
 
 function upgrade_310() {
-    global $_CONF,$_TABLES;
+    global $_CONF,$_TABLES,$_DB_table_prefix;
 
     $_SQL = array();
     $_SQL[] = "ALTER TABLE {$_TABLES['nftemplatedata']} ADD reminderIntervalVariable INT(11) UNSIGNED NOT NULL DEFAULT 0 AFTER reminderInterval";
@@ -80,6 +80,32 @@ function upgrade_310() {
     $_SQL[] = "ALTER TABLE {$_TABLES['nftemplatedata']} ADD postnotify_subject VARCHAR(127) DEFAULT NULL AFTER prenotify_subject";
     $_SQL[] = "ALTER TABLE {$_TABLES['nftemplatedata']} ADD reminder_subject VARCHAR(127) DEFAULT NULL AFTER postnotify_subject";
     $_SQL[] = "ALTER TABLE {$_TABLES['nftemplatedata']} ADD surpressFirstNotification TINYINT(1) UNSIGNED NOT NULL DEFAULT '0'";
+
+
+	$_XTABLES = array();
+	$_XTABLES['nfprojects']              = $_DB_table_prefix . 'nfprojects';
+	$_XTABLES['nfproject_forms']         = $_DB_table_prefix . 'nfproject_forms';
+	$_XTABLES['nfproject_timestamps']    = $_DB_table_prefix . 'nfproject_timestamps';
+	$_XTABLES['nfproject_comments']      = $_DB_table_prefix . 'nfproject_comments';
+	$_XTABLES['nfproject_taskhistory']   = $_DB_table_prefix . 'nfproject_taskhistory';
+	$_XTABLES['nfproject_approvals']     = $_DB_table_prefix . 'nfproject_approvals';
+	$_XTABLES['nfproject_attachments']   = $_DB_table_prefix . 'nfproject_attachments';
+	$_XTABLES['nfproject_datafields']    = $_DB_table_prefix . 'nfproject_data_fields';
+	$_XTABLES['nfproject_dataresults']   = $_DB_table_prefix . 'nfproject_data_results';
+
+
+    // Rename tables that have been changed to be more consistent.
+    $_SQL[] = "ALTER TABLE {$_XTABLES['nfprojects']} RENAME TO {$_TABLES['nf_projects']};";
+    $_SQL[] = "ALTER TABLE {$_XTABLES['nfproject_forms']} RENAME TO {$_TABLES['nf_projectforms']};";
+    $_SQL[] = "ALTER TABLE {$_XTABLES['nfproject_timestamps']} RENAME TO {$_TABLES['nf_projecttimestamps']};";
+    $_SQL[] = "ALTER TABLE {$_XTABLES['nfproject_comments']} RENAME TO {$_TABLES['nf_projectcomments']};";
+    $_SQL[] = "ALTER TABLE {$_XTABLES['nfproject_taskhistory']} RENAME TO {$_TABLES['nf_projecttaskhistory']};";
+    $_SQL[] = "ALTER TABLE {$_XTABLES['nfproject_approvals']} RENAME TO {$_TABLES['nf_projectapprovals']};";
+    $_SQL[] = "ALTER TABLE {$_XTABLES['nfproject_attachments']} RENAME TO {$_TABLES['nf_projectattachments']};";
+    $_SQL[] = "ALTER TABLE {$_XTABLES['nfproject_datafields']} RENAME TO {$_TABLES['nf_projectdatafields']};";
+    $_SQL[] = "ALTER TABLE {$_XTABLES['nfproject_dataresults']} RENAME TO {$_TABLES['nf_projectdataresults']};";
+
+
 
     /* Execute SQL now to perform the upgrade */
     for ($i = 1; $i <= count($_SQL); $i++) {
