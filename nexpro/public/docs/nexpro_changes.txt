@@ -1,3 +1,69 @@
+Oct 14/2009 (Blaine)
+    Nexflow plugin updates to add the autoinstall and autouninstall scripts.
+    Required that all nexflow table references be changed so that the $_TABLES['tablename'] match the created table names.
+       All table names are now using a consistent style and $_TABLES reference name matches the table name.
+       ** Any custom code that used the previous $_TABLES references to the nexflow tables will need to be updated.
+
+       ** New $_TABLES definitions **
+	$_TABLES['nf_process']               = $_DB_table_prefix . 'nf_process';
+	$_TABLES['nf_queue']                 = $_DB_table_prefix . 'nf_queue';
+	$_TABLES['nf_template']              = $_DB_table_prefix . 'nf_template';
+	$_TABLES['nf_templatedata']          = $_DB_table_prefix . 'nf_templatedata';
+	$_TABLES['nf_templateassignment']    = $_DB_table_prefix . 'nf_templateassignment';
+	$_TABLES['nf_handlers']              = $_DB_table_prefix . 'nf_handlers';
+	$_TABLES['nf_steptype']              = $_DB_table_prefix . 'nf_steptype';
+	$_TABLES['nf_templatedatanextstep']  = $_DB_table_prefix . 'nf_templatedatanextstep';
+	$_TABLES['nf_processvariables']      = $_DB_table_prefix . 'nf_processvariables';
+	$_TABLES['nf_templatevariables']     = $_DB_table_prefix . 'nf_templatevariables';
+	$_TABLES['nf_ifprocessarguments']    = $_DB_table_prefix . 'nf_ifprocessarguments';
+	$_TABLES['nf_ifoperators']           = $_DB_table_prefix . 'nf_ifoperators';
+	$_TABLES['nf_queuefrom']             = $_DB_table_prefix . 'nf_queuefrom';
+	$_TABLES['nf_notifications']         = $_DB_table_prefix . 'nf_notifications';
+	$_TABLES['nf_productionassignments'] = $_DB_table_prefix . 'nf_productionassignments';
+	$_TABLES['nf_useraway']              = $_DB_table_prefix . 'nf_useraway';
+	$_TABLES['nf_appgroups']             = $_DB_table_prefix . 'nf_appgroups';
+	$_TABLES['nf_projects']              = $_DB_table_prefix . 'nf_projects';
+	$_TABLES['nf_projectforms']          = $_DB_table_prefix . 'nf_projectforms';
+	$_TABLES['nf_projecttimestamps']     = $_DB_table_prefix . 'nf_projecttimestamps';
+	$_TABLES['nf_projectcomments']       = $_DB_table_prefix . 'nf_projectcomments';
+	$_TABLES['nf_projecttaskhistory']    = $_DB_table_prefix . 'nf_projecttaskhistory';
+	$_TABLES['nf_projectapprovals']      = $_DB_table_prefix . 'nf_projectapprovals';
+	$_TABLES['nf_projectattachments']    = $_DB_table_prefix . 'nf_projectattachments';
+	$_TABLES['nf_projectdatafields']     = $_DB_table_prefix . 'nf_projectdatafields';
+	$_TABLES['nf_projectdataresults']    = $_DB_table_prefix . 'nf_projectdataresults';
+
+
+       ** Previous $_TABLES definitions **
+	$_TABLES['nfprocess']               = $_DB_table_prefix . 'nf_process';
+	$_TABLES['nfqueue']                 = $_DB_table_prefix . 'nf_queue';
+	$_TABLES['nftemplate']              = $_DB_table_prefix . 'nf_template';
+	$_TABLES['nftemplatedata']          = $_DB_table_prefix . 'nf_templatedata';
+	$_TABLES['nftemplateassignment']    = $_DB_table_prefix . 'nf_templateassignment';
+	$_TABLES['nfhandlers']              = $_DB_table_prefix . 'nf_handlers';
+	$_TABLES['nfsteptype']              = $_DB_table_prefix . 'nf_steptype';
+	$_TABLES['nftemplatedatanextstep']  = $_DB_table_prefix . 'nf_templatedatanextstep';
+	$_TABLES['nfprocessvariables']      = $_DB_table_prefix . 'nf_processvariables';
+	$_TABLES['nftemplatevariables']     = $_DB_table_prefix . 'nf_templatevariables';
+	$_TABLES['nfifprocessarguments']    = $_DB_table_prefix . 'nf_ifprocessarguments';
+	$_TABLES['nfifoperators']           = $_DB_table_prefix . 'nf_ifoperators';
+	$_TABLES['nfqueuefrom']             = $_DB_table_prefix . 'nf_queuefrom';
+	$_TABLES['nfnotifications']         = $_DB_table_prefix . 'nf_notifications';
+	$_TABLES['nfproductionassignments'] = $_DB_table_prefix . 'nf_productionassignments';
+	$_TABLES['nfuseraway']              = $_DB_table_prefix . 'nf_userawayprefs';
+	$_TABLES['nfappgroups']             = $_DB_table_prefix . 'nf_appgroups';
+	$_TABLES['nfprojects']              = $_DB_table_prefix . 'nfprojects';
+	$_TABLES['nfproject_forms']         = $_DB_table_prefix . 'nfproject_forms';
+	$_TABLES['nfproject_timestamps']    = $_DB_table_prefix . 'nfproject_timestamps';
+	$_TABLES['nfproject_comments']      = $_DB_table_prefix . 'nfproject_comments';
+	$_TABLES['nfproject_taskhistory']   = $_DB_table_prefix . 'nfproject_taskhistory';
+	$_TABLES['nfproject_approvals']     = $_DB_table_prefix . 'nfproject_approvals';
+	$_TABLES['nfproject_attachments']   = $_DB_table_prefix . 'nfproject_attachments';
+	$_TABLES['nfproject_datafields']    = $_DB_table_prefix . 'nfproject_data_fields';
+	$_TABLES['nfproject_dataresults']   = $_DB_table_prefix . 'nfproject_data_results';
+
+
+
+
 Oct 14/2009 (Randy)
     Nextime installation routine redone to use dependencies and version checking for dependent plugins.
     Change to lib-nextide for new NXCOM function for normalizing version numbers.
@@ -7,20 +73,20 @@ Oct 14/2009 (Blaine)
     Nexform plugin updates to add the autoinstall and autouninstall scripts.
     Required that all nexform table references be changed so that the $_TABLES['tablename'] match the created table names.
        Some of the $_TABLES key names were a combination of upper and lowercase as well. All lower case now.
-       Any custom code that used the previous $_TABLES references to the nexform tables will need to be updated
+       ** Any custom code that used the previous $_TABLES references to the nexform tables will need to be updated.
 
 
-       New $_TABLES definitions:
-       $_TABLES['nxform_definitions']       = $_DB_table_prefix . 'nxform_definitions';
-       $_TABLES['nxform_fields']            = $_DB_table_prefix . 'nxform_fields';
-       $_TABLES['nxform_results']           = $_DB_table_prefix . 'nxform_results';
-       $_TABLES['nxform_resdata']           = $_DB_table_prefix . 'nxform_resdata';
-       $_TABLES['nxform_restext']           = $_DB_table_prefix . 'nxform_restext';
-       $_TABLES['nxform_results_tmp']       = $_DB_table_prefix . 'nxform_results_tmp';
-       $_TABLES['nxform_resdata_tmp']       = $_DB_table_prefix . 'nxform_resdata_tmp';
-       $_TABLES['nxform_restext_tmp']       = $_DB_table_prefix . 'nxform_restext_tmp';
+       ** New $_TABLES definitions **
+       $_TABLES['nxform_definitions']    = $_DB_table_prefix . 'nxform_definitions';
+       $_TABLES['nxform_fields']         = $_DB_table_prefix . 'nxform_fields';
+       $_TABLES['nxform_results']        = $_DB_table_prefix . 'nxform_results';
+       $_TABLES['nxform_resdata']        = $_DB_table_prefix . 'nxform_resdata';
+       $_TABLES['nxform_restext']        = $_DB_table_prefix . 'nxform_restext';
+       $_TABLES['nxform_results_tmp']    = $_DB_table_prefix . 'nxform_results_tmp';
+       $_TABLES['nxform_resdata_tmp']    = $_DB_table_prefix . 'nxform_resdata_tmp';
+       $_TABLES['nxform_restext_tmp']    = $_DB_table_prefix . 'nxform_restext_tmp';
 
-       Previous $_TABLES definitions:
+       ** Previous $_TABLES definitions **
        $_TABLES['formDefinitions']       = $_DB_table_prefix . 'nxform_definitions';
        $_TABLES['formFields']            = $_DB_table_prefix . 'nxform_fields';
        $_TABLES['formResults']           = $_DB_table_prefix . 'nxform_results';
