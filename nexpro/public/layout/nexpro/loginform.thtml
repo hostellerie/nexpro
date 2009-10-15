@@ -1,0 +1,14 @@
+<form action="{site_url}/users.php" method="POST" style="margin:5px;">
+  <div class="floatleft" style="width:35%"><b><label for="loginname">{lang_username}</label>:</b></div>
+  <div class="floatleft" style="width:50%"><input type="text" size="12" name="loginname" value="" id="loginname" style="font-size:100%;width:80px;"></div>
+  {services}
+  <div class="floatleft" style="padding-top:3px;width:35%"><b><label for="passwd">{lang_password}</label>:</b></div>
+  <div class="floatleft" style="padding-top:3px;width:50%"><input type="password" size="12" name="passwd" id="passwd" style="font-size:100%;width:80px;"></div>
+  <div class="clearboth"></div>
+  <input type="submit" value="{lang_login}">
+</form>
+<div style="margin:5px;">
+{lang_signup}<br>
+{lang_forgetpassword}
+</div>
+{openid_login}

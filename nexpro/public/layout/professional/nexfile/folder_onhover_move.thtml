@@ -1,0 +1,5 @@
+                        <div class="foldermovelinks floatright" style="visibility:hidden;padding-right:65px;">
+                            <span class="foldermovelink"><a href="#" TITLE="Move Folder Up" onClick="makeAJAXSetFolderOrder({folder_id},'up');return false;" style="display:{hide_moveup};"><img src="{imgset}/up.png"></a></span>
+                            <span class="foldermovelink"><a href="#" TITLE="Move Folder Down" onClick="makeAJAXSetFolderOrder({folder_id},'down');return false;" style="display:{hide_movedown};"><img src="{imgset}/down.png"></a></span>
+                        </div>
+                        <div class="clearboth"></div>

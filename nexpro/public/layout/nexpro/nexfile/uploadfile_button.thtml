@@ -1,0 +1,8 @@
+            <div class="floatright" style="padding-right:30px;">
+               <span id="newfilelink" class="yui-button yui-push-button">
+                    <span class="first-child">
+                        <button type="button" name="newfileupload" value="newfileupload">Upload&nbsp;File</button>
+                    </span>
+               </span>
+            </div>
+        </div>

@@ -1,0 +1,27 @@
+
+        {selected_category_div}
+        <div id="folder_options_container" class="clearboth" style="padding:5px 50px 5px 60px;display:none;">
+            <div>{folder_description}</div>
+            <fieldset style="width:300px;margin-top:10px;"><legend>Folder Notification Options</legend>
+            <form name="frm_foldersettings" method="post">
+                <input type="hidden" name="op" value="updatefoldersettings">
+                <input type="hidden" name="cid" value="{cid}">
+                <table cellpadding="0" cellspacing="1" width="100%">
+                    <tr>
+                        <td>Alert me if new files are added</td>
+                        <td><input type="checkbox" name="fileadded_notify" value="1" {chk_fileadded}></td>
+                    </tr>
+                    <tr>
+                        <td>Alert me if files are changed</td>
+                        <td><input type="checkbox" name="filechanged_notify" value="1" {chk_filechanged}></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="aligncenter" style="padding:5px;">
+                            <input type="submit" value="Save Settings" onClick="doAJAXUpdateFolderNotificationSettings(this.form);return false;">
+                            <span style="padding-left:10px;"><input type="button" value="Close" onClick="togglefolderoptions();"></span>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+            </fieldset>
+        </div>

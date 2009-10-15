@@ -1,0 +1,3 @@
+                    <div id="tagcloud_words">
+                        {tag_words}
+                    </div>

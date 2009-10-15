@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<rss version="2.0" xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+<title>Geeklog Site</title>
+<link>http://localhost/nexpro161</link>
+<description>Another Nifty Geeklog Site</description>
+<managingEditor>admin@localhost</managingEditor>
+<webMaster>admin@localhost</webMaster>
+<copyright>Copyright 2009 Geeklog Site</copyright>
+<generator>Geeklog</generator>
+<pubDate>Thu, 08 Oct 2009 08:55:39 -0400</pubDate>
+<language>en-gb</language>
+<atom:link href="http://localhost/nexpro161/backend/geeklog.rss" rel="self" type="application/rss+xml" />
+<item>
+<title>Welcome to Nexpro</title>
+<link>http://localhost/nexpro161/article.php?story=welcome</link>
+<guid isPermaLink="true">http://localhost/nexpro161/article.php?story=welcome</guid>
+<pubDate>Sun, 26 Aug 2007 00:08:34 -0400</pubDate>
+<dc:subject>NexPro</dc:subject>
+<description>&lt;table width=&quot;100%&quot; cellspacing=&quot;1&quot; cellpadding=&quot;1&quot; border=&quot;0&quot;&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td valign=&quot;top&quot;&gt;&lt;img width=&quot;184&quot; height=&quot;210&quot; src=&quot;http://demo.nextide.ca/images/library/Image/nexpro%20box.jpg&quot; alt=&quot;&quot; /&gt;&lt;/td&gt;
+            &lt;td valign=&quot;top&quot;&gt;
+            The &lt;strong&gt;nexPro&lt;/strong&gt; Collaboration Server is&amp;nbsp;a suite of Open Source products designed for work automation and&amp;nbsp;web-based applications. Our extensions and plug-ins provide a secure web-based environment &lt;font size=&quot;2&quot;&gt;for&lt;/font&gt; team based collaboration. Through a full range of administrative options, Collaboration Server can be easily configured to provide a rich and controlled set of capabilities that permissions that can be assigned to site content and features. It creates a destination for all team members to interact while providing real-time visibility to&amp;nbsp;related project and group activities.
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td colspan=&quot;2&quot;&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+            &lt;ul&gt;
+                &lt;li&gt;&lt;strong&gt;nexPro&lt;/strong&gt; Collaboration Server&amp;nbsp;comes pre-integrated with document management, work-flow automation, electronic forms, list and menu administration.&lt;/li&gt;
+                &lt;li&gt;There is no charge for a nexPro license but we do require you to select one of our&amp;nbsp;annual support contract that includes software maintenance and updates.&lt;/li&gt;
+                &lt;li&gt;&lt;strong&gt;nexPro&lt;/strong&gt; is a solid platform for creating and operating any web based application.&lt;/li&gt;
+                &lt;li&gt;Work automation applications like form approval routing can be created entirely with 'mouse clicks'.&amp;nbsp;&lt;/li&gt;
+            &lt;/ul&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;</description>
+<trackback:ping>http://localhost/nexpro161/trackback.php?id=welcome</trackback:ping>
+</item>
+</channel>
+</rss>

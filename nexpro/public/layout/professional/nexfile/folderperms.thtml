@@ -1,0 +1,85 @@
+    <div style="margin:2px;border:1px solid #CCC">
+        <form name="frmFolderPerms" method="POST">
+            <input type="hidden" name="op" value="">
+
+          <table width="724" border="0" cellspacing="0" cellpadding="2" style="margin:0px;">
+          <tr bgcolor="#BBBECE">
+            <td width="1%">&nbsp;</td>
+            <td width="15%">&nbsp;<b>Select Users</b></td>
+            <td width="5%">&nbsp;</td>
+            <td width="15%">&nbsp;<b>Select Groups</b></td>
+            <td width="1%">&nbsp;</td>
+            <td colspan="4" width="60%" align="center">&nbsp;<b>Access Rights</b></td>
+          </tr>
+          <tr><td colspan="10"><img src="" height="5"></td></tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td rowspan="3"><select name="selusers[]" multiple size=10>{user_options}</select></td>
+            <td rowspan="3">&nbsp;</td>
+            <td rowspan="3"><select name="selgroups[]" multiple size=10>{group_options}</select></td>
+            <td>&nbsp;</td>
+            <td>
+              <input type="checkbox" name="cb_access[]" value="view" id="feature1"></td>
+            <td><label for="feature1">View Category</label></td>
+            <td><input type="checkbox" name="cb_access[]" value="upload"  id="feature2"></td>
+            <td><label for="feature2">Upload with Approval</label></td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td><input type="checkbox" name="cb_access[]" value="approval" id="feature3"> </td>
+            <td><label for="feature3">Upload Admin</label></td>
+            <td><input type="checkbox" name="cb_access[]" value="upload_direct" id="feature4"></td>
+            <td><label for="feature4">Upload Direct</label></td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td><input type="checkbox" name="cb_access[]" value="admin" id="feature5"></td>
+            <td><label for="feature5">Category Admin</label></td>
+            <td><input type="checkbox" name="cb_access[]" value="upload_ver" id="feature6"></td>
+            <td><label for="feature6">Upload New Versions</label></td>
+          </tr>
+          <tr>
+              <td colspan="9" style="padding-left:450px;padding-top:10px;">
+                <input type="button" name="submit" value="Submit" onclick="makeAJAXUpdateFolderPerms(this.form);">
+                <span style="padding-left:10px;"><input id="folderperms_cancel" type="button" value="Close"></span>
+                <input type="hidden" name="op" value="addfolderperm">
+                <input type="hidden" name="catid" value="{catid}"></td>
+          </tr>
+        </table>
+
+        <table border="0" cellpadding="5" cellspacing="1" width="724" style="margin-top:10px;">
+            <tr>
+                  <td colspan="9" width="100%" style="font-weight:bold;background-color:#BBBECE;font-size:2;vertical-align:top;padding:2px;">User Access Records</td>
+            </tr>
+          <tr style="font-weight:bold;background-color:#ECE9D8;text-align:center;vertical-align:top;">
+                <td align="left">User</td>
+                <td>View</td>
+                <td>Upload with Approval</td>
+                <td>Direct Upload</td>
+                <td>Upload Versions</td>
+                <td>Upload Admin</td>
+                <td>Admin</td>
+                <td>Action</td>
+           </tr>
+                {user_perm_records}
+         </table>
+        <table border="0" cellpadding="5" cellspacing="1" width="724" style="margin-top:20px;margin-bottom:10px;">
+            <tr>
+                <td colspan="9" width="100%" style="font-weight:bold;background-color:#BBBECE;font-size:2;vertical-align:top;padding:2px;">Group Access Records</td>
+            </tr>
+            <tr style="font-weight:bold;background-color:#ECE9D8;text-align:center;vertical-align:top;">
+                <td align="left">User</td>
+                <td>View</td>
+                <td>Upload with Approval</td>
+                <td>Direct Upload</td>
+                <td>Upload Versions</td>
+                <td>Upload Admin</td>
+                <td>Admin</td>
+                <td>Action</td>
+           </tr>
+                {group_perm_records}
+         </table>
+        </form>
+    </div>

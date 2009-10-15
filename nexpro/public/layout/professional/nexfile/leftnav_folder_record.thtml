@@ -1,0 +1,3 @@
+
+    var {foldernode} = new YAHOO.widget.TextNode({ label: "{folder_name}", href:"{folder_link}" }, {parentfolder}, false);
+    {foldernode}.labelStyle = "icon-allfolders";
