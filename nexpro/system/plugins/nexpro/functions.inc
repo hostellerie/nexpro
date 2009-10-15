@@ -36,7 +36,7 @@ if (file_exists ($langfile)) {
 } else {
     include_once ($_CONF['path'] . 'plugins/nexpro/language/english.php');
 }
-require_once ($_CONF['path'] . 'plugins/nexpro/autouninstall.php');
+
 require_once ($_CONF['path_system'] . 'classes/sanitize.class.php');
 require_once ($_CONF['path_system'] . 'lib-portalparts.php');
 require_once ($_CONF['path_system'] . 'lib-nextide.php');
@@ -55,7 +55,7 @@ if (!isset($CONF_NEXPRO['load_treemenu'])) {
     $CONF_NEXPRO = $nexpro_config->get_config('nexpro');
 }
 
-
+require_once ($_CONF['path'] . 'plugins/nexpro/autouninstall.php');
 /**
 * Returns the needed link to the menu csss- which will be included in the header
 */
