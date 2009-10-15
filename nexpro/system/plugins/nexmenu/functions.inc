@@ -188,7 +188,10 @@ function plugin_upgrade_nexmenu()
     } elseif ($CONF_NEXMENU['installed_version'] == "2.5") {
         DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.6' WHERE `pi_name` = 'nexmenu' LIMIT 1");
         return true;
-    } elseif ($CONF_NEXMENU['installed_version'] == "2.6") {
+    } elseif ($CONF_NEXMENU['installed_version'] == "2.5.2") {
+        DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2' WHERE `pi_name` = 'nexmenu' LIMIT 1");
+        return true;
+    }elseif ($CONF_NEXMENU['installed_version'] == "2.6") {
         if (upgrade_26() == 0 )  {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.1', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexmenu' LIMIT 1");
             if (upgrade_32() == 0) {
