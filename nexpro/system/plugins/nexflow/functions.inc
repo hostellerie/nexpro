@@ -1,8 +1,8 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexFlow Plugin v3.0.0 for the nexPro Portal Server                        |
-// | May 20, 2008                                                              |
+// | nexFlow Plugin v3.1.0 for the nexPro Portal Server                        |
+// | Oct 15, 2009                                                              |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
 // | functions.inc                                                             |
@@ -30,8 +30,16 @@
 // +---------------------------------------------------------------------------+
 //
 
+$langfile = $_CONF['path'] . 'plugins/nexflow/language/' . $_CONF['language'] . '.php';
+if (file_exists ($langfile)) {
+    include_once ($langfile);
+} else {
+    include_once ($_CONF['path'] . 'plugins/nexflow/language/english.php');
+}
+
 require_once ($_CONF['path'] . 'plugins/nexflow/nexflow.class.php');
 require_once ($_CONF['path'] . 'plugins/nexflow/library.php');
+include_once ($_CONF['path'] . 'plugins/nexflow/autouninstall.php');
 
 /*
 * Check and see if we need to load the plugin configuration
@@ -43,9 +51,8 @@ if (!isset($CONF_NF['TaskConsole_URL'])) {
     $CONF_NF = $nexflow_config->get_config('nexflow');
 }
 
-require_once ($_CONF['path'] . 'plugins/nexflow/config.php');
+require_once ($_CONF['path'] . 'plugins/nexflow/nexflow.php');
 
-$CONF_NF['version']             = '3.1.0';          // Plugin Version
 if (isset($CONF_NF['max_uploadfile_size'])) {
     $CONF_NF['max_uploadfile_size'] = $CONF_NF['max_uploadfile_size'] * 1024 * 1024;
 }
@@ -62,13 +69,6 @@ if (is_dir($customFunctionsDir)) {
        }
        closedir($dh);
    }
-}
-
-$langfile = $_CONF['path'] . 'plugins/nexflow/language/' . $_CONF['language'] . '.php';
-if (file_exists ($langfile)) {
-    include_once ($langfile);
-} else {
-    include_once ($_CONF['path'] . 'plugins/nexflow/language/english.php');
 }
 
 
@@ -161,7 +161,7 @@ function plugin_geticon_nexflow()
 function plugin_user_create_nexflow ($uid)
 {
     global $_TABLES;
-    DB_query ("INSERT INTO {$_TABLES['nfuseraway']} (uid) VALUES ('{$uid}')");
+    DB_query ("INSERT INTO {$_TABLES['nf_useraway']} (uid) VALUES ('{$uid}')");
 }
 
 
@@ -173,7 +173,7 @@ function plugin_user_delete_nexflow ($uid)
     global $_TABLES;
 
     // Delete the user preference record
-    DB_query ("DELETE FROM {$_TABLES['nfuseraway']} WHERE uid = '{$uid}'");
+    DB_query ("DELETE FROM {$_TABLES['nf_useraway']} WHERE uid = '{$uid}'");
 
 }
 
@@ -185,7 +185,7 @@ function plugin_profilevariablesedit_nexflow($uid, &$template)
     $p->set_file ('prefs', 'awaysettings_edit.thtml');
     $p->set_var('layout_url',$_CONF['layout_url']);
 
-    $query = DB_query ("SELECT away_start,away_return,reassign_uid,reason,is_active FROM {$_TABLES['nfuseraway']} WHERE uid = $uid");
+    $query = DB_query ("SELECT away_start,away_return,reassign_uid,reason,is_active FROM {$_TABLES['nf_useraway']} WHERE uid = $uid");
     list ($datestart,$datereturn,$reassign_uid,$reason,$is_active) = DB_fetchArray ($query);
 
     if ($datestart == 0) $datestart = time();
@@ -217,7 +217,7 @@ function plugin_profilevariablesdisplay_nexflow($uid, &$template)
 {
     global $_CONF,$_TABLES, $LANG_NF01;
 
-    $query = DB_query ("SELECT away_start,away_return,reassign_uid,reason,is_active FROM {$_TABLES['nfuseraway']} WHERE uid = $uid");
+    $query = DB_query ("SELECT away_start,away_return,reassign_uid,reason,is_active FROM {$_TABLES['nf_useraway']} WHERE uid = $uid");
     list ($datestart,$datereturn,$reassign_uid,$reason,$is_active) = DB_fetchArray ($query);
 
     if ($is_active == 1 AND time() > $datestart AND time() < $datereturn) {
@@ -253,12 +253,12 @@ function plugin_profileextrassave_nexflow()
     $reason =  addslashes(COM_checkWords(COM_checkHTML(COM_killJS($_POST['away_reason']))));
     $is_active = COM_applyFilter($_POST['away_chkstatus'],true);
 
-    if (DB_count($_TABLES['nfuseraway'],'uid',$uid) == 0) {
-        $sql = "INSERT INTO {$_TABLES['nfuseraway']} (uid,away_start,away_return,reassign_uid,reason,is_active) VALUES ";
+    if (DB_count($_TABLES['nf_useraway'],'uid',$uid) == 0) {
+        $sql = "INSERT INTO {$_TABLES['nf_useraway']} (uid,away_start,away_return,reassign_uid,reason,is_active) VALUES ";
         $sql .= "($uid,$startdate,$returndate,$reassignuid,'$reason',$is_active) ";
 
     } else {
-        $sql  = "UPDATE {$_TABLES['nfuseraway']} SET away_start=$startdate,away_return=$returndate, ";
+        $sql  = "UPDATE {$_TABLES['nf_useraway']} SET away_start=$startdate,away_return=$returndate, ";
         $sql .= "reassign_uid=$reassignuid,reason='$reason',is_active=$is_active WHERE uid=$uid";
     }
     DB_query($sql);
@@ -304,62 +304,6 @@ function plugin_chkVersion_nexflow() {
     return $CONF_NF['version'];
 }
 
-
-/**
-* Automatic uninstall function for plugins
-*
-* @return   array
-*
-* This code is automatically uninstalling the plugin.
-* It passes an array to the core code function that removes
-* tables, groups, features and php blocks from the tables.
-* Additionally, this code can perform special actions that cannot be
-* foreseen by the core code (interactions with other plugins for example)
-*
-*/
-function plugin_autouninstall_nexflow ()
-{
-    $out = array (
-        /* give the name of the tables, without $_TABLES[] */
-        'tables' => array(
-            'nfprocess',
-            'nfqueue',
-            'nftemplate',
-            'nftemplatedata',
-            'nftemplateassignment',
-            'nfhandlers',
-            'nfsteptype',
-            'nftemplatedatanextstep',
-            'nfprocessvariables',
-            'nftemplatevariables',
-            'nfifprocessarguments',
-            'nfifoperators',
-            'nfqueuefrom',
-            'nfnotifications',
-            'nfproductionassignments',
-            'nfuseraway',
-            'nfappgroups',
-            'nfprojects',
-            'nfproject_forms',
-            'nfproject_timestamps',
-            'nfproject_comments',
-            'nfproject_taskhistory',
-            'nfproject_approvals',
-            'nfproject_attachments',
-            'nfproject_datafields',
-            'nfproject_dataresults'
-            ),
-        /* give the full name of the group, as in the db */
-        'groups' => array('nexflow Admin'),
-        /* give the full name of the feature, as in the db */
-        'features' => array('nexflow.admin','nexflow.edit', 'nexflow.user'),
-        /* give the full name of the block, including 'phpblock_', etc */
-        'php_blocks' => array(),
-        /* give all vars with their name */
-        'vars'=> array('nexflow_admin')
-    );
-    return $out;
-}
 
 
 function plugin_upgrade_nexflow() {

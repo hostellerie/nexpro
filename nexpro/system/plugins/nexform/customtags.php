@@ -185,7 +185,7 @@ function pullform($parms,$formFieldID='') {
 
     $aparms = explode(',',$parms);
     if ($resultsid == 0 AND $projectid > 0 ) {
-        $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
+        $resultsid = DB_getItem($_TABLES['nf_projectforms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
     }
 
     $retval = '';
@@ -198,7 +198,7 @@ function pullform($parms,$formFieldID='') {
               $retval = DB_getItem($_TABLES['nxform_restext'], 'field_data',"result_id='$resultsid' AND field_id='{$formFieldID}'");
               if (trim($retval) == '') {
                 //Form results has nothing for this field - pull from the source form referenced in lookup.
-                $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
+                $resultsid = DB_getItem($_TABLES['nf_projectforms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
                 $retval = DB_getItem($_TABLES['nxform_restext'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
               }
           } elseif ($field_type == 'multicheck') {
@@ -212,7 +212,7 @@ function pullform($parms,$formFieldID='') {
                 else {
                     $aoptions = explode(',',$options);
                     // Retrieve the results from the source form referenced in lookup.
-                    $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
+                    $resultsid = DB_getItem($_TABLES['nf_projectforms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
                     $selected = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
                     $aselected = explode(',',$selected);
                     $retval = array();
@@ -235,7 +235,7 @@ function pullform($parms,$formFieldID='') {
                 else {
                     $aoptions = explode(',',$options);
                     // Retrieve the results from the source form referenced in lookup.
-                    $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
+                    $resultsid = DB_getItem($_TABLES['nf_projectforms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
                     $selected = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
                     $aselected = explode(',',$selected);
                     $retval = array();
@@ -259,7 +259,7 @@ function pullform($parms,$formFieldID='') {
                 else {
                     $aoptions = explode(',',$options);
                     // Retrieve the results from the source form referenced in lookup.
-                    $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
+                    $resultsid = DB_getItem($_TABLES['nf_projectforms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
                     $selected = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
                     $aselected = explode(',',$selected);
                     $retval = array();
@@ -316,7 +316,7 @@ function pullform($parms,$formFieldID='') {
                 $field_value = DB_getItem($_TABLES['nxform_restext'], 'field_data', "result_id='$resultsid' AND field_id='$formFieldID'");
                 if (trim($field_value) == '') {
                     //Form results has nothing for this field - pull from the source form referenced in lookup.
-                     $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
+                     $resultsid = DB_getItem($_TABLES['nf_projectforms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
                      $field_value = DB_getItem($_TABLES['nxform_restext'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
                 }
                 $field_value = unserialize($field_value);
@@ -341,7 +341,7 @@ function pullform($parms,$formFieldID='') {
               $retval = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='{$formFieldID}'");
               if (trim($retval) == '') {
                 //Form results has nothing for this field - pull from the source form referenced in lookup.
-                $resultsid = DB_getItem($_TABLES['nfproject_forms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
+                $resultsid = DB_getItem($_TABLES['nf_projectforms'], 'results_id',"project_id='$projectid' AND form_id='{$aparms[0]}' ORDER BY id DESC");
                 $retval = DB_getItem($_TABLES['nxform_resdata'], 'field_data',"result_id='$resultsid' AND field_id='{$fieldid}'");
               }
           }

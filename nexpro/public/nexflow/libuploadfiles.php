@@ -40,10 +40,10 @@ function nf_check4files($projectid,$taskid,$fieldname) {
     // Check if there is a request to delete any attachments
     if (isset($_POST['chk_removeattachment'])) {
         foreach ($_POST['chk_removeattachment'] as $id) {
-            $filename = DB_getItem($_TABLES['nfproject_attachments'],'filename',"id=$id");
+            $filename = DB_getItem($_TABLES['nf_projectattachments'],'filename',"id=$id");
             $parts = explode(':',$filename);
             COM_errorLog("{$CONF_NF['uploadpath']}/{$parts[0]}");
-            DB_query("DELETE FROM {$_TABLES['nfproject_attachments']} WHERE id=$id");
+            DB_query("DELETE FROM {$_TABLES['nf_projectattachments']} WHERE id=$id");
             @unlink("{$CONF_NF['uploadpath']}/{$parts[0]}");
         }
 
@@ -60,7 +60,7 @@ function nf_check4files($projectid,$taskid,$fieldname) {
         if ( nf_uploadfile($filename,$uploadfile,$CONF_NF['allowablefiletypes'],$filestore_path) ) {
             // Store both the created filename and the real file source filename
             $filename = "$filename:{$uploadfile['name']}";
-            DB_query("INSERT INTO {$_TABLES['nfproject_attachments']} (project_id,task_id,fieldname,filename)
+            DB_query("INSERT INTO {$_TABLES['nf_projectattachments']} (project_id,task_id,fieldname,filename)
                     VALUES ($projectid,$taskid,'$fieldname','$filename')");
         } else {
             COM_errorlog("upload error:" . $GLOBALS['nf_errmsg']);
@@ -126,9 +126,9 @@ function nf_showAttachments($taskid=0,$projectid=0,$fieldname,$deloption=true) {
     $retval = '';
     $downloadlink = $_CONF['site_url'] . '/nexflow/getattachment.php?id=%s';
     if ($taskid > 0) {
-        $query = DB_query("SELECT id,filename FROM {$_TABLES['nfproject_attachments']} WHERE task_id=$taskid AND fieldname = '$fieldname'");
+        $query = DB_query("SELECT id,filename FROM {$_TABLES['nf_projectattachments']} WHERE task_id=$taskid AND fieldname = '$fieldname'");
     } elseif ($projectid > 0) {
-        $query = DB_query("SELECT id,filename FROM {$_TABLES['nfproject_attachments']} WHERE project_id=$projectid AND fieldname = '$fieldname'");
+        $query = DB_query("SELECT id,filename FROM {$_TABLES['nf_projectattachments']} WHERE project_id=$projectid AND fieldname = '$fieldname'");
     } else {
         return '';
     }

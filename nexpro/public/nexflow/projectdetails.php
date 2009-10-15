@@ -85,24 +85,24 @@ if ($op == 'addcomment') {
         $comment = $_GET['comment'];
     }
     $comment =  ppPrepareForDB($comment);
-    $sql  = "INSERT INTO {$_TABLES['nfproject_comments']} (project_id, uid, timestamp, comment) ";
+    $sql  = "INSERT INTO {$_TABLES['nf_projectcomments']} (project_id, uid, timestamp, comment) ";
     $sql .= "VALUES ('$project_id','{$usermodeUID}',UNIX_TIMESTAMP(),'$comment')";
     if ($CONF_NF['debug']) {
         COM_errorLog($sql);
     }
     DB_query($sql);
 } elseif ($op == 'delcomment' and $cid > 0) {
-    $sql  = "DELETE FROM {$_TABLES['nfproject_comments']} WHERE id='$cid'";
+    $sql  = "DELETE FROM {$_TABLES['nf_projectcomments']} WHERE id='$cid'";
     DB_query($sql);
 }
 
-$sql = "SELECT * FROM {$_TABLES['nfprojects']} WHERE id='$project_id'";
+$sql = "SELECT * FROM {$_TABLES['nf_projects']} WHERE id='$project_id'";
 $query = DB_QUERY($sql);
 $PD = DB_fetchArray($query);
 $p->set_var ('description', $PD['description']);
 
 // Knowing the project id - retrieve the request form results
-$result_id = DB_getItem($_TABLES['nfproject_forms'],'results_id',"project_id='$project_id'");
+$result_id = DB_getItem($_TABLES['nf_projectforms'],'results_id',"project_id='$project_id'");
 $p->set_var ('submitter_name',$PD['cust3']);
 $p->set_var ('project_number',$project_id);
 $p->set_var('project_status', $CONF_NF['NFProjectStatus'][$PD['status']]);
@@ -135,9 +135,9 @@ if ($source != 'mytasks' AND SEC_hasRights('nexflow.admin')) {
 
 // Determine if this process' template has an application Flow group associated with it
 // if so, run any custom function for display here
-$sql = "SELECT c.AppGroup from {$_TABLES['nftemplate']} a  ";
-$sql .= "INNER JOIN {$_TABLES['nfprocess']} b on a.id=b.nf_templateID ";
-$sql .= "INNER JOIN {$_TABLES['nfappgroups']} c on a.AppGroup=c.id";
+$sql = "SELECT c.AppGroup from {$_TABLES['nf_template']} a  ";
+$sql .= "INNER JOIN {$_TABLES['nf_process']} b on a.id=b.nf_templateID ";
+$sql .= "INNER JOIN {$_TABLES['nf_appgroups']} c on a.AppGroup=c.id";
 $sql .= " where b.id={$PD['wf_process_id']}";
 $rs = DB_query($sql);
 
@@ -155,7 +155,7 @@ processDetailGetOutstandingTasks($project_id,$p);
 processDetailGetTasksHistory($project_id,$p);
 
 // Retrieve any Project forms
-$sql  = "SELECT id,form_id,formtype,results_id, status, created_by_uid, is_locked_by_uid FROM {$_TABLES['nfproject_forms']} WHERE project_id='$project_id'";
+$sql  = "SELECT id,form_id,formtype,results_id, status, created_by_uid, is_locked_by_uid FROM {$_TABLES['nf_projectforms']} WHERE project_id='$project_id'";
 $query = DB_query($sql);
 if (DB_numRows($query) == 0) {
     $p->set_var ('form_records','No Forms');
@@ -190,7 +190,7 @@ if (DB_numRows($query) == 0) {
         $p->set_var ('form_details',$form_details);
 
         // Get last timestamp event for this form
-        $q = DB_query("SELECT timestamp FROM {$_TABLES['nfproject_timestamps']} WHERE project_formid='{$PD['id']}' ORDER BY timestamp DESC limit 1");
+        $q = DB_query("SELECT timestamp FROM {$_TABLES['nf_projecttimestamps']} WHERE project_formid='{$PD['id']}' ORDER BY timestamp DESC limit 1");
         list ($timestamp) = DB_fetchArray($q);
         $p->set_var ('form_date',strftime("%m-%d-%Y %H:%M:%S", $timestamp));
         $p->set_var ('form_status', $CONF_NF['formstatus'][$PD['status']]);
@@ -215,10 +215,10 @@ if (DB_numRows($query) == 0) {
 }
 
 // Retrieve any Project Comments
-$sql  = "SELECT a.id,d.taskname,a.timestamp,a.comment, b.username FROM {$_TABLES['nfproject_comments']} a ";
+$sql  = "SELECT a.id,d.taskname,a.timestamp,a.comment, b.username FROM {$_TABLES['nf_projectcomments']} a ";
 $sql .= "LEFT JOIN {$_TABLES['users']} b on a.uid=b.uid  ";
-$sql .= "LEFT JOIN {$_TABLES['nfqueue']} c on c.id = a.task_id ";
-$sql .= "LEFT JOIN {$_TABLES['nftemplatedata']} d on d.id = c.nf_templateDataID ";
+$sql .= "LEFT JOIN {$_TABLES['nf_queue']} c on c.id = a.task_id ";
+$sql .= "LEFT JOIN {$_TABLES['nf_templatedata']} d on d.id = c.nf_templateDataID ";
 $sql .= "WHERE project_id='$project_id' ORDER BY timestamp ASC";
 $query = DB_query($sql);
 if (DB_numRows($query) == 0) {

@@ -42,7 +42,7 @@ function processDetailGetOutstandingTasks($project_id,&$template) {
     // Retrieve any Outstanding Tasks
     // Determine the unique process id's for this project
 
-    $sql = "SELECT wf_process_id,related_processes FROM {$_TABLES['nfprojects']} WHERE id='$project_id'";
+    $sql = "SELECT wf_process_id,related_processes FROM {$_TABLES['nf_projects']} WHERE id='$project_id'";
     $query = DB_QUERY($sql);
     $A = DB_fetchArray($query);
 
@@ -54,7 +54,7 @@ function processDetailGetOutstandingTasks($project_id,&$template) {
     array_push($projectProcesses, $A['wf_process_id']);
     // Check and see if there are any child process of this parent process - will if this is a regenerated process
     $A['wf_process_id'] = NXCOM_filterInt($A['wf_process_id']);
-    $query = DB_query("SELECT id FROM {$_TABLES['nfprocess']} WHERE pid={$A['wf_process_id']}");
+    $query = DB_query("SELECT id FROM {$_TABLES['nf_process']} WHERE pid={$A['wf_process_id']}");
     while ($P = DB_fetchArray($query)) {
         array_push($projectProcesses, $P['id']);
     }
@@ -69,10 +69,10 @@ function processDetailGetOutstandingTasks($project_id,&$template) {
 
             if ($process_id > 0 ) {
                 $sql  = "SELECT distinct a.id, a.nf_processID,d.taskname, d.nf_templateID, a.status, a.archived, ";
-                $sql .= "a.createdDate, c.uid, c.nf_processVariable, a.nf_templateDataID FROM {$_TABLES['nfqueue']} a ";
-                $sql .= "LEFT JOIN {$_TABLES['nftemplateassignment']} b ON a.nf_templateDataID = b.nf_templateDataID ";
-                $sql .= "LEFT JOIN {$_TABLES['nfproductionassignments']} c ON c.task_id = a.id ";
-                $sql .= "LEFT JOIN {$_TABLES['nftemplatedata']} d on a.nf_templateDataID = d.id ";
+                $sql .= "a.createdDate, c.uid, c.nf_processVariable, a.nf_templateDataID FROM {$_TABLES['nf_queue']} a ";
+                $sql .= "LEFT JOIN {$_TABLES['nf_templateassignment']} b ON a.nf_templateDataID = b.nf_templateDataID ";
+                $sql .= "LEFT JOIN {$_TABLES['nf_productionassignments']} c ON c.task_id = a.id ";
+                $sql .= "LEFT JOIN {$_TABLES['nf_templatedata']} d on a.nf_templateDataID = d.id ";
                 $sql .= "WHERE a.nf_processID = '$process_id' AND (a.archived IS NULL OR a.archived = 0)";
                 $sql .= "ORDER BY a.id";
 
@@ -118,10 +118,10 @@ function processDetailGetTasksHistory($project_id,&$template) {
 
     // Retrieve any Project Task History
     $sql  = "SELECT a.date_assigned,a.date_started, a.date_completed,a.status, b.username,d.taskname, ";
-    $sql .= "d.isDynamicTaskName, d.dynamicTaskNameVariableID,c.nf_processID,c.id as qid FROM {$_TABLES['nfproject_taskhistory']} a ";
+    $sql .= "d.isDynamicTaskName, d.dynamicTaskNameVariableID,c.nf_processID,c.id as qid FROM {$_TABLES['nf_projecttaskhistory']} a ";
     $sql .= "LEFT JOIN {$_TABLES['users']} b on a.assigned_uid=b.uid ";
-    $sql .= "LEFT JOIN {$_TABLES['nfqueue']} c on c.id=a.task_id ";
-    $sql .= "LEFT JOIN {$_TABLES['nftemplatedata']} d on d.id=c.nf_templateDataID ";
+    $sql .= "LEFT JOIN {$_TABLES['nf_queue']} c on c.id=a.task_id ";
+    $sql .= "LEFT JOIN {$_TABLES['nf_templatedata']} d on d.id=c.nf_templateDataID ";
     $sql .= "WHERE project_id='$project_id' AND (a.date_completed > 0 OR a.status=2)";
     $sql .= "ORDER BY date_assigned DESC";
     $query = DB_query($sql);
@@ -133,7 +133,7 @@ function processDetailGetTasksHistory($project_id,&$template) {
             $template->set_var('qid',$PD['qid']);
             $template->set_var ('task_user', $PD['username']);
             if($PD['isDynamicTaskName'] == 1) {
-                $sql  = "SELECT variableValue FROM {$_TABLES['nfprocessvariables']} where nf_processid='{$PD['nf_processID']}' ";
+                $sql  = "SELECT variableValue FROM {$_TABLES['nf_processvariables']} where nf_processid='{$PD['nf_processID']}' ";
                 $sql .= "AND nf_templateVariableID='{$PD['dynamicTaskNameVariableID']}'";
                 $res=DB_query($sql);
                 list($dynamicTaskName)=DB_fetchArray($res);

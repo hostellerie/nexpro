@@ -67,11 +67,11 @@ if (!SEC_inGroup('Root')) {
         echo "</blockquote>";
     } else {
         echo "<br><h3>Update Begin .... </h3>";
-        if ($deleteDefaultNotifications) DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_prenotifyVariable = 999");
-        if ($deleteDefaultReminders) DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_remindernotifyVariable = 999");
+        if ($deleteDefaultNotifications) DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_prenotifyVariable = 999");
+        if ($deleteDefaultReminders) DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_remindernotifyVariable = 999");
 
         // Retrieve all interactive tasks - for all requested templates
-        $sql  = "SELECT id,nf_templateID FROM {$_TABLES['nftemplatedata']} ";
+        $sql  = "SELECT id,nf_templateID FROM {$_TABLES['nf_templatedata']} ";
         $sql .= "WHERE (nf_stepType=1 OR nf_stepType=7 OR nf_stepType=8) ";     // Interactive Task Types
         if (count($wftemplates) > 0) {
             $templates = implode(',',$wftemplates);
@@ -85,30 +85,30 @@ if (!SEC_inGroup('Root')) {
             // If multiple users are assigned this task, then they will all be notified.
             // Will work if task assignment is done via variable or by user
             if ($setDefaultAssignment AND 
-                    DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_prenotifyVariable'),array($A['id'],999)) == 0) {
-                $sql = "INSERT INTO {$_TABLES['nftemplateassignment']} (nf_templateDataID, nf_prenotifyVariable) ";
+                    DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_prenotifyVariable'),array($A['id'],999)) == 0) {
+                $sql = "INSERT INTO {$_TABLES['nf_templateassignment']} (nf_templateDataID, nf_prenotifyVariable) ";
                 $sql .= "values ('{$A['id']}','999')";
                 DB_query($sql);
             }
             if ($setDefaultReminder and $reminderInterval > 0) {
-                if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_remindernotifyVariable'),array($A['id'],999)) == 0) {
-                    $sql = "INSERT INTO {$_TABLES['nftemplateassignment']} (nf_templateDataID, nf_remindernotifyVariable) ";
+                if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_remindernotifyVariable'),array($A['id'],999)) == 0) {
+                    $sql = "INSERT INTO {$_TABLES['nf_templateassignment']} (nf_templateDataID, nf_remindernotifyVariable) ";
                     $sql .= "values ('{$A['id']}','999')";
                     DB_query($sql);
                     
                     // Set Reminders for Task
-                    $sql  = "UPDATE {$_TABLES['nftemplatedata']} SET reminderInterval=$reminderInterval WHERE id={$A['id']}";
+                    $sql  = "UPDATE {$_TABLES['nf_templatedata']} SET reminderInterval=$reminderInterval WHERE id={$A['id']}";
                     DB_query ($sql);
 
                     // Get variable ID for this template matching the user to escalate too
                     if ($setEscalation) {
-                        $escalateVariableID = DB_getItem($_TABLES['nftemplatevariables'],'id',"nf_templateID={$A['nf_templateID']} AND variableName='$escalateVariable'");
+                        $escalateVariableID = DB_getItem($_TABLES['nf_templatevariables'],'id',"nf_templateID={$A['nf_templateID']} AND variableName='$escalateVariable'");
                         if ($escalateVariableID != NULL AND $escalateVariableID > 0) {
-                            $sql  = "UPDATE {$_TABLES['nftemplatedata']} SET numReminders=$escalateAfterReminders,";
+                            $sql  = "UPDATE {$_TABLES['nf_templatedata']} SET numReminders=$escalateAfterReminders,";
                             $sql .= "escalateVariableID=$escalateVariableID WHERE id={$A['id']}";
                             DB_query ($sql);
                         } else {
-                            $sql  = "UPDATE {$_TABLES['nftemplatedata']} SET numReminders=$escalateAfterReminders,";
+                            $sql  = "UPDATE {$_TABLES['nf_templatedata']} SET numReminders=$escalateAfterReminders,";
                             $sql .= "escalateVariableID=0 WHERE id={$A['id']}";
                             DB_query ($sql);
                         }

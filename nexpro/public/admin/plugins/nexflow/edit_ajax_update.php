@@ -59,11 +59,11 @@ case 'save_new_task':
     $offsetTop = intval($_POST['offsettop']);
     $templateid = intval($_POST['templateid']);
 
-    $stepid = DB_getItem($_TABLES['nfsteptype'], 'id', "stepType LIKE '$steptype'");
-    $logicalid = intval(DB_getItem($_TABLES['nftemplatedata'], 'logicalID', "nf_templateID=$templateid ORDER BY logicalID DESC LIMIT 1"));
+    $stepid = DB_getItem($_TABLES['nf_steptype'], 'id', "stepType LIKE '$steptype'");
+    $logicalid = intval(DB_getItem($_TABLES['nf_templatedata'], 'logicalID', "nf_templateID=$templateid ORDER BY logicalID DESC LIMIT 1"));
     $logicalid++;
 
-    $sql  = "INSERT INTO {$_TABLES['nftemplatedata']} ";
+    $sql  = "INSERT INTO {$_TABLES['nf_templatedata']} ";
     $sql .= "(nf_templateID, taskname, offsetLeft, offsetTop, logicalID, nf_stepType) ";
     $sql .= "VALUES ($templateid, 'New Task', $offsetLeft, $offsetTop, $logicalid, $stepid)";
     $res = DB_Query($sql);
@@ -86,7 +86,7 @@ case 'save_task_lines':
     }
 
     //get current next steps for this task
-    $sql  = "INSERT INTO {$_TABLES['nftemplatedatanextstep']} ";
+    $sql  = "INSERT INTO {$_TABLES['nf_templatedatanextstep']} ";
     $sql .= "(nf_templateDataFrom, nf_templateDataTo, nf_templateDataToFalse) ";
     $sql .= "VALUES ($from, $toTrue, $toFalse)";
     DB_query($sql);
@@ -95,7 +95,7 @@ case 'save_task_lines':
 case 'clear_task_lines':
     $taskid = intval ($_POST['taskid']);
 
-    $sql  = "DELETE FROM {$_TABLES['nftemplatedatanextstep']} WHERE ";
+    $sql  = "DELETE FROM {$_TABLES['nf_templatedatanextstep']} WHERE ";
     $sql .= "nf_templateDataFrom=$taskid OR nf_templateDataTo=$taskid OR nf_templateDataToFalse=$taskid";
     DB_query($sql);
     break;
@@ -105,21 +105,21 @@ case 'save_task_position':
     $offsetLeft = intval ($_POST['offsetleft']);
     $offsetTop = intval ($_POST['offsettop']);
 
-    $sql  = "UPDATE {$_TABLES['nftemplatedata']} SET offsetLeft=$offsetLeft, offsetTop=$offsetTop WHERE id=$taskid";
+    $sql  = "UPDATE {$_TABLES['nf_templatedata']} SET offsetLeft=$offsetLeft, offsetTop=$offsetTop WHERE id=$taskid";
     DB_query($sql);
     break;
 
 case 'delete_task':
     $taskid = intval ($_POST['taskid']);
-    DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_templateDataID=$taskid");
-    DB_query("DELETE FROM {$_TABLES['nftemplatedata']} WHERE id=$taskid");
+    DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_templateDataID=$taskid");
+    DB_query("DELETE FROM {$_TABLES['nf_templatedata']} WHERE id=$taskid");
     break;
 
 case 'get_panel_form':
     $taskid = intval ($_POST['taskid']);
 
-    $sql  = "SELECT a.*, b.stepType, b.is_interactiveStepType FROM {$_TABLES['nftemplatedata']} a ";
-    $sql .= "LEFT JOIN {$_TABLES['nfsteptype']} b ON a.nf_stepType=b.id ";
+    $sql  = "SELECT a.*, b.stepType, b.is_interactiveStepType FROM {$_TABLES['nf_templatedata']} a ";
+    $sql .= "LEFT JOIN {$_TABLES['nf_steptype']} b ON a.nf_stepType=b.id ";
     $sql .= "WHERE a.id=$taskid";
     $res = DB_query($sql);
     $A = DB_fetchArray($res);
@@ -152,7 +152,7 @@ case 'get_panel_form':
         $p->set_var('chk_isDynamicName', '');
         $p->set_var('show_dynamicnamevars', 'none');
     }
-    $res2 = DB_query("SELECT id, variableName FROM {$_TABLES['nftemplatevariables']} WHERE nf_templateID={$A['nf_templateID']}");
+    $res2 = DB_query("SELECT id, variableName FROM {$_TABLES['nf_templatevariables']} WHERE nf_templateID={$A['nf_templateID']}");
     $options = "<option value=\"0\">{$LANG_NF03['select_variable']}</option>\n";
     $options .= ($A['dynamicTaskNameVariableID'] == 999) ? "<option value=\"999\" selected=\"selected\">TASK_OWNER</option>\n":"<option value=\"999\">TASK_OWNER</option>\n";
     while (list ($vid, $vname) = DB_fetchArray($res2)) {
@@ -164,7 +164,7 @@ case 'get_panel_form':
         }
     }
     $p->set_var('available_taskvariablesOptions', $options);
-    $p->set_var('task_handler_selection', nf_makeDropDownWithSelected("id", "handler", $_TABLES['nfhandlers'],$A['nf_handlerId']) );
+    $p->set_var('task_handler_selection', nf_makeDropDownWithSelected("id", "handler", $_TABLES['nf_handlers'],$A['nf_handlerId']) );
     if ($A['regenerate'] == 1) {
         $p->set_var('chk_regenerate', ' checked="checked"');
     }
@@ -195,7 +195,7 @@ case 'get_panel_form':
 
     case 5: //If
         $prefix = 'if_';
-        $ifRes = DB_query("SELECT id, variableName FROM {$_TABLES['nftemplatevariables']} WHERE nf_templateID={$A['nf_templateID']}");
+        $ifRes = DB_query("SELECT id, variableName FROM {$_TABLES['nf_templatevariables']} WHERE nf_templateID={$A['nf_templateID']}");
         $select = "<select name=\"if_taskVariable\">\n<option value=\"0\"></option>\n";
         $select .= ($A['argumentVariable'] == 999) ? "<option value=\"999\" selected=\"selected\">TASK_OWNER</option>\n":"<option value=\"999\">TASK_OWNER</option>\n";
         while (list ($key, $value) = DB_fetchArray($ifRes)) {
@@ -209,7 +209,7 @@ case 'get_panel_form':
         $select .= "</select>\n";
         $p->set_var('if_task_variables', $select);
 
-        $ifRes = DB_query("SELECT id, label FROM {$_TABLES['nfifprocessarguments']}");
+        $ifRes = DB_query("SELECT id, label FROM {$_TABLES['nf_ifprocessarguments']}");
         $select = "<select name=\"if_taskStatus\">\n<option value=\"0\"></option>\n";
         while (list ($key, $value) = DB_fetchArray($ifRes)) {
             if ($A['argumentProcess'] == $key) {
@@ -222,7 +222,7 @@ case 'get_panel_form':
         $select .= "</select>\n";
         $p->set_var('if_task_option', $select);
 
-        $ifRes = DB_query("SELECT id, operator FROM {$_TABLES['nfifoperators']}");
+        $ifRes = DB_query("SELECT id, operator FROM {$_TABLES['nf_ifoperators']}");
         $select = "<select name=\"if_operator\">\n<option value=\"0\"></option>\n";
         while (list ($key, $value) = DB_fetchArray($ifRes)) {
             $value = htmlspecialchars($value);
@@ -272,7 +272,7 @@ case 'get_panel_form':
     case 11: //set process variable
         $prefix = 'spv_';
 
-        $spvRes = DB_query("SELECT id, variableName FROM {$_TABLES['nftemplatevariables']} WHERE nf_templateID={$A['nf_templateID']}");
+        $spvRes = DB_query("SELECT id, variableName FROM {$_TABLES['nf_templatevariables']} WHERE nf_templateID={$A['nf_templateID']}");
         $select = "<select name=\"varToSet\">\n<option value=\"0\"></option>\n";
         $select .= ($A['argumentVariable'] == 999) ? "<option value=\"999\" selected=\"selected\">TASK_OWNER</option>\n":"<option value=\"999\">TASK_OWNER</option>\n";
         while (list ($key, $value) = DB_fetchArray($spvRes)) {
@@ -342,7 +342,7 @@ case 'get_panel_form':
         }
         $p->set_var ('notifyIntervalOptions', $options);
 
-        $remVarRes = DB_query("SELECT id, variableName FROM {$_TABLES['nftemplatevariables']} WHERE nf_templateID={$A['nf_templateID']}");
+        $remVarRes = DB_query("SELECT id, variableName FROM {$_TABLES['nf_templatevariables']} WHERE nf_templateID={$A['nf_templateID']}");
         $options = '';
         while (list ($tvid, $varLabel) = DB_fetchArray($remVarRes)) {
             if ($A['reminderIntervalVariable'] == $tvid) {
@@ -363,7 +363,7 @@ case 'get_panel_form':
         }
         $p->set_var ('subsequentIntervalOptions', $options);
 
-        $res2 = DB_query("SELECT id, variableName FROM {$_TABLES['nftemplatevariables']} WHERE nf_templateID={$A['nf_templateID']}");
+        $res2 = DB_query("SELECT id, variableName FROM {$_TABLES['nf_templatevariables']} WHERE nf_templateID={$A['nf_templateID']}");
         $options = "<option value=\"0\">{$LANG_NF03['no_escalation']}</option>\n<option value=\"999\">TASK_OWNER</option>\n";
         while (list ($vid, $vname) = DB_fetchArray($res2)) {
             if ($A['escalateVariableID'] == $vid) {
@@ -375,7 +375,7 @@ case 'get_panel_form':
         }
         $p->set_var('esc_user_options', $options);
 
-        $sql  = "SELECT * FROM {$_TABLES['nftemplateassignment']} WHERE nf_templateDataID=$taskid";
+        $sql  = "SELECT * FROM {$_TABLES['nf_templateassignment']} WHERE nf_templateDataID=$taskid";
         $res = DB_query($sql);
 
         $arrs['availableUserOptions'] = array();
@@ -389,14 +389,14 @@ case 'get_panel_form':
         $arrs['assignedPostnotifyOptions'] = array();
         $arrs['assignedReminderOptions'] = array();
 
-        $assignedByVariable = DB_getItem($_TABLES['nftemplatedata'], 'assignedByVariable', "id=$taskid");
+        $assignedByVariable = DB_getItem($_TABLES['nf_templatedata'], 'assignedByVariable', "id=$taskid");
         $prenotifyFlag = 0;
         $postnotifyFlag = 0;
         $reminderFlag = 0;
         while ($B = DB_fetchArray($res)) {
             if ($A['assignedByVariable'] == 1) {
                 if ($B['nf_processVariable'] != 0) {
-                    $arrs['assignedVariableOptions'][$B['nf_processVariable']] = ($B['nf_processVariable'] == 999) ? 'TASK_OWNER':DB_getItem($_TABLES['nftemplatevariables'], 'variableName', "id={$B['nf_processVariable']}");
+                    $arrs['assignedVariableOptions'][$B['nf_processVariable']] = ($B['nf_processVariable'] == 999) ? 'TASK_OWNER':DB_getItem($_TABLES['nf_templatevariables'], 'variableName', "id={$B['nf_processVariable']}");
                 }
             }
             else {
@@ -406,15 +406,15 @@ case 'get_panel_form':
             }
 
             if ($B['nf_prenotifyVariable'] != 0) {
-                $arrs['assignedPrenotifyOptions'][$B['nf_prenotifyVariable']] = ($B['nf_prenotifyVariable'] == 999) ? 'TASK_OWNER':DB_getItem($_TABLES['nftemplatevariables'], 'variableName', "id={$B['nf_prenotifyVariable']}");
+                $arrs['assignedPrenotifyOptions'][$B['nf_prenotifyVariable']] = ($B['nf_prenotifyVariable'] == 999) ? 'TASK_OWNER':DB_getItem($_TABLES['nf_templatevariables'], 'variableName', "id={$B['nf_prenotifyVariable']}");
                 $prenotifyFlag = 1;
             }
             if ($B['nf_postnotifyVariable'] != 0) {
-                $arrs['assignedPostnotifyOptions'][$B['nf_postnotifyVariable']] = ($B['nf_postnotifyVariable'] == 999) ? 'TASK_OWNER':DB_getItem($_TABLES['nftemplatevariables'], 'variableName', "id={$B['nf_postnotifyVariable']}");
+                $arrs['assignedPostnotifyOptions'][$B['nf_postnotifyVariable']] = ($B['nf_postnotifyVariable'] == 999) ? 'TASK_OWNER':DB_getItem($_TABLES['nf_templatevariables'], 'variableName', "id={$B['nf_postnotifyVariable']}");
                 $postnotifyFlag = 1;
             }
             if ($B['nf_remindernotifyVariable'] != 0) {
-                $arrs['assignedReminderOptions'][$B['nf_remindernotifyVariable']] = ($B['nf_remindernotifyVariable'] == 999) ? 'TASK_OWNER':DB_getItem($_TABLES['nftemplatevariables'], 'variableName', "id={$B['nf_remindernotifyVariable']}");
+                $arrs['assignedReminderOptions'][$B['nf_remindernotifyVariable']] = ($B['nf_remindernotifyVariable'] == 999) ? 'TASK_OWNER':DB_getItem($_TABLES['nf_templatevariables'], 'variableName', "id={$B['nf_remindernotifyVariable']}");
                 $reminderFlag = 1;
             }
         }
@@ -438,7 +438,7 @@ case 'get_panel_form':
         if (!array_key_exists(999, $arrs['assignedReminderOptions'])) {
             $arrs['availableReminderOptions'][999] = 'TASK_OWNER';
         }
-        $res = DB_query("SELECT id, variableName FROM {$_TABLES['nftemplatevariables']} WHERE nf_templateID={$A['nf_templateID']}");
+        $res = DB_query("SELECT id, variableName FROM {$_TABLES['nf_templatevariables']} WHERE nf_templateID={$A['nf_templateID']}");
         while (list ($varid, $varname) = DB_fetchArray($res)) {
             if ($arrs['assignedVariableOptions'][$varid] == '') {
                 $arrs['availableVariableOptions'][$varid] = $varname;
@@ -486,12 +486,12 @@ case 'assign_by_user':
     $taskid = intval ($_POST['taskid']);
 
     //first clear out the exisiting assignments, but leaving the notification records
-    DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_prenotifyVariable=0 AND nf_postnotifyVariable=0 AND nf_remindernotifyVariable=0 AND nf_templateDataID=$taskid");
+    DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_prenotifyVariable=0 AND nf_postnotifyVariable=0 AND nf_remindernotifyVariable=0 AND nf_templateDataID=$taskid");
     //now reset any uid/nf_processVariables that still exist to 0
-    DB_query("UPDATE {$_TABLES['nftemplateassignment']} SET uid=0, nf_processVariable=0 WHERE nf_templateDataID=$taskid");
+    DB_query("UPDATE {$_TABLES['nf_templateassignment']} SET uid=0, nf_processVariable=0 WHERE nf_templateDataID=$taskid");
 
     //now update the assignment method
-    DB_query("UPDATE {$_TABLES['nftemplatedata']} SET assignedByVariable=0 WHERE id=$taskid");
+    DB_query("UPDATE {$_TABLES['nf_templatedata']} SET assignedByVariable=0 WHERE id=$taskid");
 
     //now we are ready to add the new ones to the database
     $assignedTo = '';
@@ -499,7 +499,7 @@ case 'assign_by_user':
     if (array_key_exists('assignedUsers', $_POST)) {
         foreach ($_POST['assignedUsers'] as $uid) {
             $uid = intval ($uid);
-            DB_query("INSERT INTO {$_TABLES['nftemplateassignment']} (nf_templateDataID, uid) VALUES ($taskid, $uid)");
+            DB_query("INSERT INTO {$_TABLES['nf_templateassignment']} (nf_templateDataID, uid) VALUES ($taskid, $uid)");
             if ($assignedTo != '') {
                 $assignedTo .= ', ';
             }
@@ -522,12 +522,12 @@ case 'assign_by_variable':
     $taskid = intval ($_POST['taskid']);
 
     //first clear out the exisiting assignments, but leaving the notification records
-    DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_prenotifyVariable=0 AND nf_postnotifyVariable=0 AND nf_remindernotifyVariable=0 AND nf_templateDataID=$taskid");
+    DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_prenotifyVariable=0 AND nf_postnotifyVariable=0 AND nf_remindernotifyVariable=0 AND nf_templateDataID=$taskid");
     //now reset any uid/nf_processVariables that still exist to 0
-    DB_query("UPDATE {$_TABLES['nftemplateassignment']} SET uid=0, nf_processVariable=0 WHERE nf_templateDataID=$taskid");
+    DB_query("UPDATE {$_TABLES['nf_templateassignment']} SET uid=0, nf_processVariable=0 WHERE nf_templateDataID=$taskid");
 
     //now update the assignment method
-    DB_query("UPDATE {$_TABLES['nftemplatedata']} SET assignedByVariable=1 WHERE id=$taskid");
+    DB_query("UPDATE {$_TABLES['nf_templatedata']} SET assignedByVariable=1 WHERE id=$taskid");
 
     //now we are ready to add the new ones to the database
     $assignedTo = '';
@@ -535,11 +535,11 @@ case 'assign_by_variable':
     if (array_key_exists('assignedVariables', $_POST)) {
         foreach ($_POST['assignedVariables'] as $vid) {
             $vid = intval ($vid);
-            DB_query("INSERT INTO {$_TABLES['nftemplateassignment']} (nf_templateDataID, nf_processVariable) VALUES ($taskid, $vid)");
+            DB_query("INSERT INTO {$_TABLES['nf_templateassignment']} (nf_templateDataID, nf_processVariable) VALUES ($taskid, $vid)");
             if ($assignedTo != '') {
                 $assignedTo .= ', ';
             }
-            $assignedTo .= ($vid == 999) ? 'TASK_OWNER':DB_getItem($_TABLES['nftemplatevariables'], 'variableName', "id=$vid");
+            $assignedTo .= ($vid == 999) ? 'TASK_OWNER':DB_getItem($_TABLES['nf_templatevariables'], 'variableName', "id=$vid");
             $i++;
         }
     }
@@ -560,18 +560,18 @@ case 'notify_on_assign':
     $prenotifySub = NXCOM_filterText($_POST['prenotify_subject']);
 
     //first clear out the exisiting assignment notifications, but leaving the other notification records
-    DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE uid=0 AND nf_processVariable=0 AND nf_postnotifyVariable=0 AND nf_remindernotifyVariable=0 AND nf_templateDataID=$taskid");
+    DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE uid=0 AND nf_processVariable=0 AND nf_postnotifyVariable=0 AND nf_remindernotifyVariable=0 AND nf_templateDataID=$taskid");
     //now reset any nf_prenotifyVariables that still exist to 0
-    DB_query("UPDATE {$_TABLES['nftemplateassignment']} SET nf_prenotifyVariable=0 WHERE nf_templateDataID=$taskid");
+    DB_query("UPDATE {$_TABLES['nf_templateassignment']} SET nf_prenotifyVariable=0 WHERE nf_templateDataID=$taskid");
 
     //now update prenotify message
-    DB_query("UPDATE {$_TABLES['nftemplatedata']} SET prenotify_message='$prenotifyMsg', prenotify_subject='$prenotifySub' WHERE id=$taskid");
+    DB_query("UPDATE {$_TABLES['nf_templatedata']} SET prenotify_message='$prenotifyMsg', prenotify_subject='$prenotifySub' WHERE id=$taskid");
 
     //now we are ready to add the new ones to the database
     if (array_key_exists('assignedVariables', $_POST)) {
         foreach ($_POST['assignedVariables'] as $vid) {
             $vid = intval ($vid);
-            DB_query("INSERT INTO {$_TABLES['nftemplateassignment']} (nf_templateDataID, nf_prenotifyVariable) VALUES ($taskid, $vid)");
+            DB_query("INSERT INTO {$_TABLES['nf_templateassignment']} (nf_templateDataID, nf_prenotifyVariable) VALUES ($taskid, $vid)");
         }
     }
 
@@ -585,18 +585,18 @@ case 'notify_on_complete':
     $postnotifySub = NXCOM_filterText($_POST['postnotify_subject']);
 
     //first clear out the exisiting assignment notifications, but leaving the other notification records
-    DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE uid=0 AND nf_processVariable=0 AND nf_prenotifyVariable=0 AND nf_remindernotifyVariable=0 AND nf_templateDataID=$taskid");
+    DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE uid=0 AND nf_processVariable=0 AND nf_prenotifyVariable=0 AND nf_remindernotifyVariable=0 AND nf_templateDataID=$taskid");
     //now reset any nf_prenotifyVariables that still exist to 0
-    DB_query("UPDATE {$_TABLES['nftemplateassignment']} SET nf_postnotifyVariable=0 WHERE nf_templateDataID=$taskid");
+    DB_query("UPDATE {$_TABLES['nf_templateassignment']} SET nf_postnotifyVariable=0 WHERE nf_templateDataID=$taskid");
 
     //now update postnotify message
-    DB_query("UPDATE {$_TABLES['nftemplatedata']} SET postnotify_message='$postnotifyMsg', postnotify_subject='$postnotifySub' WHERE id=$taskid");
+    DB_query("UPDATE {$_TABLES['nf_templatedata']} SET postnotify_message='$postnotifyMsg', postnotify_subject='$postnotifySub' WHERE id=$taskid");
 
     //now we are ready to add the new ones to the database
     if (array_key_exists('assignedVariables', $_POST)) {
         foreach ($_POST['assignedVariables'] as $vid) {
             $vid = intval ($vid);
-            DB_query("INSERT INTO {$_TABLES['nftemplateassignment']} (nf_templateDataID, nf_postnotifyVariable) VALUES ($taskid, $vid)");
+            DB_query("INSERT INTO {$_TABLES['nf_templateassignment']} (nf_templateDataID, nf_postnotifyVariable) VALUES ($taskid, $vid)");
         }
     }
 
@@ -615,12 +615,12 @@ case 'notify_reminders':
     $numReminders = intval ($_POST['numReminders']);
 
     //first clear out the exisiting assignment notifications, but leaving the other notification records
-    DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE uid=0 AND nf_processVariable=0 AND nf_prenotifyVariable=0 AND nf_postnotifyVariable=0 AND nf_templateDataID=$taskid");
+    DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE uid=0 AND nf_processVariable=0 AND nf_prenotifyVariable=0 AND nf_postnotifyVariable=0 AND nf_templateDataID=$taskid");
     //now reset any nf_prenotifyVariables that still exist to 0
-    DB_query("UPDATE {$_TABLES['nftemplateassignment']} SET nf_remindernotifyVariable=0 WHERE nf_templateDataID=$taskid");
+    DB_query("UPDATE {$_TABLES['nf_templateassignment']} SET nf_remindernotifyVariable=0 WHERE nf_templateDataID=$taskid");
 
     //now update reminder message, along with other variables
-    $sql  = "UPDATE {$_TABLES['nftemplatedata']} ";
+    $sql  = "UPDATE {$_TABLES['nf_templatedata']} ";
     $sql .= "SET reminder_message='$reminderMsg', reminder_subject='$reminderSub', reminderInterval=$notifyinterval, reminderIntervalVariable=$notifyintervalvar, ";
     $sql .= "subsequentReminderInterval=$subsequentinterval, escalateVariableID=$esc_user, ";
     $sql .= "numReminders=$numReminders WHERE id=$taskid";
@@ -630,7 +630,7 @@ case 'notify_reminders':
     if (array_key_exists('assignedVariables', $_POST)) {
         foreach ($_POST['assignedVariables'] as $vid) {
             $vid = intval ($vid);
-            DB_query("INSERT INTO {$_TABLES['nftemplateassignment']} (nf_templateDataID, nf_remindernotifyVariable) VALUES ($taskid, $vid)");
+            DB_query("INSERT INTO {$_TABLES['nf_templateassignment']} (nf_templateDataID, nf_remindernotifyVariable) VALUES ($taskid, $vid)");
         }
     }
 
@@ -648,10 +648,10 @@ case 'save_task':
     $dynamicTaskNameVariableID = intval ($_POST['dynamicNameVariableSelector']);
 
     //get the task type
-    $steptype = DB_getItem($_TABLES['nftemplatedata'], 'nf_stepType', "id=$taskid");
+    $steptype = DB_getItem($_TABLES['nf_templatedata'], 'nf_stepType', "id=$taskid");
 
     //update the database with the changes
-    $sql =  "UPDATE {$_TABLES['nftemplatedata']} SET ";
+    $sql =  "UPDATE {$_TABLES['nf_templatedata']} SET ";
 
     //first update the general stuff
     $sql .= "taskname='$taskname', ";

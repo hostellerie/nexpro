@@ -33,7 +33,7 @@ if (!isset($_USER['uid']) OR $_USER['uid'] < 2)
 }
 
 $id = COM_applyFilter($_GET['id'], true);
-$query = DB_query("SELECT filename FROM {$_TABLES['nfproject_attachments']} WHERE id=$id;");
+$query = DB_query("SELECT filename FROM {$_TABLES['nf_projectattachments']} WHERE id=$id;");
 $A = DB_fetchArray($query);
 
 if (DB_numRows($query) != 1) {

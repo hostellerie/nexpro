@@ -42,32 +42,32 @@ if ($taskuser > 0 AND SEC_inGroup('nexflow Admin')) {
     $usermodeUID = $_USER['uid'];
 }
 
-if (DB_count($_TABLES['nfprojects'], 'id', $project_id) == 1) {
+if (DB_count($_TABLES['nf_projects'], 'id', $project_id) == 1) {
 
     if ($CONF_NF['debug']) {
         COM_errorLog("Reclaim Project:$project_id");
     }
 
-    $status = DB_getItem($_TABLES['nfprojects'], 'status' , "id='$project_id'");
-    $prev_status = DB_getItem($_TABLES['nfprojects'], 'prev_status' , "id='$project_id'");
+    $status = DB_getItem($_TABLES['nf_projects'], 'status' , "id='$project_id'");
+    $prev_status = DB_getItem($_TABLES['nf_projects'], 'prev_status' , "id='$project_id'");
     if ($prev_status < 1 OR ($status == $prev_status)) {
         $prev_status = 1;
     }
     if ($status == 6)  { // Currently in Recycled State
-        DB_query("UPDATE {$_TABLES['nfprojects']} SET status='$prev_status', prev_status=6 WHERE id='$project_id'");
+        DB_query("UPDATE {$_TABLES['nf_projects']} SET status='$prev_status', prev_status=6 WHERE id='$project_id'");
 
     } elseif ($status == 7)  { // Currently in On-Hold State
-        DB_query("UPDATE {$_TABLES['nfprojects']} SET status='$prev_status', prev_status=7 WHERE id='$project_id'");
+        DB_query("UPDATE {$_TABLES['nf_projects']} SET status='$prev_status', prev_status=7 WHERE id='$project_id'");
             
-        $taskQuery = DB_query("SELECT * FROM {$_TABLES['nfproject_taskhistory']} WHERE project_id=$project_id AND date_completed=0 AND status = 2");
+        $taskQuery = DB_query("SELECT * FROM {$_TABLES['nf_projecttaskhistory']} WHERE project_id=$project_id AND date_completed=0 AND status = 2");
         while ($histrec = DB_fetchArray($taskQuery,false)) {            
             // Update the current outstanding task which have a status of on-hold - to now have a completed timestamp                 
-            DB_query("UPDATE {$_TABLES['nfproject_taskhistory']} SET date_completed = UNIX_TIMESTAMP() WHERE id='{$histrec['id']}'");
+            DB_query("UPDATE {$_TABLES['nf_projecttaskhistory']} SET date_completed = UNIX_TIMESTAMP() WHERE id='{$histrec['id']}'");
             // For these tasks, reset the assigned timestamp and flag the task as new
-            $sql = "UPDATE {$_TABLES['nfproject_taskhistory']} SET date_assigned = UNIX_TIMESTAMP(), ";
+            $sql = "UPDATE {$_TABLES['nf_projecttaskhistory']} SET date_assigned = UNIX_TIMESTAMP(), ";
             $sql .= "date_started=0 WHERE project_id=$project_id AND task_id='{$histrec['task_id']}' AND status=0";
             DB_query($sql);
-            DB_query("UPDATE {$_TABLES['nfqueue']} SET createdDate = NOW() WHERE id={$histrec['task_id']}");            
+            DB_query("UPDATE {$_TABLES['nf_queue']} SET createdDate = NOW() WHERE id={$histrec['task_id']}");            
         }        
     }
 

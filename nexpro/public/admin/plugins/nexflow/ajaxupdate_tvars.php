@@ -59,7 +59,7 @@ function generateTemplateVariableHTML($rec,$cntr) {
     $p->set_var('template_id',$rec);
     $p->set_var('cntr',$cntr);
 
-    $sql = "SELECT * FROM {$_TABLES['nftemplatevariables']} WHERE nf_templateID='{$rec}' ORDER BY id";
+    $sql = "SELECT * FROM {$_TABLES['nf_templatevariables']} WHERE nf_templateID='{$rec}' ORDER BY id";
     $query = DB_Query($sql);
     $numrows = DB_numrows($query);
     if ($numrows > 0) {
@@ -109,42 +109,42 @@ while (list ($templateId, $templateName) = DB_fetchArray($tquery)) {
 
 if ($op == 'add') {
 
-    DB_query("INSERT into {$_TABLES['nftemplatevariables']} (nf_templateID,variableName,variableValue) values('{$rec}','{$tvar}','{$tvalue}')");
+    DB_query("INSERT into {$_TABLES['nf_templatevariables']} (nf_templateID,variableName,variableValue) values('{$rec}','{$tvar}','{$tvalue}')");
     $retval =  generateTemplateVariableHTML($rec,$cntr);
 
 } elseif ($op == 'update') {
 
-    DB_query("UPDATE {$_TABLES['nftemplatevariables']} set variableValue='{$tvalue}' WHERE nf_templateID='$rec' AND variableName='$tvar'");
+    DB_query("UPDATE {$_TABLES['nf_templatevariables']} set variableValue='{$tvalue}' WHERE nf_templateID='$rec' AND variableName='$tvar'");
     $retval =  generateTemplateVariableHTML($rec,$cntr);
 
 } elseif ($op == 'delete') {
 
-    $variable_id = DB_getItem($_TABLES['nftemplatevariables'], 'id', "nf_templateID='$rec' AND variableName='$tvar'");
+    $variable_id = DB_getItem($_TABLES['nf_templatevariables'], 'id', "nf_templateID='$rec' AND variableName='$tvar'");
     if ($CONF_NF['debug']) {
         COM_errorLog("Delete variable: rec:$rec, tvar:$tvar -> $variable_id");
     }
-    DB_query("DELETE FROM {$_TABLES['nftemplateassignment']} WHERE nf_processVariable='$variable_id'");
-    DB_query("DELETE FROM {$_TABLES['nftemplatevariables']} WHERE nf_templateID='$rec' AND variableName='$tvar'");
+    DB_query("DELETE FROM {$_TABLES['nf_templateassignment']} WHERE nf_processVariable='$variable_id'");
+    DB_query("DELETE FROM {$_TABLES['nf_templatevariables']} WHERE nf_templateID='$rec' AND variableName='$tvar'");
     if ($CONF_NF['debug']) {
-        COM_errorLog("DELETE FROM {$_TABLES['nftemplatevariables']} WHERE nf_templateID='$rec' AND variableName='$tvar'");
+        COM_errorLog("DELETE FROM {$_TABLES['nf_templatevariables']} WHERE nf_templateID='$rec' AND variableName='$tvar'");
     }
     $retval =  generateTemplateVariableHTML($rec,$cntr);
 
 } elseif ($op == 'updateTemplateName') {
 
     if ($CONF_NF['debug']) {
-        COM_errorLog("UPDATE {$_TABLES['nftemplate']} set templateName='{$tvalue}' WHERE id='$rec'");
+        COM_errorLog("UPDATE {$_TABLES['nf_template']} set templateName='{$tvalue}' WHERE id='$rec'");
     }
-    DB_query("UPDATE {$_TABLES['nftemplate']} set templateName='{$tvalue}' WHERE id='$rec'");
+    DB_query("UPDATE {$_TABLES['nf_template']} set templateName='{$tvalue}' WHERE id='$rec'");
     $retval = $tvalue;
     
 } elseif ($op == 'useProject') {
 
-    DB_query("UPDATE {$_TABLES['nftemplate']} set useProject=NOT(useProject) WHERE id='$rec'");
+    DB_query("UPDATE {$_TABLES['nf_template']} set useProject=NOT(useProject) WHERE id='$rec'");
     
 } elseif ($op == 'updateApplicationGroup') {
     $tvalue=COM_applyFilter($tvalue,true);
-    DB_query("UPDATE {$_TABLES['nftemplate']} set AppGroup='{$tvalue}' WHERE id='$rec'");
+    DB_query("UPDATE {$_TABLES['nf_template']} set AppGroup='{$tvalue}' WHERE id='$rec'");
     
 } 
 

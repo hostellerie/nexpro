@@ -111,17 +111,17 @@ if ($form_id > 0 AND DB_count($_TABLES['nxform_definitions'],'id',$form_id) == 1
                 $statusmsg = "$form_name has been created";
                 $status = 1;
                 if ($_POST['efpv'] != 1) {
-                    DB_query("UPDATE {$_TABLES['nfproject_forms']} SET status = '$status' WHERE id='$project_formid'");
+                    DB_query("UPDATE {$_TABLES['nf_projectforms']} SET status = '$status' WHERE id='$project_formid'");
                 }
 
                 // Update the Projects or Request main record
                 nf_updateRequestProjectInfo($project_formid,$id);
 
                 if (!isset($processid) OR $processid < 1) {
-                    $processid = DB_getItem($_TABLES['nfprojects'],'wf_process_id', "id='$project_id'");
+                    $processid = DB_getItem($_TABLES['nf_projects'],'wf_process_id', "id='$project_id'");
                 }
                 if (!isset ($taskid) OR $taskid < 1) {
-                    $taskid = DB_getItem($_TABLES['nfproject_forms'],'created_by_taskid', "id='$project_formid'");
+                    $taskid = DB_getItem($_TABLES['nf_projectforms'],'created_by_taskid', "id='$project_formid'");
                 }
                 if ($CONF_NF['debug']) {
                     COM_errorLog("processid: $processid, taskid:$taskid, project_id:$project_id, formid: $project_formid,formtype:$formtype");
@@ -141,11 +141,11 @@ if ($form_id > 0 AND DB_count($_TABLES['nxform_definitions'],'id',$form_id) == 1
                         }
                         $nfclass= new nexflow($processid,$postUID);
                         $nfclass->complete_task($taskid);
-                        DB_query("UPDATE {$_TABLES['nfproject_taskhistory']} SET date_completed = UNIX_TIMESTAMP() WHERE task_id='$taskid'");
+                        DB_query("UPDATE {$_TABLES['nf_projecttaskhistory']} SET date_completed = UNIX_TIMESTAMP() WHERE task_id='$taskid'");
                     }
                 }
             }
-            DB_query("INSERT INTO {$_TABLES['nfproject_timestamps']} (project_id,project_formid,statusmsg,timestamp,uid)
+            DB_query("INSERT INTO {$_TABLES['nf_projecttimestamps']} (project_id,project_formid,statusmsg,timestamp,uid)
                 VALUES ('$project_id','$project_formid','$statusmsg',UNIX_TIMESTAMP(),'{$postUID}') ");
 
         } else {   // New Record
@@ -154,7 +154,7 @@ if ($form_id > 0 AND DB_count($_TABLES['nxform_definitions'],'id',$form_id) == 1
             /* Get formtype from posted form - should be a hidden field in form definition */
             $formtype = DB_getItem($_TABLES['nxform_fields'],'field_values', "formid='$form_id' AND field_name='formtype'");
             $taskid = intval($taskid);
-            $dup_form_check = DB_getItem($_TABLES['nfproject_forms'], 'id', "created_by_taskid=$taskid AND formtype='$formtype'");
+            $dup_form_check = DB_getItem($_TABLES['nf_projectforms'], 'id', "created_by_taskid=$taskid AND formtype='$formtype'");
             if ($dup_form_check !== NULL) {  //form already exists
                 if ($mode == 'draft' AND !isset($_POST['custom_handler'])) {
                     echo COM_refresh($form_return_url);
@@ -164,7 +164,7 @@ if ($form_id > 0 AND DB_count($_TABLES['nxform_definitions'],'id',$form_id) == 1
                 }
                 exit;
             }
-            DB_query("INSERT INTO {$_TABLES['nfproject_forms']} (formtype,created_by_taskid) VALUES ('$formtype', '$taskid');");
+            DB_query("INSERT INTO {$_TABLES['nf_projectforms']} (formtype,created_by_taskid) VALUES ('$formtype', '$taskid');");
             $project_formid = DB_insertID();
 
             if ($newform == 1) {
@@ -184,9 +184,9 @@ if ($form_id > 0 AND DB_count($_TABLES['nxform_definitions'],'id',$form_id) == 1
             }
 
             // Create new project tracking record if project does not yet exist
-            if ($project_id < 1 OR DB_count($_TABLES['nfprojects'],'id',$project_id) == 0) {
+            if ($project_id < 1 OR DB_count($_TABLES['nf_projects'],'id',$project_id) == 0) {
                 $processid = intval($processid);
-                DB_query("INSERT INTO {$_TABLES['nfprojects']} (originator_uid,wf_process_id,wf_task_id,status)
+                DB_query("INSERT INTO {$_TABLES['nf_projects']} (originator_uid,wf_process_id,wf_task_id,status)
                     VALUES ('{$postUID}','$processid','$taskid','1') ");
                 $project_id = DB_insertID();
                 $nfclass->set_ProcessVariable('PID',$project_id);
@@ -194,14 +194,14 @@ if ($form_id > 0 AND DB_count($_TABLES['nxform_definitions'],'id',$form_id) == 1
                 if ($CONF_NF['debug']) {
                     COM_errorLog("form_post_handler: Create new project_id: $project_id");
                 }
-                DB_query("UPDATE {$_TABLES['nfproject_taskhistory']} SET project_id='$project_id' WHERE task_id='$taskid'");
+                DB_query("UPDATE {$_TABLES['nf_projecttaskhistory']} SET project_id='$project_id' WHERE task_id='$taskid'");
             }
 
             // Create new form tracking record for this project
             /* Get formtype from posted form - should be a hidden field in form definition */
             $formtype = DB_getItem($_TABLES['nxform_definitions'],'shortname', "id='$form_id'");
 
-            DB_query("INSERT INTO {$_TABLES['nfproject_forms']} (project_id,form_id,formtype,results_id,created_by_taskid,created_by_uid)
+            DB_query("INSERT INTO {$_TABLES['nf_projectforms']} (project_id,form_id,formtype,results_id,created_by_taskid,created_by_uid)
                  VALUES ('$project_id','$form_id','$formtype','$result_id','$taskid','$postUID') ");
             $project_formid = DB_insertID();
             if ($CONF_NF['debug']) {
@@ -209,7 +209,7 @@ if ($form_id > 0 AND DB_count($_TABLES['nxform_definitions'],'id',$form_id) == 1
             }
 
             // Create new form timestamp record - used to record stats
-            DB_query("INSERT INTO {$_TABLES['nfproject_timestamps']} (project_id,project_formid,statusmsg,timestamp,uid)
+            DB_query("INSERT INTO {$_TABLES['nf_projecttimestamps']} (project_id,project_formid,statusmsg,timestamp,uid)
                 VALUES ('$project_id','$project_formid','$statusmsg',UNIX_TIMESTAMP(),'{$postUID}') ");
 
             if ($mode == 'draft') {    // User is not ready to submit it for approval - so don't complete task yet
@@ -234,16 +234,16 @@ if ($form_id > 0 AND DB_count($_TABLES['nxform_definitions'],'id',$form_id) == 1
                         if ($CONF_NF['debug']) {
                             COM_errorLog("$form_name form submitted - completed taskid: $taskid");
                         }
-                        DB_query("UPDATE {$_TABLES['nfproject_taskhistory']} SET date_completed = UNIX_TIMESTAMP() WHERE task_id='$taskid'");
+                        DB_query("UPDATE {$_TABLES['nf_projecttaskhistory']} SET date_completed = UNIX_TIMESTAMP() WHERE task_id='$taskid'");
                     }
                 }
             }
 
-            DB_query("UPDATE {$_TABLES['nfproject_forms']} SET status = '$status' WHERE id='$project_formid'");
+            DB_query("UPDATE {$_TABLES['nf_projectforms']} SET status = '$status' WHERE id='$project_formid'");
 
             if ($newproject) {
                 /* Update the project fields with information if known */
-                $sql  = "SELECT results_id FROM {$_TABLES['nfproject_forms']} ";
+                $sql  = "SELECT results_id FROM {$_TABLES['nf_projectforms']} ";
                 $sql .= "WHERE project_id='$project_id' AND form_id='$form_id' ";
                 $query = DB_query($sql);
                 if (DB_numRows($query) == 1) {
@@ -254,7 +254,7 @@ if ($form_id > 0 AND DB_count($_TABLES['nxform_definitions'],'id',$form_id) == 1
                     if(!get_magic_quotes_gpc() ) {
                         $description = addslashes($description);
                     }
-                    $sql  = "UPDATE {$_TABLES['nfprojects']} SET description ='$description' ";
+                    $sql  = "UPDATE {$_TABLES['nf_projects']} SET description ='$description' ";
                     $sql .= "WHERE id='$project_id' ";
                     DB_query($sql);
 

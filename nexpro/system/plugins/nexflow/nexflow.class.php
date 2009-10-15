@@ -101,9 +101,9 @@ class nexflow {
             $this->_nfUserId=NXCOM_filterInt($this->_nfUserId);
             $sql  = "SELECT a.id, b.nf_stepType, b.function, b.formid, b.nf_handlerid, b.nf_templateID, b.taskname,a.nf_templateDataID, ";
             $sql .= "b.isDynamicForm, b.dynamicFormVariableID, a.nf_processID, b.isDynamicTaskName, b.dynamicTaskNameVariableID ";
-            $sql .= "FROM {$_TABLES['nfqueue']} a ";
-            $sql .= "LEFT JOIN {$_TABLES['nftemplatedata']} b ON a.nf_templateDataId = b.id ";
-            $sql .= "LEFT JOIN {$_TABLES['nfproductionassignments']} c ON a.id = c.task_id WHERE c.uid = {$this->_nfUserId} ";
+            $sql .= "FROM {$_TABLES['nf_queue']} a ";
+            $sql .= "LEFT JOIN {$_TABLES['nf_templatedata']} b ON a.nf_templateDataId = b.id ";
+            $sql .= "LEFT JOIN {$_TABLES['nf_productionassignments']} c ON a.id = c.task_id WHERE c.uid = {$this->_nfUserId} ";
             $sql .= "AND ( a.archived =0 OR a.archived IS NULL )";
             $result = DB_query($sql );
             $nrows = DB_numRows($result );
@@ -139,7 +139,7 @@ class nexflow {
                                 //in here we have to change the handler to take into account that this could be
                                 //a dynamically assigned form
                                 if($A['isDynamicForm'] == 1){
-                                    $sql  = "SELECT variableValue FROM {$_TABLES['nfprocessvariables']} ";
+                                    $sql  = "SELECT variableValue FROM {$_TABLES['nf_processvariables']} ";
                                     $sql .= "WHERE nf_processid='{$A['nf_processID']}' and nf_templateVariableID='{$A['dynamicFormVariableID']}'";
                                     $res = DB_query($sql);
                                     list($handler) = DB_fetchArray($res);
@@ -147,7 +147,7 @@ class nexflow {
                                     $handler = $A['formid'];
                                 }
                             } else {
-                                $handler = DB_getItem($_TABLES['nfhandlers'],'handler',"id='{$A['nf_handlerid']}'");
+                                $handler = DB_getItem($_TABLES['nf_handlers'],'handler',"id='{$A['nf_handlerid']}'");
                             }
 
                             $this->_nfuserTaskList["id"] = array_merge($this->_nfuserTaskList["id"], array(1 => $A['id']));
@@ -156,7 +156,7 @@ class nexflow {
                             //handle dynamic task name based on a variable's value
 							$taskname = '';
                             if($A['isDynamicTaskName'] == 1){
-                                $sql  = "SELECT variableValue FROM {$_TABLES['nfprocessvariables']} ";
+                                $sql  = "SELECT variableValue FROM {$_TABLES['nf_processvariables']} ";
                                 $sql .= "WHERE nf_processid='{$A['nf_processID']}' AND nf_templateVariableID='{$A['dynamicTaskNameVariableID']}'";
                                 $res = DB_query($sql);
                                 if (DB_numRows($res) == 1) {
@@ -200,8 +200,8 @@ class nexflow {
                 $this->_nfProcessId=NXCOM_filterInt($this->_nfProcessId);
 
                 $sql  = "SELECT a.id,a.status,c.nf_templateID,c.taskname,c.nf_stepType,c.nf_handlerid,c.function, ";
-                $sql .= "e.templateName, f.uid, f.gid FROM {$_TABLES['nfqueue']} a, {$_TABLES['nfprocess']} b, ";
-                $sql .= "{$_TABLES['nftemplatedata']} c, {$_TABLES['nftemplate']} e, {$_TABLES['nftemplateassignment']} f ";
+                $sql .= "e.templateName, f.uid, f.gid FROM {$_TABLES['nf_queue']} a, {$_TABLES['nf_process']} b, ";
+                $sql .= "{$_TABLES['nf_templatedata']} c, {$_TABLES['nf_template']} e, {$_TABLES['nf_templateassignment']} f ";
                 $sql .= "WHERE  a.nf_processId = b.id ";
                 $sql .= "AND a.nf_templateDataId = c.id ";
                 $sql .= "AND b.nf_templateId = e.id ";
@@ -240,7 +240,7 @@ class nexflow {
                                 $handler = $A['formid'];
                             } else {
                                 //we're in the case where there ARE rows from the query, thus $A['nf_handerlid'] has data. no need to filter
-                                $handler = DB_getItem($_TABLES['nfhandlers'],'handler',"id='{$A['nf_handlerid']}'");
+                                $handler = DB_getItem($_TABLES['nf_handlers'],'handler',"id='{$A['nf_handlerid']}'");
                             }
                             $temparray = array(1 => $handler);
                             $this->_nfprocessTaskList["url"] = array_merge($this->_nfprocessTaskList["url"], $temparray );
@@ -285,7 +285,7 @@ class nexflow {
             $sql .= "WHERE b.firstTask = 1 AND c.id ='$template' ORDER BY nf_templateDataFrom ASC LIMIT 1 ";
         } else {
             $startoffset=NXCOM_filterInt($startoffset);
-            $sql = "SELECT a.id, a.regenAllLiveTasks FROM {$_TABLES['nftemplatedata']} a where a.id='$startoffset'";
+            $sql = "SELECT a.id, a.regenAllLiveTasks FROM {$_TABLES['nf_templatedata']} a where a.id='$startoffset'";
         }
         if ($this->_debug ) {
             COM_errorLog("New Process Code");
@@ -300,26 +300,26 @@ class nexflow {
         if ($templateDataID != null or $templateDataID != '' ) {
             $thisDate = date('Y-m-d H:i:s' );
             $pid = NXCOM_filterInt($pid);
-            $sql = "INSERT INTO {$_TABLES['nfprocess']} (nf_templateID , complete, pid,initiatedDate ) ";
+            $sql = "INSERT INTO {$_TABLES['nf_process']} (nf_templateID , complete, pid,initiatedDate ) ";
             $sql .= "VALUES ('{$template}', 0, $pid, '{$thisDate}')";
             $result = DB_query($sql );
             $insertID = DB_insertID();   // New record id is the processid
             $thisDate = date('Y-m-d H:i:s' );
-            $sql = "INSERT INTO {$_TABLES['nfqueue']} (nf_processID,nf_templateDataID,status,archived,createdDate) ";
+            $sql = "INSERT INTO {$_TABLES['nf_queue']} (nf_processID,nf_templateDataID,status,archived,createdDate) ";
             $sql .= "VALUES ('$insertID','$templateDataID',0,0,'$thisDate')";
             DB_query($sql );
             $newTaskid = DB_insertID();
 
             if ($pid > 0) {
-                $customFlowName = DB_getItem($_TABLES['nfprocess'], 'customFlowName', "id=$pid");
+                $customFlowName = DB_getItem($_TABLES['nf_process'], 'customFlowName', "id=$pid");
                 $customFlowName = NXCOM_filterText($customFlowName);
-                DB_query("UPDATE {$_TABLES['nfprocess']} SET customFlowName='$customFlowName' WHERE id=$insertID");
+                DB_query("UPDATE {$_TABLES['nf_process']} SET customFlowName='$customFlowName' WHERE id=$insertID");
             }
 
             // Determine if task has a reminder set and if so then update the nextReminderTime field in the new queue record
-            $reminderInterval = DB_getItem($_TABLES['nftemplatedata'],'reminderInterval',"id='{$templateDataID}'");
+            $reminderInterval = DB_getItem($_TABLES['nf_templatedata'],'reminderInterval',"id='{$templateDataID}'");
             if ($reminderInterval > 0) {
-                DB_query("UPDATE {$_TABLES['nfqueue']} SET nextReminderTime=DATE_ADD( NOW(), INTERVAL $reminderInterval DAY) where id='$newTaskid'");
+                DB_query("UPDATE {$_TABLES['nf_queue']} SET nextReminderTime=DATE_ADD( NOW(), INTERVAL $reminderInterval DAY) where id='$newTaskid'");
             }
 
             // Check if notification has been defined for new task assignment
@@ -327,39 +327,39 @@ class nexflow {
 
             // now determine if the offset is set.. if so, pack the original pid pointer with a status of 2
             if ($startoffset != null && $pid != null ) {
-                $sql = "UPDATE {$_TABLES['nfprocess']} SET complete=2, completedDate=NOW() where id='$pid'";
+                $sql = "UPDATE {$_TABLES['nf_process']} SET complete=2, completedDate=NOW() where id='$pid'";
                 $result = DB_query($sql );
 
                 //Within this section we need to detect whether or not the startoffset task has the "regenerate all live tasks" option set.
                 //if so, the process we just layed to rest will hold some in-production tasks.  those tasks will have their pids set to the new pid.
                 if($regenAllLiveTasks == '1'){
-                    $sql  = "SELECT a.id FROM {$_TABLES['nfqueue']} a LEFT JOIN {$_TABLES['nftemplatedata']} b ";
+                    $sql  = "SELECT a.id FROM {$_TABLES['nf_queue']} a LEFT JOIN {$_TABLES['nf_templatedata']} b ";
                     $sql .= "ON a.nf_templateDataID=b.id WHERE b.nf_stepType=2 AND a.nf_processID='$pid' ";
                     $sql .= "AND (a.archived=0 OR a.archived IS NULL);";
                     $res = DB_query($sql);
                     while ($A = DB_fetchArray($res)) {
-                        $sql = "SELECT fromQueueID FROM {$_TABLES['nfqueuefrom']} WHERE queueID={$A['id']};";
+                        $sql = "SELECT fromQueueID FROM {$_TABLES['nf_queuefrom']} WHERE queueID={$A['id']};";
                         $res2 = DB_query($sql);
                         while ($B = DB_fetchArray($res2)) {
-                            $sql="UPDATE {$_TABLES['nfqueue']} SET nf_processID='$insertID' WHERE id={$B['fromQueueID']};";
+                            $sql="UPDATE {$_TABLES['nf_queue']} SET nf_processID='$insertID' WHERE id={$B['fromQueueID']};";
                             $result = DB_query($sql);
                         }
-                        $sql = "UPDATE {$_TABLES['nfqueue']} SET nf_processID='$insertID' WHERE id={$A['id']} AND (archived = 0 OR archived IS NULL);";
+                        $sql = "UPDATE {$_TABLES['nf_queue']} SET nf_processID='$insertID' WHERE id={$A['id']} AND (archived = 0 OR archived IS NULL);";
                         $result = DB_query($sql);
                     }
                 }
 
                 /* SQL Call albeit more elegant fails on older MySQL 3.23 releases
-                   $sql  = "INSERT INTO {$_TABLES['nfprocessvariables']} (nf_processID,nf_templateVariableID, variableValue) ";
-                   $sql .= "SELECT $insertID ,nf_templateVariableID, variableValue FROM {$_TABLES['nfprocessvariables']} b WHERE b.nf_processID='$pid'";
+                   $sql  = "INSERT INTO {$_TABLES['nf_processvariables']} (nf_processID,nf_templateVariableID, variableValue) ";
+                   $sql .= "SELECT $insertID ,nf_templateVariableID, variableValue FROM {$_TABLES['nf_processvariables']} b WHERE b.nf_processID='$pid'";
                    DB_query($sql );
                 */
 
                 /* Alternative SQL approach using Loop to copy the running process variables and values */
-                $sql = "SELECT nf_templateVariableID, variableValue FROM {$_TABLES['nfprocessvariables']} b WHERE b.nf_processID='$pid'";
+                $sql = "SELECT nf_templateVariableID, variableValue FROM {$_TABLES['nf_processvariables']} b WHERE b.nf_processID='$pid'";
                 $query = DB_query($sql);
                 while ($A = DB_fetchArray($query)) {
-                     $sql  = "INSERT INTO {$_TABLES['nfprocessvariables']} (nf_processID,nf_templateVariableID, variableValue) VALUES ";
+                     $sql  = "INSERT INTO {$_TABLES['nf_processvariables']} (nf_processID,nf_templateVariableID, variableValue) VALUES ";
                      $sql .= "('$insertID','{$A['nf_templateVariableID']}','{$A['variableValue']}')";
                      DB_query($sql);
                 }
@@ -367,8 +367,8 @@ class nexflow {
 
             } else { // situation where this is the root process
                 // inserts the template variables into the process
-                $sql = "INSERT INTO {$_TABLES['nfprocessvariables']} (nf_processID,nf_templateVariableID, variableValue) ";
-                $sql .= "SELECT $insertID,id, variableValue FROM {$_TABLES['nftemplatevariables']} WHERE nf_templateID='$template'";
+                $sql = "INSERT INTO {$_TABLES['nf_processvariables']} (nf_processID,nf_templateVariableID, variableValue) ";
+                $sql .= "SELECT $insertID,id, variableValue FROM {$_TABLES['nf_templatevariables']} WHERE nf_templateID='$template'";
                 $result = DB_query($sql );
             }
             $this->_nfProcessId = $insertID;
@@ -389,7 +389,7 @@ class nexflow {
                 //have to detect whether this new process needs a more detailed project table association created for it.
                 if($A['useProject'] == 1 && $pid == NULL){
                     //this is the condition where there is no parent (totally new process)
-                    $sql  = "INSERT INTO {$_TABLES['nfprojects']} (originator_uid,wf_process_id,wf_task_id,status,description) ";
+                    $sql  = "INSERT INTO {$_TABLES['nf_projects']} (originator_uid,wf_process_id,wf_task_id,status,description) ";
                     $sql .= "VALUES ('{$_USER['uid']}','{$insertID}','{$newTaskid}','0','{$templateName}') ";
                     DB_query($sql);
                     $project_id = DB_insertID();
@@ -400,7 +400,7 @@ class nexflow {
                 } elseif($A['useProject'] == 1 && ($pid != NULL || $pid != 0)) {
                     //this is the condition where there IS a parent AND we want a project table association
                     //we have one different step here - to update the wf process association for the original PID to the new insertID
-                    $sql = "UPDATE {$_TABLES['nfprojects']} set wf_process_id='{$insertID}' where wf_process_id='{$pid}'";
+                    $sql = "UPDATE {$_TABLES['nf_projects']} set wf_process_id='{$insertID}' where wf_process_id='{$pid}'";
                     $res = DB_query($sql);
                     if ($this->_debug ) {
                         COM_errorLog("Nexflow newProcess: Updated project_id: $project_id with new wf_process_id of: $insertID");
@@ -412,7 +412,7 @@ class nexflow {
                 //parent's already established tracking project
                 if($pid != NULL || $pid != 0) {
                     //first, pull back the existing nfprojects entry
-                    $sql = "SELECT id,related_processes FROM {$_TABLES['nfprojects']} where wf_process_id='{$pid}'";
+                    $sql = "SELECT id,related_processes FROM {$_TABLES['nf_projects']} where wf_process_id='{$pid}'";
                     $res = DB_query($sql);
                     list($existingID,$relatedProcesses) = DB_fetchArray($res);
                     if($relatedProcesses != ''){
@@ -421,7 +421,7 @@ class nexflow {
                     $relatedProcesses .= $insertID;
                     $existingID = NXCOM_filterInt($existingID);
                     if($existingID != 0){
-                        $sql = "UPDATE {$_TABLES['nfprojects']} set related_processes='{$relatedProcesses}' where id='{$existingID}'";
+                        $sql = "UPDATE {$_TABLES['nf_projects']} set related_processes='{$relatedProcesses}' where id='{$existingID}'";
                         DB_query($sql);
                     }
                 }//end if($pid!=NULL || $pid!=0)
@@ -460,8 +460,8 @@ class nexflow {
             }
             $retval=NULL;
         }else{
-            $sql  = "SELECT a.variableValue FROM {$_TABLES['nfprocessvariables']} a ";
-            $sql .= "INNER JOIN {$_TABLES['nftemplatevariables']} b ON a.nf_templateVariableID=b.id ";
+            $sql  = "SELECT a.variableValue FROM {$_TABLES['nf_processvariables']} a ";
+            $sql .= "INNER JOIN {$_TABLES['nf_templatevariables']} b ON a.nf_templateVariableID=b.id ";
             $sql .= "WHERE a.nf_processID='{$this->_nfProcessId}' AND b.variableName='$thisvar'";
             $result = DB_query($sql );
             if (DB_numRows($result ) > 0 ) {
@@ -495,14 +495,14 @@ class nexflow {
             $retval=NULL;
         }else{
             // setting the value
-            $sql  = "SELECT a.id, a.nf_templateVariableID FROM {$_TABLES['nfprocessvariables']} a ";
-            $sql .= "INNER JOIN {$_TABLES['nftemplatevariables']} b ON a.nf_templateVariableID=b.id ";
+            $sql  = "SELECT a.id, a.nf_templateVariableID FROM {$_TABLES['nf_processvariables']} a ";
+            $sql .= "INNER JOIN {$_TABLES['nf_templatevariables']} b ON a.nf_templateVariableID=b.id ";
             $sql .= "WHERE a.nf_processID='{$this->_nfProcessId}' ";
             $sql .= "AND b.variableName='$thisvar'";
             $result = DB_query($sql );
             if (DB_numRows($result ) > 0 ) {
                 list($processVariable_id,$variable_id) = DB_fetchArray($result );
-                $sql =  "UPDATE {$_TABLES['nfprocessvariables']} set variableValue='$variableValue' WHERE id='$processVariable_id' ";
+                $sql =  "UPDATE {$_TABLES['nf_processvariables']} set variableValue='$variableValue' WHERE id='$processVariable_id' ";
                 $sql .= "AND nf_processID='{$this->_nfProcessId}'";
                 $result = DB_Query($sql);
                 if ($this->_debug ) {
@@ -512,8 +512,8 @@ class nexflow {
                     $retval = $variableValue;
                 }
                 //now see if that process variable controlled assignment
-                $sql  = "SELECT a.id FROM {$_TABLES['nfqueue']} a LEFT JOIN {$_TABLES['nftemplatedata']} b ON a.nf_templateDataID=b.id ";
-                $sql .= "LEFT JOIN {$_TABLES['nftemplateassignment']} c ON a.nf_templateDataID=c.nf_templateDataID ";
+                $sql  = "SELECT a.id FROM {$_TABLES['nf_queue']} a LEFT JOIN {$_TABLES['nf_templatedata']} b ON a.nf_templateDataID=b.id ";
+                $sql .= "LEFT JOIN {$_TABLES['nf_templateassignment']} c ON a.nf_templateDataID=c.nf_templateDataID ";
                 $sql .= "WHERE (a.archived IS NULL OR a.archived=0) AND a.nf_processID={$this->_nfProcessId} AND b.assignedByVariable=1 ";
                 $sql .= "AND c.nf_processVariable=$variable_id;";
                 $res = DB_query($sql);
@@ -588,9 +588,9 @@ class nexflow {
             case 'user':
                 for($cntr = 0;$cntr < $this->_nfUserTaskCount;$cntr++ ) {
                     $taskid = NXCOM_filterInt($this->_nfuserTaskList["id"][$cntr]);
-                    $processId = DB_getItem($_TABLES['nfqueue'], 'nf_processID', "id='$taskid'");
-                    $templateTaskId = DB_getItem($_TABLES['nfqueue'], 'nf_templateDataID', "id='$taskid'");
-                    $cdate = DB_getItem($_TABLES['nfqueue'], 'createdDate', "id='$taskid'");
+                    $processId = DB_getItem($_TABLES['nf_queue'], 'nf_processID', "id='$taskid'");
+                    $templateTaskId = DB_getItem($_TABLES['nf_queue'], 'nf_templateDataID', "id='$taskid'");
+                    $cdate = DB_getItem($_TABLES['nf_queue'], 'createdDate', "id='$taskid'");
                     $taskrec = array();
                     $taskrec['id'] = $taskid;
                     $taskrec['url'] = $this->_nfuserTaskList["url"][$cntr];
@@ -625,7 +625,7 @@ class nexflow {
         $queueID = NXCOM_filterInt($queueID);
 
         $this->_currentQueueID = $queueID;
-        $processID = DB_getItem($_TABLES['nfqueue'],'nf_processID',"id='{$queueID}'");
+        $processID = DB_getItem($_TABLES['nf_queue'],'nf_processID',"id='{$queueID}'");
         if ($processID == '') {
             COM_errorLog("Task ID #$queueID no longer exists in queue table.  It was potenially removed by an admin from outstanding tasks.");
             return;
@@ -638,29 +638,29 @@ class nexflow {
         // Update Project Task History record as completed
         //RK - lets check if there's even an entry for this task first.  if there's no entry, create one
         //this takes into account those flows that do NOT have taskhistory records (non-'project' flows);
-        $res = DB_query("SELECT * FROM {$_TABLES['nfproject_taskhistory']}  WHERE task_id=$queueID");
+        $res = DB_query("SELECT * FROM {$_TABLES['nf_projecttaskhistory']}  WHERE task_id=$queueID");
         if(DB_numRows($res) > 0) {
-            DB_query("UPDATE {$_TABLES['nfproject_taskhistory']} SET date_completed = UNIX_TIMESTAMP(),status=1 WHERE task_id=$queueID and status=0");
+            DB_query("UPDATE {$_TABLES['nf_projecttaskhistory']} SET date_completed = UNIX_TIMESTAMP(),status=1 WHERE task_id=$queueID and status=0");
         } else {
-            $dateCreated = DB_getItem($_TABLES['nfqueue'],'createdDate',"id='{$queueID}'");
-            $sql = "INSERT INTO {$_TABLES['nfproject_taskhistory']} ";
+            $dateCreated = DB_getItem($_TABLES['nf_queue'],'createdDate',"id='{$queueID}'");
+            $sql = "INSERT INTO {$_TABLES['nf_projecttaskhistory']} ";
             $sql .= "(task_id, process_id,  date_assigned, date_started, date_completed, status) ";
             $sql .= "values ({$queueID},{$processID},   UNIX_TIMESTAMP('{$dateCreated}'),UNIX_TIMESTAMP('{$dateCreated}'),UNIX_TIMESTAMP(),1)";
             DB_query($sql);
         }
 
         if ($this->_nfUserId == '' or $this->_nfUserId == null ) {
-            $currentUID = DB_getItem($_TABLES['nfproductionassignments'],'uid',"task_id=$queueID");
+            $currentUID = DB_getItem($_TABLES['nf_productionassignments'],'uid',"task_id=$queueID");
             if ($currentUID == '' OR $currentUID == null) {
-                DB_query("UPDATE {$_TABLES['nfqueue']} set uid=NULL, status=1 where id='$queueID'");
+                DB_query("UPDATE {$_TABLES['nf_queue']} set uid=NULL, status=1 where id='$queueID'");
             } else {
-                DB_query("UPDATE {$_TABLES['nfqueue']} set uid=$currentUID, status=1 where id='$queueID'");
+                DB_query("UPDATE {$_TABLES['nf_queue']} set uid=$currentUID, status=1 where id='$queueID'");
             }
         } else {
-            DB_query("UPDATE {$_TABLES['nfqueue']} set uid='{$this->_nfUserId}',status=1 where id='$queueID'");
+            DB_query("UPDATE {$_TABLES['nf_queue']} set uid='{$this->_nfUserId}',status=1 where id='$queueID'");
         }
         // Self Prune Production Assignment table - delete the now completed task assignment record
-        DB_query("DELETE FROM {$_TABLES['nfproductionassignments']} WHERE task_id=$queueID");
+        DB_query("DELETE FROM {$_TABLES['nf_productionassignments']} WHERE task_id=$queueID");
 
         $this->private_sendTaskCompletionNotifications();
 
@@ -673,21 +673,21 @@ class nexflow {
         global $_TABLES;
         $queueID=NXCOM_filterInt($queueID);
         $this->_currentQueueID = $queueID;
-        $processID = DB_getItem($_TABLES['nfqueue'],'nf_processID',"id='{$queueID}'");
+        $processID = DB_getItem($_TABLES['nf_queue'],'nf_processID',"id='{$queueID}'");
         if ($this->_debug ) {
             COM_errorLog("Nexflow: Cancel_task- updating queue item: $queueID");
         }
 
         // Update Project Task History record as completed
-        DB_query("UPDATE {$_TABLES['nfproject_taskhistory']} SET date_completed = UNIX_TIMESTAMP(),status=3 WHERE task_id=$queueID");
+        DB_query("UPDATE {$_TABLES['nf_projecttaskhistory']} SET date_completed = UNIX_TIMESTAMP(),status=3 WHERE task_id=$queueID");
 
         if ($this->_nfUserId == '' or $this->_nfUserId == null ) {
-            DB_query("UPDATE {$_TABLES['nfqueue']} set uid=NULL, status=3 where id='$queueID'");
+            DB_query("UPDATE {$_TABLES['nf_queue']} set uid=NULL, status=3 where id='$queueID'");
         } else {
-            DB_query("UPDATE {$_TABLES['nfqueue']} set uid='{$this->_nfUserId}',status=3 where id='$queueID'");
+            DB_query("UPDATE {$_TABLES['nf_queue']} set uid='{$this->_nfUserId}',status=3 where id='$queueID'");
         }
         // Self Prune Production Assignment table - delete the now completed task assignment record
-        DB_query("DELETE FROM {$_TABLES['nfproductionassignments']} WHERE task_id=$queueID");
+        DB_query("DELETE FROM {$_TABLES['nf_productionassignments']} WHERE task_id=$queueID");
         $this->private_sendTaskCompletionNotifications();
 
     }
@@ -720,7 +720,7 @@ class nexflow {
             if($processVariable < 0) $processVariable = 0;
 
             if ($userID > 1) {
-                $query = DB_query ("SELECT away_start,away_return,is_active FROM {$_TABLES['nfuseraway']} WHERE uid = $userID");
+                $query = DB_query ("SELECT away_start,away_return,is_active FROM {$_TABLES['nf_useraway']} WHERE uid = $userID");
                 list ($datestart,$datereturn,$is_active) = DB_fetchArray ($query);
                 // Check if user is away - away feature active and current time within the away window
                 if ($is_active == 1 AND time() > $datestart AND time() < $datereturn) {
@@ -745,18 +745,18 @@ class nexflow {
             }
 
             // Check and see if we have an production assignment record for this task and processVariable
-            $sql = "SELECT uid FROM {$_TABLES['nfproductionassignments']} WHERE task_id=$queueID ";
+            $sql = "SELECT uid FROM {$_TABLES['nf_productionassignments']} WHERE task_id=$queueID ";
             if ($processVariable > 0) {
                 $sql .= "AND nf_processVariable=$processVariable";
             } else {
                 $sql .= "AND nf_processVariable=0 AND uid=$userID";
             }
                 if (DB_numRows(DB_query($sql)) < count($userIDs)) {
-                    $sql  = "INSERT INTO {$_TABLES['nfproductionassignments']} (task_id,uid,nf_processVariable,assignBack_uid,last_updated) ";
+                    $sql  = "INSERT INTO {$_TABLES['nf_productionassignments']} (task_id,uid,nf_processVariable,assignBack_uid,last_updated) ";
                     $sql .= "VALUES ($queueID, $assignToUserID, $processVariable, $assignBack, UNIX_TIMESTAMP() )";
                     DB_query($sql);
                 } else {
-                    $sql  = "UPDATE {$_TABLES['nfproductionassignments']} set uid=$assignToUserID, last_updated=UNIX_TIMESTAMP(), ";
+                    $sql  = "UPDATE {$_TABLES['nf_productionassignments']} set uid=$assignToUserID, last_updated=UNIX_TIMESTAMP(), ";
                     $sql .= "assignBack_uid = $assignBack ";
                     $sql .= "WHERE task_id=$queueID AND nf_processVariable=$processVariable";
                     DB_query($sql);
@@ -776,39 +776,39 @@ class nexflow {
         global $_TABLES;
 
         $queueID = NXCOM_filterInt($queueID);
-        $processID = DB_getItem($_TABLES['nfqueue'],'nf_processID',"id='{$queueID}'");
+        $processID = DB_getItem($_TABLES['nf_queue'],'nf_processID',"id='{$queueID}'");
         $status = NXCOM_filterInt($status);
         $thisDate = date('Y-m-d H:i:s' );
         // Set the status field to completed if not set
         $setstatus = '';
         if ($status == 0) {
             // If status has no current value then set the status to 1 (completed)
-            $currentStatus = DB_getItem($_TABLES['nfqueue'],'status',"id=$queueID");
+            $currentStatus = DB_getItem($_TABLES['nf_queue'],'status',"id=$queueID");
             if ($currentStatus == 0) $status = 1;
         }
         if ($status > 0) {
-            DB_query("UPDATE {$_TABLES['nfqueue']} SET status=$status,completedDate='{$thisDate}', archived=1 where id=$queueID");
+            DB_query("UPDATE {$_TABLES['nf_queue']} SET status=$status,completedDate='{$thisDate}', archived=1 where id=$queueID");
         } else {
-            DB_query("UPDATE {$_TABLES['nfqueue']} SET completedDate='{$thisDate}', archived=1 where id=$queueID");
+            DB_query("UPDATE {$_TABLES['nf_queue']} SET completedDate='{$thisDate}', archived=1 where id=$queueID");
         }
 
         // Self Prune Production Assignment table - delete the now completed task assignment record
-        DB_query("DELETE FROM {$_TABLES['nfproductionassignments']} WHERE task_id=$queueID");
+        DB_query("DELETE FROM {$_TABLES['nf_productionassignments']} WHERE task_id=$queueID");
     }
 
     function delete_process($pid) {
         global $_TABLES;
         $pid = intval($pid);
 
-        $res = DB_query("SELECT id FROM {$_TABLES['nfqueue']} WHERE nf_processID=$pid");
+        $res = DB_query("SELECT id FROM {$_TABLES['nf_queue']} WHERE nf_processID=$pid");
         while (list ($qid) = DB_fetchArray($res)) {
-            DB_query("DELETE FROM {$_TABLES['nfqueuefrom']} WHERE queueID=$qid");
-            DB_query("DELETE FROM {$_TABLES['nfproductionassignments']} WHERE task_id=$qid");
-            DB_query("DELETE FROM {$_TABLES['nfnotifications']} WHERE queueID=$qid");
+            DB_query("DELETE FROM {$_TABLES['nf_queuefrom']} WHERE queueID=$qid");
+            DB_query("DELETE FROM {$_TABLES['nf_productionassignments']} WHERE task_id=$qid");
+            DB_query("DELETE FROM {$_TABLES['nf_notifications']} WHERE queueID=$qid");
         }
-        DB_query("DELETE FROM {$_TABLES['nfqueue']} WHERE nf_processID=$pid");
-        DB_query("DELETE FROM {$_TABLES['nfprocessvariables']} WHERE nf_processID=$pid");
-        DB_query("DELETE FROM {$_TABLES['nfprocess']} WHERE id=$pid");
+        DB_query("DELETE FROM {$_TABLES['nf_queue']} WHERE nf_processID=$pid");
+        DB_query("DELETE FROM {$_TABLES['nf_processvariables']} WHERE nf_processID=$pid");
+        DB_query("DELETE FROM {$_TABLES['nf_process']} WHERE id=$pid");
     }
 
 
@@ -824,10 +824,10 @@ class nexflow {
             }
         }else{
             // Retrieve the template id for the current queue record
-            $templateDataId = DB_getItem($_TABLES['nfqueue'], 'nf_templateDataID', "id={$this->_currentQueueID}");
+            $templateDataId = DB_getItem($_TABLES['nf_queue'], 'nf_templateDataID', "id={$this->_currentQueueID}");
 
             // Retrive the value of the optionalParm from the template for this task
-            $optionalParm = DB_getItem($_TABLES['nftemplatedata'], 'optionalParm', "id=$templateDataId");
+            $optionalParm = DB_getItem($_TABLES['nf_templatedata'], 'optionalParm', "id=$templateDataId");
             return $optionalParm;
         }
     }
@@ -843,9 +843,9 @@ class nexflow {
         $fields  = 'a.id, a.status,a.nf_templateDataID,';
         $fields .= 'c.nf_templateID,c.taskname,c.nf_stepType,c.assignedByVariable, b.id AS processID ';
         $sql  = "SELECT distinct $fields ";
-        $sql .= "FROM {$_TABLES['nfqueue']} a ";
-        $sql .= "INNER JOIN {$_TABLES['nfprocess']} b on a.nf_processID = b.id ";
-        $sql .= "INNER JOIN {$_TABLES['nftemplatedata']} c on a.nf_templateDataID = c.id ";
+        $sql .= "FROM {$_TABLES['nf_queue']} a ";
+        $sql .= "INNER JOIN {$_TABLES['nf_process']} b on a.nf_processID = b.id ";
+        $sql .= "INNER JOIN {$_TABLES['nf_templatedata']} c on a.nf_templateDataID = c.id ";
         $sql .= "WHERE a.status = 0 ";                                              // Uncompleted task and reminder datetime set
         $sql .= "AND (c.nf_stepType=1 OR c.nf_stepType=7 OR c.nf_stepType=8) ";     // Interactive Task Types
         $sql .= "AND (a.archived <> 1 OR a.archived IS NULL OR a.archived=0 ) AND (b.complete=0) ";
@@ -858,7 +858,7 @@ class nexflow {
             // Note: Test if variable value greater then 1 for a valid userid.
             // If task assignment is done by variable, the variable may be set after the task is created
             // So I can not create the notification tracking record upon task assignment as I may not know the user
-            $sql =  "SELECT b.variableValue FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['nfprocessvariables']} b ";
+            $sql =  "SELECT b.variableValue FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['nf_processvariables']} b ";
             $sql .= "WHERE a.nf_templateDataID={$A['nf_templateDataID']} ";
             $sql .= "AND a.nf_prenotifyVariable=b.nf_templateVariableID AND b.nf_processID='{$A['processID']}' ";
             $sql .= "AND b.variableValue > 1";
@@ -874,37 +874,37 @@ class nexflow {
                 $email = DB_getItem($_TABLES['users'],'email',"uid='$notifyUID'");
                 if ($email != '') {
                     // Log this notification if it does not already exist and send the email to user
-                    if (DB_count($_TABLES['nfnotifications'], array('queueID','uid'), array($A['id'],$notifyUID)) == 0) {
+                    if (DB_count($_TABLES['nf_notifications'], array('queueID','uid'), array($A['id'],$notifyUID)) == 0) {
                         $notifyUser = COM_getDisplayName($notifyUID);
                         $logmsg  = "Nexflow: Send assignment notification for task id: {$A['id']} ";
                         $logmsg .= "({$A['nf_templateDataID']}), {$A['taskname']} to: $notifyUser ";
                         nf_logNotification($logmsg);
                             list ($subject, $message) = nf_formatEmailMessage('prenotify',$A['nf_templateDataID'],$A['id'],$notifyUser);
                         nf_sendEmail ($email,$subject,$message);
-                        DB_query("INSERT INTO {$_TABLES['nfnotifications']} (queueID,uid,notification_sent) VALUES ('{$A['id']}','$notifyUID',1)");
+                        DB_query("INSERT INTO {$_TABLES['nf_notifications']} (queueID,uid,notification_sent) VALUES ('{$A['id']}','$notifyUID',1)");
                         }
                     }
                 }
             }
             // Now check and see if this task has a notification set for the special "TASK_OWNER" resource variable (id=999)
-            if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_prenotifyVariable'),array($A['nf_templateDataID'],999)) == 1) {
+            if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_prenotifyVariable'),array($A['nf_templateDataID'],999)) == 1) {
                 // Check if this task is assigned by variable or UID - Get all assigned users
-                $sql  = "SELECT b.uid,b.nf_processVariable FROM {$_TABLES['nftemplateassignment']} b ";
+                $sql  = "SELECT b.uid,b.nf_processVariable FROM {$_TABLES['nf_templateassignment']} b ";
                 $sql .= "WHERE b.nf_templateDataID = '{$A['nf_templateDataID']}' ";
                 $sql .= "AND (uid IS NOT NULL OR nf_processVariable IS NOT NULL) ";
                 $q3 = DB_query($sql);
                 while (list ($notifyUID,$variableid) = DB_fetchArray($q3)) {
                     $email = '';
                     if ($variableid != NULL AND $A['assignedByVariable'] == 1) {
-                        $notifyUID = DB_getItem($_TABLES['nfprocessvariables'],'variableValue',"nf_processID='{$A['processID']}' AND nf_templateVariableID='$variableid'");
+                        $notifyUID = DB_getItem($_TABLES['nf_processvariables'],'variableValue',"nf_processID='{$A['processID']}' AND nf_templateVariableID='$variableid'");
                         $email = DB_getItem($_TABLES['users'],'email',"uid='$notifyUID'");
                     } elseif($A['assignedByVariable'] == 0 ) {
                         $email = DB_getItem($_TABLES['users'],'email',"uid='$notifyUID'");
                     }
                     // Log this notification if it does not already exist and send the email to user
-                    if ($email != '' AND DB_count($_TABLES['nfnotifications'], array('queueID','uid'), array($A['id'],$notifyUID)) == 0) {
+                    if ($email != '' AND DB_count($_TABLES['nf_notifications'], array('queueID','uid'), array($A['id'],$notifyUID)) == 0) {
                         $notifyUser = COM_getDisplayName($notifyUID);
-                        DB_query("INSERT INTO {$_TABLES['nfnotifications']} (queueID,uid,notification_sent) VALUES ('{$A['id']}','$notifyUID',1)");
+                        DB_query("INSERT INTO {$_TABLES['nf_notifications']} (queueID,uid,notification_sent) VALUES ('{$A['id']}','$notifyUID',1)");
                         $logmsg  = "Nexflow: Send assignment notification for task id: {$A['id']} ";
                         $logmsg .= "({$A['nf_templateDataID']}), {$A['taskname']} to: $notifyUser ";
                         nf_logNotification($logmsg);
@@ -927,9 +927,9 @@ class nexflow {
         // For the current task check if any notifications have been defined
         $fields  = 'a.id,a.nf_templateDataID,a.status,c.nf_templateID,c.assignedByVariable,c.taskname,b.id AS processID';
         $sql  = "SELECT distinct $fields ";
-        $sql .= "FROM {$_TABLES['nfqueue']} a ";
-        $sql .= "INNER JOIN {$_TABLES['nfprocess']} b on a.nf_processID = b.id ";
-        $sql .= "INNER JOIN {$_TABLES['nftemplatedata']} c on a.nf_templateDataID = c.id ";
+        $sql .= "FROM {$_TABLES['nf_queue']} a ";
+        $sql .= "INNER JOIN {$_TABLES['nf_process']} b on a.nf_processID = b.id ";
+        $sql .= "INNER JOIN {$_TABLES['nf_templatedata']} c on a.nf_templateDataID = c.id ";
         $sql .= "WHERE a.id='{$this->_currentQueueID}' ";
         $A = DB_fetchArray(DB_query($sql));
 
@@ -943,7 +943,7 @@ class nexflow {
 
         // Retrieve any variables that have been assigned for Task Completion notifications
         // Send out notifications to all defined users - using distinct to eliminate duplicates
-        $sql =  "SELECT DISTINCT b.variableValue FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['nfprocessvariables']} b ";
+        $sql =  "SELECT DISTINCT b.variableValue FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['nf_processvariables']} b ";
         $sql .= "WHERE a.nf_postnotifyVariable=b.nf_templateVariableID AND b.nf_processID='{$A['processID']}'";
         $sql .= "AND b.variableValue > 1 AND a.nf_templateDataID={$A['nf_templateDataID']}";
         $q2 = DB_query($sql);
@@ -966,16 +966,16 @@ class nexflow {
         }
         // Now check and see if this task has a notification set for the special "TASK_OWNER" resource variable (id=999)
         // BL: May need to compare against users sent notifications above to prevent duplicates
-        if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_postnotifyVariable'),array($A['nf_templateDataID'],999)) == 1) {
+        if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_postnotifyVariable'),array($A['nf_templateDataID'],999)) == 1) {
             // Check if this task is assigned by variable or UID - Get all assigned users
-            $sql  = "SELECT b.uid,b.nf_processVariable FROM {$_TABLES['nftemplateassignment']} b ";
+            $sql  = "SELECT b.uid,b.nf_processVariable FROM {$_TABLES['nf_templateassignment']} b ";
             $sql .= "WHERE b.nf_templateDataID = '{$A['nf_templateDataID']}' ";
             $sql .= "AND (uid IS NOT NULL OR nf_processVariable IS NOT NULL) ";
             $q3 = DB_query($sql);
             while (list ($notifyUID,$variableid) = DB_fetchArray($q3)) {
                 $email = '';
                 if ($variableid != NULL AND $A['assignedByVariable'] == 1) {
-                    $notifyUID = DB_getItem($_TABLES['nfprocessvariables'],'variableValue',"nf_processID='{$A['processID']}' AND nf_templateVariableID='$variableid'");
+                    $notifyUID = DB_getItem($_TABLES['nf_processvariables'],'variableValue',"nf_processID='{$A['processID']}' AND nf_templateVariableID='$variableid'");
                     $email = DB_getItem($_TABLES['users'],'email',"uid='$notifyUID'");
                 } elseif($A['assignedByVariable'] == 0 ) {
                     $email = DB_getItem($_TABLES['users'],'email',"uid='$notifyUID'");
@@ -989,7 +989,7 @@ class nexflow {
             }
         }
         // Delete any notification records now for this task in the queue
-        DB_query("DELETE FROM {$_TABLES['nfnotifications']} WHERE queueID='{$this->_currentQueueID}'");
+        DB_query("DELETE FROM {$_TABLES['nf_notifications']} WHERE queueID='{$this->_currentQueueID}'");
     }
 
     // Check for any task reminder notifications that need to be sent out
@@ -1001,9 +1001,9 @@ class nexflow {
         $fields .= 'c.nf_templateID,c.taskname,c.reminderInterval,c.subsequentReminderInterval,c.assignedByVariable, ';
         $fields .= 'c.numReminders,c.escalateVariableID, b.id AS processID ';
         $sql  = "SELECT distinct $fields ";
-        $sql .= "FROM {$_TABLES['nfqueue']} a ";
-        $sql .= "INNER JOIN {$_TABLES['nfprocess']} b on a.nf_processID = b.id ";
-        $sql .= "INNER JOIN {$_TABLES['nftemplatedata']} c on a.nf_templateDataID = c.id ";
+        $sql .= "FROM {$_TABLES['nf_queue']} a ";
+        $sql .= "INNER JOIN {$_TABLES['nf_process']} b on a.nf_processID = b.id ";
+        $sql .= "INNER JOIN {$_TABLES['nf_templatedata']} c on a.nf_templateDataID = c.id ";
         $sql .= "WHERE a.status = 0 AND  a.nextReminderTime > 0 ";   // Uncompleted task and reminder datetime set
         $sql .= "AND c.reminderInterval > 0 ";                       // Interval set for reminder in number of days
         $sql .= "AND (c.nf_stepType=1 OR c.nf_stepType=7 OR c.nf_stepType=8) ";                 // Interactive Task Types
@@ -1015,19 +1015,19 @@ class nexflow {
         while ($A = DB_fetchArray($q1)) {
             // Check if have exceeded the number of notifications and need to send out Escalation email.
             if (($A['numReminders'] != 0 AND $A['numReminders'] == ($A['numRemindersSent'] + 1) )) {
-                $notifyUID = DB_getItem($_TABLES['nfprocessvariables'], 'variableValue', "nf_templateVariableID = '{$A['escalateVariableID']}' AND nf_processID = '{$A['processID']}'");
+                $notifyUID = DB_getItem($_TABLES['nf_processvariables'], 'variableValue', "nf_templateVariableID = '{$A['escalateVariableID']}' AND nf_processID = '{$A['processID']}'");
                 $email = DB_getItem($_TABLES['users'],'email',"uid='$notifyUID'");
                 $notifyUser = COM_getDisplayName($notifyUID);
                 $subject = 'Workflow Task Escalation Notification';
                 list ($subject, $message) = nf_formatEmailMessage('escalation',$A['nf_templateDataID'],$A['id'],$notifyUser);
                 nf_sendEmail ($email,$subject,$message);
-                DB_query("UPDATE {$_TABLES['nfqueue']} SET numRemindersSent = '0' WHERE id = '{$A['id']}';");
+                DB_query("UPDATE {$_TABLES['nf_queue']} SET numRemindersSent = '0' WHERE id = '{$A['id']}';");
             } else {
                 $subject = 'Workflow Task Reminder Notification';
                 $message = "Task: {$A['taskname']} is un-completed.";
-                DB_query("UPDATE {$_TABLES['nfqueue']} SET numRemindersSent = numRemindersSent + 1 WHERE id = '{$A['id']}';");
+                DB_query("UPDATE {$_TABLES['nf_queue']} SET numRemindersSent = numRemindersSent + 1 WHERE id = '{$A['id']}';");
                 // Determine which process variables contain users to send reminder to
-                $sql =  "SELECT DISTINCT b.variableValue FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['nfprocessvariables']} b ";
+                $sql =  "SELECT DISTINCT b.variableValue FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['nf_processvariables']} b ";
                 $sql .= "WHERE a.nf_remindernotifyVariable=b.nf_templateVariableID AND b.nf_processID='{$A['processID']}'";
                 $sql .= "AND b.variableValue > 1 AND a.nf_templateDataID={$A['nf_templateDataID']}";
                 $q2 = DB_query($sql);
@@ -1053,16 +1053,16 @@ class nexflow {
                     }
                 }
                 // Now check and see if this task has a reminder set for the special "TASK_OWNER" resource variable (id=999)
-                if (DB_count($_TABLES['nftemplateassignment'], array('nf_templateDataID', 'nf_remindernotifyVariable'),array($A['nf_templateDataID'],999)) == 1) {
+                if (DB_count($_TABLES['nf_templateassignment'], array('nf_templateDataID', 'nf_remindernotifyVariable'),array($A['nf_templateDataID'],999)) == 1) {
                     // Check if this task is assigned by variable or UID - Get all assigned users
-                    $sql  = "SELECT b.uid,b.nf_processVariable FROM {$_TABLES['nftemplateassignment']} b ";
+                    $sql  = "SELECT b.uid,b.nf_processVariable FROM {$_TABLES['nf_templateassignment']} b ";
                     $sql .= "WHERE b.nf_templateDataID = '{$A['nf_templateDataID']}' ";
                     $sql .= "AND (uid IS NOT NULL OR nf_processVariable IS NOT NULL) ";
                     $q3 = DB_query($sql);
                     while (list ($notifyUID,$variableid) = DB_fetchArray($q3)) {
                         $email = '';
                         if ($variableid != NULL AND $A['assignedByVariable'] == 1) {
-                            $notifyUID = DB_getItem($_TABLES['nfprocessvariables'],'variableValue',"nf_processID='{$A['processID']}' AND nf_templateVariableID='$variableid'");
+                            $notifyUID = DB_getItem($_TABLES['nf_processvariables'],'variableValue',"nf_processID='{$A['processID']}' AND nf_templateVariableID='$variableid'");
                             $email = DB_getItem($_TABLES['users'],'email',"uid='$notifyUID'");
                         } elseif($A['assignedByVariable'] == 0 ) {
                             $email = DB_getItem($_TABLES['users'],'email',"uid='$notifyUID'");
@@ -1083,7 +1083,7 @@ class nexflow {
                 } else {
                     $reminderInterval = $A['reminderInterval'];
                 }
-                $sql = "UPDATE {$_TABLES['nfqueue']} SET nextReminderTime = DATE_ADD( NOW(), INTERVAL $reminderInterval DAY) WHERE id='{$A['id']}'";
+                $sql = "UPDATE {$_TABLES['nf_queue']} SET nextReminderTime = DATE_ADD( NOW(), INTERVAL $reminderInterval DAY) WHERE id='{$A['id']}'";
                 DB_query($sql);
             }
         }
@@ -1105,12 +1105,12 @@ class nexflow {
 
         $sql = "SELECT distinct a.id, a.status,a.nf_templateDataID, c.nf_templateID, c.nf_stepType, c.nf_handlerid, ";
         $sql .= "c.function, e.templateName, f.handler, b.id AS processId, h.steptype ";
-        $sql .= "FROM {$_TABLES['nfqueue']} a inner join {$_TABLES['nfprocess']} b on  a.nf_processId = b.id ";
-        $sql .= "inner join {$_TABLES['nftemplatedata']} c on a.nf_templateDataId = c.id ";
-        $sql .= "inner join {$_TABLES['nftemplate']} e on b.nf_templateId = e.id ";
-        $sql .= "inner join {$_TABLES['nfsteptype']} h on c.nf_steptype = h.id ";
-        $sql .= "left outer join {$_TABLES['nfhandlers']} f on c.nf_handlerId = f.id ";
-        $sql .= "left outer join {$_TABLES['nftemplateassignment']} g on g.nf_templateDataid = c.id ";
+        $sql .= "FROM {$_TABLES['nf_queue']} a inner join {$_TABLES['nf_process']} b on  a.nf_processId = b.id ";
+        $sql .= "inner join {$_TABLES['nf_templatedata']} c on a.nf_templateDataId = c.id ";
+        $sql .= "inner join {$_TABLES['nf_template']} e on b.nf_templateId = e.id ";
+        $sql .= "inner join {$_TABLES['nf_steptype']} h on c.nf_steptype = h.id ";
+        $sql .= "left outer join {$_TABLES['nf_handlers']} f on c.nf_handlerId = f.id ";
+        $sql .= "left outer join {$_TABLES['nf_templateassignment']} g on g.nf_templateDataid = c.id ";
         $sql .= "WHERE ((a.status <>0 AND a.status IS NOT NULL and a.status<>2 and (h.id=1 OR h.id=7 OR h.id=8)) ";
         $sql .= "OR ((a.status=0 or a.status=3 or a.status=4) and (h.id=2 or h.id=3 or h.id=4 or h.id=5 or h.id=6 or h.id=9 or h.id=10 or h.id=11)) ) ";
         $sql .= "AND (a.archived <> 1 OR a.archived IS NULL OR a.archived =0 ) and (b.complete=0)";
@@ -1167,8 +1167,8 @@ class nexflow {
                             $numComplete = 0;
                             $numIncomplete = 0;
 
-                            $sql  = "SELECT count( a.id ) AS templateCount FROM {$_TABLES['nfqueue']} a ";
-                            $sql .= "INNER JOIN {$_TABLES['nftemplatedatanextstep']} b ";
+                            $sql  = "SELECT count( a.id ) AS templateCount FROM {$_TABLES['nf_queue']} a ";
+                            $sql .= "INNER JOIN {$_TABLES['nf_templatedatanextstep']} b ";
                             $sql .= "ON (a.nf_templateDataID = b.nf_templateDataTo ";
                             $sql .= "OR a.nf_templateDataID = b.nf_templateDataToFalse) ";
                             $sql .= "WHERE a.ID ='$queueID'";
@@ -1176,8 +1176,8 @@ class nexflow {
                             $templateCountResult = DB_fetchArray(DB_query($sql));
                             $numComplete = $templateCountResult[0];
 
-                            $sql  = "SELECT  count( a.id ) AS processCount FROM {$_TABLES['nfqueuefrom']} a ";
-                            $sql .= "INNER JOIN {$_TABLES['nfqueue']} b on a.FromQueueID=b.id ";
+                            $sql  = "SELECT  count( a.id ) AS processCount FROM {$_TABLES['nf_queuefrom']} a ";
+                            $sql .= "INNER JOIN {$_TABLES['nf_queue']} b on a.FromQueueID=b.id ";
                             $sql .= "WHERE (a.queueid = '$queueID' or a.queueid=0) ";
                             $sql .= "AND b.nf_processid='$processID'";
 
@@ -1239,35 +1239,35 @@ class nexflow {
                             break; //end batch task
 
                         case 'set process variable':
-                            $spvRes = DB_query("SELECT formid, fieldid, varValue, incValue, varToSet FROM {$_TABLES['nftemplatedata']} WHERE id=$templateDataID");
+                            $spvRes = DB_query("SELECT formid, fieldid, varValue, incValue, varToSet FROM {$_TABLES['nf_templatedata']} WHERE id=$templateDataID");
                             list ($formid, $fieldid, $varvalue, $incvalue, $vartoset) = DB_fetchArray($spvRes);
 
                             if ($vartoset > 0) {    //needs to be valid variable to set
                                 if ($varvalue != '') {  //set by input
                                     $setvalue = NXCOM_filterText($varvalue);
-                                    DB_query("UPDATE {$_TABLES['nfprocessvariables']} SET variableValue='$setvalue' WHERE nf_processID=$processID AND nf_templateVariableID=$vartoset");
+                                    DB_query("UPDATE {$_TABLES['nf_processvariables']} SET variableValue='$setvalue' WHERE nf_processID=$processID AND nf_templateVariableID=$vartoset");
                                 }
                                 else if ($formid > 0 && $fieldid > 0) {  //set by form result
                                     //have to find the form result
                                     //first get the project id
-                                    $spvSql  = "SELECT a.variableValue FROM {$_TABLES['nfprocessvariables']} a ";
-                                    $spvSql .= "LEFT JOIN {$_TABLES['nftemplatevariables']} b ON b.id=a.nf_templateVariableID ";
+                                    $spvSql  = "SELECT a.variableValue FROM {$_TABLES['nf_processvariables']} a ";
+                                    $spvSql .= "LEFT JOIN {$_TABLES['nf_templatevariables']} b ON b.id=a.nf_templateVariableID ";
                                     $spvSql .= "WHERE b.variableName='PID' AND a.nf_processID=$processID";
                                     $spvRes = DB_query($spvSql);
                                     list ($pid) = DB_fetchArray($spvRes);
                                     $pid = intval ($pid);
 
                                     //now get the form result id
-                                    $resid = intval (DB_getItem($_TABLES['nfproject_forms'], 'results_id', "project_id=$pid AND form_id=$formid"));
+                                    $resid = intval (DB_getItem($_TABLES['nf_projectforms'], 'results_id', "project_id=$pid AND form_id=$formid"));
 
                                     //now get the result from the field id
                                     $setvalue = DB_getItem($_TABLES['nxform_resdata'], 'field_data', "result_id=$resid AND field_id=$fieldid");
-                                    DB_query("UPDATE {$_TABLES['nfprocessvariables']} SET variableValue='$setvalue' WHERE nf_processID=$processID AND nf_templateVariableID=$vartoset");
+                                    DB_query("UPDATE {$_TABLES['nf_processvariables']} SET variableValue='$setvalue' WHERE nf_processID=$processID AND nf_templateVariableID=$vartoset");
                                 }
                                 else if ($incvalue != 0) {  //set by increment
-                                    $curvalue = intval (DB_getItem($_TABLES['nfprocessvariables'], 'variableValue', "nf_processID=$processID AND nf_templateVariableID=$vartoset"));
+                                    $curvalue = intval (DB_getItem($_TABLES['nf_processvariables'], 'variableValue', "nf_processID=$processID AND nf_templateVariableID=$vartoset"));
                                     $setvalue = $curvalue + $incvalue;
-                                    DB_query("UPDATE {$_TABLES['nfprocessvariables']} SET variableValue='$setvalue' WHERE nf_processID=$processID AND nf_templateVariableID=$vartoset");
+                                    DB_query("UPDATE {$_TABLES['nf_processvariables']} SET variableValue='$setvalue' WHERE nf_processID=$processID AND nf_templateVariableID=$vartoset");
                                 }
                             }
 
@@ -1279,10 +1279,10 @@ class nexflow {
                             // a true and false branch is required for this task type.
                             // 1st determine what the argument is
                             $sql  = "SELECT a.ifValue,b.variableName, b.id as variableID, c.logicalEntry, d.operator ";
-                            $sql .= "FROM {$_TABLES['nftemplatedata']} a ";
-                            $sql .= "LEFT OUTER JOIN {$_TABLES['nftemplatevariables']} b on a.argumentVariable=b.id ";
-                            $sql .= "LEFT OUTER JOIN {$_TABLES['nfifprocessarguments']} c on a.argumentProcess=c.id ";
-                            $sql .= "LEFT OUTER JOIN {$_TABLES['nfifoperators']} d on a.operator=d.id ";
+                            $sql .= "FROM {$_TABLES['nf_templatedata']} a ";
+                            $sql .= "LEFT OUTER JOIN {$_TABLES['nf_templatevariables']} b on a.argumentVariable=b.id ";
+                            $sql .= "LEFT OUTER JOIN {$_TABLES['nf_ifprocessarguments']} c on a.argumentProcess=c.id ";
+                            $sql .= "LEFT OUTER JOIN {$_TABLES['nf_ifoperators']} d on a.operator=d.id ";
                             $sql .= "WHERE a.id='$templateDataID' limit 0,1 ";
                             $nextTaskResult = DB_query($sql );
                             $nextTaskRows = DB_numRows($nextTaskResult );
@@ -1297,8 +1297,8 @@ class nexflow {
                                     // using the logical entry, lets switch the logicalEntry value and determine what it is we should be comparing to
                                     // no matter how you slice it, we're going to need the last task's status.
                                     // get the last task's TemplateDataID, then query the queue for this process with the newly sourced templateDataID
-                                    $sql  = "SELECT  b.status FROM {$_TABLES['nfqueuefrom']} a ";
-                                    $sql .= "LEFT OUTER JOIN {$_TABLES['nfqueue']} b on b.id=a.fromqueueid ";
+                                    $sql  = "SELECT  b.status FROM {$_TABLES['nf_queuefrom']} a ";
+                                    $sql .= "LEFT OUTER JOIN {$_TABLES['nf_queue']} b on b.id=a.fromqueueid ";
                                     $sql .= "WHERE a.queueid=$queueID ";
                                     $statusResult = DB_query($sql );
                                     $D = DB_fetchArray($statusResult );
@@ -1345,7 +1345,7 @@ class nexflow {
                                     // need to perform a variable to value operation based on the selected operation!
                                     // $templateVariableID ,$operator ,$ifValue, $processID
                                     // need to select the process variable using the ID from the current process
-                                    $sql  = "SELECT variableValue FROM {$_TABLES['nfprocessvariables']} ";
+                                    $sql  = "SELECT variableValue FROM {$_TABLES['nf_processvariables']} ";
                                     $sql .= "WHERE nf_processID=$processID AND nf_templateVariableID=$templateVariableID";
                                     $ifQuery = DB_query($sql );
                                     $ifQueryNumRows = DB_numRows($ifQuery );
@@ -1398,13 +1398,13 @@ class nexflow {
                                 // create new queue items dependent upon the $whichBranch variable
                                 if ($whichBranch == 1 ) {
                                     // complete this task and create queue items that point to the true branch
-                                    $sql  = "SELECT c.nf_templateDataTo FROM {$_TABLES['nfqueue']} a, {$_TABLES['nftemplatedatanextstep']} c ";
+                                    $sql  = "SELECT c.nf_templateDataTo FROM {$_TABLES['nf_queue']} a, {$_TABLES['nf_templatedatanextstep']} c ";
                                     $sql .= "WHERE a.nf_templateDataid=c.nf_templateDataFrom ";
                                     $sql .= "AND a.nf_processID=$processID AND a.id=$queueID";
                                     $statusToinsert = 1;
                                 } else {
                                     // complete this task and create queue items that point to the false branch
-                                    $sql  = "SELECT c.nf_templateDataToFalse FROM {$_TABLES['nfqueue']} a, {$_TABLES['nftemplatedatanextstep']} c ";
+                                    $sql  = "SELECT c.nf_templateDataToFalse FROM {$_TABLES['nf_queue']} a, {$_TABLES['nf_templatedatanextstep']} c ";
                                     $sql .= "WHERE a.nf_templateDataid=c.nf_templateDataFrom ";
                                     $sql .= "AND a.nf_processID=$processID AND a.id=$queueID";
                                     $statusToinsert = 4;
@@ -1414,10 +1414,10 @@ class nexflow {
                                 if ($nextTaskRows == 0 ) {
                                     // if there are no rows for this specific QueueID and nothing for this processID, there's no next task
                                     $this->archive_task($queueID,$statusToinsert);
-                                    $sql = "UPDATE {$_TABLES['nfprocess']} set complete=1 where id=$processID";
+                                    $sql = "UPDATE {$_TABLES['nf_process']} set complete=1 where id=$processID";
                                     $updateQuery = DB_query($sql );
                                     //if there is a project, update that status
-                                    $sql = "UPDATE {$_TABLES['nfprojects']} set status=1 where wf_process_id=$processID";
+                                    $sql = "UPDATE {$_TABLES['nf_projects']} set status=1 where wf_process_id=$processID";
                                     DB_query($sql );
                                 } else { // we've got tasks
                                     for($nextStepCntr = 0;$nextStepCntr < $nextTaskRows;$nextStepCntr++ ) {
@@ -1426,12 +1426,12 @@ class nexflow {
                                         if ($C[0] == null or $C[0] == '' ) {
                                             // the process is done, Archive the queue item adn set process to complete
                                             $this->archive_task($queueID,$statusToinsert);
-                                            $updateQuery = DB_query("UPDATE {$_TABLES['nfprocess']} set complete=1 where id=$processID");
+                                            $updateQuery = DB_query("UPDATE {$_TABLES['nf_process']} set complete=1 where id=$processID");
                                         } else {
                                             // we have a next step, thus we can archive the queue item and also insert a
                                             // new queue item with the next step populated as the next templatestepid
                                             // echo "next step available";
-                                            $sql  = "SELECT * FROM {$_TABLES['nfqueue']} a ";
+                                            $sql  = "SELECT * FROM {$_TABLES['nf_queue']} a ";
                                             $sql .= "WHERE a.nf_processid='$processID' AND a.nf_templateDataid='{$C[0]}'";
                                             $updateQuery = DB_query($sql );
                                             $updateQueryRows = DB_numRows($updateQuery );
@@ -1443,7 +1443,7 @@ class nexflow {
                                                 // we have the situation here where we have no next item.. this means we
                                                 // can create the next queue item..
                                                 $thisDate = date('Y-m-d H:i:s' );
-                                                $sql  = "INSERT INTO {$_TABLES['nfqueue']} (nf_processID, nf_templateDataID, status,createdDate) ";
+                                                $sql  = "INSERT INTO {$_TABLES['nf_queue']} (nf_processID, nf_templateDataID, status,createdDate) ";
                                                 $sql .= "VALUES ('$processID','{$C[0]}',0,'$thisDate')";
                                                 $updateQuery = DB_query($sql );
                                                 $newTaskid = DB_insertID();
@@ -1454,7 +1454,7 @@ class nexflow {
                                                 }
 
                                                 // Add a new records to the queueFrom table now as well for this new queue record
-                                                $sql = "INSERT INTO {$_TABLES['nfqueuefrom']} (queueID,fromQueueID) values ('$newTaskid','$queueID')";
+                                                $sql = "INSERT INTO {$_TABLES['nf_queuefrom']} (queueID,fromQueueID) values ('$newTaskid','$queueID')";
                                                 DB_query($sql );
 
                                                 // Insert new assignment records for this new task - if an interactive task
@@ -1464,9 +1464,9 @@ class nexflow {
                                                 }
 
                                                 // Determine if task has a reminder set and if so then update the nextReminderTime field in the new queue record
-                                                $reminderInterval = DB_getItem($_TABLES['nftemplatedata'],'reminderInterval',"id='{$C[0]}'");
+                                                $reminderInterval = DB_getItem($_TABLES['nf_templatedata'],'reminderInterval',"id='{$C[0]}'");
                                                 if ($reminderInterval > 0) {
-                                                    $sql  = "UPDATE {$_TABLES['nfqueue']} SET nextReminderTime=DATE_ADD( NOW(), ";
+                                                    $sql  = "UPDATE {$_TABLES['nf_queue']} SET nextReminderTime=DATE_ADD( NOW(), ";
                                                     $sql .= "INTERVAL $reminderInterval DAY) where id='$newTaskid'";
                                                     DB_query($sql );
                                                 }
@@ -1478,7 +1478,7 @@ class nexflow {
                                                 // we have a situation here where the next item already exists.
                                                 // need to determine if the next item has a regeneration flag.
                                                 // if there is a regeneration flag, then create a new process starting with that regeneration flagged item
-                                                $sql = "SELECT * FROM {$_TABLES['nftemplatedata']} a WHERE a.id={$C[0]}";
+                                                $sql = "SELECT * FROM {$_TABLES['nf_templatedata']} a WHERE a.id={$C[0]}";
                                                 $regenResult = DB_query($sql );
                                                 $regenCount = DB_numRows($regenResult );
                                                 $regenArray = DB_fetchArray($regenResult );
@@ -1491,7 +1491,7 @@ class nexflow {
                                                     // set the current process' complete status to 2.. 0 is active, 1 is done, 2 is has children
                                                     $this->newprocess($template, $C[0], $processID );
                                                     $this->archive_task($queueID,$statusToinsert);
-                                                    $newTaskid = DB_getItem($_TABLES['nfqueue'],'id',"nf_processID='{$this->_nfProcessId}'");
+                                                    $newTaskid = DB_getItem($_TABLES['nf_queue'],'id',"nf_processID='{$this->_nfProcessId}'");
                                                     if ($this->_debug ) {
                                                         COM_errorLog("Regenerate Task QueueID: $toQueueID");
                                                     }
@@ -1500,7 +1500,7 @@ class nexflow {
                                                     $this->archive_task($queueID);
                                                 }
                                                 // Add a new records to the queueFrom table for this matching queue record
-                                                $sql  = "INSERT INTO {$_TABLES['nfqueuefrom']} (queueID,fromQueueID) ";
+                                                $sql  = "INSERT INTO {$_TABLES['nf_queuefrom']} (queueID,fromQueueID) ";
                                                 $sql .= "VALUES ({$retrieveQueryArray['id']},$queueID)";
                                                 DB_query($sql );
                                                 $this->archive_task($queueID,$statusToinsert);
@@ -1536,7 +1536,7 @@ class nexflow {
         // using the queueid and the processid, we are able to create or generate the
         // next step or the regenerated next step in a new process
         $thisDate = date('Y-m-d H:i:s' );
-        $sql  = "SELECT  c.nf_templateDataTo FROM {$_TABLES['nfqueue']} a, {$_TABLES['nftemplatedatanextstep']} c ";
+        $sql  = "SELECT  c.nf_templateDataTo FROM {$_TABLES['nf_queue']} a, {$_TABLES['nf_templatedatanextstep']} c ";
         $sql .= "WHERE a.nf_templateDataid=c.nf_templateDataFrom AND a.nf_processID='$processID' AND a.id='$queueID'";
         $nextTaskResult = DB_query($sql );
         $nextTaskRows = DB_numRows($nextTaskResult );
@@ -1545,7 +1545,7 @@ class nexflow {
             // echo "no rows! qid:" . $queueID . " procid:" . $processID . "<HR>";
             // if there are no rows for this specific QueueID and nothing for this processID, there's no next task
             $this->archive_task($queueID);
-            $sql = "UPDATE {$_TABLES['nfprocess']} set complete=1, completedDate='{$thisDate}' where id=$processID";
+            $sql = "UPDATE {$_TABLES['nf_process']} set complete=1, completedDate='{$thisDate}' where id=$processID";
             $updateQuery = DB_query($sql );
 
         } else { // we've got tasks
@@ -1560,7 +1560,7 @@ class nexflow {
                     // echo "thinks the process is done..  qid:" . $queueID . " procid:" . $processID . "<HR>";
                     // Process is done, set the process status to complete and archive queue item
                     $this->archive_task($queueID);
-                    $sql = "UPDATE {$_TABLES['nfprocess']} set complete=1, completedDate='{$thisDate}' where id=$processID";
+                    $sql = "UPDATE {$_TABLES['nf_process']} set complete=1, completedDate='{$thisDate}' where id=$processID";
                     $updateQuery = DB_query($sql );
                 } else {
                     if ($this->_debug ) {
@@ -1568,7 +1568,7 @@ class nexflow {
                     }
                     // we have a next step, thus we can archive the queue item and also insert a
                     // new queue item with the next step populated as the next templatestepid
-                    $sql  = "SELECT * FROM {$_TABLES['nfqueue']} a ";
+                    $sql  = "SELECT * FROM {$_TABLES['nf_queue']} a ";
                     $sql .= "WHERE a.nf_processid='{$processID}' ";
                     $sql .= "AND a.nf_templateDataid='{$C[0]}'";
                     $updateQuery = DB_query($sql );
@@ -1576,7 +1576,7 @@ class nexflow {
                     $retrieveQueryArray = DB_fetchArray($updateQuery );
                     if ($updateQueryRows == 0 ) {
                         // no next item in the queue.. just create it
-                        $sql = "INSERT INTO {$_TABLES['nfqueue']} (nf_processID, nf_templateDataID, status, createdDate) ";
+                        $sql = "INSERT INTO {$_TABLES['nf_queue']} (nf_processID, nf_templateDataID, status, createdDate) ";
                         $sql .= " values ('{$processID}','{$C[0]}',0,'{$thisDate}')";
                         $updateQuery = DB_query($sql );
                         $newTaskid = DB_insertID();
@@ -1591,11 +1591,11 @@ class nexflow {
                         }
 
                         // Determine if task has a reminder set and if so then update the nextReminderTime field in the new queue record
-                        $reminderInterval = DB_getItem($_TABLES['nftemplatedata'],'reminderInterval',"id='{$C[0]}'");
+                        $reminderInterval = DB_getItem($_TABLES['nf_templatedata'],'reminderInterval',"id='{$C[0]}'");
                         if ($reminderInterval > 0) {
-                            DB_query("UPDATE {$_TABLES['nfqueue']} SET nextReminderTime=DATE_ADD( NOW(), INTERVAL $reminderInterval DAY) where id='$newTaskid'");
+                            DB_query("UPDATE {$_TABLES['nf_queue']} SET nextReminderTime=DATE_ADD( NOW(), INTERVAL $reminderInterval DAY) where id='$newTaskid'");
                         }
-                        DB_query("INSERT INTO {$_TABLES['nfqueuefrom']} (queueID,fromQueueID) values ('$newTaskid','{$queueID}')");
+                        DB_query("INSERT INTO {$_TABLES['nf_queuefrom']} (queueID,fromQueueID) values ('$newTaskid','{$queueID}')");
 
                         $this->archive_task($queueID);
 
@@ -1606,7 +1606,7 @@ class nexflow {
                         // we have a situation here where the next item already exists.
                         // need to determine if the next item has a regeneration flag.
                         // if there is a regeneration flag, then create a new process starting with that regeneration flagged item
-                        $regenResult = DB_query("SELECT * FROM {$_TABLES['nftemplatedata']} a where a.id='{$C[0]}'");
+                        $regenResult = DB_query("SELECT * FROM {$_TABLES['nf_templatedata']} a where a.id='{$C[0]}'");
                         $regenCount = DB_numRows($regenResult );
                         $regenArray = DB_fetchArray($regenResult );
 
@@ -1622,15 +1622,15 @@ class nexflow {
                         } else{
                             //no regeneration  we're done
                             $toQueueID = $retrieveQueryArray['id'];
-                            $sql = "INSERT INTO {$_TABLES['nfqueuefrom']} (queueID,fromQueueID) values ('{$toQueueID}','{$queueID}')";
+                            $sql = "INSERT INTO {$_TABLES['nf_queuefrom']} (queueID,fromQueueID) values ('{$toQueueID}','{$queueID}')";
                             $updateQuery = DB_query($sql );
                             $this->archive_task($queueID);
 
-                            $sql = "SELECT * FROM {$_TABLES['nfqueue']} a WHERE a.nf_processid='{$processID}' AND a.nf_templateDataid='{$C[0]}'";
+                            $sql = "SELECT * FROM {$_TABLES['nf_queue']} a WHERE a.nf_processid='{$processID}' AND a.nf_templateDataid='{$C[0]}'";
                             $updateQuery = DB_query( $sql );
                             $updateQueryRows = DB_numRows($updateQuery);
                             if($updateQueryRows == 0){
-                                $sql = "UPDATE {$_TABLES['nfprocess']} SET complete=1, completedDate='{$thisDate}' WHERE id='{$processID}'";
+                                $sql = "UPDATE {$_TABLES['nf_process']} SET complete=1, completedDate='{$thisDate}' WHERE id='{$processID}'";
                                 $updateQuery = DB_query( $sql );
                                 }
                             }
@@ -1658,9 +1658,9 @@ class nexflow {
         $taskID = NXCOM_filterInt($taskID);
         $assigned = array();
 
-        $sql  = "SELECT a.nf_templateDataID, b.assignedByVariable, c.is_interactiveStepType FROM {$_TABLES['nfqueue']} a ";
-        $sql .= "LEFT JOIN {$_TABLES['nftemplatedata']} b on a.nf_templateDataID=b.id ";
-        $sql .= "LEFT JOIN {$_TABLES['nfsteptype']} c on b.nf_stepType=c.id ";
+        $sql  = "SELECT a.nf_templateDataID, b.assignedByVariable, c.is_interactiveStepType FROM {$_TABLES['nf_queue']} a ";
+        $sql .= "LEFT JOIN {$_TABLES['nf_templatedata']} b on a.nf_templateDataID=b.id ";
+        $sql .= "LEFT JOIN {$_TABLES['nf_steptype']} c on b.nf_stepType=c.id ";
         $sql .= "WHERE a.id=$taskID";
         $query = DB_query($sql);
 
@@ -1668,16 +1668,16 @@ class nexflow {
         if ($isStepInteractive) { // Only need to create assignment records for interactive tasks
 
             if($assignedByVariable == 1 || $assignedByVariable == true) {
-                $processID=DB_getItem($_TABLES['nfqueue'],'nf_processID',"id='{$taskID}'");
-                $sql  = "SELECT a.nf_processVariable, b.variableValue FROM {$_TABLES['nftemplateassignment']} a ";
-                $sql .= "LEFT JOIN {$_TABLES['nfprocessvariables']} b ON b.nf_templateVariableID=a.nf_processVariable ";
+                $processID=DB_getItem($_TABLES['nf_queue'],'nf_processID',"id='{$taskID}'");
+                $sql  = "SELECT a.nf_processVariable, b.variableValue FROM {$_TABLES['nf_templateassignment']} a ";
+                $sql .= "LEFT JOIN {$_TABLES['nf_processvariables']} b ON b.nf_templateVariableID=a.nf_processVariable ";
                 $sql .= "WHERE a.nf_templateDataID=$templateDataID AND b.nf_processID=$processID;";
                 $res = DB_query($sql);
                 while ($A = DB_fetchArray($res)) {
                     $assigned[$A['nf_processVariable']] = $A['variableValue'];
                 }
             } else {
-                $sql = "SELECT uid FROM {$_TABLES['nftemplateassignment']} WHERE nf_templateDataID=$templateDataID AND uid is not NULL";
+                $sql = "SELECT uid FROM {$_TABLES['nf_templateassignment']} WHERE nf_templateDataID=$templateDataID AND uid is not NULL";
                 $res = DB_query($sql);
                 $nrows = DB_numRows($res);
 
@@ -1713,20 +1713,20 @@ class nexflow {
         }
 
         if($ignoreUID){
-            DB_query("UPDATE {$_TABLES['nfqueue']} set status=2 where id='$queueID'");
+            DB_query("UPDATE {$_TABLES['nf_queue']} set status=2 where id='$queueID'");
         }else{
             if ($this->_nfUserId == '' or $this->_nfUserId == null ) {
-                DB_query("UPDATE {$_TABLES['nfqueue']} set uid=NULL, status=2 where id='$queueID'");
+                DB_query("UPDATE {$_TABLES['nf_queue']} set uid=NULL, status=2 where id='$queueID'");
             } else {
-                DB_query("UPDATE {$_TABLES['nfqueue']} set uid='{$this->_nfUserId}',status=2 where id='$queueID'");
+                DB_query("UPDATE {$_TABLES['nf_queue']} set uid='{$this->_nfUserId}',status=2 where id='$queueID'");
             }
         }
         //now we need to create the new project record - if it exists.
-        $ifExists=DB_getItem($_TABLES['nfproject_taskhistory'],"id","task_id={$queueID} AND status=0");
+        $ifExists=DB_getItem($_TABLES['nf_projecttaskhistory'],"id","task_id={$queueID} AND status=0");
         $ifExists=NXCOM_filterInt($ifExists);
         if($ifExists>0){//we have a valid taskhistory record.. thus this is a project tracked workflow
             $theTime=time();
-            $sql ="UPDATE {$_TABLES['nfproject_taskhistory']} SET status=2, date_started={$theTime}, date_completed=0 WHERE id={$ifExists}";
+            $sql ="UPDATE {$_TABLES['nf_projecttaskhistory']} SET status=2, date_started={$theTime}, date_completed=0 WHERE id={$ifExists}";
             $res=DB_query($sql);
 
         }
@@ -1744,25 +1744,25 @@ class nexflow {
         }
 
         if($ignoreUID){
-            DB_query("UPDATE {$_TABLES['nfqueue']} set status=0 where id='$queueID'");
+            DB_query("UPDATE {$_TABLES['nf_queue']} set status=0 where id='$queueID'");
         }else{
             if ($this->_nfUserId == '' or $this->_nfUserId == null ) {
-                DB_query("UPDATE {$_TABLES['nfqueue']} set uid=NULL, status=0 where id='$queueID'");
+                DB_query("UPDATE {$_TABLES['nf_queue']} set uid=NULL, status=0 where id='$queueID'");
             } else {
-                DB_query("UPDATE {$_TABLES['nfqueue']} set uid='{$this->_nfUserId}',status=0 where id='$queueID'");
+                DB_query("UPDATE {$_TABLES['nf_queue']} set uid='{$this->_nfUserId}',status=0 where id='$queueID'");
             }
         }
         //now we need to create the new project record - if it exists.
-        $ifExists=DB_getItem($_TABLES['nfproject_taskhistory'],"id","task_id={$queueID} AND status=2 ORDER BY id DESC LIMIT 1");
+        $ifExists=DB_getItem($_TABLES['nf_projecttaskhistory'],"id","task_id={$queueID} AND status=2 ORDER BY id DESC LIMIT 1");
         $ifExists=NXCOM_filterInt($ifExists);
         if($ifExists>0){//we have a valid taskhistory record.. thus this is a project tracked workflow
             $theTime=time();
-            $sql  ="INSERT INTO {$_TABLES['nfproject_taskhistory']} (project_id,process_id,task_id,assigned_uid,date_assigned,date_started,date_completed,status) ";
+            $sql  ="INSERT INTO {$_TABLES['nf_projecttaskhistory']} (project_id,process_id,task_id,assigned_uid,date_assigned,date_started,date_completed,status) ";
             $sql  .="SELECT project_id,process_id,task_id,assigned_uid,{$theTime},0,0,0 ";
-            $sql  .="FROM {$_TABLES['nfproject_taskhistory']} WHERE id={$ifExists}";
+            $sql  .="FROM {$_TABLES['nf_projecttaskhistory']} WHERE id={$ifExists}";
             $res=DB_query($sql);
             $newEntry=DB_insertId();
-            $sql ="UPDATE {$_TABLES['nfproject_taskhistory']} SET date_completed={$theTime} WHERE id={$ifExists}";
+            $sql ="UPDATE {$_TABLES['nf_projecttaskhistory']} SET date_completed={$theTime} WHERE id={$ifExists}";
             $res=DB_query($sql);
 
         }
@@ -1778,16 +1778,16 @@ class nexflow {
             COM_errorLog("Nexflow: hold_process- updating process: $pid");
         }
 
-        $sql = "SELECT id FROM {$_TABLES['nfqueue']} where nf_processID={$pid} and (status=0 or status is NULL) and (archived=0 or archived is null)";
+        $sql = "SELECT id FROM {$_TABLES['nf_queue']} where nf_processID={$pid} and (status=0 or status is NULL) and (archived=0 or archived is null)";
         $res = DB_query($sql);
         $nrows = DB_numRows($res);
         for($cntr=0;$cntr<$nrows;$cntr++){
             $A = DB_fetchArray($res);
             $this->hold_task($A['id'],true);
-            //$sql = "UPDATE {$_TABLES['nfqueue']} set status=2 where id={$A['id']}";
+            //$sql = "UPDATE {$_TABLES['nf_queue']} set status=2 where id={$A['id']}";
             //DB_query($sql);
         }
-        $sql = "UPDATE {$_TABLES['nfprocess']} set complete=3 where id={$pid}";
+        $sql = "UPDATE {$_TABLES['nf_process']} set complete=3 where id={$pid}";
         DB_query($sql);
     }
 
@@ -1801,17 +1801,17 @@ class nexflow {
             COM_errorLog("Nexflow: unhold_process- updating process: $pid");
         }
 
-        $sql = "SELECT id FROM {$_TABLES['nfqueue']} where nf_processID={$pid} and (status=2) and (archived=0 or archived is null)";
+        $sql = "SELECT id FROM {$_TABLES['nf_queue']} where nf_processID={$pid} and (status=2) and (archived=0 or archived is null)";
         $res = DB_query($sql);
         $nrows = DB_numRows($res);
         for($cntr=0;$cntr<$nrows;$cntr++){
             $A = DB_fetchArray($res);
-            //$sql = "UPDATE {$_TABLES['nfqueue']} set status=0 where id={$A['id']}";
+            //$sql = "UPDATE {$_TABLES['nf_queue']} set status=0 where id={$A['id']}";
             //DB_query($sql);
             $this->unhold_task($A['id'], true);
 
         }
-        $sql = "UPDATE {$_TABLES['nfprocess']} set complete=0 where id={$pid}";
+        $sql = "UPDATE {$_TABLES['nf_process']} set complete=0 where id={$pid}";
         DB_query($sql);
 
     }
@@ -1824,7 +1824,7 @@ class nexflow {
         global $_TABLES;
         $processid = NXCOM_filterInt($processid);
         if($txt != '' && $processid > 0) {
-            $sql = "UPDATE {$_TABLES['nfprojects']} set description='{$txt}' where wf_process_id={$processid}";
+            $sql = "UPDATE {$_TABLES['nf_projects']} set description='{$txt}' where wf_process_id={$processid}";
             DB_query($sql);
         }
     }
@@ -1838,7 +1838,7 @@ class nexflow {
         global $_TABLES;
         $processid = NXCOM_filterInt($processid);
         if($txt != '' && $processid > 0){
-            $sql = "UPDATE {$_TABLES['nfprocess']} set customFlowName='{$txt}' where id={$processid}";
+            $sql = "UPDATE {$_TABLES['nf_process']} set customFlowName='{$txt}' where id={$processid}";
             DB_query($sql);
         }
     }

@@ -82,10 +82,10 @@ function wfBuildSQLstatement($taskid,$processid,$revdirection,$singletask,$op=''
     $sql =  "SELECT a.id, a.status, a.archived, a.uid, a.nf_templateDataID, a.nf_processID, a.createdDate, a.completedDate, c.function, ";
     $sql .= "c.nf_templateID, c.taskname, c.nf_stepType, e.stepType as tasktype, a.nf_processID, b.pid, c.assignedByVariable, ";
     $sql .= "c.nf_handlerid, c.logicalID, c.assignedByVariable, c.function, c.formid,d.templateName ";
-    $sql .= "FROM {$_TABLES['nfqueue']} a INNER JOIN {$_TABLES['nfprocess']} b ON a.nf_processId = b.id ";
-    $sql .= "INNER JOIN {$_TABLES['nftemplatedata']} c ON a.nf_templateDataId = c.id ";
-    $sql .= "INNER JOIN {$_TABLES['nftemplate']} d ON b.nf_templateId = d.id ";
-    $sql .= "LEFT JOIN {$_TABLES['nfsteptype']} e on c.nf_stepType=e.id ";
+    $sql .= "FROM {$_TABLES['nf_queue']} a INNER JOIN {$_TABLES['nf_process']} b ON a.nf_processId = b.id ";
+    $sql .= "INNER JOIN {$_TABLES['nf_templatedata']} c ON a.nf_templateDataId = c.id ";
+    $sql .= "INNER JOIN {$_TABLES['nf_template']} d ON b.nf_templateId = d.id ";
+    $sql .= "LEFT JOIN {$_TABLES['nf_steptype']} e on c.nf_stepType=e.id ";
     if ($op == '') {
         if ($processid > 0) {
             $sql .= "WHERE nf_processID = $processid ";
@@ -154,7 +154,7 @@ if (DB_numRows($query) > 0) {
     $p->set_var('action_url',$actionURL);
     $p->set_var('singleuse',$singleuse);
     $p->set_var('sprocessid',$process);
-    $p->set_var('queue_totalsize',DB_count($_TABLES['nfqueue']));
+    $p->set_var('queue_totalsize',DB_count($_TABLES['nf_queue']));
     $p->set_var('start_link',$_CONF['site_admin_url'] .'/plugins/nexflow/wftrace.php?op=start&singleuse='.$singleuse);
     $p->set_var('end_link',$_CONF['site_admin_url'] .'/plugins/nexflow/wftrace.php?op=end&singleuse='.$singleuse);
     
@@ -249,18 +249,18 @@ if (DB_numRows($query) > 0) {
         $nexrowclass = 1;
         switch  ($A['nf_stepType']) {
             case 1:     // Manual Web
-                $handler_id = DB_getItem($_TABLES['nftemplatedata'], 'nf_handlerId', "id={$A['nf_templateDataID']}");              
-                $handler = DB_getItem($_TABLES['nfhandlers'], 'handler', "id=$handler_id"); 
+                $handler_id = DB_getItem($_TABLES['nf_templatedata'], 'nf_handlerId', "id={$A['nf_templateDataID']}");              
+                $handler = DB_getItem($_TABLES['nf_handlers'], 'handler', "id=$handler_id"); 
                 $p->set_var ('task_related_information', "<tr class=\"pluginRow2\"><td width=\"40%\"><label>Handler:</label></td><td>$handler</td></tr>");
                 break;              
             case 5:     // IF Task
-                $B = DB_fetchArray(DB_query("SELECT * FROM {$_TABLES['nftemplatedata']} WHERE id={$A['nf_templateDataID']}")); 
+                $B = DB_fetchArray(DB_query("SELECT * FROM {$_TABLES['nf_templatedata']} WHERE id={$A['nf_templateDataID']}")); 
                 if ($B['argumentVariable'] > 0) {
-                    $variableName = DB_getItem($_TABLES['nftemplatevariables'], 'variableName', "id='{$B['argumentVariable']}'");
-                    $operator = DB_getItem($_TABLES['nfifoperators'], 'operator', "id='{$B['operator']}'");
+                    $variableName = DB_getItem($_TABLES['nf_templatevariables'], 'variableName', "id='{$B['argumentVariable']}'");
+                    $operator = DB_getItem($_TABLES['nf_ifoperators'], 'operator', "id='{$B['operator']}'");
                     $if_task_condition = "{$variableName} {$operator} {$B['ifValue']}";
                 } else {
-                    $if_task_condition = DB_getItem($_TABLES['nfifprocessarguments'],'label',"id='{$B['argumentProcess']}'");
+                    $if_task_condition = DB_getItem($_TABLES['nf_ifprocessarguments'],'label',"id='{$B['argumentProcess']}'");
                 }
                 $if_task_condition = "<tr class=\"pluginRow2\"><td width=\"40%\"><label>Condition:</label></td><td>$if_task_condition</td></tr>";
                 $p->set_var ('task_related_information',$if_task_condition);            
@@ -273,7 +273,7 @@ if (DB_numRows($query) > 0) {
                 $interactive_task = true;                
                 break;
             case 8:     // Form Function
-                $task_formid = DB_getItem($_TABLES['nftemplatedata'], 'formid', "id={$A['nf_templateDataID']}");              
+                $task_formid = DB_getItem($_TABLES['nf_templatedata'], 'formid', "id={$A['nf_templateDataID']}");              
                 $form_name = DB_getItem($_TABLES['nxform_definitions'],'name',"id=$task_formid");
                 $p->set_var ('task_related_information', "<tr class=\"pluginRow2\"><td width=\"40%\"><label>Form:</label></td><td>$form_name</td></tr>");
                 $interactive_task = true;                
@@ -286,12 +286,12 @@ if (DB_numRows($query) > 0) {
         }
         if ($interactive_task) {
             if ($A['assignedByVariable'] == 1) {
-                $sql = "SELECT nf_processVariable FROM {$_TABLES['nftemplateassignment']} ";
+                $sql = "SELECT nf_processVariable FROM {$_TABLES['nf_templateassignment']} ";
                 $sql .= "WHERE nf_templateDataID={$A['nf_templateDataID']} AND nf_processVariable IS NOT NULL";
                 $vquery = DB_query($sql);
                 $variables = array();
                 while (list($variableID) = DB_fetchArray($vquery)) {                
-                    $variables[] = DB_getItem($_TABLES['nftemplatevariables'],'variableName',"id='$variableID'");
+                    $variables[] = DB_getItem($_TABLES['nf_templatevariables'],'variableName',"id='$variableID'");
                 }
                 $variableAssignment = implode(',',$variables);                                        
                 $html .= "<tr class=\"pluginRow{$nexrowclass}\"><td width=\"40%\"><label>Assigned by Variable:</label></td><td>$variableAssignment</td></tr>";          
@@ -310,7 +310,7 @@ if (DB_numRows($query) > 0) {
         echo $p->finish ($p->get_var('output'));
 
         // Get all related Process Variables 
-        $sql =  "SELECT a.nf_templateVariableID, a.variableValue, b.variableName FROM {$_TABLES['nfprocessvariables']} a, {$_TABLES['nftemplatevariables']} b ";
+        $sql =  "SELECT a.nf_templateVariableID, a.variableValue, b.variableName FROM {$_TABLES['nf_processvariables']} a, {$_TABLES['nf_templatevariables']} b ";
         $sql .= "WHERE a.nf_templateVariableID=b.id AND a.nf_processID='{$A['nf_processID']}'";
         $process_query = DB_query($sql);
         echo '<table width="100%" class="plugin"><tr>';

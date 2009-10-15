@@ -129,7 +129,7 @@ function nf_makeDropDown($idCol, $displayCol, $table,$style=''){
 function getnextlid($templateid){
     global $_TABLES;
 
-    $sql = "SELECT max(logicalID) FROM {$_TABLES['nftemplatedata']} WHERE nf_templateid=$templateid";
+    $sql = "SELECT max(logicalID) FROM {$_TABLES['nf_templatedata']} WHERE nf_templateid=$templateid";
     $result = DB_Query($sql);
     $A = DB_FetchArray($result);
     if($A[0] == NULL) {
@@ -146,7 +146,7 @@ function getnextlid($templateid){
 function nfidtolid($nfid) {
     global $_TABLES;
 
-    $sql = "SELECT logicalid FROM {$_TABLES['nftemplatedata']} WHERE id=$nfid";
+    $sql = "SELECT logicalid FROM {$_TABLES['nf_templatedata']} WHERE id=$nfid";
     $result = DB_Query($sql);
     $A = DB_FetchArray($result);
     if($A[0] == NULL) {
@@ -162,7 +162,7 @@ function nfidtolid($nfid) {
 // Convert Logical Task ID ( Task ID per template) to actual Task ID (nexflow id)
 function lidtonfid($lid, $templateID) {
     global $_TABLES;
-    $sql = "SELECT id FROM {$_TABLES['nftemplatedata']} WHERE nf_templateid={$templateID} AND logicalID={$lid}";
+    $sql = "SELECT id FROM {$_TABLES['nf_templatedata']} WHERE nf_templateid={$templateID} AND logicalID={$lid}";
     $result = DB_Query($sql);
     $A = DB_FetchArray($result);
     if($A[0] == NULL){
@@ -180,26 +180,26 @@ function moveliddown($taskid){
     global $_TABLES;
     //check if there is a lid above this one..
     //also take into account if the lid above this one is the first task, this task must replace it as the first task..
-    $templateid=DB_getItem( $_TABLES['nftemplatedata'], 'nf_templateID', "id=" . $taskid );
-    $thisLid=DB_getItem( $_TABLES['nftemplatedata'], 'logicalid', "id=" . $taskid );
+    $templateid=DB_getItem( $_TABLES['nf_templatedata'], 'nf_templateID', "id=" . $taskid );
+    $thisLid=DB_getItem( $_TABLES['nf_templatedata'], 'logicalid', "id=" . $taskid );
 
-    $sql = "SELECT id,logicalID FROM {$_TABLES['nftemplatedata']} WHERE nf_templateID='$templateid' AND logicalID > $thisLid ";
+    $sql = "SELECT id,logicalID FROM {$_TABLES['nf_templatedata']} WHERE nf_templateID='$templateid' AND logicalID > $thisLid ";
     $sql .= "ORDER BY logicalID ASC LIMIT 1";
     $query = DB_query($sql);
 
     //only perform work if we're not the last task already..
     if(DB_numRows($query) > 0){
         list ($nextID, $nextLID) = DB_fetchArray($query);
-        $sql = "UPDATE {$_TABLES['nftemplatedata']} set logicalID='$thisLid' WHERE id='$nextID'";
+        $sql = "UPDATE {$_TABLES['nf_templatedata']} set logicalID='$thisLid' WHERE id='$nextID'";
         $result = DB_Query($sql);
 
-        $sql = "UPDATE {$_TABLES['nftemplatedata']} set logicalID='$nextLID' WHERE id='$taskid'";
+        $sql = "UPDATE {$_TABLES['nf_templatedata']} set logicalID='$nextLID' WHERE id='$taskid'";
         $result = DB_Query($sql);
 
-        if(DB_getItem($_TABLES['nftemplatedata'],'firstTask', "id=" . $taskid) == 1){
-            $sql = "UPDATE {$_TABLES['nftemplatedata']} set firstTask=1 WHERE id='$nextID'";
+        if(DB_getItem($_TABLES['nf_templatedata'],'firstTask', "id=" . $taskid) == 1){
+            $sql = "UPDATE {$_TABLES['nf_templatedata']} set firstTask=1 WHERE id='$nextID'";
             $result = DB_Query($sql);
-            $sql = "UPDATE {$_TABLES['nftemplatedata']} set firstTask=0 where id='$taskid'";
+            $sql = "UPDATE {$_TABLES['nf_templatedata']} set firstTask=0 where id='$taskid'";
             $result = DB_Query($sql);
          }
     }
@@ -210,9 +210,9 @@ function movelidup($taskid){
     global $_TABLES;
     //check if there is a lid above this one..
     //also take into account if the lid above this one is the first task, this task must replace it as the first task..
-    $templateid=DB_getItem( $_TABLES['nftemplatedata'], 'nf_templateID', "id=" . $taskid );
-    $thisLid=DB_getItem( $_TABLES['nftemplatedata'], 'logicalid', "id=" . $taskid );
-    $sql = "SELECT id,logicalID FROM {$_TABLES['nftemplatedata']} WHERE nf_templateID='$templateid' AND logicalID < $thisLid ";
+    $templateid=DB_getItem( $_TABLES['nf_templatedata'], 'nf_templateID', "id=" . $taskid );
+    $thisLid=DB_getItem( $_TABLES['nf_templatedata'], 'logicalid', "id=" . $taskid );
+    $sql = "SELECT id,logicalID FROM {$_TABLES['nf_templatedata']} WHERE nf_templateID='$templateid' AND logicalID < $thisLid ";
     $sql .= "ORDER BY logicalID DESC LIMIT 1";
     $query = DB_query($sql);
 
@@ -220,16 +220,16 @@ function movelidup($taskid){
     if(DB_numRows($query) > 0){
         list ($previousID, $previousLID) = DB_fetchArray($query);
 
-        $sql = "UPDATE {$_TABLES['nftemplatedata']} set logicalID='$thisLid' WHERE id='$previousID'";
+        $sql = "UPDATE {$_TABLES['nf_templatedata']} set logicalID='$thisLid' WHERE id='$previousID'";
         $result = DB_Query($sql);
 
-        $sql = "UPDATE {$_TABLES['nftemplatedata']} set logicalID='$previousLID' WHERE id='$taskid'";
+        $sql = "UPDATE {$_TABLES['nf_templatedata']} set logicalID='$previousLID' WHERE id='$taskid'";
         $result = DB_Query($sql);
 
-        if(DB_getItem($_TABLES['nftemplatedata'],'firstTask', "id=" . $previousID) == 1){
-            $sql = "UPDATE {$_TABLES['nftemplatedata']} set firstTask=1 WHERE id='$taskid'";
+        if(DB_getItem($_TABLES['nf_templatedata'],'firstTask', "id=" . $previousID) == 1){
+            $sql = "UPDATE {$_TABLES['nf_templatedata']} set firstTask=1 WHERE id='$taskid'";
             $result = DB_Query($sql);
-            $sql = "UPDATE {$_TABLES['nftemplatedata']} set firstTask=0 WHERE id='$previousID'";
+            $sql = "UPDATE {$_TABLES['nf_templatedata']} set firstTask=0 WHERE id='$previousID'";
             $result = DB_Query($sql);
         }
     }
@@ -250,13 +250,13 @@ function nf_getAssignedUID($taskID) {
     global $_TABLES;
     $assigned = array ();
 
-    $sql = "SELECT uid FROM {$_TABLES['nfproductionassignments']} WHERE task_id=$taskID";
+    $sql = "SELECT uid FROM {$_TABLES['nf_productionassignments']} WHERE task_id=$taskID";
     $res = DB_query($sql);
-    if (DB_numRows($res) == 0 AND DB_count($_TABLES['nfqueue'],'id',$taskID)) {
+    if (DB_numRows($res) == 0 AND DB_count($_TABLES['nf_queue'],'id',$taskID)) {
         // Check if this is an interactive task
-        $sql  = "SELECT is_interactiveStepType FROM {$_TABLES['nfqueue']} a ";
-        $sql .= "LEFT JOIN {$_TABLES['nftemplatedata']} b on a.nf_templateDataID=b.id ";
-        $sql .= "LEFT JOIN {$_TABLES['nfsteptype']} c on b.nf_stepType=c.id ";
+        $sql  = "SELECT is_interactiveStepType FROM {$_TABLES['nf_queue']} a ";
+        $sql .= "LEFT JOIN {$_TABLES['nf_templatedata']} b on a.nf_templateDataID=b.id ";
+        $sql .= "LEFT JOIN {$_TABLES['nf_steptype']} c on b.nf_stepType=c.id ";
         $sql .= "WHERE a.id=$taskID";
         list ($isStepInteractive) = DB_fetchArray(DB_query($sql));
         if ($isStepInteractive == 1) {
@@ -294,7 +294,7 @@ function nf_reassign_task($queue_id,$assign_uid,$current_uid,$variable_id) {
     if ($assign_uid < 2 OR DB_getItem($_TABLES['users'],'status',"uid=$assign_uid") != 3) {
         COM_errorLog("nf_reassign_task - assignment to invalid user detected: UID:$assign_uid");
     } else {
-        $sql  = "SELECT id,uid,assignBack_uid FROM {$_TABLES['nfproductionassignments']} WHERE task_id=$queue_id ";
+        $sql  = "SELECT id,uid,assignBack_uid FROM {$_TABLES['nf_productionassignments']} WHERE task_id=$queue_id ";
         if ($variable_id > 0) {
             $sql .= " AND nf_processVariable=$variable_id";
         } else {
@@ -308,7 +308,7 @@ function nf_reassign_task($queue_id,$assign_uid,$current_uid,$variable_id) {
             /* Need to now check if the to-be-assigned user is away and if so .. then assigned to their backup */
             $assignToUserID = nf_getAwayReassignmentUid($assign_uid);
 
-            $sql  = "UPDATE {$_TABLES['nfproductionassignments']} SET uid=$assignToUserID, assignBack_uid=$current_uid ";
+            $sql  = "UPDATE {$_TABLES['nf_productionassignments']} SET uid=$assignToUserID, assignBack_uid=$current_uid ";
             $sql .= "WHERE id={$currentProdRec['id']}";
             DB_query($sql);
         } else {
@@ -329,11 +329,11 @@ function nf_reassign_task($queue_id,$assign_uid,$current_uid,$variable_id) {
 function nf_revertToOriginalOwner($id) {
     global $_TABLES;
 
-    if (DB_count($_TABLES['nfproductionassignments'],'id',$id)) {
-        $sql  = "SELECT uid,assignBack_uid FROM {$_TABLES['nfproductionassignments']} WHERE id=$id";
+    if (DB_count($_TABLES['nf_productionassignments'],'id',$id)) {
+        $sql  = "SELECT uid,assignBack_uid FROM {$_TABLES['nf_productionassignments']} WHERE id=$id";
         $currentProdRec = DB_fetchArray(DB_query($sql));
 
-        $sql  = "UPDATE {$_TABLES['nfproductionassignments']} SET uid={$currentProdRec['assignBack_uid']},assignBack_uid=0 ";
+        $sql  = "UPDATE {$_TABLES['nf_productionassignments']} SET uid={$currentProdRec['assignBack_uid']},assignBack_uid=0 ";
         $sql .= "WHERE id=$id ";
         DB_query($sql);
     }
@@ -354,7 +354,7 @@ function nf_getAwayReassignmentUid($userID,$arrusers='') {
     global $_TABLES;
 
     if ($arrusers == '') $arrusers = array();  // Initialize array that will be used to test we don't have users reassigning to each other
-    $query = DB_query ("SELECT away_start,away_return,reassign_uid,is_active FROM {$_TABLES['nfuseraway']} WHERE uid = $userID");
+    $query = DB_query ("SELECT away_start,away_return,reassign_uid,is_active FROM {$_TABLES['nf_useraway']} WHERE uid = $userID");
     list ($datestart,$datereturn,$reassign_uid,$is_active) = DB_fetchArray ($query);
     // Check and see if re-assign user is trying to link back - prevent a infinite loop
     if (in_array($reassign_uid,$arrusers)) {
@@ -383,7 +383,7 @@ function nf_getAwayReassignmentUid($userID,$arrusers='') {
 function nf_formatEmailMessage($type,$tid,$qid,$user) {
     global $CONF_NF,$_TABLES,$_CONF;
 
-    $sql = "SELECT taskname,prenotify_message,postnotify_message,reminder_message,prenotify_subject,postnotify_subject,reminder_subject FROM {$_TABLES['nftemplatedata']} WHERE id='$tid'";
+    $sql = "SELECT taskname,prenotify_message,postnotify_message,reminder_message,prenotify_subject,postnotify_subject,reminder_subject FROM {$_TABLES['nf_templatedata']} WHERE id='$tid'";
     list ($taskname,$premessage,$postmessage,$remindermessage,$presubject,$postsubject,$remindersubject) = DB_fetchArray(DB_query($sql));
     $message = '';
     $subject = '';
@@ -406,8 +406,8 @@ function nf_formatEmailMessage($type,$tid,$qid,$user) {
             break;
     }
 
-    $dateassigned = DB_getItem($_TABLES['nfqueue'],'createdDate',"id='$qid'");
-    $processid = DB_getItem($_TABLES['nfqueue'],'nf_processID',"id='$qid'");
+    $dateassigned = DB_getItem($_TABLES['nf_queue'],'createdDate',"id='$qid'");
+    $processid = DB_getItem($_TABLES['nf_queue'],'nf_processID',"id='$qid'");
     if ($processid > 0) {
         $nfclass = new nexflow($processid);
         $pid = $nfclass->get_ProcessVariable('PID');
@@ -417,7 +417,7 @@ function nf_formatEmailMessage($type,$tid,$qid,$user) {
         $projectlink = 'N/A';
         $pid = 0;
     } else {
-        $projectName = DB_getItem($_TABLES['nfprojects'],'description',"id=$pid");
+        $projectName = DB_getItem($_TABLES['nf_projects'],'description',"id=$pid");
         $projectlink = $CONF_NF['RequestDetailLink_URL'] . '?id=' . $pid . '?appmode=';
     }
 
@@ -553,7 +553,7 @@ function nf_GetAllRelatedProcesses($id,$processes='') {
 
     if (!is_array($processes)) {
         // If $processes is not set - then id is the project_id - need to get the initial process id
-        $procid = DB_getItem($_TABLES['nfprojects'],'wf_process_id', "id=$id");
+        $procid = DB_getItem($_TABLES['nf_projects'],'wf_process_id', "id=$id");
         if ($procid > 0) {
             $processes = array();
             $processes[] = $procid;
@@ -564,7 +564,7 @@ function nf_GetAllRelatedProcesses($id,$processes='') {
         }
     } else {
         // Check if there is another process whose parent "pid" is set
-        $procid = DB_getItem($_TABLES['nfprocess'],'id', "pid=$id");
+        $procid = DB_getItem($_TABLES['nf_process'],'id', "pid=$id");
         if ($procid != 0) {
             $processes[] = $procid;
             $processes = nf_GetAllRelatedProcesses($procid,$processes);
@@ -593,11 +593,11 @@ function nf_getListofUncompletedTasks(&$processlist) {
     $retval = array();
     $plist = implode(',',$processlist);
     $sql = "SELECT distinct a.id ";
-    $sql .= "FROM {$_TABLES['nfqueue']} a inner join {$_TABLES['nfprocess']} b on  a.nf_processId = b.id ";
-    $sql .= "inner join {$_TABLES['nftemplatedata']} c on a.nf_templateDataId = c.id ";
-    $sql .= "inner join {$_TABLES['nfprocess']} d on  a.nf_processId = d.id ";
-    $sql .= "inner join {$_TABLES['nftemplate']} e on b.nf_templateId = e.id ";
-    $sql .= "inner join {$_TABLES['nfsteptype']} h on c.nf_steptype = h.id ";
+    $sql .= "FROM {$_TABLES['nf_queue']} a inner join {$_TABLES['nf_process']} b on  a.nf_processId = b.id ";
+    $sql .= "inner join {$_TABLES['nf_templatedata']} c on a.nf_templateDataId = c.id ";
+    $sql .= "inner join {$_TABLES['nf_process']} d on  a.nf_processId = d.id ";
+    $sql .= "inner join {$_TABLES['nf_template']} e on b.nf_templateId = e.id ";
+    $sql .= "inner join {$_TABLES['nf_steptype']} h on c.nf_steptype = h.id ";
     $sql .= "WHERE d.complete=0 ";
     if (count($processlist) > 0) {
         $sql .= "AND a.id not in ($plist) ";
@@ -625,10 +625,10 @@ function nf_getFormResult($templateTaskid,$projectid) {
     /* Retrieve the form for that this review task is defined for */
     // Potentially more then 1 form could be valid to verify - explode into an array
     // Get the latest result record in case there are more then 1 for the same form.
-    $aforms = explode(',',DB_getItem($_TABLES['nftemplatedata'], 'optionalParm', "id={$templateTaskid}"));
+    $aforms = explode(',',DB_getItem($_TABLES['nf_templatedata'], 'optionalParm', "id={$templateTaskid}"));
     if (is_array($aforms)) {
         foreach ($aforms as $formid) {
-            $sql  = "SELECT id,results_id FROM {$_TABLES['nfproject_forms']} ";
+            $sql  = "SELECT id,results_id FROM {$_TABLES['nf_projectforms']} ";
             $sql .= "WHERE project_id='$projectid' ";
             $sql .= "AND form_id='{$formid}' ";
             $sql .= "ORDER BY id DESC LIMIT 1";
@@ -697,13 +697,13 @@ function nf_getFinalTaskName($taskid){
     global $_TABLES;
 
     $sql  ="SELECT a.nf_processID,b.isDynamicTaskName,b.dynamicTaskNameVariableID,b.taskname ";
-    $sql .="FROM {$_TABLES['nfqueue']} a ";
-    $sql .="INNER JOIN {$_TABLES['nftemplatedata']} b on a.nf_templateDataID=b.id ";
+    $sql .="FROM {$_TABLES['nf_queue']} a ";
+    $sql .="INNER JOIN {$_TABLES['nf_templatedata']} b on a.nf_templateDataID=b.id ";
     $sql .="WHERE a.id={$taskid}";
     $res=DB_query($sql);
     list($processID,$isDynamicTaskName,$dynamicTaskNameVariableID,$taskname)=DB_fetchArray($res);
     if($isDynamicTaskName==1){
-        $sql  = "SELECT variableValue FROM {$_TABLES['nfprocessvariables']} ";
+        $sql  = "SELECT variableValue FROM {$_TABLES['nf_processvariables']} ";
         $sql .= "WHERE nf_processid='{$processID}' AND nf_templateVariableID='{$dynamicTaskNameVariableID}'";
         $res=DB_query($sql);
         list($taskname)=DB_fetchArray($res);
@@ -719,7 +719,7 @@ function nf_showMiscDataField($fieldid,$taskid=0,$projectid=0,$fieldsize=20) {
     $retval = '';
     $fieldvalue = '';
     if ($taskid > 0 OR $projectid > 0) {
-        $sql = "SELECT textdata FROM {$_TABLES['nfproject_dataresults']} WHERE field_id = '$fieldid' ";
+        $sql = "SELECT textdata FROM {$_TABLES['nf_projectdataresults']} WHERE field_id = '$fieldid' ";
         if ($taskid > 0) {
             $sql .= " AND task_id=$taskid";
         } else {
@@ -730,7 +730,7 @@ function nf_showMiscDataField($fieldid,$taskid=0,$projectid=0,$fieldsize=20) {
             list ($fieldvalue) = DB_fetchArray($query);
         }
     }
-    $fieldname = DB_getItem($_TABLES['nfproject_datafields'] ,'fieldname',"id=$fieldid");
+    $fieldname = DB_getItem($_TABLES['nf_projectdatafields'] ,'fieldname',"id=$fieldid");
     $retval = '<input name="'.$fieldname.'" size="'.$fieldsize.'" value="'.$fieldvalue.'">';
     return $retval;
 
@@ -741,11 +741,11 @@ function nf_updateMiscDataField($fieldid,$taskid,$projectid,$data) {
 
     $fielddata =  ppPrepareForDB($data);
     if (!empty($fielddata)) {
-        if (DB_count($_TABLES['nfproject_dataresults'],array('field_id','project_id','task_id'),array($fieldid,$projectid,$taskid))) {
-            $sql = "UPDATE {$_TABLES['nfproject_dataresults']} SET textdata = '$fielddata' ";
+        if (DB_count($_TABLES['nf_projectdataresults'],array('field_id','project_id','task_id'),array($fieldid,$projectid,$taskid))) {
+            $sql = "UPDATE {$_TABLES['nf_projectdataresults']} SET textdata = '$fielddata' ";
             $sql .= "WHERE field_id=$fieldid AND project_id=$projectid AND task_id=$taskid";
         } else {
-            $sql = "INSERT INTO {$_TABLES['nfproject_dataresults']} (field_id,project_id,task_id,textdata) ";
+            $sql = "INSERT INTO {$_TABLES['nf_projectdataresults']} (field_id,project_id,task_id,textdata) ";
             $sql .= "VALUES ($fieldid,$projectid,$taskid,'$fielddata') ";
         }
         DB_query($sql);

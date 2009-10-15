@@ -5,12 +5,10 @@
 // | Oct 15, 2009                                                              |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
-// | config.php                                                                |
+// | nexform.php                                                               |
 // +---------------------------------------------------------------------------+
 // | Copyright (C) 2007-2008 by the following authors:                         |
 // | Blaine Lang            - Blaine.Lang@nextide.ca                           |
-// | Randy Kolenko          - Randy.Kolenko@nextide.ca                         |
-// | Eric de la Chevrotiere - Eric.delaChevrotiere@nextide.ca                  |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |
@@ -31,6 +29,14 @@
 //
 
 
+// Plugin information
+$CONF_NF['pi_display_name'] = 'nexflow';
+$CONF_NF['pi_name']         = 'nexflow';
+$CONF_NF['gl_version']      = '1.6.1';
+$CONF_NF['version']         = '3.1.0';          // Plugin Version
+$CONF_NF['pi_url']          = 'http://www.nextide.ca/';
+
+
 $CONF_NF['final_edit_tasks'] = array(188);
 
 $CONF_NF['fileperms'] = '0755';  // Needs to be a string for the upload class use.
@@ -43,40 +49,7 @@ $CONF_NF['fileperms'] = '0755';  // Needs to be a string for the upload class us
 $NF_LISTS = array();
 
 
-
-/* There should be no reason to change these settings */
-
-$_TABLES['nfprocess']               = $_DB_table_prefix . 'nf_process';
-$_TABLES['nfqueue']                 = $_DB_table_prefix . 'nf_queue';
-$_TABLES['nftemplate']              = $_DB_table_prefix . 'nf_template';
-$_TABLES['nftemplatedata']          = $_DB_table_prefix . 'nf_templatedata';
-$_TABLES['nftemplateassignment']    = $_DB_table_prefix . 'nf_templateassignment';
-$_TABLES['nfhandlers']              = $_DB_table_prefix . 'nf_handlers';
-$_TABLES['nfsteptype']              = $_DB_table_prefix . 'nf_steptype';
-$_TABLES['nftemplatedatanextstep']  = $_DB_table_prefix . 'nf_templatedatanextstep';
-$_TABLES['nfprocessvariables']      = $_DB_table_prefix . 'nf_processvariables';
-$_TABLES['nftemplatevariables']     = $_DB_table_prefix . 'nf_templatevariables';
-$_TABLES['nfifprocessarguments']    = $_DB_table_prefix . 'nf_ifprocessarguments';
-$_TABLES['nfifoperators']           = $_DB_table_prefix . 'nf_ifoperators';
-$_TABLES['nfqueuefrom']             = $_DB_table_prefix . 'nf_queuefrom';
-$_TABLES['nfnotifications']         = $_DB_table_prefix . 'nf_notifications';
-$_TABLES['nfproductionassignments'] = $_DB_table_prefix . 'nf_productionassignments';
-$_TABLES['nfuseraway']              = $_DB_table_prefix . 'nf_userawayprefs';
-$_TABLES['nfappgroups']             = $_DB_table_prefix . 'nf_appgroups';
-
-/* Task Console Tables */
-$_TABLES['nfprojects']              = $_DB_table_prefix . 'nfprojects';
-$_TABLES['nfproject_forms']         = $_DB_table_prefix . 'nfproject_forms';
-$_TABLES['nfproject_timestamps']    = $_DB_table_prefix . 'nfproject_timestamps';
-$_TABLES['nfproject_comments']      = $_DB_table_prefix . 'nfproject_comments';
-$_TABLES['nfproject_taskhistory']   = $_DB_table_prefix . 'nfproject_taskhistory';
-$_TABLES['nfproject_approvals']     = $_DB_table_prefix . 'nfproject_approvals';
-$_TABLES['nfproject_attachments']   = $_DB_table_prefix . 'nfproject_attachments';
-
-/* Misc Tables for custom workflows */
-$_TABLES['nfproject_datafields']    = $_DB_table_prefix . 'nfproject_data_fields';
-$_TABLES['nfproject_dataresults']   = $_DB_table_prefix . 'nfproject_data_results';
-
+/* Do not change anything below this line  */
 
 // Task Status values used in the nexflow Queue table
 $CONF_NF['taskstatus'] = array(
@@ -125,6 +98,35 @@ $CONF_NF['sortOptions'] = array(
 );
 
 
+$_TABLES['nf_process']               = $_DB_table_prefix . 'nf_process';
+$_TABLES['nf_queue']                 = $_DB_table_prefix . 'nf_queue';
+$_TABLES['nf_template']              = $_DB_table_prefix . 'nf_template';
+$_TABLES['nf_templatedata']          = $_DB_table_prefix . 'nf_templatedata';
+$_TABLES['nf_templateassignment']    = $_DB_table_prefix . 'nf_templateassignment';
+$_TABLES['nf_handlers']              = $_DB_table_prefix . 'nf_handlers';
+$_TABLES['nf_steptype']              = $_DB_table_prefix . 'nf_steptype';
+$_TABLES['nf_templatedatanextstep']  = $_DB_table_prefix . 'nf_templatedatanextstep';
+$_TABLES['nf_processvariables']      = $_DB_table_prefix . 'nf_processvariables';
+$_TABLES['nf_templatevariables']     = $_DB_table_prefix . 'nf_templatevariables';
+$_TABLES['nf_ifprocessarguments']    = $_DB_table_prefix . 'nf_ifprocessarguments';
+$_TABLES['nf_ifoperators']           = $_DB_table_prefix . 'nf_ifoperators';
+$_TABLES['nf_queuefrom']             = $_DB_table_prefix . 'nf_queuefrom';
+$_TABLES['nf_notifications']         = $_DB_table_prefix . 'nf_notifications';
+$_TABLES['nf_productionassignments'] = $_DB_table_prefix . 'nf_productionassignments';
+$_TABLES['nf_useraway']              = $_DB_table_prefix . 'nf_useraway';
+$_TABLES['nf_appgroups']             = $_DB_table_prefix . 'nf_appgroups';
 
+/* Task Console Tables */
+$_TABLES['nf_projects']             = $_DB_table_prefix . 'nf_projects';
+$_TABLES['nf_projectforms']         = $_DB_table_prefix . 'nf_projectforms';
+$_TABLES['nf_projecttimestamps']    = $_DB_table_prefix . 'nf_projecttimestamps';
+$_TABLES['nf_projectcomments']      = $_DB_table_prefix . 'nf_projectcomments';
+$_TABLES['nf_projecttaskhistory']   = $_DB_table_prefix . 'nf_projecttaskhistory';
+$_TABLES['nf_projectapprovals']     = $_DB_table_prefix . 'nf_projectapprovals';
+$_TABLES['nf_projectattachments']   = $_DB_table_prefix . 'nf_projectattachments';
+
+/* Misc Tables for custom workflows */
+$_TABLES['nf_projectdatafields']    = $_DB_table_prefix . 'nf_projectdatafields';
+$_TABLES['nf_projectdataresults']   = $_DB_table_prefix . 'nf_projectdataresults';
 
 ?>

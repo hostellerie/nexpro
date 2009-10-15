@@ -75,8 +75,8 @@ function display_main($workflow_id) {
     $p->set_var('task_template', $p->get_var('task_template_output'));
 
     $sql = "SELECT a.id, a.taskname, a.offsetLeft, a.offsetTop, b.stepType, b.is_interactiveStepType, a.assignedByVariable ";
-    $sql .= "FROM {$_TABLES['nftemplatedata']} a ";
-    $sql .= "LEFT JOIN {$_TABLES['nfsteptype']} b ON a.nf_stepType=b.id ";
+    $sql .= "FROM {$_TABLES['nf_templatedata']} a ";
+    $sql .= "LEFT JOIN {$_TABLES['nf_steptype']} b ON a.nf_stepType=b.id ";
     $sql .= "WHERE a.nf_templateID={$workflow_id} ORDER BY logicalID ASC";
     $res = DB_query($sql);
 
@@ -99,7 +99,7 @@ function display_main($workflow_id) {
         $p->set_var('task_type_underscored', str_replace(' ', '_', $fmtd_steptype));
         if ($is_interactive == 1) {
             //find out who is assigned:
-            $sql2  = "SELECT b.uid FROM {$_TABLES['nftemplateassignment']} a, {$_TABLES['users']} b ";
+            $sql2  = "SELECT b.uid FROM {$_TABLES['nf_templateassignment']} a, {$_TABLES['users']} b ";
             $sql2 .= "WHERE a.uid=b.uid AND a.nf_templateDataId=$task_id";
 
             $assignedUsers = DB_query($sql2);
@@ -115,8 +115,8 @@ function display_main($workflow_id) {
             } else {
                 $variables = array();
                 if ($assignedByVar == 1) {
-                    $asql  = "SELECT variableName FROM {$_TABLES['nftemplateassignment']} a ";
-                    $asql .= "INNER JOIN {$_TABLES['nftemplatevariables']} b ON a.nf_processVariable=b.id ";
+                    $asql  = "SELECT variableName FROM {$_TABLES['nf_templateassignment']} a ";
+                    $asql .= "INNER JOIN {$_TABLES['nf_templatevariables']} b ON a.nf_processVariable=b.id ";
                     $asql .= "WHERE a.nf_templateDataID=$task_id ";
                     $aquery = DB_query($asql);
                     while (list ($assignmentVariableName) = DB_fetchArray($aquery)) {
@@ -152,7 +152,7 @@ function display_main($workflow_id) {
         $p->set_var('offsetTop', $offsetTop);
         $additional_js1 .= "existing_tasks[{$i}] = ['task{$task_id}', $offsetLeft, $offsetTop];\n";
 
-        $res2 = DB_query("SELECT nf_TemplateDataTo, nf_templateDataToFalse FROM {$_TABLES['nftemplatedatanextstep']} WHERE nf_templateDataFrom=$task_id");
+        $res2 = DB_query("SELECT nf_TemplateDataTo, nf_templateDataToFalse FROM {$_TABLES['nf_templatedatanextstep']} WHERE nf_templateDataFrom=$task_id");
         while (list ($to, $toFalse) = DB_fetchArray($res2)) {
             $to = intval ($to);
             $toFalse = intval ($toFalse);
@@ -172,7 +172,7 @@ function display_main($workflow_id) {
 
     $additional_js3 = '';
     $i = 0;
-    $res = DB_query("SELECT id, stepType, is_interactiveStepType FROM {$_TABLES['nfsteptype']} WHERE stepType!='Start' AND stepType!='End'");
+    $res = DB_query("SELECT id, stepType, is_interactiveStepType FROM {$_TABLES['nf_steptype']} WHERE stepType!='Start' AND stepType!='End'");
     while (list ($step_id, $step_type, $interactive) = DB_fetchArray($res)) {
         $step_type = ucwords($step_type);
         $p->set_var('task_type', $step_type);
@@ -196,7 +196,7 @@ function save_workflow() {
         $offsetTop = intval ($_POST['task_top'][$i]);
 
         if ($task_id > 0) { //new tasks have a negative id... we will be storing them differently
-            DB_query("UPDATE {$_TABLES['nftemplatedata']} SET offsetLeft=$offsetLeft, offsetTop=$offsetTop WHERE id=$task_id");
+            DB_query("UPDATE {$_TABLES['nf_templatedata']} SET offsetLeft=$offsetLeft, offsetTop=$offsetTop WHERE id=$task_id");
         }
     }
 }

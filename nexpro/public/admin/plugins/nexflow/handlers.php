@@ -70,11 +70,11 @@ if($handlerID == 0){
 
 switch(strtolower($operation)) {
     case 'add':
-        DB_query("INSERT into {$_TABLES['nfhandlers']} (handler,description) values('{$handler}','{$description}')");
+        DB_query("INSERT into {$_TABLES['nf_handlers']} (handler,description) values('{$handler}','{$description}')");
         break;
 
      case 'delete':
-        DB_query("DELETE FROM {$_TABLES['nfhandlers']} WHERE id='{$handlerID}'");
+        DB_query("DELETE FROM {$_TABLES['nf_handlers']} WHERE id='{$handlerID}'");
         break;
 }
 
@@ -84,7 +84,7 @@ $p->set_file (array ('page'=>'handlers.thtml',
 $public_url = $_CONF['site_admin_url'] .'/plugins/nexflow';
 $p->set_var('public_url',$public_url);
 
-$query = DB_Query("SELECT * FROM {$_TABLES['nfhandlers']}");
+$query = DB_Query("SELECT * FROM {$_TABLES['nf_handlers']}");
 $cssid = 2;
 while ($A = DB_fetchArray($query)) {
     $p->set_var('handler_id', $A['id']);
