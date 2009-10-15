@@ -1,5 +1,5 @@
 Oct 14/2209 (Blaine)
-    Nexform plugin updates to add the autoinstall and autouninstall scripts
+    Nexform plugin updates to add the autoinstall and autouninstall scripts.
     Required that all nexform table references be changed so that the $_TABLES['tablename'] match the created table names.
        Some of the $_TABLES key names were a combination of upper and lowercase as well. All lower case now.
        Any custom code that used the previous $_TABLES references to the nexform tables will need to be updated
