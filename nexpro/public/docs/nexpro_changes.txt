@@ -1,5 +1,6 @@
 Oct 14/2009 (Blaine)
     Nexflow plugin updates to add the autoinstall and autouninstall scripts.
+    Plugin update routine fixed for version 3.0.0 to 3.1.1
     Required that all nexflow table references be changed so that the $_TABLES['tablename'] match the created table names.
        All table names are now using a consistent style and $_TABLES reference name matches the table name.
        ** Any custom code that used the previous $_TABLES references to the nexflow tables will need to be updated.
