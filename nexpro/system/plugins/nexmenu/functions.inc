@@ -46,10 +46,8 @@ if (!isset($CONF_NEXMENU['milonicstyles'])) {
     $CONF_NEXMENU = $nexmenu_config->get_config('nexmenu');
 }
 
-$CONF_NEXMENU['version'] = '3.2';          // Plugin Version
-
 require_once ($_CONF['path'] . 'plugins/nexmenu/nexmenu.class.php');
-require_once ($_CONF['path'] . 'plugins/nexmenu/config.php');
+require_once ($_CONF['path'] . 'plugins/nexmenu/autouninstall.php');
 
 // Call the function to initialize some additional CONF variables for glMenu
 $CONF_NEXMENU['installed_version'] = DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexmenu'");
@@ -225,34 +223,6 @@ function plugin_upgrade_nexmenu()
 
 
 
-/**
-* Automatic uninstall function for plugins
-*
-* @return   array
-*
-* This code is automatically uninstalling the plugin.
-* It passes an array to the core code function that removes
-* tables, groups, features and php blocks from the tables.
-* Additionally, this code can perform special actions that cannot be
-* foreseen by the core code (interactions with other plugins for example)
-*
-*/
-function plugin_autouninstall_nexmenu ()
-{
-    $out = array (
-        /* give the name of the tables, without $_TABLES[] */
-        'tables' => array('nexmenu','nexmenu_language','nexmenu_config'),
-        /* give the full name of the group, as in the db */
-        'groups' => array('nexmenu Admin'),
-        /* give the full name of the feature, as in the db */
-        'features' => array('nexmenu.edit'),
-        /* give the full name of the block, including 'phpblock_', etc */
-        'php_blocks' => array('phpblock_gltopicsmenu','phpblock_gluserlogin','phpblock_nexmenu'),
-        /* give all vars with their name */
-        'vars'=> array('nexmenu_admin')
-    );
-    return $out;
-}
 
 
 function phpblock_nexmenu()
