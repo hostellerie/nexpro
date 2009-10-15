@@ -73,11 +73,7 @@ function plugin_autoinstall_nexmenu($pi_name)
     );
 
     $mappings = array(
-        $pi_name . '.admin'  => array($pi_admin),
-        $pi_name . '.user'   => array($pi_admin),
-        $pi_name . '.user'   => array($pi_supervisor),
-        $pi_name . '.user'   => array($pi_user),
-        $pi_name . '.user'   => array($pi_finance)
+        $pi_name . '.edit'  => array($pi_admin),
     );
 
     $tables = array(
