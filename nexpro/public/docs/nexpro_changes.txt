@@ -68,6 +68,8 @@ Oct 14/2009 (Randy)
     Nextime installation routine redone to use dependencies and version checking for dependent plugins.
     Change to lib-nextide for new NXCOM function for normalizing version numbers.
     nexMenu updated to use autoinstall, uninstall and removal of install.php file.
+    Updates to nexpro and nexmenu plugins' base config file to link in the autouninstall after the config parameters are loaded.
+
 
 Oct 14/2009 (Blaine)
     Nexform plugin updates to add the autoinstall and autouninstall scripts.
