@@ -41,7 +41,7 @@ function nexmenu_upgrade_252() {
 }
 
 function nexmenu_upgrade_26() {
-    global $_TABLES;
+    global $_TABLES,$_DB_table_prefix;
 
     $_SQL = array();
 
@@ -97,7 +97,7 @@ function nexmenu_upgrade_26() {
 
 
 function nexmenu_upgrade_32() {
-    global $_CONF,$_TABLES;
+    global $_CONF,$_TABLES,$_DB_table_prefix;
     require_once $_CONF['path_system'] . 'classes/config.class.php';
     $plugin_path = $_CONF['path'] . 'plugins/nexmenu/';
     require_once $plugin_path . 'install_defaults.php';

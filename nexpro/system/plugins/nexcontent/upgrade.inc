@@ -32,7 +32,7 @@
 
 
 function nexcontent_upgrade_220() {
-    global $_TABLES;
+    global $_TABLES,$_DB_table_prefix;
 
     COM_errorLog("Success - Completed nexContent plugin version 2.2.0 update",1);
     return 0;
@@ -40,7 +40,7 @@ function nexcontent_upgrade_220() {
 
 
 function nexcontent_upgrade_23() {
-    global $_CONF,$_TABLES;
+    global $_CONF,$_TABLES,$_DB_table_prefix;
     require_once $_CONF['path_system'] . 'classes/config.class.php';
     $plugin_path = $_CONF['path'] . 'plugins/nexcontent/';
     require_once $plugin_path . 'install_defaults.php';
