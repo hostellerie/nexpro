@@ -15,7 +15,7 @@ CSS Modified to work with nexmenu
 /* Block Menu CSS */
 
 .menu {
-  font-size:0.80em;
+  font-size:1.0em;
   background:transparent;
 }
 
@@ -24,7 +24,7 @@ CSS Modified to work with nexmenu
   padding:0;
   margin:0;
   list-style-type:none;
-  width:150px;
+  width:135px;
   position: relative;
   z-index:10;
 }
@@ -45,15 +45,13 @@ CSS Modified to work with nexmenu
 .menu a,
 .menu a:visited {
   display:block;
-  text-decoration:none;
-  height:20px;
-  line-height:20px;
-  width:145px;
-  color:#000000;
-  background:#CFCFCF;
+  text-decoration: none;
+  height:16px;
+  line-height:16px;
+  width:134px;
+  color:#002280;
+  background: #FFFFFF;
   text-indent:5px;
-  border:1px solid #909090;
-  border-width:0px 1px 1px 0px;
 }
 
 .menu table {
@@ -66,14 +64,15 @@ CSS Modified to work with nexmenu
 /* hack for IE5.5 */
 * html .menu a,
 * html .menu a:visited {
-  width:145px;
-  w\idth:144px;
+  width:135px;
+  w\idth:134px;
 }
 
 /* style the link hover */
 .menu a:hover {
-  color:#000000;
-  background:#909090;
+  color:#296DC1;
+  background:#FFFFFF;
+  text-decoration: underline;
 }
 
 /* hide the sub levels and give them a positon absolute so that they take up no room */
@@ -81,7 +80,7 @@ CSS Modified to work with nexmenu
   visibility:hidden;
   position:absolute;
   top:-30px;
-  left:115px;
+  left:105px;
   padding:30px;
   background:transparent url(images/non-existent.gif);
 }
@@ -107,11 +106,11 @@ CSS Modified to work with nexmenu
 }
 
 a.drop:link, a.drop:visited {
-    background:#CFCFCF url(../images/fly.gif) center right no-repeat;
+    background:#FFFFFF url(../images/fly.gif) center right no-repeat;
 }
 
 a.drop:hover {
-    background:#909090 url(../images/fly.gif) center right no-repeat;
+    background:#FEFEFE url(../images/fly.gif) center right no-repeat;
 }
 
 #blockmenuitemimage {
@@ -135,9 +134,9 @@ a.drop:hover {
   width:100%;
   height:25px;
   z-index:100;
-  background-color:#CFCFCF;
-  border-bottom: 1px solid #000;
-  border-right: 1px solid #FFF;
+  background-color:#10377C;
+  border: 1px solid red;
+  border-width: 0px 0px 0px 0px;
 }
 
 /* Get rid of the margin, padding and bullets in the unordered lists */
@@ -151,16 +150,14 @@ a.drop:hover {
 #pmenu a, #pmenu a:visited {
   display:block;
   width:130px;
-  font-size:11px; 
-  color:#000000;
+  color:#FFFFFF;
   height:25px;
-  line-height:24px; 
-  text-decoration:none; 
-  text-indent:5px;
-  border-bottom:1px solid #000;
-  border-right:1px solid #FFF;
-  white-space:nowrap;
-  padding-right:25px;
+  line-height:25px;
+  text-decoration:none;
+  text-align: center;
+  border:0px solid #FFF;
+  border-width:0px 0px 0px 0px;
+
 }
 
 /* Set up the sub level borders */
@@ -168,12 +165,12 @@ a.drop:hover {
     border-width:0px 1px 1px 1px;
 }
 #pmenu li a.enclose, #pmenu li a.enclose:visited {
-    border-width:1px;
+    border-width:0px;
 }
 
 /* Set up the list items */
 #pmenu li {
-  background:#CFCFCF;
+  background:#10377C;
   float:left;
 }
 
@@ -185,7 +182,7 @@ a.drop:hover {
 /* Make the hovered list color persist */
 #pmenu li:hover > a {
   background:#909090;
-  color:#FCFCFC;
+  color:#FFFFFF;
 }
 
 /* Set up the sublevel lists with a position absolute for flyouts and overrun padding. The transparent gif is for IE to work */
@@ -215,7 +212,6 @@ a.drop:hover {
   top:0;
   left:0;
   z-index:100; 
-  font-size:1em;
 }
 
 /* The following CSS Styles are only requried for IE 5.5 and 6 */
@@ -223,8 +219,8 @@ a.drop:hover {
 /* Give the hovered links a position relative and a change of background and foreground color. This is needed to trigger IE to show the sub levels */
 * html #pmenu li a:hover {
   position:relative; 
-  background:#909090;
-  color:#FCFCFC;
+  background:#335EA8;
+  color:#FFFFFF;
 }
 
 /* Set up the pointers for the sub level indication */

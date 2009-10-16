@@ -13,6 +13,7 @@ CSS Modified to work with glMenu
 =================================================================== */
 
 #headermenu {
+  font-size:9pt;
   margin:0px;
   position:relative;
   width:100%;
@@ -40,7 +41,7 @@ CSS Modified to work with glMenu
 #pmenu a, #pmenu a:visited {
   display:block;
   width:120px;
-  font-size:11px;
+  font-size:9pt;
   color:#FFFFFF;
   height:25px;
   line-height:24px;
@@ -62,7 +63,7 @@ CSS Modified to work with glMenu
 
 /* Set up the list items */
 #pmenu li {
-  background:#D79626;
+  background:#10377C;
   float:left;
 }
 
@@ -73,7 +74,7 @@ CSS Modified to work with glMenu
 
 /* Make the hovered list color persist */
 #pmenu li:hover > a {
-  background:#0F6F2C;
+  background:#335EA8;
   color:#FFFFFF;
 }
 
@@ -104,7 +105,6 @@ CSS Modified to work with glMenu
   top:0;
   left:0;
   z-index:100;
-  font-size:1em;
 }
 
 /* The following CSS Styles are only requried for IE 5.5 and 6 */
@@ -116,11 +116,11 @@ CSS Modified to work with glMenu
 
 /* Set up the pointers for the sub level indication */
 #pmenu li.drop {
-  background:#D79626 url(../images/drop.gif) no-repeat right center;
+  background:#10377C url(../images/drop.gif) no-repeat right center;
 }
 #pmenu li.drop li a {
   color: #F4F3F7;
-  background:#269B1E;
+  background:#237536;
 }
 #pmenu li.drop li a:hover {
   color: #FFFFFF;
@@ -129,7 +129,7 @@ CSS Modified to work with glMenu
 
 #pmenu li.drop li.fly {
   color: #F4F3F7;
-  background:#269B1E url(../images/fly.gif) no-repeat right center;
+  background:#237536 url(../images/fly.gif) no-repeat right center;
 }
 
 /* Make the hovered list color persist */

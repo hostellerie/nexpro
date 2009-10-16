@@ -1,3 +1,7 @@
+Oct 16/2009 (Blaine)
+    Updates to the nexflow and nexform plugin to rename the upgrade functions to prevent name collisions
+    Tweaked the nexmenu templates/css for the nexpro theme
+
 Oct 16/2009 (Randy)
     Updates to nexpro, nexlist, nexproject, nexcontent and nextime plugins to rename the upgrade functions as they were causing collisions
     during a full portal upgrade process.  changes to each update.inc and functions.inc for each plugin.

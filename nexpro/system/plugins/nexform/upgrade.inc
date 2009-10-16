@@ -29,14 +29,14 @@
 // +---------------------------------------------------------------------------+
 //
 
-function upgrade_201() {
+function nexform_upgrade_201() {
     global $_TABLES;
 
     COM_errorLog("Success - Completed nexForm plugin version 2.0.1 update",1);
     return 0;
 }
 
-function upgrade_22() {
+function nexform_upgrade_22() {
     global $_CONF,$_TABLES;
     require_once $_CONF['path_system'] . 'classes/config.class.php';
     $plugin_path = $_CONF['path'] . 'plugins/nexform/';
@@ -48,7 +48,7 @@ function upgrade_22() {
     if (plugin_initconfig_nexform()) {
         return 0;
     } else {
-        COM_errorLog('upgrade_22: There was an error upgrading the nexform plugin');
+        COM_errorLog('nexform_upgrade_22: There was an error upgrading the nexform plugin');
         return 1;
     }
 

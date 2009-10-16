@@ -30,7 +30,7 @@
 // +---------------------------------------------------------------------------+
 //
 
-function upgrade_300() {
+function nexflow_upgrade_300() {
     global $_TABLES;
 
     $_SQL = array();
@@ -71,7 +71,7 @@ function upgrade_300() {
     return 0;
 }
 
-function upgrade_310() {
+function nexflow_upgrade_310() {
     global $_CONF,$_TABLES,$_DB_table_prefix;
 
     $_SQL = array();
@@ -129,7 +129,7 @@ function upgrade_310() {
 
     /* Execute SQL now to perform the upgrade */
     for ($i = 1; $i <= count($_SQL); $i++) {
-        COM_errorLog("nexFlow Plugin 3.0.0 update: Executing SQL => " . current($_SQL));
+        COM_errorLog("nexFlow Plugin 3.1.0 update: Executing SQL => " . current($_SQL));
         DB_query(current($_SQL),'1');
         if (DB_error()) {
             COM_errorLog("SQL Error during nexFlow plugin update",1);
@@ -151,7 +151,7 @@ function upgrade_310() {
         COM_errorLog("Success - Completed updating adding online config data for nexFlow version 3.1.0 update",1);
         return 0;
     } else {
-        COM_errorLog('upgrade_32: There was an error upgrading the nexmenu plugin');
+        COM_errorLog('nexflow_upgrade_310: There was an error upgrading the nexflow plugin');
         return 1;
     }
 
