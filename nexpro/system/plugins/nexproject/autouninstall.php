@@ -32,8 +32,8 @@
 // |                                                                             |
 // +-----------------------------------------------------------------------------+
 //
-global $_TABLES,$_DB_table_prefix;
-require_once ($_CONF['path'] . 'plugins/nexproject/nexproject.php');
+global $_TABLES,$_DB_table_prefix,$_PRJCONF;
+
 
 if (strpos(strtolower($_SERVER['PHP_SELF']), 'autouninstall.php') !== false) {
     die('This file can not be used on its own!');

@@ -29,7 +29,7 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 //
-
+$CONF_NEXPRO=array();
 $CONF_NEXPRO['version'] = '2.1.0';
 
 $_TABLES['tagwords']        = $_DB_table_prefix .'tagwords';
@@ -63,5 +63,8 @@ $CONF_NEXPRO['ldap_password'] = 'ldap_pass';
 $CONF_NEXPRO['enable_remote_service_set']=false;   //true to turn on.set this to false if you don't want to force a remote service into that new e user's profile
 $CONF_NEXPRO['new_user_remote_service']='LDAP'; //set to whichever remote authentication mechanism you desire.  This is to support our LDAP ability
 
-
+require_once $_CONF['path_system'] . 'classes/config.class.php';
+$nexpro_config = config::get_instance();
+$CONF_NEXPRO_2= $nexpro_config->get_config('nexpro');
+if(is_array($CONF_NEXPRO_2)) $CONF_NEXPRO=@array_merge($CONF_NEXPRO_2,$CONF_NEXPRO);
 ?>

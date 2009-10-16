@@ -30,7 +30,7 @@
 // +---------------------------------------------------------------------------+
 
 global $_TABLES,$_DB_table_prefix;
-require_once ($_CONF['path'] . 'plugins/nexlist/nexlist.php');
+
 
 /**
 * Automatic uninstall function for plugins

@@ -30,6 +30,7 @@
 // +---------------------------------------------------------------------------+
 
 require_once ($_CONF['path'] . 'plugins/nexlist/autouninstall.php');
+require_once ($_CONF['path'] . 'plugins/nexlist/nexlist.php');
 
 /**
 * Autoinstall API functions for the nexList plugin

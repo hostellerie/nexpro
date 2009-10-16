@@ -39,8 +39,8 @@ if (file_exists ($langfile)) {
 }else {
     include_once ($_CONF['path'] . 'plugins/nextime/language/english.php');
 }
+require_once ($_CONF['path'] . 'plugins/nextime/nextime.php');
 include_once ($_CONF['path'] . 'plugins/nextime/autouninstall.php');
-
 
 
 /**
