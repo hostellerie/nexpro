@@ -39,7 +39,7 @@ $CONF_NEXMENU['pi_name']='nexmenu';
 $CONF_NEXMENU['pi_display_name']='nexMenu';
 
 $CONF_NEXMENU['dependent_plugins']=array(
-    'nexpro'    => '2.2.0'
+    'nexpro'    => '2.1.0'
 );
 
 
