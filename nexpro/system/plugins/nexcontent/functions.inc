@@ -35,14 +35,7 @@ if (file_exists ($langfile)) {
     include_once ($_CONF['path'] . 'plugins/nexcontent/language/english.php');
 }
 
-
-
-if (!isset($CONF_SE['public_url'])) {
-    require_once $_CONF['path_system'] . 'classes/config.class.php';
-
-    $nexcontent_config = config::get_instance();
-    $CONF_SE = $nexcontent_config->get_config('nexcontent');
-}
+require_once ($_CONF['path'] . 'plugins/nexcontent/nexcontent.php');
 require_once ($_CONF['path'] . 'plugins/nexcontent/autouninstall.php');
 
 // If config setting initialized - convert to MB

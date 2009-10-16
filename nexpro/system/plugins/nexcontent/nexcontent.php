@@ -27,7 +27,7 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 //
-
+$CONF_SE=array();
 $CONF_SE['version'] = '2.3.0';
 
 //This parameter is used during the initial installation of the plugin to ensure that the
@@ -53,6 +53,11 @@ $CONF_SE['menuoptions'] = array (
 $_TABLES['nexcontent']               = $_DB_table_prefix . 'nxcontent';
 $_TABLES['nexcontent_pages']         = $_DB_table_prefix . 'nxcontent_pages';
 $_TABLES['nexcontent_images']        = $_DB_table_prefix . 'nxcontent_images';
+
+require_once $_CONF['path_system'] . 'classes/config.class.php';
+$nexcontent_config = config::get_instance();
+$CONF_SE_2 = $nexcontent_config->get_config('nexcontent');
+if(is_array($CONF_SE_2)) $CONF_SE=@array_merge($CONF_SE_2,$CONF_SE);
 
 
 ?>

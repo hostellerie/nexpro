@@ -29,7 +29,6 @@
 //
 
 global $_TABLES,$_DB_table_prefix;
-require_once ($_CONF['path'] . 'plugins/nexcontent/nexcontent.php');
 
 
 /**

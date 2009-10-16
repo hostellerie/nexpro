@@ -31,6 +31,7 @@
 // +---------------------------------------------------------------------------+
 
 include_once ($_CONF['path'] . 'plugins/nextime/autouninstall.php');
+require_once ($_CONF['path'] . 'plugins/nextime/nextime.php');
 
 if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
     die('This file can not be used on its own!');

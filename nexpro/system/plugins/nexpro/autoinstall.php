@@ -31,6 +31,8 @@
 //
 
 require_once ($_CONF['path'] . 'plugins/nexpro/autouninstall.php');
+require_once ($_CONF['path'] . 'plugins/nexpro/nexpro.php');
+
 if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
     die('This file can not be used on its own!');
 }

@@ -38,6 +38,7 @@ else
     include_once ($_CONF['path'] . 'plugins/nexlist/language/english.php');
 }
 
+require_once ($_CONF['path'] . 'plugins/nexlist/nexlist.php');
 require_once ($_CONF['path'] . 'plugins/nexlist/autouninstall.php');
 require_once ($_CONF['path'] . 'plugins/nexlist/library.php');
 require_once ($_CONF['path'] . 'plugins/nexlist/custom.php');

@@ -45,16 +45,7 @@ require_once ($_CONF['path_html'] . 'jscalendar/calendar.php');
 // Used for debugging to log messages to the Firebug addon for Firefox from PHP
 require_once ($_CONF['path_system'] . 'nexpro/FirePHPCore/FirePHP.class.php');
 
-/*
-* Check and see if we need to load the plugin configuration
-*/
-if (!isset($CONF_NEXPRO['load_treemenu'])) {
-    require_once $_CONF['path_system'] . 'classes/config.class.php';
-
-    $nexpro_config = config::get_instance();
-    $CONF_NEXPRO = $nexpro_config->get_config('nexpro');
-}
-
+require_once ($_CONF['path'] . 'plugins/nexpro/nexpro.php');
 require_once ($_CONF['path'] . 'plugins/nexpro/autouninstall.php');
 /**
 * Returns the needed link to the menu csss- which will be included in the header

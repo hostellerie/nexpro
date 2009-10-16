@@ -30,7 +30,7 @@
 
 require_once $_CONF['path_system'] . 'classes/config.class.php';
 
-
+$CONF_LL=array();
 $CONF_LL['version'] = '2.2.0';
 
 

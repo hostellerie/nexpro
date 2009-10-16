@@ -30,7 +30,9 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 
+
 include_once ($_CONF['path'] . 'plugins/nexproject/autouninstall.php');
+require_once ($_CONF['path'] . 'plugins/nexproject/nexproject.php');
 
 if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
     die('This file can not be used on its own!');

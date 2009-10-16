@@ -30,7 +30,7 @@
 // +---------------------------------------------------------------------------+
 //
 global $_TABLES,$_DB_table_prefix,$CONF_NEXPRO;
-require_once ($_CONF['path'] . 'plugins/nexpro/nexpro.php');
+
 
 /**
 * Automatic uninstall function for plugins

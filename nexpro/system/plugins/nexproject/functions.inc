@@ -37,6 +37,7 @@ if (file_exists ($langfile)) {
     include_once ($_CONF['path'] . 'plugins/nexproject/language/english.php');
 }
 
+require_once ($_CONF['path'] . 'plugins/nexproject/nexproject.php');
 require_once ($_CONF['path'] . 'plugins/nexproject/autouninstall.php');
 require_once ($_CONF['path_html'] .'/jscalendar/calendar.php');
 
