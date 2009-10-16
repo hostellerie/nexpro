@@ -47,16 +47,16 @@ require_once ($_CONF['path'] . 'plugins/nexlist/nexlist.php');
 */
 function plugin_autoinstall_nexlist($pi_name)
 {
-
-    $pi_name         = 'nexlist';
-    $pi_display_name = 'nexList';
+    global $CONF_LL;
+    $pi_name         = $CONF_LL['pi_name'];
+    $pi_display_name = $CONF_LL['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';
 
     $info = array(
         'pi_name'         => $pi_name,
         'pi_display_name' => $pi_display_name,
-        'pi_version'      => '2.2.0',
-        'pi_gl_version'   => '1.6.0',
+        'pi_version'      => $CONF_LL['version'],
+        'pi_gl_version'   => $CONF_LL['pi_gl_version'],
         'pi_homepage'     => 'http://www.nextide.ca/'
     );
 

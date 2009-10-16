@@ -32,6 +32,9 @@ require_once $_CONF['path_system'] . 'classes/config.class.php';
 
 $CONF_LL=array();
 $CONF_LL['version'] = '2.2.0';
+$CONF_LL['pi_name'] = 'nexlist';
+$CONF_LL['pi_display_name'] = 'nexList';
+$CONF_LL['pi_gl_version'] = '1.6.0';
 
 
 $_TABLES['nexlist']        = $_DB_table_prefix . 'nxlist';
