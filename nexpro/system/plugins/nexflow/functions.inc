@@ -315,19 +315,19 @@ function plugin_upgrade_nexflow() {
 
     switch ($curversion) {
     case "2.0.0":
-        if (upgrade_300() == 0 )  {
+        if (nexflow_upgrade_300() == 0 )  {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.1.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexflow' LIMIT 1");
         }
         break;
     case "3.0.0":
-        if (upgrade_310() == 0 )  {
+        if (nexflow_upgrade_310() == 0 )  {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.1.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexflow' LIMIT 1");
         }
         break;
     }
 
     /* Check if update completed and return a message number to be shown */
-    if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexflow'") == $CONF_NF['version']) {
+    if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexflow'") == '3.1.0') {
         return 11;
     } else {
         return 12;

@@ -151,10 +151,10 @@ function plugin_upgrade_nexform() {
 
     switch ($curversion) {
         case '2.0.0':
-            if (upgrade_201() == 0 )  {
+            if (nexform_upgrade_201() == 0 )  {
                 DB_query("ALTER TABLE {$_TABLES['nxform_fields']} ADD `label_padding` SMALLINT( 1 ) NULL AFTER `col_padding`");
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.0.1', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexform' LIMIT 1");
-                if (upgrade_22() == 0) {
+                if (nexform_upgrade_22() == 0) {
                     DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.2.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexform' LIMIT 1");
                     return true;
                 } else {
@@ -163,7 +163,7 @@ function plugin_upgrade_nexform() {
             }
             break;
         case '2.0.1':
-            if (upgrade_22() == 0) {
+            if (nexform_upgrade_22() == 0) {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.2.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexform' LIMIT 1");
                 return true;
             } else {
@@ -171,7 +171,7 @@ function plugin_upgrade_nexform() {
             }
             break;
         case '2.1.0':
-            if (upgrade_22() == 0) {
+            if (nexform_upgrade_22() == 0) {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.2.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexform' LIMIT 1");
                 return true;
             } else {
