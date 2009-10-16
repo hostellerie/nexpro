@@ -396,7 +396,7 @@ function plugin_upgrade_nexcontent() {
     case "2.1.1":
         if (nexcontent_upgrade_220() == 0 )  {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.2.0', `pi_gl_version` = '1.5.1' WHERE `pi_name` = 'nexcontent' LIMIT 1");
-            if (upgrade_23() == 0) {
+            if (nexcontent_upgrade_23() == 0) {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.3.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexcontent' LIMIT 1");
                 return true;
             } else {
