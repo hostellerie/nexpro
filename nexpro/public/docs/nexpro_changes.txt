@@ -1,3 +1,7 @@
+Oct 16/2009 (Randy)
+    Updates to nexpro, nexlist, nexproject, nexcontent and nextime plugins to rename the upgrade functions as they were causing collisions
+    during a full portal upgrade process.  changes to each update.inc and functions.inc for each plugin.
+
 Oct 14/2009 (Blaine)
     Nexflow plugin updates to add the autoinstall and autouninstall scripts.
     Plugin update routine fixed for version 3.0.0 to 3.1.1
