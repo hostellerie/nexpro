@@ -42,7 +42,7 @@ $CONF_NEXTIME['pi_name']='nextime';
 $CONF_NEXTIME['pi_display_name']='nexTime';
 
 $CONF_NEXTIME['dependent_plugins']=array(
-    'nexpro'    => '2.2.0',
+    'nexpro'    => '2.1.0',
     'nexlist'   => '2.2.0'
 
 );
