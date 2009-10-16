@@ -32,7 +32,7 @@
 
 
 
-function upgrade_210() {
+function nexproject_upgrade_210() {
     global $_TABLES, $_PRJCONF, $_CONF;
 
     $base_path = $_CONF['path'] . 'plugins/nexproject/';

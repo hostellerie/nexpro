@@ -179,7 +179,7 @@ function plugin_upgrade_nexmenu()
     include ('upgrade.inc');        // Include the upgrade functions
 
     if ($CONF_NEXMENU['installed_version'] < "2.5") {
-        if (upgrade_25() == 0 )  {
+        if (nexmenu_upgrade_25() == 0 )  {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.5' WHERE `pi_name` = 'nexmenu' LIMIT 1");
             return true;
         } else {
@@ -192,7 +192,7 @@ function plugin_upgrade_nexmenu()
         DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2' WHERE `pi_name` = 'nexmenu' LIMIT 1");
         return true;
     }elseif ($CONF_NEXMENU['installed_version'] == "2.6") {
-        if (upgrade_26() == 0 )  {
+        if (nexmenu_upgrade_26() == 0 )  {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.1', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexmenu' LIMIT 1");
             if (upgrade_32() == 0) {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexmenu' LIMIT 1");
@@ -204,7 +204,7 @@ function plugin_upgrade_nexmenu()
             return 1;
         }
     } elseif ($CONF_NEXMENU['installed_version'] == "3.0") {
-        if (upgrade_32() == 0) {
+        if (nexmenu_upgrade_32() == 0) {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexmenu' LIMIT 1");
             return true;
         } else {
@@ -212,7 +212,7 @@ function plugin_upgrade_nexmenu()
         }
         return true;
     } elseif ($CONF_NEXMENU['installed_version'] == "3.1") {
-        if (upgrade_32() == 0) {
+        if (nexmenu_upgrade_32() == 0) {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexmenu' LIMIT 1");
             return true;
         } else {

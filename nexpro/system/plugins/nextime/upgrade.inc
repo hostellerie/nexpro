@@ -32,7 +32,7 @@
 
 
 
-function upgrade_120() {
+function nextime_upgrade_120() {
     global $_TABLES, $CONF_NEXTIME, $_CONF;
 
     $base_path = $_CONF['path'] . 'plugins/nextime/';

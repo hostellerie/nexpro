@@ -227,7 +227,7 @@ function plugin_upgrade_nextime() {
     switch ($curversion) {
     case "1.0.0":
     case "1.1.0":
-        if (upgrade_120() == 0 )  {
+        if (nextime_upgrade_120() == 0 )  {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '1.2.0', `pi_gl_version` = '1.6.1' WHERE `pi_name` = 'nextime' LIMIT 1");
         }
         break;
