@@ -31,6 +31,10 @@
 //
 $CONF_NEXPRO=array();
 $CONF_NEXPRO['version'] = '2.1.0';
+$CONF_NEXPRO['pi_name'] = 'nexpro';
+$CONF_NEXPRO['pi_display_name'] = 'nexPro';
+$CONF_NEXPRO['pi_gl_version'] = '1.6.0';
+
 
 $_TABLES['tagwords']        = $_DB_table_prefix .'tagwords';
 $_TABLES['tagworditems']    = $_DB_table_prefix .'tagword_items';

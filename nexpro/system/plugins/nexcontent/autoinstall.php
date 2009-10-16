@@ -49,15 +49,16 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
 */
 function plugin_autoinstall_nexcontent($pi_name)
 {
-    $pi_name         = 'nexcontent';
-    $pi_display_name = 'nexContent';
+    global $CONF_SE;
+    $pi_name         = $CONF_SE['pi_name'];
+    $pi_display_name = $CONF_SE['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';
 
     $info = array(
         'pi_name'         => $pi_name,
         'pi_display_name' => $pi_display_name,
-        'pi_version'      => '2.3.0',
-        'pi_gl_version'   => '1.6.0',
+        'pi_version'      => $CONF_SE['version'],
+        'pi_gl_version'   => $CONF_SE['gl_version'],
         'pi_homepage'     => 'http://www.nextide.ca/'
     );
 
