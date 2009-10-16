@@ -33,7 +33,7 @@
 
 
 function nexproject_upgrade_210() {
-    global $_TABLES, $_PRJCONF, $_CONF;
+    global $_TABLES, $_PRJCONF, $_CONF,$_DB_table_prefix;
 
     $base_path = $_CONF['path'] . 'plugins/nexproject/';
     require_once $_CONF['path_system'] . 'classes/config.class.php';

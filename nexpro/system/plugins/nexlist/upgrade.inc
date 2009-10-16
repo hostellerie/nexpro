@@ -29,7 +29,7 @@
 //
 
 function nexlist_upgrade_220() {
-    global $_TABLES,$_CONF;
+    global $_TABLES,$_CONF,$_DB_table_prefix;
 
     $base_path = $_CONF['path'] . 'plugins/nexlist/';
     require_once $_CONF['path_system'] . 'classes/config.class.php';

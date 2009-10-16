@@ -33,7 +33,7 @@
 
 
 function nextime_upgrade_120() {
-    global $_TABLES, $CONF_NEXTIME, $_CONF;
+    global $_TABLES, $CONF_NEXTIME, $_CONF,$_DB_table_prefix;
 
     $base_path = $_CONF['path'] . 'plugins/nextime/';
     require_once $_CONF['path_system'] . 'classes/config.class.php';
