@@ -28,7 +28,7 @@
 // +---------------------------------------------------------------------------+
 //
 
-function upgrade_220() {
+function nexlist_upgrade_220() {
     global $_TABLES,$_CONF;
 
     $base_path = $_CONF['path'] . 'plugins/nexlist/';

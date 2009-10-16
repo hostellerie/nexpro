@@ -30,7 +30,7 @@
 // +---------------------------------------------------------------------------+
 //
 
-function upgrade_201() {
+function nexpro_upgrade_201() {
     global $_TABLES;
 
     COM_errorLog("Success - Completed nexPro plugin version 2.0.1 update",1);

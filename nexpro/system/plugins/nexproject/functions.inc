@@ -132,7 +132,7 @@ function plugin_upgrade_nexproject() {
     case "2.0.1":
     case "2.0.2":
     case "2.0.3":
-        if (upgrade_210() == 0 )  {
+        if (nexproject_upgrade_210() == 0 )  {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.1.0', `pi_gl_version` = '1.5.1' WHERE `pi_name` = 'nexproject' LIMIT 1");
         }
         break;

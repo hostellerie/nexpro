@@ -28,19 +28,19 @@
 // +---------------------------------------------------------------------------+
 //
 
-function upgrade_25() {
+function nexmenu_upgrade_25() {
 
     return 0;
 
 }
 
-function upgrade_252() {
+function nexmenu_upgrade_252() {
     COM_errorLog("Success - Completed nexContent plugin version 2.5.2 update",1);
 
     return 0;
 }
 
-function upgrade_26() {
+function nexmenu_upgrade_26() {
     global $_TABLES;
 
     $_SQL = array();
@@ -96,14 +96,14 @@ function upgrade_26() {
 
 
 
-function upgrade_32() {
+function nexmenu_upgrade_32() {
     global $_CONF,$_TABLES;
     require_once $_CONF['path_system'] . 'classes/config.class.php';
     $plugin_path = $_CONF['path'] . 'plugins/nexmenu/';
     require_once $plugin_path . 'install_defaults.php';
     if (file_exists($plugin_path . 'config.php')) {
         global $_DB_table_prefix, $CONF_NEXMENU;
-        require_once $plugin_path . 'config.php';
+        @include_once $plugin_path . 'config.php';
     }
     if (plugin_initconfig_nexmenu()) {
         return 0;

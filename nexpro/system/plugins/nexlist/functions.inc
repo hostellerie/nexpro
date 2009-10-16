@@ -176,8 +176,8 @@ function plugin_upgrade_nexlist() {
     switch ($curversion) {
     case "2.1.0":
     case "2.1.1":
-        if (upgrade_220() == 0 )  {
-            DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.2.0', `pi_gl_version` = '1.5.1' WHERE `pi_name` = 'nexlist' LIMIT 1");
+        if (nexlist_upgrade_220() == 0 )  {
+            DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.2.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexlist' LIMIT 1");
         }
         break;
     }

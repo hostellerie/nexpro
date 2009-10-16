@@ -258,7 +258,7 @@ function plugin_upgrade_nexpro() {
 
     switch ($curversion) {
         case "2.0.0":
-            if (upgrade_201() == 0 )  {
+            if (nexpro_upgrade_201() == 0 )  {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.0.1', `pi_gl_version` = '1.4.1' WHERE `pi_name` = 'nexpro' LIMIT 1");
             }
             break;
@@ -269,10 +269,10 @@ function plugin_upgrade_nexpro() {
             require_once $plugin_path . 'install_defaults.php';
             if (file_exists($plugin_path . 'config.php')) {
                 global $_DB_table_prefix, $_NEXPRO_CONF;
-                require_once $plugin_path . 'config.php';
+                @include_once $plugin_path . 'config.php';
             }
             if (plugin_initconfig_nexpro()) {
-                DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.1', `pi_gl_version` = '1.5.1' WHERE `pi_name` = 'nexpro' LIMIT 1");
+                DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.1.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexpro' LIMIT 1");
                 return true;
             } else {
                 echo 'There was an error upgrading the plugin';
