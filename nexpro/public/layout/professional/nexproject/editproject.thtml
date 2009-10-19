@@ -115,7 +115,7 @@
 if(useYuiLoader){
     (function() { 
         var prj_loader = new YAHOO.util.YUILoader({ 
-            base: "", 
+            base: YUIBaseURL+'/',   
             require: ["calendar","container","connection","containercore","menu","yahoo","yuiloader"], 
             loadOptional: true, 
             filter: "MIN", 
