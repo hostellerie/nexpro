@@ -1,3 +1,6 @@
+Oct 19/2009 (Blaine)
+    Moved lib-nextide.php to be part of the nexpro plugin and no need now for that file to be copied/installed by the user.
+
 Oct 19/2009 (Randy)
     Updates to nextime and nexproject javascript to use the YUIBaseURL js variable for all YUIloader calls.
 
