@@ -9,6 +9,7 @@ var lasttshtml='';
 var approvaltimer=0;
 var savetimer;
 var v1, v4, v5, v6, v7, ve3,ve4,ve6,ve7 ;
+
 function init_index_page(){
 	v1=new nexYUICal;
     v1.init('cal1','start_date');
