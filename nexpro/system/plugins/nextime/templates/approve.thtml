@@ -163,7 +163,7 @@ function savepanel(){
 if(useYuiLoader){
     (function() { 
         var loader = new YAHOO.util.YUILoader({ 
-            base: "", 
+            base: YUIBaseURL+'/', 
             require: ["animation","calendar","connection","container","containercore","dom","menu","element","event","yahoo","yuiloader"], 
             loadOptional: true, 
             filter: "MIN", 

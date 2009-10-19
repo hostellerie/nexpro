@@ -194,10 +194,8 @@
 <script language="Javascript">
 var enableautoenddate={enable_auto_end_date};
 if(useYuiLoader){
-    (function() { 
-        
-        var loader = new YAHOO.util.YUILoader({ 
-            base: '', 
+        var nextime_loader = new YAHOO.util.YUILoader({ 
+            base: YUIBaseURL+'/', 
             require: ["animation","calendar","connection","container","containercore","dom","menu","element","event","yahoo","yuiloader"], 
             loadOptional: true, 
             filter: "MIN", 
@@ -209,10 +207,9 @@ if(useYuiLoader){
                 init_index_page();
             } 
         }); 
-     
     // Load the files using the insert() method. 
-    loader.insert(); 
-    })(); 
+    nextime_loader.insert();
+    
 }else{
     init_index_page();
 }
