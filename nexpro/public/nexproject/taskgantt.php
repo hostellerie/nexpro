@@ -165,9 +165,9 @@ $result = DB_query("SELECT * FROM {$_TABLES['prj_projects']} WHERE pid=$pid");
 $A = DB_fetchArray($result);
 
 $count=0;
-$adate1 = explode('-',$gdate1);
+$adate1 = explode('/',$gdate1);
 $epocdate1 = mktime(0,0,0, $adate1['1'],$adate1['2'],$adate1['0']);
-$adate2 = explode('-',$gdate2);
+$adate2 = explode('/',$gdate2);
 $epocdate2 = mktime(0,0,0, $adate2['1'],$adate2['2'],$adate2['0']);
 
 $graph = new GanttGraph($graphWidth);
@@ -185,7 +185,7 @@ $graph->scale->actinfo->SetFont(FF_VERA,FS_NORMAL,10);
 $graph->scale->actinfo->vgrid->SetStyle('solid');
 $graph->scale->actinfo->vgrid->SetColor('gray');
 
-if (($epocdate2 - $epocdate1) > 11000000) {
+if (($epocdate2 - $epocdate1) > 12000000) {
     $graph->ShowHeaders(GANTT_HYEAR | GANTT_HMONTH );
     $graph->scale->month->grid->SetColor('gray');
     $graph->scale->month->grid->Show(true);
