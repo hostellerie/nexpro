@@ -41,15 +41,7 @@ require_once ($_CONF['path'] . 'plugins/nexflow/nexflow.class.php');
 require_once ($_CONF['path'] . 'plugins/nexflow/library.php');
 include_once ($_CONF['path'] . 'plugins/nexflow/autouninstall.php');
 
-/*
-* Check and see if we need to load the plugin configuration
-*/
-if (!isset($CONF_NF['TaskConsole_URL'])) {
-    require_once $_CONF['path_system'] . 'classes/config.class.php';
 
-    $nexflow_config = config::get_instance();
-    $CONF_NF = $nexflow_config->get_config('nexflow');
-}
 
 require_once ($_CONF['path'] . 'plugins/nexflow/nexflow.php');
 

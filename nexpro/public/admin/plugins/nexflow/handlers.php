@@ -33,7 +33,7 @@
 require_once ('../../../lib-common.php');
 
 // Only let users with nexflow.edit rights to access this page
-if (!SEC_hasRights('nexflow.edit')) { 
+if (!SEC_hasRights('nexflow.edit')) {
     $display = COM_siteHeader();
     $display .= COM_startBlock($LANG_NF00['access_denied']);
     $display .= $LANG_NF00['admin_access_error'];
@@ -41,9 +41,9 @@ if (!SEC_hasRights('nexflow.edit')) {
     $display .= COM_siteFooter(true);
     echo $display;
     exit;
-} 
+}
 
-require_once ($_CONF['path'] . 'plugins/nexflow/config.php');
+require_once ($_CONF['path'] . 'plugins/nexflow/nexflow.php');
 require_once ($_CONF['path_system'] . 'classes/navbar.class.php');
 
 echo COM_siteHeader('menu');
@@ -51,13 +51,13 @@ $navbar = new navbar;
 $navbar->add_menuitem('My Tasks',$_CONF['site_url'] .'/nexflow/index.php');
 $navbar->add_menuitem('View Templates',$_CONF['site_admin_url'] .'/plugins/nexflow/templates.php');
 $navbar->add_menuitem('Edit Handlers',$_CONF['site_admin_url'] .'/plugins/nexflow/handlers.php');
-$navbar->set_selected('Edit Handlers');   
+$navbar->set_selected('Edit Handlers');
 echo $navbar->generate();
 
-$userid = $_USER['uid']; 
+$userid = $_USER['uid'];
 $operation = COM_applyFilter($_GET['operation'],false);
 $handlerID = COM_applyFilter($_GET['handlerID'],true);
-if (!get_magic_quotes_gpc()) { 
+if (!get_magic_quotes_gpc()) {
     $handler = addslashes($_GET['handler']);
     $description = addslashes($_GET['desc']);
 } else {
