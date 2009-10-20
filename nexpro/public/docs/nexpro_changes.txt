@@ -1,3 +1,6 @@
+Oct 20/2009 (Randy)
+    Update to nexflow to change wrong table name definitions in code.  Update to files to not include config.php.
+
 Oct 19/2009 (Blaine)
     Moved lib-nextide.php to be part of the nexpro plugin and no need now for that file to be copied/installed by the user.
 
