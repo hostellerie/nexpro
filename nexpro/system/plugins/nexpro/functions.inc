@@ -39,11 +39,12 @@ if (file_exists ($langfile)) {
 
 require_once ($_CONF['path_system'] . 'classes/sanitize.class.php');
 require_once ($_CONF['path_system'] . 'lib-portalparts.php');
-require_once ($_CONF['path'] . 'plugins/nexpro/lib-nextide.php');
 require_once ($_CONF['path_html'] . 'jscalendar/calendar.php');
 
 // Used for debugging to log messages to the Firebug addon for Firefox from PHP
 require_once ($_CONF['path_system'] . 'nexpro/FirePHPCore/FirePHP.class.php');
+// Load common nextide/nexpro plugin functions
+require_once ($_CONF['path'] . 'plugins/nexpro/lib-nextide.php');  
 
 require_once ($_CONF['path'] . 'plugins/nexpro/nexpro.php');
 require_once ($_CONF['path'] . 'plugins/nexpro/autouninstall.php');
