@@ -277,11 +277,11 @@ class nexflow {
         $template = NXCOM_filterInt($template);
         // this sql statement will retrieve the first step of the process and kick it off
         if ($startoffset == null ) {
-            $sql = "SELECT a.nf_templateDataFrom, b.regenAllLiveTasks, c.useProject, c.templateName FROM {$_TABLES["nftemplatedatanextstep"]} a ";
-            $sql .= "inner join {$_TABLES["nftemplatedata"]} b on a.nf_templateDataFrom = b.id ";
-            $sql .= "inner join {$_TABLES["nftemplate"]} c on b.nf_templateid = c.id ";
-            $sql .= "left outer join {$_TABLES["nftemplateassignment"]} d on d.nf_templateDataID = b.id ";
-            $sql .= "left outer join {$_TABLES["nfhandlers"]} e on e.id = b.nf_handlerid ";
+            $sql = "SELECT a.nf_templateDataFrom, b.regenAllLiveTasks, c.useProject, c.templateName FROM {$_TABLES["nf_templatedatanextstep"]} a ";
+            $sql .= "inner join {$_TABLES["nf_templatedata"]} b on a.nf_templateDataFrom = b.id ";
+            $sql .= "inner join {$_TABLES["nf_template"]} c on b.nf_templateid = c.id ";
+            $sql .= "left outer join {$_TABLES["nf_templateassignment"]} d on d.nf_templateDataID = b.id ";
+            $sql .= "left outer join {$_TABLES["nf_handlers"]} e on e.id = b.nf_handlerid ";
             $sql .= "WHERE b.firstTask = 1 AND c.id ='$template' ORDER BY nf_templateDataFrom ASC LIMIT 1 ";
         } else {
             $startoffset=NXCOM_filterInt($startoffset);

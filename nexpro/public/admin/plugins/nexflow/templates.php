@@ -34,7 +34,7 @@ require_once ('../../../lib-common.php');
 require('library.php');
 
 // Only let users with nexflow.edit rights to access this page
-if (!SEC_hasRights('nexflow.edit')) { 
+if (!SEC_hasRights('nexflow.edit')) {
     $display = COM_siteHeader();
     $display .= COM_startBlock($LANG_NF00['access_denied']);
     $display .= $LANG_NF00['admin_access_error'];
@@ -42,9 +42,9 @@ if (!SEC_hasRights('nexflow.edit')) {
     $display .= COM_siteFooter(true);
     echo $display;
     exit;
-} 
+}
 
-require_once ($_CONF['path'] . 'plugins/nexflow/config.php');
+require_once ($_CONF['path'] . 'plugins/nexflow/nexflow.php');
 require_once ($_CONF['path_system'] . 'classes/navbar.class.php');
 
 echo COM_siteHeader('menu');
@@ -59,7 +59,7 @@ if(SEC_hasRights('nexflow.admin')) {
 }
 echo $navbar->generate();
 
-$userid = $_USER['uid']; 
+$userid = $_USER['uid'];
 $operation = COM_applyFilter($_GET['operation'],false);
 $templateID = COM_applyFilter($_GET['templateID'],true);
 
@@ -75,7 +75,7 @@ switch(strtolower($operation)) {
 
     case 'save':
         if (!get_magic_quotes_gpc()) {
-            $templateName = addslashes(COM_applyFilter($_GET['templateName']));     
+            $templateName = addslashes(COM_applyFilter($_GET['templateName']));
         } else {
             $templateName = COM_applyFilter($_GET['templateName']);
         }
@@ -130,7 +130,7 @@ $p->set_file (array ('page'=>'templates.thtml',
     'variables'    => 'template_variables.thtml',
     'variable_rec' => 'template_variable_record.thtml'));
 
-$tquery = DB_query("SELECT id,templateName FROM {$_TABLES["nftemplate"]} ORDER BY id");
+$tquery = DB_query("SELECT id,templateName FROM {$_TABLES["nf_template"]} ORDER BY id");
 
 $p->set_var('num_records',DB_numRows($tquery));
 $p->set_var('public_url',$_CONF['site_admin_url'] .'/plugins/nexflow');
@@ -142,7 +142,7 @@ while (list ($templateId, $templateName) = DB_fetchArray($tquery)) {
     $del_template_url  = $_CONF['site_admin_url'];
     $del_template_url .= '/plugins/nexflow/templates.php?operation=delete&templateID='.$templateId;
     $del_template_icon = $_CONF['layout_url'] .'/nexflow/images/admin/delete.gif';
-        
+
     $edit_task_url  = $_CONF['site_admin_url'] .'/plugins/nexflow/edit.php?workflow_id='.$templateId;
     $edit_task_icon = $_CONF['layout_url'] .'/nexflow/images/admin/edit_tasks.gif';
     $edit_template_icon = $_CONF['layout_url'] .'/nexflow/images/admin/edit_properties.gif';
@@ -152,7 +152,7 @@ while (list ($templateId, $templateName) = DB_fetchArray($tquery)) {
     $copy_template_icon = $_CONF['layout_url'] .'/nexflow/images/admin/copy.gif';
 
     $export_template_icon = $_CONF['layout_url'] .'/nexflow/images/admin/export.gif';
-    
+
     $editname_link = "[&nbsp;<a href=\"#\" onClick='ajaxUpdateTemplateVar(\"editTemplateName\",{$templateId},{$cntr});'\">Edit</a>&nbsp;]";
 
     $useProject = DB_getItem($_TABLES['nf_template'], 'useProject', "id='{$templateId}'");
@@ -181,7 +181,7 @@ while (list ($templateId, $templateName) = DB_fetchArray($tquery)) {
     $p->set_var('copy_template_url',$copy_template_url);
     $p->set_var('editNeedPrj_check',$useProject_check);
     $p->set_var('export_template_icon',$export_template_icon);
-    
+
     $thisAppGroupID = DB_getItem($_TABLES['nf_template'],'AppGroup',"id='{$templateId}'");
     $appGroupDDL = nf_makeDropDownWithSelected('id', 'AppGroup', $_TABLES['nf_appgroups'], $thisAppGroupID,'',1);
     $p->set_var('editUseApp',$appGroupDDL);

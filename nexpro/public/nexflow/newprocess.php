@@ -32,13 +32,13 @@
 
 require_once ('../lib-common.php');
 require_once ('libconsole.php');
-require_once ($_CONF['path'] . 'plugins/nexflow/config.php');
+require_once ($_CONF['path'] . 'plugins/nexflow/nexflow.php');
 require_once ($_CONF['path_system'] . 'classes/navbar.class.php' );
 
 // Test if user should be able to access this script
 $noaccess = false;
 if ($_USER['uid'] < 2) {
-    $noaccess = true;  
+    $noaccess = true;
 } elseif ($CONF_NF['taskconsolepermrequired'] AND !SEC_hasRights('nexflow.user')) {
     $noaccess = true;
 }
@@ -51,12 +51,12 @@ if ($noaccess) {
     echo '</div>';
     echo COM_endBlock();
     echo COM_siteFooter();
-    exit();    
+    exit();
 }
 
 
 // See if we have priveledges to use the Select Task User Feature
-$selectUser = COM_applyFilter($_REQUEST['taskuser'],true); 
+$selectUser = COM_applyFilter($_REQUEST['taskuser'],true);
 $optLinkVars = '';
 
 if ($selectUser > 0) {
@@ -72,19 +72,19 @@ $nfclass= new nexflow('',$usermodeUID);
 
 $retval = '';
 echo COM_siteHeader('menu' );
-$username = COM_getDisplayName($usermodeUID);   
-echo COM_startBlock("Workflow Task Console for: $username",'','blockheader.thtml');  
+$username = COM_getDisplayName($usermodeUID);
+echo COM_startBlock("Workflow Task Console for: $username",'','blockheader.thtml');
 echo taskconsoleShowNavbar('Start Process');
 
 $p = new Template($_CONF['path_layout'] . 'nexflow/admin');
 $p->set_file (array (
     'page'      =>     'startprocesses.thtml',
     'record'    =>     'process_record.thtml'));
-    
+
 $p->set_var('site_url',$_CONF['site_url']);
 $p->set_var('optional_parms',$optLinkVars);
 
-$tquery = DB_query("SELECT id,templateName FROM {$_TABLES["nftemplate"]} ORDER BY id");
+$tquery = DB_query("SELECT id,templateName FROM {$_TABLES["nf_template"]} ORDER BY id");
 $i=1;
 while (list ($templateId, $templateName) = DB_fetchArray($tquery)) {
     $p->set_var('template_id', $templateId);
@@ -101,7 +101,7 @@ if($_GET['start'] != NULL) {
         $p->set_var('message','Process Started');
 
     } else {
-        $p->set_var('message','Error Starting Process');         
+        $p->set_var('message','Error Starting Process');
     }
 } else {
     $p->set_var('showmsg','none');

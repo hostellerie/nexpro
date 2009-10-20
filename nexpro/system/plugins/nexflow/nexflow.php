@@ -129,4 +129,14 @@ $_TABLES['nf_projectattachments']   = $_DB_table_prefix . 'nf_projectattachments
 $_TABLES['nf_projectdatafields']    = $_DB_table_prefix . 'nf_projectdatafields';
 $_TABLES['nf_projectdataresults']   = $_DB_table_prefix . 'nf_projectdataresults';
 
+/*
+* Check and see if we need to load the plugin configuration
+*/
+if (!isset($CONF_NF['TaskConsole_URL'])) {
+    require_once $_CONF['path_system'] . 'classes/config.class.php';
+
+    $nexflow_config = config::get_instance();
+    $CONF_NF_2 = $nexflow_config->get_config('nexflow');
+    $CONF_NF=@array_merge($CONF_NF,$CONF_NF_2);
+}
 ?>
