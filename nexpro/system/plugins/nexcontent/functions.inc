@@ -208,7 +208,9 @@ function plugin_dopluginsearch_nexcontent($query, $datestart, $dateend, $topic, 
     }
     // Build search SQL to search the project and task name, details and keywords fields
 
-    $sql  = "SELECT id ,name, type, hits FROM {$_TABLES['nexcontent_pages']} WHERE  is_draft='0' ";
+    $sql  = "SELECT id ,name as title, left(content,100) as description, hits, ";
+    $sql .= "CONCAT('/nc/index.php?page=', id) AS url ";
+    $sql .= "FROM {$_TABLES['nexcontent_pages']} WHERE  is_draft='0' ";
     $sql .= COM_getPermSQL('AND');
 
     if (!empty ($query)) {
@@ -256,34 +258,16 @@ function plugin_dopluginsearch_nexcontent($query, $datestart, $dateend, $topic, 
         }
     }
 
-    $sql .= "ORDER BY id DESC";
-
+    $query = trim(addslashes($query));
     // Perform search
-    $result = DB_query($sql);
+    $search = new SearchCriteria('nexcontent', $LANG_SE00['searchlabel']);
+    $columns = array('title' => 'name','content');
+    list($sql,$ftsql) = $search->buildSearchSQL($keyType, $query, $columns, $sql);
+    $search->setSQL($sql);
+    $search->setFTSQL($ftsql);
+    $search->setRank(5);
+    return $search;
 
-    // OK, now return coma delmited string of table header labels
-    // Need to use language variables
-    require_once($_CONF['path_system'] . 'classes/plugin.class.php');
-    $plugin_results = new Plugin();
-    $plugin_results->plugin_name = $LANG_SE00['searchlabel'];
-    $plugin_results->searchlabel = $LANG_SE00['searchresults'];
-    $plugin_results->addSearchHeading($LANG_SE01['SEARCH_PAGE']);
-    $plugin_results->addSearchHeading($LANG_SE01['SEARCH_TYPE']);
-    $plugin_results->addSearchHeading($LANG_SE01['SEARCH_HITS']);
-    $totalsearched = DB_numRows($result);
-    $searchcount=0;
-
-    for ($i = 1; $i <= $totalsearched; $i++) {
-
-        list($id, $name, $type, $hits) = DB_fetchArray($result);
-        $searchcount++;
-
-        $row = array('<a href="'.$CONF_SE['public_url'] .'/index.php?page='.$id.'">'.$name.'</a>',$type,$hits, '');
-        $plugin_results->addSearchResult($row);
-    }
-    $plugin_results->num_searchresults = $searchcount;
-    $plugin_results->num_itemssearched = DB_count($_TABLES['nexcontent_pages']);
-    return $plugin_results;
 }
 
 
