@@ -3,19 +3,19 @@
 <rss version="2.0" xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
 <channel>
 <title>Geeklog Site</title>
-<link>http://localhost/nexpro161</link>
+<link>http://yourdomain</link>
 <description>Another Nifty Geeklog Site</description>
-<managingEditor>admin@localhost</managingEditor>
-<webMaster>admin@localhost</webMaster>
+<managingEditor>admin@yourdomain</managingEditor>
+<webMaster>admin@yourdomain</webMaster>
 <copyright>Copyright 2009 Geeklog Site</copyright>
 <generator>Geeklog</generator>
 <pubDate>Thu, 08 Oct 2009 08:55:39 -0400</pubDate>
 <language>en-gb</language>
-<atom:link href="http://localhost/nexpro161/backend/geeklog.rss" rel="self" type="application/rss+xml" />
+<atom:link href="http://yourdomain/backend/geeklog.rss" rel="self" type="application/rss+xml" />
 <item>
 <title>Welcome to Nexpro</title>
-<link>http://localhost/nexpro161/article.php?story=welcome</link>
-<guid isPermaLink="true">http://localhost/nexpro161/article.php?story=welcome</guid>
+<link>http://yourdomain/article.php?story=welcome</link>
+<guid isPermaLink="true">http://yourdomain/article.php?story=welcome</guid>
 <pubDate>Sun, 26 Aug 2007 00:08:34 -0400</pubDate>
 <dc:subject>NexPro</dc:subject>
 <description>&lt;table width=&quot;100%&quot; cellspacing=&quot;1&quot; cellpadding=&quot;1&quot; border=&quot;0&quot;&gt;
@@ -38,7 +38,7 @@
         &lt;/tr&gt;
     &lt;/tbody&gt;
 &lt;/table&gt;</description>
-<trackback:ping>http://localhost/nexpro161/trackback.php?id=welcome</trackback:ping>
+<trackback:ping>http://yourdomain/trackback.php?id=welcome</trackback:ping>
 </item>
 </channel>
 </rss>
