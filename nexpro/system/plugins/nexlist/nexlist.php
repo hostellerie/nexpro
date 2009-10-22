@@ -43,6 +43,9 @@ $_TABLES['nexlistitems']   = $_DB_table_prefix . 'nxlist_items';
 
 $nexlist_config = config::get_instance();
 $CONF_LL_2 = $nexlist_config->get_config('nexlist');
-if(is_array($CONF_LL_2)) $CONF_LL=@array_merge($CONF_LL_2,$CONF_LL);
+if(is_array($CONF_LL_2)) {
+    $CONF_LL=@array_merge($CONF_LL_2,$CONF_LL);
+
+}
 
 ?>

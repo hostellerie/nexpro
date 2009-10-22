@@ -49,7 +49,9 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
 */
 function plugin_autoinstall_nexcontent($pi_name)
 {
-    global $CONF_SE;
+    global $CONF_SE,$_CONF;
+    @require ($_CONF['path'] . 'plugins/nexcontent/nexcontent.php');
+
     $pi_name         = $CONF_SE['pi_name'];
     $pi_display_name = $CONF_SE['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';

@@ -30,6 +30,7 @@
 
 
 // Plugin information
+$CONF_FE=array();
 $CONF_FE['pi_display_name'] = 'nexform';
 $CONF_FE['pi_name']         = 'nexform';
 $CONF_FE['gl_version']      = '1.6.1';

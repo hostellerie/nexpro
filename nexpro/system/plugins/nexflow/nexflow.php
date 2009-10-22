@@ -30,6 +30,7 @@
 
 
 // Plugin information
+$CONF_NF=array();
 $CONF_NF['pi_display_name'] = 'nexflow';
 $CONF_NF['pi_name']         = 'nexflow';
 $CONF_NF['gl_version']      = '1.6.1';

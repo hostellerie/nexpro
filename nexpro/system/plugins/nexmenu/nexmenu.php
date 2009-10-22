@@ -32,7 +32,7 @@
 // +---------------------------------------------------------------------------+
 // | Plugin Config Parms - DO NOT EDIT BELOW THIS SECTION                      |
 // +---------------------------------------------------------------------------+
-
+$CONF_NEXMENU=array();
 $CONF_NEXMENU['version']='3.2';
 $CONF_NEXMENU['gl_version']='1.6.0';
 $CONF_NEXMENU['pi_name']='nexmenu';

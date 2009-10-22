@@ -30,6 +30,7 @@
 //
 
 include_once ($_CONF['path'] . 'plugins/nexmenu/autouninstall.php');
+require_once ($_CONF['path'] . 'plugins/nexmenu/nexmenu.php');
 
 if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
     die('This file can not be used on its own!');
@@ -51,7 +52,8 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
 function plugin_autoinstall_nexmenu($pi_name)
 {
 
-    global $CONF_NEXMENU;
+    global $CONF_NEXMENU, $_CONF;
+    @require ($_CONF['path'] . 'plugins/nexmenu/nexmenu.php');
     $pi_name         = $CONF_NEXMENU['pi_name'];
     $pi_display_name = $CONF_NEXMENU['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';
