@@ -59,9 +59,11 @@ $CONF_NEXMENU['coremenu'] = array (
 );
 
 // Only CSS Mode currently supports the 'headermenu' as one of the core menu options
-if (!$CONF_NEXMENU['milonicmode']) {
-    $CONF_NEXMENU['coremenu'][7] = 'headermenu';
-    $LANG_NEXMENU03[7] = 'headermenu';
+if (@isset($CONF_NEXMENU['milonicmode'])) {
+    if (!$CONF_NEXMENU['milonicmode']) {
+        $CONF_NEXMENU['coremenu'][7] = 'headermenu';
+        $LANG_NEXMENU03[7] = 'headermenu';
+    }
 }
 
 $CONF_NEXMENU['icons'] = array (
