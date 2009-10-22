@@ -1,0 +1,1 @@
+<a href="#" onClick="showAddFilePanel({folder_id});" TITLE="Upload File"><img src="{layout_url}/nexfile/images/upload.png"></a>

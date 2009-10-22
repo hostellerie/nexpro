@@ -1,0 +1,16 @@
+<table class="block-box-right">
+    <tr>
+        <td class="block-box-header">
+            <span class="block-collapseicon">
+                <a href="#" onClick="toggleblock('{block_id}'); return false;" onmouseover="updateBlockCollapseIcon('{block_id}', 'on');" onmouseout="updateBlockCollapseIcon('{block_id}', 'off');"><img id="img_{block_id}" src="{layout_url}/images/arrow-up-off.gif"></a>
+            </span>
+            <a id="lnk_{block_id}" href="#" onClick="toggleblock('{block_id}'); return false;" onmouseover="updateBlockCollapseIcon('{block_id}', 'on');" onmouseout="updateBlockCollapseIcon('{block_id}', 'off');">{block_title}</a>
+            {block_help}
+        </td>
+    </tr>
+    <tr id="row_{block_id}" class="block-box-item">
+        <td class="block-box-container">
+            <div id="blk_{block_id}" style="overflow: visible;">
+            <table border="0" style="border-collapse: collapse; padding: 0px; margin: 0px;" width="100%">
+                <tr>
+                    <td id="cell_{block_id}" class="block-box-content">

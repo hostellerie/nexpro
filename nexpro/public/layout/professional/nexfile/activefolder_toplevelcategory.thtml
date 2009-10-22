@@ -1,0 +1,13 @@
+
+        <!-- DIV active if displaying the Top-Level Workspace folder (No selected category) -->
+        <div style="width:100%;display:{xshow_folderheader};height:26x;padding-bottom:5px;">
+            <div class="floatleft" style="width:70;padding-left:2px;padding-bottom:10px;vertical-align:top;display:{show_nonadmin};">
+                <span style="padding-left:32px;"><img src="{layout_url}/nexfile/images/allfolders-16x16.png"></span>
+            </div>
+            <div id="activefolder_area" class="floatleft" style="padding-top:5px;display:{show_nonadmin};">
+                {active_folder}
+            </div>
+            {ajaxstatus_workspacemode}
+            {ajaxactivity_workspacemode}
+            <div class="clearboth"></div>
+        </div>
