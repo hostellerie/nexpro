@@ -49,8 +49,8 @@ $LANG_FE01 = array (
     'uninstall'         => 'UnInstall',
     'enabled'           => '<br>Plugin is installed and enabled.<br>Disable first if you want to De-Install it.<p>',
     'warning'           => 'Plugin De-Install Warning',
-    'searchlabel'       => 'Form Management',
-    'searchresults'     => 'Form Management Search Results'
+    'searchlabel'       => 'Forms',
+    'searchresults'     => 'Form Search Results'
 
 );
 /* Admin Edit Fields Navbar Setup */

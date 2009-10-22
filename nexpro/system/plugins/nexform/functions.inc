@@ -111,6 +111,41 @@ function plugin_getHeaderCode_nexform()
     return $code;
 }
 
+/**
+* Geeklog is asking us to provide any new items that show up in the type drop-down
+* on search.php.  Let's let users search the Filelistings in the Filemgmt Plugin
+*
+*/
+
+function plugin_searchtypes_nexform()
+{
+    global $LANG_FE01;
+
+    $tmp['nexfile'] = $LANG_FE01['searchlabel'];
+    return $tmp;
+}
+
+
+/**
+* This searches for faqs matching the user query and returns an object
+* back to search.php where it will be formated and printed.
+*
+* @param    string  $query      Keywords user is looking for
+* @param    date    $datestart  Start date to get results for (not used)
+* @param    date    $dateend    End date to get results for (not used)
+* @param    string  $topic      The topic they were searching in (not used)
+* @param    string  $type       Type of items they are searching, or 'all' (deprecated)
+* @param    int     $author     Get all results by this author (not used)
+* @param    string  $keyType    search key type: 'all', 'phrase', 'any'
+* @param    int     $page       page number of current search (deprecated)
+* @param    int     $perpage    number of results per page (deprecated)
+* @return   object              search result object
+*
+*/
+function plugin_dopluginsearch_nexform($query, $datestart, $dateend, $topic, $type, $author, $keyType, $page, $perpage)
+{
+    global $_TABLES, $LANG_FE01;
+}
 
 /**
 * Called by the plugin Editor when a plugin's state changes
