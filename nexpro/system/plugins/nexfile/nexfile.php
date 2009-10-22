@@ -96,11 +96,12 @@ $_TABLES['nxfile_export_queue']         = $_DB_table_prefix .'nxfile_export_queu
 
 $_TABLES['auditlog']                = $_DB_table_prefix .'auditlog';
 
+/* Load the configuration from the online tables */
+require_once $_CONF['path_system'] . 'classes/config.class.php';
+$nexfile_config = config::get_instance();
+$_FMCONF_2 = $nexfile_config->get_config('nexfile');
+if(@is_array($_FMCONF_2)) $_FMCONF=@array_merge($_FMCONF_2,$_FMCONF);
 
-if (!isset($_FMCONF['storage_path'])) {
-    require_once $_CONF['path_system'] . 'classes/config.class.php';
-    $nexfile_config = config::get_instance();
-    $_FMCONF_2 = $nexfile_config->get_config('nexfile');
-    if(@is_array($_FMCONF_2)) $_FMCONF=@array_merge($_FMCONF_2,$_FMCONF);
-}
+
+
 ?>
