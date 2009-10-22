@@ -48,6 +48,7 @@ if (!isset($CONF_NEXMENU['milonicstyles'])) {
 
 require_once ($_CONF['path'] . 'plugins/nexmenu/nexmenu.class.php');
 require_once ($_CONF['path'] . 'plugins/nexmenu/autouninstall.php');
+require_once ($_CONF['path'] . 'plugins/nexmenu/nexmenu.php');
 
 // Call the function to initialize some additional CONF variables for glMenu
 $CONF_NEXMENU['installed_version'] = DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexmenu'");
