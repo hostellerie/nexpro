@@ -52,7 +52,8 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
 function plugin_autoinstall_nexpro($pi_name)
 {
 
-    global $CONF_NEXPRO;
+    global $CONF_NEXPRO, $_CONF;
+    @require ($_CONF['path'] . 'plugins/nexpro/nexpro.php');
     $pi_name         = $CONF_NEXPRO['pi_name'];
     $pi_display_name = $CONF_NEXPRO['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';

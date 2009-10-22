@@ -53,7 +53,7 @@ function plugin_autoinstall_nexform($pi_name)
 {
     global $_CONF;
 
-    include ($_CONF['path'] . 'plugins/nexform/nexform.php');
+    @include ($_CONF['path'] . 'plugins/nexform/nexform.php');
 
     $pi_display_name = $CONF_FE['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';
