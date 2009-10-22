@@ -53,7 +53,8 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
 function plugin_autoinstall_nextime($pi_name)
 {
 
-    global $CONF_NEXTIME;
+    global $_CONF,$CONF_NEXTIME;
+    @require ($_CONF['path'] . 'plugins/nextime/nextime.php');
     $pi_name         = $CONF_NEXTIME['pi_name'];
     $pi_display_name = $CONF_NEXTIME['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';

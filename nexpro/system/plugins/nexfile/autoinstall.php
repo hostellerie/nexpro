@@ -53,7 +53,7 @@ function plugin_autoinstall_nexfile($pi_name)
 {
     global $_CONF;
 
-    include ($_CONF['path'] . 'plugins/nexfile/nexfile.php');
+    require_once ($_CONF['path'] . 'plugins/nexfile/nexfile.php');
 
     $pi_display_name = $_FMCONF['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';

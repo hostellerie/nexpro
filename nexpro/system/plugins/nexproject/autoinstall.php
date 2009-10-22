@@ -53,6 +53,8 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
 */
 function plugin_autoinstall_nexproject($pi_name)
 {
+    global $_CONF;
+    @require ($_CONF['path'] . 'plugins/nexproject/nexproject.php');
 
     $pi_name         = 'nexproject';
     $pi_display_name = 'nexProject';

@@ -30,6 +30,7 @@
 
 
 // Plugin information
+$_FMCONF=array();
 $_FMCONF['pi_display_name'] = 'nexfile';
 $_FMCONF['pi_name']         = 'nexfile';
 $_FMCONF['gl_version']      = '1.6.1';
