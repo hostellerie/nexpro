@@ -54,7 +54,7 @@ function plugin_autoinstall_nexflow($pi_name)
 {
     global $_CONF;
 
-    include ($_CONF['path'] . 'plugins/nexflow/nexflow.php');
+    @include ($_CONF['path'] . 'plugins/nexflow/nexflow.php');
 
     $pi_display_name = $CONF_NF['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';

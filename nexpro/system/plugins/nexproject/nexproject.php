@@ -31,6 +31,7 @@
 //
 require_once $_CONF['path_system'] . 'classes/config.class.php';
 
+$_PRJCONF=array();
 $_PRJCONF['version'] = '2.1.0';
 
 // Database Definitions

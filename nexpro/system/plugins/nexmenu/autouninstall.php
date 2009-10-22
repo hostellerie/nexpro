@@ -29,7 +29,7 @@
 //
 
 global $_TABLES,$_DB_table_prefix,$CONF_NEXMENU;
-require_once ($_CONF['path'] . 'plugins/nexmenu/nexmenu.php');
+
 
 /**
 * Automatic uninstall function for plugins

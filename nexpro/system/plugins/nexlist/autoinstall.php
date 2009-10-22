@@ -47,7 +47,9 @@ require_once ($_CONF['path'] . 'plugins/nexlist/nexlist.php');
 */
 function plugin_autoinstall_nexlist($pi_name)
 {
-    global $CONF_LL;
+    global $CONF_LL,$_CONF;
+
+    @require ($_CONF['path'] . 'plugins/nexlist/nexlist.php');
     $pi_name         = $CONF_LL['pi_name'];
     $pi_display_name = $CONF_LL['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';
