@@ -37,18 +37,7 @@ if (file_exists ($langfile)) {
 
 include_once ($_CONF['path'] . 'plugins/nexfile/autouninstall.php');
 
-/*
-* Check and see if we need to load the plugin configuration
-*/
-if (!isset($_FMCONF['storage_path'])) {
-    require_once $_CONF['path_system'] . 'classes/config.class.php';
-
-    $nexfile_config = config::get_instance();
-    $_FMCONF = $nexfile_config->get_config('nexfile');
-}
-
 require_once ($_CONF['path'] . 'plugins/nexfile/nexfile.php');
-
 
 /**
 * Returns the items for this plugin that should appear on the main menu
