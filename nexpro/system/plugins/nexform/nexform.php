@@ -100,4 +100,11 @@ $_TABLES['nxform_results_tmp']       = $_DB_table_prefix . 'nxform_results_tmp';
 $_TABLES['nxform_resdata_tmp']       = $_DB_table_prefix . 'nxform_resdata_tmp';
 $_TABLES['nxform_restext_tmp']       = $_DB_table_prefix . 'nxform_restext_tmp';
 
+
+if (!isset($CONF_FE['post_url'])) {
+    require_once $_CONF['path_system'] . 'classes/config.class.php';
+    $nexform_config = config::get_instance();
+    $CONF_FE_2 = $nexform_config->get_config('nexform');
+}
+if(is_array($CONF_FE_2)) $CONF_FE=@array_merge($CONF_FE_2,$CONF_FE);
 ?>
