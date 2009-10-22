@@ -30,8 +30,8 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 
-require_once ($_CONF['path'] . 'plugins/nexflow/nexflow.php');
 require_once ($_CONF['path'] . 'plugins/nexflow/autouninstall.php');
+require_once ($_CONF['path'] . 'plugins/nexflow/nexflow.php');
 
 /**
 * Autoinstall API functions for the nexflow plugin
@@ -52,9 +52,9 @@ require_once ($_CONF['path'] . 'plugins/nexflow/autouninstall.php');
  */
 function plugin_autoinstall_nexflow($pi_name)
 {
-    global $_CONF;
+    global $_CONF, $CONF_NF;
 
-    @include ($_CONF['path'] . 'plugins/nexflow/nexflow.php');
+    @require ($_CONF['path'] . 'plugins/nexflow/nexflow.php');
 
     $pi_display_name = $CONF_NF['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';
