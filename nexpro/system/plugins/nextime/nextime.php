@@ -85,12 +85,14 @@ $_TABLES['nextime_vars']                        = $_DB_table_prefix . 'nxtime_va
 $nextime_config = config::get_instance();
 $CONF_NEXTIME_2 = $nextime_config->get_config('nextime');
 if(is_array($CONF_NEXTIME_2)) $CONF_NEXTIME=@array_merge($CONF_NEXTIME_2,$CONF_NEXTIME);
-if($CONF_NEXTIME['report_format']=="Excel2007"){
-    $CONF_NEXTIME['report_output_format']="PHPExcel_Writer_Excel2007";
-    $CONF_NEXTIME['report_extension']='xlsx';
-}else{
-    $CONF_NEXTIME['report_output_format']="PHPExcel_Writer_Excel5";
-    $CONF_NEXTIME['report_extension']='xls';
+if(@isset($CONF_NEXTIME['report_format'])){
+    if($CONF_NEXTIME['report_format']=="Excel2007"){
+        $CONF_NEXTIME['report_output_format']="PHPExcel_Writer_Excel2007";
+        $CONF_NEXTIME['report_extension']='xlsx';
+    }else{
+        $CONF_NEXTIME['report_output_format']="PHPExcel_Writer_Excel5";
+        $CONF_NEXTIME['report_extension']='xls';
+    }
 }
 
 

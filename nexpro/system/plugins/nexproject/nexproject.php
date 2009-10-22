@@ -56,7 +56,7 @@ $nexproject_config = config::get_instance();
 $_PRJCONF_2 = $nexproject_config->get_config('nexproject');
 if(is_array($_PRJCONF_2)) $_PRJCONF=@array_merge($_PRJCONF_2,$_PRJCONF);
 //we have some globals and defines set.. Time to create those:
-if(is_array($_PRJCONF)){
+if(is_array($_PRJCONF_2)){
     $subTaskImg=$_PRJCONF['subTaskImg'];
     $subTaskOrderImg=$_PRJCONF['subTaskOrderImg'];
     define('THEME',$_PRJCONF['THEME']);
