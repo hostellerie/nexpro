@@ -74,5 +74,10 @@ $CONF_NEXMENU['icons'] = array (
     5   => 'custom_menuitem.gif'
 );
 
+/* Load the configuration from the online tables */  
+require_once $_CONF['path_system'] . 'classes/config.class.php';
+$nexmenu_config = config::get_instance();
+$xCONF_NEXMENU = $nexmenu_config->get_config('nexmenu');
+if(@is_array($xCONF_NEXMENU)) $CONF_NEXMENU=@array_merge($xCONF_NEXMENU,$CONF_NEXMENU);
 
 ?>

@@ -35,20 +35,9 @@ if (file_exists ($langfile)) {
     include_once ($_CONF['path'] . 'plugins/nexmenu/language/english.php');
 }
 
-/*
-* Check and see if we need to load the plugin configuration
-*/
-
-if (!isset($CONF_NEXMENU['milonicstyles'])) {
-    require_once $_CONF['path_system'] . 'classes/config.class.php';
-
-    $nexmenu_config = config::get_instance();
-    $CONF_NEXMENU = $nexmenu_config->get_config('nexmenu');
-}
-
+require_once ($_CONF['path'] . 'plugins/nexmenu/nexmenu.php'); 
 require_once ($_CONF['path'] . 'plugins/nexmenu/nexmenu.class.php');
 require_once ($_CONF['path'] . 'plugins/nexmenu/autouninstall.php');
-require_once ($_CONF['path'] . 'plugins/nexmenu/nexmenu.php');
 
 // Call the function to initialize some additional CONF variables for glMenu
 $CONF_NEXMENU['installed_version'] = DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexmenu'");
