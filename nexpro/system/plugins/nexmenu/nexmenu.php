@@ -36,7 +36,7 @@ $CONF_NEXMENU=array();
 $CONF_NEXMENU['version']='3.2';
 $CONF_NEXMENU['gl_version']='1.6.0';
 $CONF_NEXMENU['pi_name']='nexmenu';
-$CONF_NEXMENU['pi_display_name']='nexMenu';
+$CONF_NEXMENU['pi_display_name']='nexmenu';
 
 $CONF_NEXMENU['dependent_plugins']=array(
     'nexpro'    => '2.1.0'

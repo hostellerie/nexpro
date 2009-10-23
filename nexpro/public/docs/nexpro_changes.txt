@@ -1,5 +1,6 @@
 Oct 23/2009 (Blaine)
     Modifications to nexmenu's config inclusion mechanism.    
+    Tweaks to the default SQL installation and initial menu theme
 
 Oct 22/2009 (Randy)
     Modifications to each nex* plugin for the autoinstaller to respect each plugin's config information.
