@@ -1,7 +1,7 @@
 <?php
 
 // +--------------------------------------------------------------------------+
-// | Geeklog Forums Plugin 3.1 for Geeklog - The Ultimate Weblog              |
+// | Geeklog Forums Plugin 3.2 for Geeklog - The Ultimate Weblog              |
 // | Initial release date: Feb 7,2003                                         |
 // +--------------------------------------------------------------------------+
 // | config.php                                                               |
@@ -53,15 +53,19 @@ $CONF_FORUM['imgset_path'] = $_CONF['path_layout'] .'/forum/image_set';
 $CONF_FORUM['autoimagetype'] = true;
 $CONF_FORUM['image_type_override'] = 'gif';
 
+
 /*************************************************************************
 *          Do not modify any settings below this area                    *
 *************************************************************************/
 
-$CONF_FORUM['version']            = '3.1.0';
+$CONF_FORUM['version']            = '3.2.0';
 $CONF_FORUM['pi_display_name']    = 'forum';
 $CONF_FORUM['pi_name']            = 'forum';
 $CONF_FORUM['gl_version']         = '1.6.1';
 $CONF_FORUM['pi_url']             = 'http://www.portalparts.com/';
+
+
+
 
 // Adding the Forum Plugin tables to $_TABLES array
 $_TABLES['gf_userprefs']    = $_DB_table_prefix . 'gf_userprefs';
@@ -76,6 +80,13 @@ $_TABLES['gf_log']          = $_DB_table_prefix . 'gf_log';
 $_TABLES['gf_userinfo']     = $_DB_table_prefix . 'gf_userinfo';
 $_TABLES['gf_attachments']  = $_DB_table_prefix . 'gf_attachments';
 $_TABLES['gf_bookmarks']    = $_DB_table_prefix . 'gf_bookmarks';
+
+
+/* Load the configuration from the online tables */
+require_once $_CONF['path_system'] . 'classes/config.class.php';
+$forum_config = config::get_instance();
+$CONF_FORUM2 = $forum_config->get_config('forum');
+if(@is_array($CONF_FORUM2)) $CONF_FORUM=@array_merge($CONF_FORUM2,$CONF_FORUM);
 
 
 ?>

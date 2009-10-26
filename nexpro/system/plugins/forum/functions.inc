@@ -43,19 +43,7 @@ if (file_exists ($langfile)) {
     include_once ($_CONF['path'] . 'plugins/forum/language/english.php');
 }
 
-
 include_once ($_CONF['path'] . 'plugins/forum/autouninstall.php');
-
-/*
-* Check and see if we need to load the plugin configuration
-*/
-if (!isset($CONF_FORUM['registration_required'])) {
-    require_once $_CONF['path_system'] . 'classes/config.class.php';
-
-    $forum_config = config::get_instance();
-    $CONF_FORUM = $forum_config->get_config('forum');
-}
-
 require_once $_CONF['path'].'plugins/forum/forum.php';
 require_once ($_CONF['path_system'] . 'lib-portalparts.php');
 $pi_version = floatval (DB_getItem($_TABLES['plugins'], 'pi_version', "pi_name='forum'"));
@@ -89,8 +77,8 @@ if ( !empty($_USER['uid']) && $_USER['uid'] > 1 ) {
         $CONF_FORUM['notify_once']                = $userprefs['notify_once'];
     }
 }
-$CONF_FORUM['use_glfilter'] = 1; // always use the filter...
 
+$CONF_FORUM['use_glfilter'] = 1; // always use the filter...
 $CONF_FORUM['leftblocks'] = array ('forum_menu');
 $CONF_FORUM['leftblocks'] = ppGetUserBlocks($CONF_FORUM['leftblocks']);
 
@@ -339,8 +327,8 @@ function plugin_showstats_forum($showsitestats)
         $retval .= "<td align='right'>" . $total_pages . "&nbsp;&nbsp;</td></tr></table>";
     } else {
         $header_arr = array(
-            array('text' => $LANG_GF01['TOPICSUBJECT'], 'field' => 'topicsubject'),
-            array('text' => $LANG_GF01['VIEWS'], 'field' => 'views'),
+            array('text' => $LANG_GF01['TOPICSUBJECT'], 'field' => 'topicsubject','header_class' => 'stats-header-title'),
+            array('text' => $LANG_GF01['VIEWS'], 'field' => 'views','header_class' => 'stats-header-count', 'field_class' => 'stats-list-count'),
         );
         $data_arr = array();
         $text_arr = array('has_menu'     => false,
@@ -370,8 +358,8 @@ function plugin_showstats_forum($showsitestats)
             $retval .= $LANG_GF00['statsheading3'];
         }
         $header_arr = array(
-            array('text' => $LANG_GF01['TOPICSUBJECT'], 'field' => 'topicsubject'),
-            array('text' => $LANG_GF01['REPLIES'], 'field' => 'replies'),
+            array('text' => $LANG_GF01['TOPICSUBJECT'], 'field' => 'topicsubject','header_class' => 'stats-header-title'),
+            array('text' => $LANG_GF01['REPLIES'], 'field' => 'replies','header_class' => 'stats-header-count', 'field_class' => 'stats-list-count'),
         );
         $data_arr = array();
         $text_arr = array('has_menu'     => false,
@@ -608,9 +596,13 @@ function forum_buildFeedsSql ($forumID, $limits)
     $grouplist = implode(',',$groups);
 
     if ($forumID > 0) {
-        $where = " WHERE forum=$forumID AND no_newposts=0 AND forum.grp_id IN ($grouplist) ";
+        $where = " WHERE forum=$forumID AND no_newposts=0 ";
     } else {
-        $where = " WHERE no_newposts=0 AND forum.grp_id IN ($grouplist) ";
+        $where = " WHERE no_newposts=0 ";
+    }
+
+    if (!empty($grouplist)) {
+		$where .= "AND forum.grp_id IN ($grouplist) ";
     }
     $limitsql = '';
     if (!empty ($limits)) {
@@ -782,25 +774,25 @@ function plugin_upgrade_forum() {
     switch ($curversion) {
 
         case "2.3" :
-            if (upgrade_232() == 0 )  {
+            if (forum_upgrade_232() == 0 )  {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.5RC1' WHERE `pi_name` = 'forum' LIMIT 1");
-                if (upgrade_25() == 0 )  {
+                if (forum_upgrade_25() == 0 )  {
                     DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.7', `pi_gl_version` = '1.4.1' WHERE `pi_name` = 'forum' LIMIT 1");
                 }
             }
             break;
 
         case "2.3.2" :
-            if (upgrade_232() == 0 )  {
+            if (forum_upgrade_232() == 0 )  {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.5RC1' WHERE `pi_name` = 'forum' LIMIT 1");
-                if (upgrade_25() == 0 )  {
+                if (forum_upgrade_25() == 0 )  {
                     DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.7', `pi_gl_version` = '1.4.1' WHERE `pi_name` = 'forum' LIMIT 1");
                 }
             }
             break;
 
         case "2.5RC1" :
-            if (upgrade_25() == 0 )  {
+            if (forum_upgrade_25() == 0 )  {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.7', `pi_gl_version` = '1.4.1' WHERE `pi_name` = 'forum' LIMIT 1");
             }
             break;
@@ -808,13 +800,13 @@ function plugin_upgrade_forum() {
              DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.7', `pi_gl_version` = '1.4.1' WHERE `pi_name` = 'forum' LIMIT 1");
              break;
        case "2.7" :
-             if (upgrade_30() == 0 ) {
+             if (forum_upgrade_30() == 0 ) {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.0', `pi_gl_version` = '1.4.1' WHERE `pi_name` = 'forum' LIMIT 1");
              }
              break;
        case "3.0" :
-            if (upgrade_310() == 0 )  {
-                DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.1.0', `pi_gl_version` = '1.6.1' WHERE `pi_name` = 'forum' LIMIT 1");
+            if (forum_upgrade_320() == 0 )  {
+                DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2.0', `pi_gl_version` = '1.6.1' WHERE `pi_name` = 'forum' LIMIT 1");
             }
             break;
 
@@ -1172,8 +1164,9 @@ function plugin_centerblock_forum ($where = 1, $page = 1, $topic = '')
     $retval = '';
 
     // Retrieve Centerblock Settings
-    $query = DB_query ("SELECT cb_enable, cb_homepage, cb_where FROM {$_TABLES['gf_settings']}");
-    list ($cb_enable,$cb_homepage,$cb_where) = DB_fetchArray ($query);
+    $cb_enable = $CONF_FORUM['show_centerblock'];
+    $cb_where = $CONF_FORUM['centerblock_where'];
+    $cb_homepage = $CONF_FORUM['centerblock_homepage'];
 
     // If enabled only for homepage and this is not page 1 or a topic page,
     // then set disable flag

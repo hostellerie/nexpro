@@ -1,7 +1,7 @@
 <?php
 
 
-function upgrade_232() {
+function forum_upgrade_232() {
     global $_TABLES;
 
     $_SQL = array();
@@ -103,7 +103,7 @@ function upgrade_232() {
 }
 
 
-function upgrade_25() {
+function forum_upgrade_25() {
     global $_TABLES;
 
     $_SQL = array();
@@ -143,7 +143,7 @@ function upgrade_25() {
 
 }
 
-function upgrade_30() {
+function forum_upgrade_30() {
     global $_TABLES;
 
     $_SQL = array();
@@ -190,7 +190,7 @@ function upgrade_30() {
 }
 
 
-function upgrade_310() {
+function forum_upgrade_320() {
     global $_CONF,$_TABLES,$CONF_FORUM,$_DB_table_prefix;
 
     $CONF_FORUM = array();

@@ -927,7 +927,7 @@ $LANG_confignames['forum'] = array(
     'show_popular_perpage' => 'Number of Popular Posts to Show',
     'show_last_post_count' => 'Number of Last Posts to Show',
     'grouptags' => 'Group Tags',
-    'filestorage_plugin'   => 'Attachement Plugin',
+    'filestorage_plugin'   => 'Attachment Plugin',
     'maxattachments' => 'Maximum Number of Attachments',
     'uploadpath' => 'Upload Path',
     'downloadURL' => 'Download URL',
@@ -940,7 +940,11 @@ $LANG_confignames['forum'] = array(
     'inlineimageypes' => 'Allows Image Types',
     'showtopic_review_order' => 'Order to Display Existing Topics When Replying',
     'allow_memberlist' => 'Allow Site Member List',
-    'max_uploadfile_size' => 'Max Size for Attachments (bytes)'
+    'max_uploadfile_size' => 'Max Size for Attachments (bytes)',
+    'notifyoptions_allowedGroup'    => 'Group that has access to the Special Notification Options',
+    'notify_defaultOption'  => 'Special Notification Option Default',
+    'notifyall_allowedGroup' => 'Group that has access to the Notify All Members Feature',
+    'notifyall_default'     => 'Notify All Feature Default'
 
 );
 
@@ -954,7 +958,8 @@ $LANG_fs['forum'] = array(
     'ff_centerblock' => 'Centerblock Settings',
     'ff_latest_post_block' => 'Latest Posts Block Settings',
     'ff_rank_settings' => 'Rank Settings',
-    'ff_attachments_settings' => 'Attachment Settings'
+    'ff_attachments_settings' => 'Attachment Settings',
+    'ff_notification_settings'  => 'Notification Settings'
 );
 
 $LANG_configselects['forum'] = array(
@@ -965,7 +970,9 @@ $LANG_configselects['forum'] = array(
     4 => array('Block Menu' => 'blockmenu', 'Nav Bar' => 'navbar', 'None' => 'none'),
     5 => array('Descending' => 'DESC', 'Ascending' => 'ASC'),
     6 => array('Disabled' => 'disabled', 'filemgmt' => 'filemgmt', 'nexfile' => 'nexfile'),
-    7 => array('Default' => 'default', 'glmenu' => 'glmenu', 'nexmenu' => 'nexmenu')
+    7 => array('Default' => 'default', 'glmenu' => 'glmenu', 'nexmenu' => 'nexmenu'),
+    8 => array('Logged-in Users' => 13,'Root' => 1),
+    9 => array('Basic' => 'basic','Full' => 'full','Summary' => 'summary','Custom' => 'custom')
 );
 
 
