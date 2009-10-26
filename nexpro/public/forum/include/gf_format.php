@@ -1048,4 +1048,43 @@ function gf_makeFilemgmtCatSelect($uid) {
 
 }
 
+
+function gf_formatPostforNotification ($showtopic) {
+    global $CONF_FORUM,$_CONF,$_TABLES,$_USER,$LANG_GF01,$LANG_GF02;
+
+    $topictemplate = new Template($_CONF['path_layout'] . 'forum/layout');
+    $topictemplate->set_file ( 'topictemplate', 'topic_notifyfmt.thtml');
+    $sig = DB_getItem($_TABLES['users'],'sig',"uid={$showtopic['uid']}");
+    $min_height = 50;
+    if($sig != '') {
+        $sig = '<hr width="95%" size="1" style="color=:black; text-align:left; margin-left:0; margin-bottom:5;padding:0" noshade>';
+        $sig .= "<B>{$sig}</B>";
+        $min_height = $min_height + 30;
+    }
+    $topictemplate->set_var ('comment_minheight', "min-height:{$min_height}px");
+    $showtopic['comment'] = gf_formatTextBlock($showtopic['comment'],$showtopic['postmode']);
+    $showtopic['comment'] = str_replace('{','&#123;',$showtopic['comment']);
+    $showtopic['comment'] = str_replace('}','&#125;',$showtopic['comment']);
+    $topictemplate->set_var ('topic_comment', $showtopic['comment']);
+
+    $uniqueid = COM_applyFilter($_POST['uniqueid'],true);
+    if ($showtopic['id'] > 0) {
+        $topictemplate->set_var('attachments',gf_showattachments($showtopic['id']));
+    } elseif ($uniqueid > 0) {
+        $topictemplate->set_var('attachments',gf_showattachments($uniqueid));
+    }
+    if (trim($sig) != '') {
+        $topictemplate->set_var ('sig', PLG_replaceTags(($sig)));
+        $topictemplate->set_var ('show_sig', '');
+    } else {
+        $topictemplate->set_var ('sig', '');
+        $topictemplate->set_var ('show_sig', 'none');
+    }
+
+    $topictemplate->parse ('output', 'topictemplate');
+    return $topictemplate->finish ($topictemplate->get_var('output'));
+
+}
+
+
 ?>

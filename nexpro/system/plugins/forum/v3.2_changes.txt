@@ -10,11 +10,16 @@ Moved online settings admin to now use the integrated Online Config Manager in G
 Version 3.2 includes:
  > Ability to add attachments which can either be handled by the forum 
    or have the attachments saved in nexfile 3.0 or the Geeklog filemgmt plugin.
+   Removed dependancy on Media Gallery for Image Resizing, now using simpleimage.class.php
 
  > New notification options for user that is posting (if enabled). 
    This may not be a feature used on public forum sites, but is a needed feature for private forum use.
    Often we want to push a notification to all site users that have view access to the forum, or
    want to include the full post as part of the notification.
+
+ > Support for HTML formatted email notification
+   New topic and reply contents can not be included in Email notification
+   User preference for HTML format or Text Format notification as well as if they want the post contents to be included.
 
 
 Added support for the new GL 1.6 auto installer and PLG_autoinstall functions

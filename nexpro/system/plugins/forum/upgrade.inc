@@ -222,6 +222,8 @@ function forum_upgrade_320() {
         DB_query("RENAME TABLE {$oldtablename} TO {$_TABLES[$key]}"); ;
     }
 
+    DB_query("ALTER TABLE {$_TABLES['gf_userprefs']} ADD `notification_format` VARCHAR( 8 ) NOT NULL DEFAULT 'text'");      
+    
     if ( isset($_TABLES['gf_settings']) ) {
         $result = DB_query("SELECT * FROM {$_TABLES['gf_settings']}",1);
         $numRows = DB_numRows($result);
@@ -324,8 +326,8 @@ function forum_upgrade_320() {
             if ( isset($A['level5name']) )
                 $CONF_FORUM['level5name']             = $A['level5name'];
         }
-    }
-
+    }  
+    
     if (plugin_initconfig_forum()) {
         COM_errorLog('Forum version 3.1 upgrade: Successfully initialized online config settings');
         return 0;
