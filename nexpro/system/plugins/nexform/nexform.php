@@ -101,10 +101,12 @@ $_TABLES['nxform_resdata_tmp']       = $_DB_table_prefix . 'nxform_resdata_tmp';
 $_TABLES['nxform_restext_tmp']       = $_DB_table_prefix . 'nxform_restext_tmp';
 
 
-if (!isset($CONF_FE['post_url'])) {
-    require_once $_CONF['path_system'] . 'classes/config.class.php';
-    $nexform_config = config::get_instance();
-    $CONF_FE_2 = $nexform_config->get_config('nexform');
-}
-if(is_array($CONF_FE_2)) $CONF_FE=@array_merge($CONF_FE_2,$CONF_FE);
+/* Load the configuration from the online tables */ 
+require_once $_CONF['path_system'] . 'classes/config.class.php';
+
+$nexform_config = config::get_instance();
+$CONF_FE2 = $nexform_config->get_config('nexform');
+if(@is_array($CONF_FE2)) $CONF_FE=@array_merge($CONF_FE2,$CONF_FE);
+
+
 ?>
