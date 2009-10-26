@@ -717,6 +717,11 @@ function plugin_upgrade_forum() {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2.0', `pi_gl_version` = '1.6.1' WHERE `pi_name` = 'forum' LIMIT 1");
             }
             break;
+       case "3.1.0" :
+            if (forum_upgrade_320() == 0 )  {
+                DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2.0', `pi_gl_version` = '1.6.1' WHERE `pi_name` = 'forum' LIMIT 1");
+            }
+            break;            
 
     }
 
@@ -972,6 +977,9 @@ function phpblock_forum_newposts() {
 
             if ($no_newposts==0 AND (SEC_inGroup($groupname) OR $grp_id == 2)) {
                 $displaycount++;
+                if ($CONF_FORUM['use_censor']) {
+                    $A['subject'] = COM_checkWords($A['subject']);
+                }
                 $fullsubject = $A['subject'];
                 if (strlen ($A['subject']) > $CONF_FORUM['sb_subject_size']) {
                     $A['subject'] = substr($A['subject'], 0, $CONF_FORUM['sb_subject_size']);
@@ -1065,7 +1073,7 @@ function plugin_centerblock_forum ($where = 1, $page = 1, $topic = '')
         return;
     }
 
-    if ($CONF_FORUM['registration_required'] && $_USER['uid'] < 2) {
+    if ( (!isset($_USER['uid']) || $_USER['uid'] < 2) && $CONF_FORUM['registration_required'] == 1 )  {
         return;
     }
 
@@ -1133,6 +1141,7 @@ function plugin_centerblock_forum ($where = 1, $page = 1, $topic = '')
         }
 
         while ($A = DB_fetchArray ($result)) {
+            $A['subject'] = @htmlspecialchars($A['subject'],ENT_COMPAT,$CONF_FORUM['charset']);
             $fullsubject = "{$A['subject']}\n{$LANG_GF01['POSTEDBY']}:{$A['name']}{$LANG_GF01['VIEWS']}:{$A['views']}, {$LANG_GF01['REPLIES']}:{$A['replies']}";
             if(strlen ($A['subject']) > $CONF_FORUM['cb_subject_size']) {
                 $A['subject'] = substr ($A['subject'], 0, $CONF_FORUM['cb_subject_size']);
@@ -1214,6 +1223,10 @@ function forum_modPermission($forum,$uid='',$permission='') {
 
     if ($uid <=1) {
         return FALSE;  // Invalid ID or anonymous user
+    }
+
+    if ((isset($_USER['uid']) && $uid == $_USER['uid']) && (SEC_inGroup('Root') || SEC_hasRights('forum.edit'))) {
+        return true;
     }
 
     /* Retrieve all moderator records for this forum */

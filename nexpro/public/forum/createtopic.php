@@ -1180,90 +1180,40 @@ function gf_chknotifications($forumid,$topicid,$userid,$type='topic',$notifyall=
                     $logtime = 0;
                 }
 
+                // Add user if notify always OR notify once and has not been notified
                 if  ($userNotifyOnceOption == 0 OR ($userNotifyOnceOption == 1 AND ($nologRecord OR $logtime != 0)) ) {
-                    $sql = "SELECT username,fullname,email,status FROM {$_TABLES['users']} WHERE uid={$N['uid']}";
+                    $sql = "SELECT email,status FROM {$_TABLES['users']} WHERE uid={$N['uid']}";
                     $userrec = DB_fetchArray(DB_query($sql),false);
-                    $notifyusers[$N['uid']] = $userrec;
-                    if ($email_allusers != '') $email_allusers .= ',';
-                    $email_allusers .= $userrec['email'];
+                    if ($userrec['status'] == USER_ACCOUNT_ACTIVE)  {
+                        $notifyusers[$N['uid']] = $userrec['email'];
+                        if ($allusers != '') $allusers .= ',';
+                        $allusers .= $userrec['email'];
+                    }
+                }
+
+                /* Add log record to indicate user has viewed topic (albeit not true) but the re-using this table for this purpose
+                * to track so that users get notified only once as per request. It's assumed that if they get the basic notification
+                * full post content or the full post content  in the email notification they have read it
+                * @TODO: add a new table for tracking this so users with this option can still see un-read posts
+                */
+                if ($nologRecord and $userNotifyOnceOption == 1 ) {
+                    DB_query("INSERT INTO {$_TABLES['gf_log']} (uid,forum,topic,time) VALUES ($touid, '$forumid', '$topicid','0') ");
                 }
             }
         }
     }
 
 	// Manually now add the user who is posting so they are on the email notification
-	$myemail = DB_getItem($_TABLES['users'],'email',"uid={$_USER['uid']}");
-    if ($email_allusers != '') $email_allusers .= ',';
-    $email_allusers .= $myemail;
-
-    $notifyextracontent = '';
-    if ($_POST['notificationtype'] == 'full') {
-        $notifyextracontent  = $LANG_GF02['notify_premsg'];
-        $notifyextracontent .= $_POST['comment'];
-        $notifyextracontent .= $LANG_GF02['notify_postmsg'];
-
-    } elseif($_POST['notificationtype'] == 'summary') {
-        $notifyextracontent  = $LANG_GF02['notify_premsg'];
-        $notifyextracontent .= substr($_POST['comment'],0,200);
-        $notifyextracontent .= $LANG_GF02['notify_postmsg'];
-    } elseif ($_POST['notificationtype'] == 'custom') {
-        $notifyextracontent  = $LANG_GF02['notify_premsg'];
-        $notifyextracontent .= $_POST['customnotification'];
-        $notifyextracontent .= $LANG_GF02['notify_postmsg'];
+    if (isset($_USER['uid']) AND $_USER['uid'] > 1) {
+	    $myemail = DB_getItem($_TABLES['users'],'email',"uid={$_USER['uid']}");
+        if ($allusers != '') $allusers .= ',';
+        $allusers .= $myemail;
     }
 
     if (count($notifyusers) > 0) {
-        $subjectline = "{$_CONF['site_name']} {$LANG_GF02['msg22']}";
-        if ($_POST['chk_notifypersonal'] == 1) {
-            $toemail = $email_allusers;
-            $message  = "{$LANG_GF01['HELLOMEMBER']},\n\n";
-            if ($type=='forum') {
-                $forum_name = DB_getItem($_TABLES['gf_forums'],forum_name, "forum_id='$forumid'");
-                $message .= sprintf($LANG_GF02['notify_newtopic'],$topicrec['subject'],$topicrec['name'],$forum_name, $_CONF['site_name'],$_CONF['site_url'],$pid);
-            } else {
-                $message .= sprintf($LANG_GF02['notify_newreply'],$topicrec['subject'],$postername,$topicrec['name'],$_CONF['site_name'],$_CONF['site_url'],$pid);
-            }
-			$message .= $LANG_GF02['replynote'];
+        // Plugin API function that can be customized if site requires
+        forumPLG_sendNotification($forumid, $topicid, $userid,$type,$notifyusers, $allusers);
 
-            $message .= $notifyextracontent;
-            $message .= sprintf($LANG_GF02['notify_reason'],"{$_CONF['site_url']}/forum/notify.php",$_CONF['site_name'],$LANG_GF01['ADMIN']);
-
-            if ($nologRecord and $userNotifyOnceOption == 1 ) {
-                DB_query("INSERT INTO {$_TABLES['gf_log']} (uid,forum,topic,time) VALUES ($touid, '$forumid', '$topicid','0') ");
-            }
-            COM_errorLog("COM_mail($toemail,$subjectline,$message");
-            COM_mail($toemail,$subjectline,$message,$from);
-
-        } else {
-
-            reset($notifyusers);
-            foreach ($notifyusers as $touid => $B) {
-                if ($B['status'] == USER_ACCOUNT_ACTIVE) {
-                    if ($fullname != '') {
-                        $nameparts = explode(' ',$B['fullname']);
-                        $toname = ucfirst($nameparts[0]);
-                    } else {
-                        $toname = $B['username'];
-                    }
-                    $message  = "{$LANG_GF01['HELLO']} $toname,\n\n";
-
-                    if ($type=='forum') {
-                        $forum_name = DB_getItem($_TABLES['gf_forums'],forum_name, "forum_id='$forumid'");
-                        $message .= sprintf($LANG_GF02['notify_newtopic'],$topicrec['subject'],$topicrec['name'],$forum_name, $_CONF['site_name'],$_CONF['site_url'],$pid);
-                    } else {
-                        $message .= sprintf($LANG_GF02['notify_newreply'],$topicrec['subject'],$postername,$topicrec['name'],$_CONF['site_name'],$_CONF['site_url'],$pid);
-                    }
-                    $message .= $notifyextracontent;
-                    $message .= sprintf($LANG_GF02['notify_reason'],"{$_CONF['site_url']}/forum/notify.php",$_CONF['site_name'],$LANG_GF01['ADMIN']);
-
-                    if ($nologRecord and $userNotifyOnceOption == 1 ) {
-                        DB_query("INSERT INTO {$_TABLES['gf_log']} (uid,forum,topic,time) VALUES ($touid, '$forumid', '$topicid','0') ");
-                    }
-                    COM_errorLog("COM_mail({$B['email']},$subjectline,$message");
-                    COM_mail($B['email'],$subjectline,$message);
-                }
-            }
-        }
     }
 
 }

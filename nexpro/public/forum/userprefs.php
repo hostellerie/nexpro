@@ -55,6 +55,7 @@ if(isset($_POST['submit'])) {
     $xalwaysnotify = COM_applyFilter($_POST['xalwaysnotify'],true);
     $xnotifyonce = COM_applyFilter($_POST['xnotifyonce'],true);
     $xshowiframe = COM_applyFilter($_POST['xshowiframe'],true);
+    $xemailformat = COM_applyFilter($_POST['xemailformat']);
 
     DB_query("UPDATE {$_TABLES['gf_userprefs']} SET
         topicsperpage='$xtopicsperpage',
@@ -66,7 +67,8 @@ if(isset($_POST['submit'])) {
         viewanonposts='$xviewanonposts',
         alwaysnotify='$xalwaysnotify',
         notify_once='$xnotifyonce',
-        showiframe='$xshowiframe'
+        showiframe='$xshowiframe',
+        notification_format='$xemailformat'
      WHERE uid='{$_USER['uid']}'");
 
 
@@ -91,43 +93,50 @@ if (!isset($_POST['$submit'])) {
     $A = DB_fetchArray($result);
 
     if ($A['viewanonposts'] == 1) {
-        $viewanonposts_yes = "CHECKED=CHECKED";
+        $viewanonposts_yes = 'CHECKED=CHECKED';
         $viewanonposts_no  = '';
     } else {
-        $viewanonposts_no  = "CHECKED=CHECKED";
+        $viewanonposts_no  = 'CHECKED=CHECKED';
         $viewanonposts_yes = '';
     }
 
     if ($A['alwaysnotify'] == 1) {
-        $alwaysnotify_yes = "CHECKED=CHECKED";
+        $alwaysnotify_yes = 'CHECKED=CHECKED';
         $alwaysnotify_no  = '';
     } else {
-        $alwaysnotify_no  = "CHECKED=CHECKED";
+        $alwaysnotify_no  = 'CHECKED=CHECKED';
         $alwaysnotify_yes = '';
     }
     if ($A['enablenotify'] == 1) {
-        $emailnotify_yes = "CHECKED=CHECKED";
+        $emailnotify_yes = 'CHECKED=CHECKED';
         $emailnotify_no  = '';
     } else {
-        $emailnotify_no  = "CHECKED=CHECKED";
+        $emailnotify_no  = 'CHECKED=CHECKED';
         $emailnotify_yes = '';
     }
 
     if ($A['notify_once'] == 1) {
-        $notifyonce_yes = "CHECKED=CHECKED";
+        $notifyonce_yes = 'CHECKED=CHECKED';
         $notifyonce_no  = '';
     } else {
         $notifyonce_yes = '';
-        $notifyonce_no  = "CHECKED=CHECKED";
+        $notifyonce_no  = 'CHECKED=CHECKED';
     }
 
     if ($A['showiframe'] == 1) {
-        $showiframe_yes = "CHECKED=CHECKED";
+        $showiframe_yes = 'CHECKED=CHECKED';
         $showiframe_no  = '';
     } else {
-        $showiframe_no  = "CHECKED=CHECKED";
+        $showiframe_no  = 'CHECKED=CHECKED';
         $showiframe_yes = '';
     }
+    if ($A['notification_format'] == 'text') {
+        $emailformat_text = 'CHECKED=CHECKED';
+        $emailformat_html  = '';
+    } else {
+        $emailformat_text = '';
+        $emailformat_html  = 'CHECKED=CHECKED';
+    }    
 
     $usersettings = new Template($_CONF['path_layout'] . 'forum/layout/userprefs');
     $usersettings->set_file (array ('usersettings'=>'user_settings.thtml'));
@@ -176,6 +185,13 @@ if (!isset($_POST['$submit'])) {
     $usersettings->set_var ('showiframe', $A['showiframe']);
     $usersettings->set_var ('showiframe_yes', $showiframe_yes);
     $usersettings->set_var ('showiframe_no', $showiframe_no);
+    $usersettings->set_var ('LANG_GF02[msg205]', $LANG_GF02['msg205']);
+    $usersettings->set_var ('LANG_GF02[msg206]', $LANG_GF02['msg206']);    
+    $usersettings->set_var ('LANG_GF01[TEXT]', $LANG_GF01['TEXT']);    
+    $usersettings->set_var ('LANG_GF01[HTML]', $LANG_GF01['HTML']);
+    $usersettings->set_var ('emailformat_text', $emailformat_text);       
+    $usersettings->set_var ('emailformat_html', $emailformat_html);       
+      
     if ($CONF_FORUM['usermenu'] == 'navbar') {
         $usersettings->set_var('navmenu', forumNavbarMenu($LANG_GF01['USERPREFS']));
     } else {

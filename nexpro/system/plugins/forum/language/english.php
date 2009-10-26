@@ -146,6 +146,7 @@ $LANG_GF01['FOR']            = 'for';
 $LANG_GF01['ARE']            = 'are';
 $LANG_GF01['NOT']            = 'not';
 $LANG_GF01['YOU']            = 'You';
+$LANG_GF01['TEXT']           = 'TEXT';
 $LANG_GF01['HTML']           = 'HTML';
 $LANG_GF01['FULLHTML']       = 'Full HTML';
 $LANG_GF01['WORDS']          = 'Words';
@@ -311,6 +312,8 @@ $LANG_GF02['msg18']    = 'Error! Not all required fields were completed or were 
 $LANG_GF02['msg19']    = 'Your message has been posted.';
 $LANG_GF02['msg20']    = 'Reply Added, Your reply has been posted. Returning to Forum';
 $LANG_GF02['msg21']    = 'Sorry, you are unauthorized to do this. Please <a href="javascript:history.back()">Go Back</a> or <a href="%s/users.php?mode=login">Login</a><br><br>';
+
+/*
 $LANG_GF02['msg22']    = '- Forum Post Notification';
 $LANG_GF02['msg23a']   = "A reply has been made to the thread '%s' by %s.\n\nThis topic was started by %s in the %s forum. ";
 $LANG_GF02['msg23b']   = "A new topic '%s' has been posted by %s in the %s forum on the %s website. You may view it at:\n%s/forum/viewtopic.php?showtopic=%s\n";
@@ -319,6 +322,8 @@ $LANG_GF02['msg24']    = 'You may see the thread and reply at: %s/forum/viewtopi
 $LANG_GF02['msg25']    = "\nHave a great day! \n";
 $LANG_GF02['msg26']    = "\nYou are receiving this email because you have chosen to be notified when a reply has been made to this topic. ";
 $LANG_GF02['msg27']    = "To stop receiving notifications on this topic go to <%s> to remove it.\n";
+*/
+
 $LANG_GF02['msg28']    = 'Error, No subject for this post';
 $LANG_GF02['msg29']    = 'Your signature will be placed here.';
 $LANG_GF02['msg30']    = 'Back to top';
@@ -484,12 +489,21 @@ $LANG_GF02['msg201']   = 'Popular topics';
 $LANG_GF02['msg202']   = 'No new posts';
 $LANG_GF02['msg203']   = 'Click to add bookmark';
 $LANG_GF02['msg204']   = 'Click to remove bookmark';
+$LANG_GF02['msg205']   = 'Notification Format';
+$LANG_GF02['msg206']   = 'Format for your email notification where the HTML format is more friendly';
 
 $LANG_GF02['StatusHeading']   = 'Information Only';
 $LANG_GF02['PostReply']   = 'Post New Reply';
 $LANG_GF02['PostTopic']   = 'Post New Topic';
 $LANG_GF02['EditTopic']   = 'Edit Topic';
 $LANG_GF02['quietforum']  = 'Forum has no new topics';
+
+$LANG_GF02['notify_newtopic']  = 'A new topic \'%s\' has been posted by %s in the %s forum on the %s website. You may view it at:';
+$LANG_GF02['notify_newreply']  = 'A reply has been made to the thread \'%s\' by %s.';
+$LANG_GF02['replynote']        = 'If you Reply to this email, your response will not be archived. Use the link provided above to reply on the site and have your response archived.';
+$LANG_GF02['notify_reason']    = 'You are receiving this email because you have chosen to be notified when a reply has been made to this topic. To stop receiving notifications on this topic go to %s to remove it.';
+$LANG_GF02['notify_premsg']    = '<----------POST Content --------->';
+$LANG_GF02['notify_postmsg']   = '<--------->END of POST Content --------->';
 
 $LANG_GF03 = array (
     'welcomemsg'        => 'Welcome Moderator',
