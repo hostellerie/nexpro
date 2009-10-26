@@ -6,7 +6,24 @@ Blaine Lang
 
 *** Summary of changes ***
 Moved online settings admin to now use the integrated Online Config Manager in Geeklog
+
+Version 3.2 includes:
+ > Ability to add attachments which can either be handled by the forum 
+   or have the attachments saved in nexfile 3.0 or the Geeklog filemgmt plugin.
+
+ > New notification options for user that is posting (if enabled). 
+   This may not be a feature used on public forum sites, but is a needed feature for private forum use.
+   Often we want to push a notification to all site users that have view access to the forum, or
+   want to include the full post as part of the notification.
+
+
 Added support for the new GL 1.6 auto installer and PLG_autoinstall functions
+Removed the install.php
+
+Added the new search API function - code from Sami Mazen Barakat (furiousdog)
+
+Added the changes to display the forum topic as the site title - code from Dirk Haun
+
 Changed table names to support autoinstall feature - table name needs to match the $_TABLES array key value
 	Table names before change:
             $_TABLES['gf_userprefs']    = $_DB_table_prefix . 'forum_userprefs';	

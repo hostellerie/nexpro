@@ -412,148 +412,56 @@ function plugin_searchtypes_forum()
 
 
 /**
-* this searches for files matching the user query and returns an array of
-* for the header and table rows back to search.php where it will be formated and
-* printed
+* This searches for forum posts matching the user query and returns an object
+* back to search.php where it will be formated and printed.
 *
-* @query            string          Keywords user is looking for
-* @datestart        date/time       Start date to get results for
-* @dateend          date/time       End date to get results for
-* @topic            string          The topic they were searching in
-* @type             string          Type of items they are searching
-* @author           string          Get all results by this author
+* @param    string  $query      Keywords user is looking for
+* @param    date    $datestart  Start date to get results for
+* @param    date    $dateend    End date to get results for
+* @param    string  $topic      The topic they were searching in
+* @param    string  $type       Type of items they are searching, or 'all' (deprecated)
+* @param    int     $author     Get all results by this author
+* @param    string  $keyType    search key type: 'all', 'phrase', 'any'
+* @param    int     $page       page number of current search (deprecated)
+* @param    int     $perpage    number of results per page (deprecated)
+* @return   object              search result object
 *
 */
-function plugin_dopluginsearch_forum($query, $datestart, $dateend, $topic, $type, $author,$keyType,$page, $perpage)
+function plugin_dopluginsearch_forum($query, $datestart, $dateend, $topic, $type, $author, $keyType, $page, $perpage)
 {
-    global $LANG_GF00, $LANG_GF01, $_TABLES, $_CONF, $CONF_FORUM;
+    global $_TABLES, $LANG_GF00;
 
-    $query = addslashes($query);
+    // Make sure the query is SQL safe
+    $query = trim(addslashes($query));
 
-    if (empty($type)) {
-        $type = 'all';
-    }
-    // Bail if we aren't supppose to do our search
-    if ($type <> 'all' AND $type <> 'forum') {
-        $plugin_results = new Plugin();
-        $plugin_results->plugin_name = $LANG_GF00['plugin_name'];
-        $plugin_results->searchlabel = $LANG_GF00['searchlabel'];
-        return $plugin_results;
-    }
+    $sql = "SELECT id, uid, date, subject AS title, comment AS description, views AS hits, ";
+    $sql .= "CONCAT('/forum/viewtopic.php?showtopic=', id) AS url ";
+    $sql .= "FROM {$_TABLES['gf_topic']} WHERE 1=1 ";
 
-    // Build search SQL
-
-    $sqltmp = " WHERE 1=1 ";
-
-    if ( $keyType == 'phrase' ) {
-        $q = addslashes($query);
-        $sqltmp .= "AND (comment LIKE '%$q%' OR subject LIKE '%$q%')";
-    } else  if ( $keyType == 'any' ) {
-        $sqltmp .= 'AND ';
-        $tmp = '';
-        $mywords = explode( ' ', $query );
-        foreach( $mywords AS $mysearchitem ) {
-            $mysearchitem = addslashes( $mysearchitem );
-            $tmp .= "( comment LIKE '%$mysearchitem%' OR subject LIKE '%$mysearchitem%' ) OR ";
-        }
-        $tmp = substr($tmp, 0, strlen($tmp) - 3);  // pulls off the last OR
-        $sqltmp .= "($tmp)";
-    } else if ( $keyType == 'all' ) {
-        $sqltmp .= 'AND ';
-        $tmp = '';
-        $mywords = explode( ' ', $query );
-        foreach( $mywords AS $mysearchitem ) {
-            $mysearchitem = addslashes( $mysearchitem );
-            $tmp .= "( comment LIKE '%$mysearchitem%' ) AND ";
-        }
-        $tmp = substr($tmp, 0, strlen($tmp) - 4);
-        $sqltmp .= "($tmp)";
-
-        $sqltmp .= 'OR ';
-        $tmp = '';
-        $mywords = explode( ' ', $query );
-        foreach( $mywords AS $mysearchitem ) {
-            $mysearchitem = addslashes( $mysearchitem );
-            $tmp .= "( subject LIKE '%$mysearchitem%' ) AND ";
-        }
-        $tmp = substr($tmp, 0, strlen($tmp) - 4);
-        $sqltmp .= "($tmp)";
-
-    } else {
-        $q = addslashes($query);
-        $sqltmp = "WHERE (comment LIKE '%$q%' OR subject LIKE '%$q%')";
-    }
-
-    if ( $author != 0 ) {
-        $sqltmp .= " AND uid='" . $author . "'";
-    }
-
-    // handle date ranges
-
-    if (!empty($datestart) && !empty($dateend)) {
+    if (!empty($datestart) && !empty($dateend))
+    {
         $delim = substr($datestart, 4, 1);
-        $sd = explode($delim,$datestart);
-        $ed = explode($delim,$dateend);
-        $startdate = mktime(0,0,0,$sd[1],$sd[2],$sd[0]);
-        $enddate = mktime(0,0,0,$ed[1],$ed[2],$ed[0]) + 3600;
-        $sqltmp .= " AND date BETWEEN '$startdate' AND '$enddate'";
-    }
-
-    $sql = "SELECT id,name,forum,date,subject,comment,views,uid FROM {$_TABLES['gf_topic']} "
-           . $sqltmp . " ORDER BY date DESC";
-
-    // limit what we are searching for...
-    if ( $perpage < 1 ) {
-        $perpage = 10;
-    }
-    $limitStart = ($page-1) * $perpage;
-    $limitEnd   = $limitStart + $perpage;
-    $sql .= " LIMIT " . $limitStart . "," . $limitEnd;
-
-    // Perform search
-    $result = DB_query($sql);
-
-    // OK, now return coma delmited string of table header labels
-    // Need to use language variables
-    require_once($_CONF['path_system'] . 'classes/plugin.class.php');
-    $plugin_results = new Plugin();
-    $plugin_results->plugin_name = 'forum';
-    if (!empty($author)) {
-       $username = DB_getItem($_TABLES['users'],"username","uid = {$author}");
-       $plugin_results->searchlabel = sprintf($LANG_GF00['searchresults'],$LANG_GF01['FOR'] . '&nbsp;' . $username);
-    } else {
-       $plugin_results->searchlabel = sprintf($LANG_GF00['searchresults'],"");
-    }
-    $plugin_results->addSearchHeading($LANG_GF01['FORUM']);
-    $plugin_results->addSearchHeading($LANG_GF01['SUBJECT']);
-    $plugin_results->addSearchHeading($LANG_GF01['DATE']);
-    $plugin_results->addSearchHeading($LANG_GF01['VIEWS'] );
-    $totalsearched = DB_numRows($result);
-    $searchcount=0;
-    // NOTE if any of your data items need to be links then add them here!
-    // make sure data elements are in an array and in the same order as your
-    // headings above!
-    for ($i = 1; $i <= $totalsearched; $i++) {
-        $A = DB_fetchArray($result);
-        $grp_id = DB_getItem($_TABLES['gf_forums'],'grp_id',"forum_id='{$A['forum']}'");
-        $groupname = DB_getItem($_TABLES['groups'],'grp_name',"grp_id='$grp_id'");
-        if (SEC_inGroup($groupname) OR $grp_id == 2) {
-            if ($CONF_FORUM['use_censor']) {
-                $A['subject'] = COM_checkWords($A['subject']);
-            }
-            $searchcount++;
-            $forumname = DB_getItem($_TABLES['gf_forums'],"forum_name","forum_id='{$A['forum']}'");
-            $subject = wordwrap($A['subject'],40,"<br>");
-            $date = strftime('%b %d %Y @ %I:%M %p', $A['date']);
-            $url = $_CONF['site_url']. "/forum/viewtopic.php?forum={$A['forum']}&amp;showtopic={$A['id']}";
-            $row = array($forumname, "<a href=\"$url\">" . COM_truncate($subject,$CONF_FORUM['show_subject_length'],'...') . "</a>",$date,$A['views']);
-            $plugin_results->addSearchResult($row);
+        if (!empty($delim))
+        {
+            $DS = explode($delim, $datestart);
+            $DE = explode($delim, $dateend);
+            $startdate = mktime(0,0,0,$DS[1],$DS[2],$DS[0]);
+            $enddate = mktime(23,59,59,$DE[1],$DE[2],$DE[0]);
+            $sql .= "AND (date BETWEEN '$startdate' AND '$enddate') ";
         }
     }
-    $plugin_results->num_searchresults = $searchcount;
-    $plugin_results->num_itemssearched = DB_count($_TABLES['gf_topic']);
+    if (!empty ($author)) {
+        $sql .= "AND (uid = '$author') ";
+    }
 
-    return $plugin_results;
+    $search = new SearchCriteria('forum', $LANG_GF00['searchlabel']);
+    $columns = array('title' => 'subject', 'comment');
+    list($sql,$ftsql) = $search->buildSearchSQL($keyType, $query, $columns, $sql);
+    $search->setSQL($sql);
+    $search->setFTSQL($ftsql);
+    $search->setRank(3);
+
+    return $search;
 }
 
 
@@ -729,7 +637,7 @@ function plugin_feedupdatecheck_forum ($feed, $topic, $update_data, $limit)
 {
     global $_TABLES;
 
-    $sql = "SELECT id,forum.grp_id FROM {$_TABLES['gf_topic']} topic LEFT JOIN {$_TABLES['gf_forums']} forum ON topic.forum=forum.forum_id " . forum_buildFeedsSql ($topic, $limits);
+    $sql = "SELECT id,forum.grp_id FROM {$_TABLES['gf_topic']} topic LEFT JOIN {$_TABLES['gf_forums']} forum ON topic.forum=forum.forum_id " . forum_buildFeedsSql ($topic, $limit);
     $result = DB_query ($sql);
     $num = DB_numRows ($result);
 
@@ -1541,5 +1449,24 @@ function nexmenu_showforums() {
     return $retval;
 }
 
+
+function glmenu_showforums() {
+    global $_CONF,$_TABLES,$CONF_GLMENU;
+
+    $retval = '';
+    $glMenu_version = DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'glmenu'");
+    $qforums = DB_query("SELECT forum_name,forum_id,grp_id FROM {$_TABLES['gf_forums']} ORDER BY forum_cat, forum_order ASC");
+    while (list($forum_name,$forum_id, $forum_grp) = DB_fetchArray($qforums)) {
+        $groupname = DB_getItem($_TABLES['groups'],'grp_name',"grp_id='$forum_grp'");
+        if (SEC_inGroup($groupname)) {
+            if ($CONF_GLMENU['milonicmode']) {
+                $retval .= 'aI("text='.$forum_name.';url='.$_CONF['site_url'].'/forum/index.php?forum='.$forum_id.';");';
+            } else {
+                $retval .= "<li><a href=\"{$_CONF['site_url']}/forum/index.php?forum={$forum_id}\">$forum_name</a></li>";
+            }
+        }
+    }
+    return $retval;
+}
 
 ?>

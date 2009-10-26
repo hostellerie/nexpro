@@ -44,7 +44,7 @@ if (!class_exists('StringParser') ) {
 
 
 
-function gf_siteHeader() {
+function gf_siteHeader($subject = '') {
     global $CONF_FORUM;
 
     // Display Common headers
@@ -52,15 +52,15 @@ function gf_siteHeader() {
     if (!isset($CONF_FORUM['usermenu'])) $CONF_FORUM['usermenu'] = 'blockmenu';
 
     if ($CONF_FORUM['showblocks'] == 'noblocks' OR $CONF_FORUM['showblocks'] == 'rightblocks') {
-        echo COM_siteHeader('none');
+        echo COM_siteHeader('none', $subject);
     } elseif ($CONF_FORUM['showblocks'] == 'leftblocks' OR $CONF_FORUM['showblocks'] == 'allblocks' ) {
         if ($CONF_FORUM['usermenu'] == 'blockmenu') {
-            echo COM_siteHeader( array('custom_showBlocks',$CONF_FORUM['leftblocks']) );
+            echo COM_siteHeader( array('custom_showBlocks',$CONF_FORUM['leftblocks']), $subject );
         } else {
-            echo COM_siteHeader('menu');
+            echo COM_siteHeader('menu', $subject);
         }
     } else {
-        echo COM_siteHeader();
+        echo COM_siteHeader('menu', $subject);
     }
 }
 
