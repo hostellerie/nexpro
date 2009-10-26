@@ -4,7 +4,7 @@
 // | Geeklog Forums Plugin 3.2 for Geeklog - The Ultimate Weblog              |
 // | Initial release date: Feb 7,2003                                         |
 // +--------------------------------------------------------------------------+
-// | config.php                                                               |
+// | forum.php                                                                |
 // +--------------------------------------------------------------------------+
 // | Copyright (C) 2009 by the following authors:                             |
 // |                                                                          |

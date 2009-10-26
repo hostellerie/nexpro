@@ -76,7 +76,7 @@ if($_REQUEST['onlytopic'] == 1) {
     echo '<body class="sitebody">';
 } else {
     // Display Common headers
-    gf_siteHeader();
+    gf_siteHeader($subject);
     //Check is anonymous users can access
     forum_chkUsercanAccess();
     // Now display the forum header

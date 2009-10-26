@@ -123,7 +123,7 @@ function showtopic($showtopic,$mode='',$onetwo=1,$page=1) {
 
         if (SEC_inGroup(1,$showtopic['uid'])) {
             $user_level = sprintf($starimage,gf_getImage('rank_admin','ranks'),$LANG_GF01['admin'],$LANG_GF01['admin']);
-            $user_levelname=$LANG_GF01['admin'];
+            $user_levelname=$LANG_GF01['ADMIN'];
         }
 
         if ($userarray['photo'] != "") {
