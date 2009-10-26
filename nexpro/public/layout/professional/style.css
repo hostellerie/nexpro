@@ -927,25 +927,25 @@ select {
 }
 .pluginBreadCrumbs,
 .pluginBreadCrumbs A:link {
-  color:#FFFFFF;
+  color:#666666;
   font-style:normal;
   font-weight:normal;
   text-decoration:none;
 }
 .pluginBreadCrumbs A:visited {
-  color:#FFFFFF;
+  color:#666666;
   font-style:normal;
   font-weight:normal;
   text-decoration:none;
 }
 .pluginBreadCrumbs A:hover {
-  color:#FFFFFF;
+  color:#333333;
   font-style:normal;
   font-weight:normal;
   text-decoration:none;
 }
 a.pluginButton:link, a.pluginButton:visited {
-  color:#000000;
+  color:#666666;
   text-align:center;
   padding-top:2px;
   display:block;
