@@ -1,3 +1,7 @@
+Oct 26/2009 (Blaine)
+    Update to nexform - order of initializing config settings
+    Forum plugin updates for version 3.2
+
 Oct 23/2009 (Blaine)
     Modifications to nexmenu's config inclusion mechanism.    
     Tweaks to the default SQL installation and initial menu theme

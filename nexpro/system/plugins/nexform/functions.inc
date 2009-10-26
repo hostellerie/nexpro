@@ -37,17 +37,6 @@ if (file_exists ($langfile)) {
 }
 
 include_once ($_CONF['path'] . 'plugins/nexform/autouninstall.php');
-
-/*
-* Check and see if we need to load the plugin configuration
-*/
-if (!isset($CONF_FE['post_url'])) {
-    require_once $_CONF['path_system'] . 'classes/config.class.php';
-
-    $nexform_config = config::get_instance();
-    $CONF_FE = $nexform_config->get_config('nexform');
-}
-
 require_once ($_CONF['path'] . 'plugins/nexform/nexform.php');
 require_once ($_CONF['path'] . 'plugins/nexform/library.php');
 
