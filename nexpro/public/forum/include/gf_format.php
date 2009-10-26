@@ -678,7 +678,7 @@ function gf_replacesmilie($str) {
  * If the icon of that image type is not found, then it will use an image of type
  * specified by the $CONF_FORUM['image_type_override'] setting.
 
- * Set $CONF_FORUM['autoimagetype'] to false in the plugins config.php to disable this feature and
+ * Set $CONF_FORUM['autoimagetype'] to false in the plugins forum.php to disable this feature and
  * only icons of type set by the themes $_IMAGE_TYPE setting will be used
 */
 function gf_getImage($image,$directory='') {

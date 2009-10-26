@@ -1012,8 +1012,12 @@ if(($method == 'newtopic' || $method == 'postreply' || $method == 'edit') || ($p
     }
 
     // Check and see if user is allowed to add attachments and has not exceeded max allowed
-    if ($method == 'newtopic' AND SEC_inGroup($CONF_FORUM['notifyall_allowedGroup'])) {
-		$submissionform_main->set_var('check_notifyall','CHECKED=checked');
+    if ($method == 'newtopic' ) {
+        if (SEC_inGroup($CONF_FORUM['notifyall_allowedGroup'])) {
+		    $submissionform_main->set_var('check_notifyall','CHECKED=checked');
+        } else {
+            $submissionform_main->set_var('show_notifyall','none');            
+        }
         if (!SEC_inGroup($newtopic['use_attachment_grpid'])) {
             $submissionform_main->set_var('use_attachments','none');
         } elseif($numAttachments >= $CONF_FORUM['maxattachments']) {

@@ -60,7 +60,8 @@ function gf_check4files($id,$tempfile=false) {
             $filestore_path = $CONF_FORUM['uploadpath'];
         }
         if ( gf_uploadfile($filename,$uploadfile,$CONF_FORUM['allowablefiletypes'],$filestore_path) ) {
-            if (array_key_exists($uploadfile['type'],$CONF_FORUM['inlineimageypes']) AND function_exists(MG_resizeImage)) {
+            require_once($_CONF['path'] . 'plugins/forum/simpleimage.class.php');
+            if (array_key_exists($uploadfile['type'],$CONF_FORUM['inlineimageypes'])) {
                 if ($_POST['chk_usefilemgmt'] == 1) {
                     $srcImage = "{$filemgmt_FileStore}{$filename}";
                     $destImage = "{$CONF_FORUM['uploadpath']}/tn/{$filename}";
@@ -68,8 +69,10 @@ function gf_check4files($id,$tempfile=false) {
                     $srcImage = "{$CONF_FORUM['uploadpath']}/{$filename}";
                     $destImage = "{$CONF_FORUM['uploadpath']}/tn/{$uploadfilename}.{$ext}";
                 }
-
-                $ret = MG_resizeImage($srcImage,$destImage,$CONF_FORUM['inlineimage_height'],$CONF_FORUM['inlineimage_width']);
+                $image = new SimpleImage();
+                $image->load($srcImage);
+                $image->resize($CONF_FORUM['inlineimage_height'],$CONF_FORUM['inlineimage_width']);
+                $image->save($destImage);
             }
 
             // Store both the created filename and the real file source filename
@@ -77,6 +80,7 @@ function gf_check4files($id,$tempfile=false) {
             $filename = "$filename:{$uploadfile['name']}";
             $pos = strrpos($filename,'.') + 1;
             $fileExtension = substr($filename, $pos);
+            $filter = new sanitizer();            
             $mimetype =  $filter->getCleanData('text',$uploadfile['type']);
 
             if ($tempfile) {

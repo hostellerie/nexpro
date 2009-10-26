@@ -124,6 +124,19 @@ $CONF_FORUM_DEFAULT['max_uploadimage_height']  = '1600';
 $CONF_FORUM_DEFAULT['max_uploadfile_size']     = '6553600';     // 6.400 MB
 $CONF_FORUM_DEFAULT['inlineimage_width']       = '300';
 $CONF_FORUM_DEFAULT['inlineimage_height']      = '300';
+
+$CONF_FORUM_DEFAULT['notifyoptions_allowedGroup']  = 13;            // Define the group name to enable the extra notification feature
+$CONF_FORUM_DEFAULT['notify_defaultOption']        = 'basic';       // Set the default - valid Options are basic,full,summary or custom
+
+/* Option to notify all site members and not just subscribed forum members but you may not want to allow this for all site members
+ * Only valid for new topics - after that you have to be subscribed to get notifications
+ * This option allows you to enable this option only for a restricted group.
+ * Enter the group name you want to enable this feature for
+*/
+$CONF_FORUM_DEFAULT['notifyall_allowedGroup'] = 1;          //  Group to allow the notify all members feature
+$CONF_FORUM_DEFAULT['notifyall_default']      = 0;          // Set to 1 if you want this option enabled by default
+
+
 $CONF_FORUM_DEFAULT['bbcode_signature']        = true;
 
 $CONF_FORUM_DEFAULT['allowablefiletypes']    = array(
@@ -207,8 +220,8 @@ function plugin_initconfig_forum()
     if (!$c->group_exists('forum')) {
 
         $c->add('sg_main', NULL, 'subgroup', 0, 0, NULL, 0, true, 'forum');
-        $c->add('ff_public', NULL, 'fieldset', 0, 0, NULL, 0, true, 'forum');
 
+        $c->add('ff_public', NULL, 'fieldset', 0, 0, NULL, 0, true, 'forum');
         $c->add('registration_required', $CONF_FORUM_DEFAULT['registration_required'], 'select',
                 0, 0, 0, 10, true, 'forum');
         $c->add('registered_to_post', $CONF_FORUM_DEFAULT['registered_to_post'], 'select',
@@ -271,7 +284,6 @@ function plugin_initconfig_forum()
                 0,0,NULL,300,true,'forum');
 
         $c->add('ff_attachments_settings', NULL, 'fieldset', 0, 1, NULL, 0, true,'forum');
-
         $c->add('maxattachments', $CONF_FORUM_DEFAULT['maxattachments'], 'text',
                 0, 1, 0, 10, true, 'forum');
         $c->add('uploadpath', $CONF_FORUM_DEFAULT['uploadpath'], 'text',
@@ -284,7 +296,6 @@ function plugin_initconfig_forum()
                 0, 1, 0, 50, true, 'forum');
         $c->add('max_uploadimage_height', $CONF_FORUM_DEFAULT['max_uploadimage_height'], 'text',
                 0, 1, 0, 60, true, 'forum');
-
         $c->add('max_uploadfile_size', $CONF_FORUM_DEFAULT['max_uploadfile_size'], 'text',
                 0, 1, 0, 70, true, 'forum');
         $c->add('inlineimage_width', $CONF_FORUM_DEFAULT['inlineimage_width'], 'text',
@@ -299,7 +310,6 @@ function plugin_initconfig_forum()
                 0,1,6,120, true, 'forum');
 
         $c->add('ff_topic_post_settings', NULL, 'fieldset', 0, 2, NULL, 0, true,'forum');
-
         $c->add('show_subject_length', $CONF_FORUM_DEFAULT['show_subject_length'], 'text',
                 0, 2, 0, 10, true, 'forum');
         $c->add('min_username_length', $CONF_FORUM_DEFAULT['min_username_length'], 'text',
@@ -333,8 +343,7 @@ function plugin_initconfig_forum()
 
         $c->add('ff_centerblock', NULL, 'fieldset', 0, 3, NULL, 0, true,
                 'forum');
-
-        $c->add('show_centerblock', $CONF_FORUM_DEFAULT['show_centerblock'], 'select',
+         $c->add('show_centerblock', $CONF_FORUM_DEFAULT['show_centerblock'], 'select',
                 0, 3, 0, 10, true, 'forum');
         $c->add('centerblock_homepage', $CONF_FORUM_DEFAULT['centerblock_homepage'], 'select',
                 0, 3, 0, 20, true, 'forum');
@@ -347,7 +356,6 @@ function plugin_initconfig_forum()
 
         $c->add('ff_latest_post_block', NULL, 'fieldset', 0, 4, NULL, 0, true,
                 'forum');
-
         $c->add('sideblock_numposts', $CONF_FORUM_DEFAULT['sideblock_numposts'], 'text',
                 0, 4, 0, 10, true, 'forum');
         $c->add('sb_subject_size', $CONF_FORUM_DEFAULT['sb_subject_size'], 'text',
@@ -355,28 +363,39 @@ function plugin_initconfig_forum()
         $c->add('sb_latestpostonly', $CONF_FORUM_DEFAULT['sb_latestpostonly'], 'select',
                 0, 4, 0, 20, true, 'forum');
 
-        $c->add('ff_rank_settings', NULL, 'fieldset', 0, 5, NULL, 0, true,
+        $c->add('ff_notification_settings', NULL, 'fieldset', 0, 5, NULL, 0, true,
+                'forum');
+        $c->add('notifyoptions_allowedGroup', $CONF_FORUM_DEFAULT['notifyoptions_allowedGroup'], 'select',
+                0, 5, 8, 10, true, 'forum');                
+        $c->add('notify_defaultOption', $CONF_FORUM_DEFAULT['notify_defaultOption'], 'select',
+                0, 5, 9, 20, true, 'forum');                   
+        $c->add('notifyall_allowedGroup', $CONF_FORUM_DEFAULT['notifyall_allowedGroup'], 'select',
+                0, 5, 8, 30, true, 'forum');    
+        $c->add('notifyall_default', $CONF_FORUM_DEFAULT['notifyall_default'], 'select',
+                0, 5, 0, 40, true, 'forum');                                    
+                
+        $c->add('ff_rank_settings', NULL, 'fieldset', 0, 6, NULL, 0, true,
                 'forum');
         $c->add('level1', $CONF_FORUM_DEFAULT['level1'], 'text',
-                0, 5, 0, 10, true, 'forum');
+                0, 6, 0, 10, true, 'forum');
         $c->add('level1name', $CONF_FORUM_DEFAULT['level1name'], 'text',
-                0, 5, 0, 20, true, 'forum');
+                0, 6, 0, 20, true, 'forum');
         $c->add('level2', $CONF_FORUM_DEFAULT['level2'], 'text',
-                0, 5, 0, 30, true, 'forum');
+                0, 6, 0, 30, true, 'forum');
         $c->add('level2name', $CONF_FORUM_DEFAULT['level2name'], 'text',
-                0, 5, 0, 40, true, 'forum');
+                0, 6, 0, 40, true, 'forum');
         $c->add('level3', $CONF_FORUM_DEFAULT['level3'], 'text',
-                0, 5, 0, 50, true, 'forum');
+                0, 6, 0, 50, true, 'forum');
         $c->add('level3name', $CONF_FORUM_DEFAULT['level3name'], 'text',
-                0, 5, 0, 60, true, 'forum');
+                0, 6, 0, 60, true, 'forum');
         $c->add('level4', $CONF_FORUM_DEFAULT['level4'], 'text',
-                0, 5, 0, 70, true, 'forum');
+                0, 6, 0, 70, true, 'forum');
         $c->add('level4name', $CONF_FORUM_DEFAULT['level4name'], 'text',
-                0, 5, 0, 80, true, 'forum');
+                0, 6, 0, 80, true, 'forum');
         $c->add('level5', $CONF_FORUM_DEFAULT['level5'], 'text',
-                0, 5, 0, 90, true, 'forum');
+                0, 6, 0, 90, true, 'forum');
         $c->add('level5name', $CONF_FORUM_DEFAULT['level5name'], 'text',
-                0, 5, 0, 100, true, 'forum');
+                0, 6, 0, 100, true, 'forum');
     }
 
     return true;

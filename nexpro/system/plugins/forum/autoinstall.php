@@ -45,7 +45,7 @@ function plugin_autoinstall_forum($pi_name)
 {
     global $_CONF,$CONF_FORUM;
 
-    include ($_CONF['path'] . 'plugins/forum/forum.php');
+    @include ($_CONF['path'] . 'plugins/forum/forum.php');
 
     $pi_display_name = $CONF_FORUM['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';
