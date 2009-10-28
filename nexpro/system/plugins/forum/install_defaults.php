@@ -51,6 +51,7 @@ $CONF_FORUM_DEFAULT['use_censor']             = true;
 $CONF_FORUM_DEFAULT['show_moods']             = true;
 $CONF_FORUM_DEFAULT['allow_smilies']          = true;
 $CONF_FORUM_DEFAULT['allow_notification']     = true;
+$CONF_FORUM_DEFAULT['notification_format']    = 'basic';
 $CONF_FORUM_DEFAULT['allow_user_dateformat']  = true;
 $CONF_FORUM_DEFAULT['show_topicreview']       = true;
 $CONF_FORUM_DEFAULT['showtopic_review_order'] = 'DESC';
@@ -230,6 +231,8 @@ function plugin_initconfig_forum()
                 0, 0, 0, 30, true, 'forum');
         $c->add('allow_notification', $CONF_FORUM_DEFAULT['allow_notification'], 'select',
                 0, 0, 0, 40, true, 'forum');
+        $c->add('notification_format', $CONF_FORUM_DEFAULT['notification_format'], 'select',
+                0, 0, 10, 41, true, 'forum');
         $c->add('show_topicreview', $CONF_FORUM_DEFAULT['show_topicreview'], 'select',
                 0, 0, 0, 50, true, 'forum');
         $c->add('showtopic_review_order', $CONF_FORUM_DEFAULT['showtopic_review_order'], 'select',
@@ -366,14 +369,14 @@ function plugin_initconfig_forum()
         $c->add('ff_notification_settings', NULL, 'fieldset', 0, 5, NULL, 0, true,
                 'forum');
         $c->add('notifyoptions_allowedGroup', $CONF_FORUM_DEFAULT['notifyoptions_allowedGroup'], 'select',
-                0, 5, 8, 10, true, 'forum');                
+                0, 5, 8, 10, true, 'forum');
         $c->add('notify_defaultOption', $CONF_FORUM_DEFAULT['notify_defaultOption'], 'select',
-                0, 5, 9, 20, true, 'forum');                   
+                0, 5, 9, 20, true, 'forum');
         $c->add('notifyall_allowedGroup', $CONF_FORUM_DEFAULT['notifyall_allowedGroup'], 'select',
-                0, 5, 8, 30, true, 'forum');    
+                0, 5, 8, 30, true, 'forum');
         $c->add('notifyall_default', $CONF_FORUM_DEFAULT['notifyall_default'], 'select',
-                0, 5, 0, 40, true, 'forum');                                    
-                
+                0, 5, 0, 40, true, 'forum');
+
         $c->add('ff_rank_settings', NULL, 'fieldset', 0, 6, NULL, 0, true,
                 'forum');
         $c->add('level1', $CONF_FORUM_DEFAULT['level1'], 'text',

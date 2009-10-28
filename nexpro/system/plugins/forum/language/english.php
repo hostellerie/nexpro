@@ -158,6 +158,8 @@ $LANG_GF01['DELETEAFTER']    = 'Delete after';
 $LANG_GF01['TITLE']          = 'Title';
 $LANG_GF01['COMMENTS']       = 'Comments';
 $LANG_GF01['SUBMISSIONS']    = 'Submissions';
+$LANG_GF01['NOTIFYSETTING']  = 'You can disable all notifications under \'User Preferences\'';
+
 
 $LANG_GF01['HTML_FILTER_MSG']  = 'Filtered HTML Allowed';
 $LANG_GF01['HTML_FULL_MSG']  = 'Full HTML Allowed';
@@ -414,7 +416,7 @@ $LANG_GF02['msg126']   = 'Search Lines:';
 $LANG_GF02['msg127']   = 'Number of lines to display in search results';
 $LANG_GF02['msg128']   = 'Members Per Page:';
 $LANG_GF02['msg129']   = 'For the Members listing screen';
-$LANG_GF02['msg130']   = 'View Anonymous Posts:';
+$LANG_GF02['msg130']   = 'View Anonymous:';
 $LANG_GF02['msg131']   = 'Setting of No will filter out anonymous posts';
 $LANG_GF02['msg132']   = 'Always Notify:';
 $LANG_GF02['msg133']   = 'Setting of Yes will enable auto notifcation for any topics you create or reply';
@@ -451,7 +453,7 @@ $LANG_GF02['msg163']   = 'Post moved';
 $LANG_GF02['msg164']   = 'Mark all Categories and Topics Read';
 $LANG_GF02['msg165']   = 'ERROR<p />Matching <b>QUOTE</b> tag missing. Unable to format message.<p />';
 $LANG_GF02['msg166']   = 'ERROR: Invalid topic or Topic not found';
-$LANG_GF02['msg167']   = 'Notification Option';
+$LANG_GF02['msg167']   = 'Notifications Enabled';
 $LANG_GF02['msg168']   = 'Setting of No will disable email notifictions';
 $LANG_GF02['msg169']   = 'Return to Members listing';
 $LANG_GF02['msg170']   = 'Latest Forum Posts';
@@ -492,18 +494,29 @@ $LANG_GF02['msg204']   = 'Click to remove bookmark';
 $LANG_GF02['msg205']   = 'Notification Format';
 $LANG_GF02['msg206']   = 'Format for your email notification where the HTML format is more friendly';
 
+
 $LANG_GF02['StatusHeading']   = 'Information Only';
 $LANG_GF02['PostReply']   = 'Post New Reply';
 $LANG_GF02['PostTopic']   = 'Post New Topic';
 $LANG_GF02['EditTopic']   = 'Edit Topic';
 $LANG_GF02['quietforum']  = 'Forum has no new topics';
 
-$LANG_GF02['notify_newtopic']  = 'A new topic \'%s\' has been posted by %s in the %s forum on the %s website. You may view it at:';
-$LANG_GF02['notify_newreply']  = 'A reply has been made to the thread \'%s\' by %s.';
+$LANG_GF02['notify_newtopic']  = ', a new topic \'%s\' has been posted by %s in the %s forum. You may view it at:';
+$LANG_GF02['notify_newreply']  = ', a reply has been made to the thread \'%s\' by %s.';
 $LANG_GF02['replynote']        = 'If you Reply to this email, your response will not be archived. Use the link provided above to reply on the site and have your response archived.';
 $LANG_GF02['notify_reason']    = 'You are receiving this email because you have chosen to be notified when a reply has been made to this topic. To stop receiving notifications on this topic go to %s to remove it.';
 $LANG_GF02['notify_premsg']    = '<----------POST Content --------->';
 $LANG_GF02['notify_postmsg']   = '<--------->END of POST Content --------->';
+$LANG_GF02['notification_title']   = 'Forum Notification for: %s';
+$LANG_GF02['quicklinks_title'] = 'Quick Links';
+$LANG_GF02['quicklinks_about_title'] = 'About this topic';
+$LANG_GF02['quicklinks_about_msg'] = '<a href="%s">%s</a> is a topic in the <a href="%s">%s</a> discussion forum.';
+$LANG_GF02['quicklinks_settings_title'] = 'Change notification settings';
+$LANG_GF02['quicklinks_site_title'] = 'Visit our Site';
+$LANG_GF02['quicklinks_settings_link'] = 'Change your <a href="%s">Settings</a>';
+$LANG_GF02['quicklinks_notifications_link'] = 'View your <a href="%s">Subscriptions</a>';
+$LANG_GF02['quicklinks_site_link'] = '<a href="%s">%s</a>';
+
 
 $LANG_GF03 = array (
     'welcomemsg'        => 'Welcome Moderator',
@@ -958,7 +971,8 @@ $LANG_confignames['forum'] = array(
     'notifyoptions_allowedGroup'    => 'Group that has access to the Special Notification Options',
     'notify_defaultOption'  => 'Special Notification Option Default',
     'notifyall_allowedGroup' => 'Group that has access to the Notify All Members Feature',
-    'notifyall_default'     => 'Notify All Feature Default'
+    'notifyall_default'     => 'Notify All Feature Default',
+    'notification_format'   => 'Default Email format for notification emails'
 
 );
 
@@ -986,7 +1000,8 @@ $LANG_configselects['forum'] = array(
     6 => array('Disabled' => 'disabled', 'filemgmt' => 'filemgmt', 'nexfile' => 'nexfile'),
     7 => array('Default' => 'default', 'glmenu' => 'glmenu', 'nexmenu' => 'nexmenu'),
     8 => array('Logged-in Users' => 13,'Root' => 1),
-    9 => array('Basic' => 'basic','Full' => 'full','Summary' => 'summary','Custom' => 'custom')
+    9 => array('Basic' => 'basic','Full' => 'full','Summary' => 'summary','Custom' => 'custom'),
+    10 => array('Basic' => 'basic','Full' => 'full','Summary' => 'summary')
 );
 
 

@@ -12,7 +12,7 @@
 // +---------------------------------------------------------------------------+
 // | Plugin Authors                                                            |
 // | Blaine Lang,                  blaine@portalparts.com, www.portalparts.com |
-// | Version 1.0 co-developer:     Matthew DeWyer, matt@mycws.com              |   
+// | Version 1.0 co-developer:     Matthew DeWyer, matt@mycws.com              |
 // | Prototype & Concept :         Mr.GxBlock, www.gxblock.com                 |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
@@ -75,14 +75,14 @@ if (($_REQUEST['submit'] == 'save') && ($id != 0)) {
     } else {
         DB_query("INSERT INTO {$_TABLES['gf_watch']} (forum_id,topic_id,uid,date_added) VALUES ('$forum','$pid','{$_USER['uid']}',now() )");
         $nid = -$id;
-        DB_query("DELETE FROM {$_TABLES['gf_watch']} WHERE uid='{$_USER['uid']}' AND forum_id='$forum' and topic_id = '$nid'");          
+        DB_query("DELETE FROM {$_TABLES['gf_watch']} WHERE uid='{$_USER['uid']}' AND forum_id='$forum' and topic_id = '$nid'");
         forum_statusMessage($LANG_GF02['msg142'], $_CONF['site_url'] . "/forum/viewtopic.php?showtopic=$id",$LANG_GF02['msg142']);
     }
     exit();
 
 } elseif (($_REQUEST['submit'] == 'delete') AND ($id != 0))  {
     DB_query("DELETE FROM {$_TABLES['gf_watch']} WHERE (id='$id')");
-    $notifytype = COM_applyFilter($_GET['filter']);    
+    $notifytype = COM_applyFilter($_GET['filter']);
     forum_statusMessage($LANG_GF02['msg42'], "{$_CONF['site_url']}/forum/notify.php?filter=$notifytype", $LANG_GF02['msg42']);
     exit();
 
@@ -158,9 +158,10 @@ $report->set_var ('LANG_Heading7', $LANG_GF01['REPLIES']);
 $report->set_var ('LANG_Heading8', $LANG_GF01['REMOVE']);
 $report->set_var ('LANG_deleteall', $LANG_GF01['DELETEALL']);
 $report->set_var ('LANG_DELALLCONFIRM', $LANG_GF01['DELALLCONFIRM']);
+$report->set_var ('LANG_disablenotifications', $LANG_GF01['NOTIFYSETTING']);
 $report->parse ('header_outline','outline_header');
 $report->parse ('footer_outline','outline_footer');
-$report->set_var ('notifytype', $notifytype);   
+$report->set_var ('notifytype', $notifytype);
 if ($CONF_FORUM['usermenu'] == 'navbar') {
     $report->set_var('navmenu', forumNavbarMenu($LANG_GF01['SUBSCRIPTIONS']));
 } else {
@@ -169,7 +170,7 @@ if ($CONF_FORUM['usermenu'] == 'navbar') {
 
 $sql = "SELECT id,forum_id,topic_id,date_added FROM {$_TABLES['gf_watch']} WHERE (uid='{$_USER['uid']}')";
 if ($forum > 0 ) {
-    $sql .= " AND forum_id='$forum'";   
+    $sql .= " AND forum_id='$forum'";
 }
 if ($notifytype == '2') {
     $sql .= " AND topic_id = '0'";
@@ -206,15 +207,16 @@ while (list($notify_recid,$forum_id,$topic_id,$date_added) = DB_fetchARRAY($noti
         }
         $result = DB_query("SELECT subject,name,replies,views,uid,id FROM {$_TABLES['gf_topic']} WHERE id = '$topic_id'");
         $A = DB_fetchArray($result);
+        $fullsubject = $A['subject'];
         if ($A['subject'] == '') {
             $subject = $LANG_GF01['MISSINGSUBJECT'];
-        } elseif(strlen($A['subject']) > 50) {
-            $subject = htmlspecialchars(substr($A['subject'], 0, 50),ENT_QUOTES,$CONF_FORUM['charset']) . ' ...';
+        } elseif(strlen($A['subject']) > 20) {
+            $subject = htmlspecialchars(substr($A['subject'], 0, 20),ENT_QUOTES,$CONF_FORUM['charset']) . ' ...';
         } else {
             $subject = htmlspecialchars($A['subject']);
         }
         $topic_link = '<a href="' .$_CONF['site_url']. '/forum/viewtopic.php?showtopic=' .$topic_id. '" title="';
-        $topic_link .= $subject. '">' .$subject. '</a>';
+        $topic_link .= $fullsubject. '">' .$subject. '</a>';
 
     }
 

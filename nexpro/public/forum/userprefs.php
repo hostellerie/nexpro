@@ -12,7 +12,7 @@
 // +---------------------------------------------------------------------------+
 // | Plugin Authors                                                            |
 // | Blaine Lang,                  blaine@portalparts.com, www.portalparts.com |
-// | Version 1.0 co-developer:     Matthew DeWyer, matt@mycws.com              |   
+// | Version 1.0 co-developer:     Matthew DeWyer, matt@mycws.com              |
 // | Prototype & Concept :         Mr.GxBlock, www.gxblock.com                 |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
@@ -50,26 +50,19 @@ if(isset($_POST['submit'])) {
     $xmessagesperpage = COM_applyFilter($_POST['xmessagesperpage'],true);
     $xsearchlines = COM_applyFilter($_POST['xsearchlines'],true);
     $xmembersperpage = COM_applyFilter($_POST['xmembersperpage'],true);
-    $xemailnotify = COM_applyFilter($_POST['xemailnotify'],true);
+    $xenablenotify = COM_applyFilter($_POST['xenablenotify'],true);
     $xviewanonposts = COM_applyFilter($_POST['xviewanonposts'],true);
     $xalwaysnotify = COM_applyFilter($_POST['xalwaysnotify'],true);
     $xnotifyonce = COM_applyFilter($_POST['xnotifyonce'],true);
     $xshowiframe = COM_applyFilter($_POST['xshowiframe'],true);
     $xemailformat = COM_applyFilter($_POST['xemailformat']);
 
-    DB_query("UPDATE {$_TABLES['gf_userprefs']} SET
-        topicsperpage='$xtopicsperpage',
-        postsperpage='$xpostsperpage',
-        popularlimit='$xpopularlimit',
-        searchlines='$xsearchlines',
-        membersperpage='$xmembersperpage',
-        enablenotify='$xemailnotify',
-        viewanonposts='$xviewanonposts',
-        alwaysnotify='$xalwaysnotify',
-        notify_once='$xnotifyonce',
-        showiframe='$xshowiframe',
-        notification_format='$xemailformat'
-     WHERE uid='{$_USER['uid']}'");
+    $sql = "UPDATE {$_TABLES['gf_userprefs']} SET  topicsperpage='$xtopicsperpage', postsperpage='$xpostsperpage', "
+         . "popularlimit='$xpopularlimit', searchlines='$xsearchlines', membersperpage='$xmembersperpage', "
+         . "enablenotify='$xenablenotify', viewanonposts='$xviewanonposts', alwaysnotify='$xalwaysnotify', "
+         . "notify_once='$xnotifyonce', showiframe='$xshowiframe', notification_format='$xemailformat' "
+         . "WHERE uid='{$_USER['uid']}'";
+    DB_query($sql);
 
 
   forum_statusMessage($LANG_GF92['setsavemsg'],$_CONF['site_url'] .'/forum/userprefs.php',$LANG_GF92['setsavemsg']);
@@ -136,13 +129,13 @@ if (!isset($_POST['$submit'])) {
     } else {
         $emailformat_text = '';
         $emailformat_html  = 'CHECKED=CHECKED';
-    }    
+    }
 
     $usersettings = new Template($_CONF['path_layout'] . 'forum/layout/userprefs');
     $usersettings->set_file (array ('usersettings'=>'user_settings.thtml'));
     $usersettings->set_var ('phpself', $_CONF['site_url'] .'/forum/userprefs.php');
-    $usersettings->set_var ('LANG_feature', $LANG_GF01['FEATURE']);  
-    $usersettings->set_var ('LANG_setting', $LANG_GF01['SETTING']);  
+    $usersettings->set_var ('LANG_feature', $LANG_GF01['FEATURE']);
+    $usersettings->set_var ('LANG_setting', $LANG_GF01['SETTING']);
     $usersettings->set_var ('LANG_GF01[YES]', $LANG_GF01['YES']);
     $usersettings->set_var ('LANG_GF01[NO]', $LANG_GF01['NO']);
     $usersettings->set_var ('LANG_save', $LANG_GF01['SAVE']);
@@ -166,11 +159,13 @@ if (!isset($_POST['$submit'])) {
     $usersettings->set_var ('viewanonposts', $A['viewanonposts']);
     $usersettings->set_var ('viewanonposts_yes', $viewanonposts_yes);
     $usersettings->set_var ('viewanonposts_no', $viewanonposts_no);
+
     $usersettings->set_var ('LANG_GF02[msg167]', $LANG_GF02['msg167']);
     $usersettings->set_var ('LANG_GF02[msg168]', $LANG_GF02['msg168']);
     $usersettings->set_var ('enablenotify', $A['enablenotify']);
     $usersettings->set_var ('emailnotify_yes', $emailnotify_yes);
     $usersettings->set_var ('emailnotify_no', $emailnotify_no);
+
     $usersettings->set_var ('LANG_GF02[msg184]', $LANG_GF02['msg184']);
     $usersettings->set_var ('LANG_GF02[msg185]', $LANG_GF02['msg185']);
     $usersettings->set_var ('notifyonce_yes', $notifyonce_yes);
@@ -186,12 +181,12 @@ if (!isset($_POST['$submit'])) {
     $usersettings->set_var ('showiframe_yes', $showiframe_yes);
     $usersettings->set_var ('showiframe_no', $showiframe_no);
     $usersettings->set_var ('LANG_GF02[msg205]', $LANG_GF02['msg205']);
-    $usersettings->set_var ('LANG_GF02[msg206]', $LANG_GF02['msg206']);    
-    $usersettings->set_var ('LANG_GF01[TEXT]', $LANG_GF01['TEXT']);    
+    $usersettings->set_var ('LANG_GF02[msg206]', $LANG_GF02['msg206']);
+    $usersettings->set_var ('LANG_GF01[TEXT]', $LANG_GF01['TEXT']);
     $usersettings->set_var ('LANG_GF01[HTML]', $LANG_GF01['HTML']);
-    $usersettings->set_var ('emailformat_text', $emailformat_text);       
-    $usersettings->set_var ('emailformat_html', $emailformat_html);       
-      
+    $usersettings->set_var ('emailformat_text', $emailformat_text);
+    $usersettings->set_var ('emailformat_html', $emailformat_html);
+
     if ($CONF_FORUM['usermenu'] == 'navbar') {
         $usersettings->set_var('navmenu', forumNavbarMenu($LANG_GF01['USERPREFS']));
     } else {
