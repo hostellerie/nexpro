@@ -1049,15 +1049,12 @@ if(($method == 'newtopic' || $method == 'postreply' || $method == 'edit') || ($p
         $submissionform_main->set_var('lang_custommsg',$LANG_GF11['custom_msg']);
 
         $submissionform_main->set_var('show_custombox','none');
-        if ($CONF_FORUM['notify_defaultOption'] == 'basic') {
+        if ($CONF_FORUM['notification_format'] == 'basic') {
             $submissionform_main->set_var('sel_notify1','SELECTED=selected');
-        } elseif ($CONF_FORUM['notify_defaultOption'] == 'full') {
+        } elseif ($CONF_FORUM['notification_format'] == 'full') {
             $submissionform_main->set_var('sel_notify2','SELECTED=selected');
-        } elseif ($CONF_FORUM['notify_defaultOption'] == 'summary') {
+        } elseif ($CONF_FORUM['notification_format'] == 'summary') {
             $submissionform_main->set_var('sel_notify3','SELECTED=selected');
-        } elseif ($CONF_FORUM['notify_defaultOption'] == 'custom') {
-            $submissionform_main->set_var('sel_notify4','SELECTED=selected');
-            $submissionform_main->set_var('show_custombox','');
         }
     }
     if($method == 'edit') {
@@ -1164,41 +1161,45 @@ function gf_chknotifications($forumid,$topicid,$userid,$type='topic',$notifyall=
         // Don't need to send a notification to the user that posted this message and users with NOTIFY disabled
         if ($N['uid'] > 1 AND $N['uid'] != $userid ) {
 
-            // if the topic_id is 0 for this record - user has subscribed to complete forum. Check if they have opted out of this forum topic.
-            if (DB_count($_TABLES['gf_watch'],array('uid','forum_id','topic_id'),array($N['uid'],$forumid,-$topicid)) == 0) {
+            // Check and see that user has NOT set their user preference to disable all notifications - regardless of subscription (watch) records.
+            if (DB_count($_TABLES['gf_userprefs'],array('uid','enablenotify'),array($N['uid'],0)) == 0) {
+                // if the topic_id is 0 for this record - user has subscribed to complete forum. Check if they have opted out of this forum topic.
+                if (DB_count($_TABLES['gf_watch'],array('uid','forum_id','topic_id'),array($N['uid'],$forumid,-$topicid)) == 0) {
 
-                // Check if user does not want to receive multiple notifications for same topic and already has been notified
-                $userNotifyOnceOption = DB_getItem($_TABLES['gf_userprefs'],'notify_once',"uid='{$N['uid']}'");
-                // Retrieve the log record for this user if it exists then check if user has viewed this topic yet
-                // The logtime value may be 0 which indicates the user has not yet viewed the topic
-                $lsql = DB_query("SELECT time FROM {$_TABLES['gf_log']} WHERE uid='{$N['uid']}' AND forum='$forumid' AND topic='$topicid'");
-                if (DB_numRows($lsql) == 1) {
-                    $nologRecord = false;
-                    list ($logtime) = DB_fetchArray($lsql);
-                } else {
-                    $nologRecord = true;
-                    $logtime = 0;
-                }
+                    // Check if user does not want to receive multiple notifications for same topic and already has been notified
+                    $userNotifyOnceOption = DB_getItem($_TABLES['gf_userprefs'],'notify_once',"uid='{$N['uid']}'");
+                    // Retrieve the log record for this user if it exists then check if user has viewed this topic yet
+                    // The logtime value may be 0 which indicates the user has not yet viewed the topic
+                    $lsql = DB_query("SELECT time FROM {$_TABLES['gf_log']} WHERE uid='{$N['uid']}' AND forum='$forumid' AND topic='$topicid'");
+                    if (DB_numRows($lsql) == 1) {
+                        $nologRecord = false;
+                        list ($logtime) = DB_fetchArray($lsql);
+                    } else {
+                        $nologRecord = true;
+                        $logtime = 0;
+                    }
 
-                // Add user if notify always OR notify once and has not been notified
-                if  ($userNotifyOnceOption == 0 OR ($userNotifyOnceOption == 1 AND ($nologRecord OR $logtime != 0)) ) {
-                    $sql = "SELECT email,status FROM {$_TABLES['users']} WHERE uid={$N['uid']}";
-                    $userrec = DB_fetchArray(DB_query($sql),false);
-                    if ($userrec['status'] == USER_ACCOUNT_ACTIVE)  {
-                        $notifyusers[$N['uid']] = $userrec['email'];
-                        if ($allusers != '') $allusers .= ',';
-                        $allusers .= $userrec['email'];
+                    // Add user if notify always OR notify once and has not been notified
+                    if  ($userNotifyOnceOption == 0 OR ($userNotifyOnceOption == 1 AND ($nologRecord OR $logtime != 0)) ) {
+                        $sql = "SELECT email,status FROM {$_TABLES['users']} WHERE uid={$N['uid']}";
+                        $userrec = DB_fetchArray(DB_query($sql),false);
+                        if ($userrec['status'] == USER_ACCOUNT_ACTIVE)  {
+                            $notifyusers[$N['uid']] = $userrec['email'];
+                            if ($allusers != '') $allusers .= ',';
+                            $allusers .= $userrec['email'];
+                        }
+                    }
+
+                    /* Add log record to indicate user has viewed topic (albeit not true) but the re-using this table for this purpose
+                    * to track so that users get notified only once as per request. It's assumed that if they get the basic notification
+                    * full post content or the full post content  in the email notification they have read it
+                    * @TODO: add a new table for tracking this so users with this option can still see un-read posts
+                    */
+                    if ($nologRecord and $userNotifyOnceOption == 1 ) {
+                        DB_query("INSERT INTO {$_TABLES['gf_log']} (uid,forum,topic,time) VALUES ($touid, '$forumid', '$topicid','0') ");
                     }
                 }
 
-                /* Add log record to indicate user has viewed topic (albeit not true) but the re-using this table for this purpose
-                * to track so that users get notified only once as per request. It's assumed that if they get the basic notification
-                * full post content or the full post content  in the email notification they have read it
-                * @TODO: add a new table for tracking this so users with this option can still see un-read posts
-                */
-                if ($nologRecord and $userNotifyOnceOption == 1 ) {
-                    DB_query("INSERT INTO {$_TABLES['gf_log']} (uid,forum,topic,time) VALUES ($touid, '$forumid', '$topicid','0') ");
-                }
             }
         }
     }

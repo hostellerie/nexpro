@@ -681,7 +681,7 @@ function plugin_upgrade_forum() {
 
     switch ($curversion) {
 
-        case "2.3" :
+        case '2.3' :
             if (forum_upgrade_232() == 0 )  {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.5RC1' WHERE `pi_name` = 'forum' LIMIT 1");
                 if (forum_upgrade_25() == 0 )  {
@@ -690,7 +690,7 @@ function plugin_upgrade_forum() {
             }
             break;
 
-        case "2.3.2" :
+        case '2.3.2' :
             if (forum_upgrade_232() == 0 )  {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.5RC1' WHERE `pi_name` = 'forum' LIMIT 1");
                 if (forum_upgrade_25() == 0 )  {
@@ -699,38 +699,41 @@ function plugin_upgrade_forum() {
             }
             break;
 
-        case "2.5RC1" :
+        case '2.5RC1' :
             if (forum_upgrade_25() == 0 )  {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.7', `pi_gl_version` = '1.4.1' WHERE `pi_name` = 'forum' LIMIT 1");
             }
             break;
-       case "2.6" :
+
+       case '2.6' :
              DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.7', `pi_gl_version` = '1.4.1' WHERE `pi_name` = 'forum' LIMIT 1");
              break;
-       case "2.7" :
+
+       case '2.7' :
              if (forum_upgrade_30() == 0 ) {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.0', `pi_gl_version` = '1.4.1' WHERE `pi_name` = 'forum' LIMIT 1");
              }
              break;
-       case "3.0" :
+
+       case '3.0' :
             if (forum_upgrade_320() == 0 )  {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2.0', `pi_gl_version` = '1.6.1' WHERE `pi_name` = 'forum' LIMIT 1");
             }
             break;
-       case "3.1.0" :
+
+       case '3.1.0' :
             if (forum_upgrade_320() == 0 )  {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2.0', `pi_gl_version` = '1.6.1' WHERE `pi_name` = 'forum' LIMIT 1");
             }
-            break;            
 
     }
 
     include $_CONF['path'].'plugins/forum/forum.php';   // Reload so we have value of $CONF_FORUM['version']
     /* Check if update completed and return a message number to be shown */
     if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'forum'") == $CONF_FORUM['version']) {
-        return 1;
+        return true;
     } else {
-        return 5;
+        return false;
     }
 
 }
@@ -1352,6 +1355,149 @@ function forumPLG_getMemberBadge($uid) {
         }
     }
 }
+
+/* Send out new post notification - this version will send out an HTML formatted email based
+*  Uses a template which can be unique per user's language preference
+*  Note POST['chk_notifypersonal'] if set will send out a single email vs individual emails per user
+*  This method can only use a single language template - site default language
+*
+* @param        int         $forumid        Forum id
+* @param        int         $topicic        Topic id
+* @param        int         $poster         UID of the user that created the new post
+* @param        string      $type           'forum' or 'topic'
+* @param        array       $notifusers     Array of users to notify where the record key is the UID . $uid => user email
+* @param        string      $allusers       String of email addresses that can be used if a single email is being sent out
+* @return       boolean               Returns true
+*/
+function forumPLG_sendNotification($forumid, $topicid, $poster, $type='topic', $notifyusers='', $allusers='') {
+    global $_TABLES,$_CONF,$CONF_FORUM,$LANG_GF01,$LANG_GF02;
+
+    if ($poster > 1) {
+        $postername = COM_getDisplayName($poster);
+    } else {
+        $postername = DB_getItem($_TABLES['gf_topic'],'name',"id=$topicid");
+    }
+    $topicname = DB_getItem($_TABLES['gf_topic'],'subject',"id=$topicid");
+    $forum_name = DB_getItem($_TABLES['gf_forums'],forum_name, "forum_id='$forumid'");
+    $notifyextracontent = '';
+
+    if ($_POST['notificationtype'] != 'basic') {
+        $topiclink = "{$_CONF['site_url']}/forum/viewtopic.php?showtopic=$topicid";
+        $forumlink = "{$_CONF['site_url']}/forum/index.php?forum=$forumid";
+        $tpl = new Template($_CONF['path_layout'] . 'forum/layout');
+        $tpl->set_file ('notification', 'forum_htmlnotification.thtml');
+        $tpl->set_var('site_url',$_CONF['site_url']);
+        $tpl->set_var('site_name',$_CONF['site_name']);
+        $tpl->set_var('layour_url',$_CONF['layout_url']);
+        $tpl->set_var('topic_link',$topiclink);
+        $tpl->set_var('topic_name',$topicname);
+        if ($type == 'forum') {
+            $tpl->set_var('notification_type',sprintf($LANG_GF02['notify_newtopic'],$topicname,$postername,$forum_name));
+        } else {
+            $tpl->set_var('notification_type',sprintf($LANG_GF02['notify_newreply'],$topicname,$postername));
+        }
+        $tpl->set_var ( 'notification_title', sprintf($LANG_GF02['notification_title'],$_CONF['site_name']));
+        $tpl->set_var ('quicklinks_title',$LANG_GF02['quicklinks_title']);
+        $tpl->set_var ('about_title',$LANG_GF02['quicklinks_about_title']);
+        $tpl->set_var ('settings_title',$LANG_GF02['quicklinks_settings_title']);
+        $tpl->set_var ('site_title',$LANG_GF02['quicklinks_site_title']);
+        $tpl->set_var ('about_message',sprintf($LANG_GF02['quicklinks_about_msg'],$topiclink,$topicname,$forumlink,$forum_name));
+        $tpl->set_var ('site_link',sprintf($LANG_GF02['quicklinks_site_link'],$_CONF['site_url'],$_CONF['site_name']));
+        $tpl->set_var ('settings_link',sprintf($LANG_GF02['quicklinks_settings_link'],"{$_CONF['site_url']}/forum/userprefs.php"));
+        $tpl->set_var ('subscriptions_link',sprintf($LANG_GF02['quicklinks_notifications_link'],"{$_CONF['site_url']}/forum/notify.php"));
+
+        // filter forum post content and perform post formatting
+        $topicdata = array(
+            'id'        => $topicid,
+            'uid'       => $poster,
+            'comment'   => $_POST['comment']
+            );
+
+        $formattedPost = gf_formatPostforNotification($topicdata);
+
+        $tpl->set_var('forum_name',$forum_name);
+
+        if ($_POST['notificationtype'] == 'full') {
+            $tpl->set_var('content',$formattedPost);
+        } elseif($_POST['notificationtype'] == 'summary') {
+            $tpl->set_var('content',substr($formattedPost,0,200));
+        } elseif ($_POST['notificationtype'] == 'custom') {
+            $tpl->set_var('content',$_POST['customnotification']);
+        }
+
+        $subjectline = "{$_CONF['site_name']} {$LANG_GF02['msg22']}";
+
+        $tpl->set_var('member_name',$postername);
+        $tpl->set_var('topic_link',"{$_CONF['site_url']}/forum/viewtopic.php?showtopic=$topicid");
+        $tpl->set_var('admin_link',"{$_CONF['site_url']}/forum/notify.php");
+        $tpl->parse ('output', 'notification');
+        $formattedMessage = $tpl->finish($tpl->get_var('output'));
+
+        /* Enable for debugging if you need to see a copy of the formatted message */
+        $file = $_CONF['path_data'] . 'notification.html';
+        $fp = fopen($file,'w');
+        if ($fp) {
+            fwrite($fp,$formattedMessage);
+            fclose($fp);
+        }
+
+        if ($_POST['notificationtype'] == 'full') {
+            $notifyextracontent  = $LANG_GF02['notify_premsg'];
+            $notifyextracontent .= $_POST['comment'];
+            $notifyextracontent .= $LANG_GF02['notify_postmsg'];
+
+        } elseif($_POST['notificationtype'] == 'summary') {
+            $notifyextracontent  = $LANG_GF02['notify_premsg'];
+            $notifyextracontent .= substr($_POST['comment'],0,200);
+            $notifyextracontent .= $LANG_GF02['notify_postmsg'];
+        } elseif ($_POST['notificationtype'] == 'custom') {
+            $notifyextracontent  = $LANG_GF02['notify_premsg'];
+            $notifyextracontent .= $_POST['customnotification'];
+            $notifyextracontent .= $LANG_GF02['notify_postmsg'];
+        }
+    }
+
+    if ($type == 'forum') {
+        $textMessage .= sprintf($LANG_GF02['notify_newtopic'],$topicrec['subject'],$postername,$forum_name, $_CONF['site_name'],$_CONF['site_url'],$pid);
+    } else {
+        $textMessage .= sprintf($LANG_GF02['notify_newreply'],$topicrec['subject'],$postername);
+    }
+    $textMessage .= $notifyextracontent;
+    $textMessage .= sprintf($LANG_GF02['notify_reason'],"{$_CONF['site_url']}/forum/notify.php");
+
+    if ($_POST['chk_notifypersonal'] == 1 AND $email_allusers != '') {
+        if ($CONF_FORUM['log_notifications'] == 1) {
+            COM_errorLog("Forum Notification for topic:$topicid sent to: $toemail");
+        }
+        $message = $formattedMessage;
+        COM_mail($email_allusers,$subjectline,$message,$from,true);
+
+    } elseif (is_array($notifyusers)) {
+        reset($notifyusers);
+        foreach ($notifyusers as $touid => $toemail) {
+            if ($CONF_FORUM['log_notifications'] == 1) {
+                COM_errorLog("Forum Notification for topic:$topicid sent to: $toemail");
+            }
+            if ($_POST['notificationtype'] == 'basic' OR DB_getItem($_TABLES['gf_userprefs'],'notification_format',"uid=$touid") == 'text') {
+                $message  = "{$LANG_GF01['HELLO']} $toname,\n\n" . $textMessage;
+            } else {
+                $message = $formattedMessage;
+            }
+            COM_mail($toemail,$subjectline,$message,'',true);
+        }
+    }
+    return true;
+
+}
+
+
+/* End of forum plugin API functions */
+
+
+
+// +---------------------------------------------------------------------------+
+// | Forum functions that are used to generate menus                           |
+// +---------------------------------------------------------------------------+
 
 function phpblock_forum_menu() {
     global $_TABLES,$_CONF,$_USER,$CONF_FORUM,$LANG_GF01,$LANG_GF02,$LANG_GF07,$CONF_NEXMENU,$_BLOCK_TEMPLATE;

@@ -54,7 +54,7 @@
                                 <option value="basic" {sel_notify1}>{lang_notify1}</option>
                                 <option value="full" {sel_notify2}>{lang_notify2}</option>
                                 <option value="summary" {sel_notify3}>{lang_notify3}</option>
-                                <option value="custom" {sel_notify4}>{lang_notify4}</option>
+                                <option value="custom">{lang_notify4}</option>
                             </select>
                         </td>
                         <td nowrap width="65%" style="border-left:1px solid #CCC;padding-left:10px;display:{show_notifyall}">{lang_notifyoverride}&nbsp;<input type="checkbox" name="chk_notifyall" value="1" {chk_notifyall}></td>
