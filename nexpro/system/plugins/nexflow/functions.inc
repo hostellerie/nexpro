@@ -320,9 +320,11 @@ function plugin_upgrade_nexflow() {
 
     /* Check if update completed and return a message number to be shown */
     if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexflow'") == '3.1.0') {
-        return 11;
+        return true;
+        COM_errorlog("nexFlow was updated successfully.");
     } else {
-        return 12;
+        return false;
+        COM_errorlog("nexFlow was not updated to verion 3.1.0.  Please check any errors before retrying.");
     }
 }
 

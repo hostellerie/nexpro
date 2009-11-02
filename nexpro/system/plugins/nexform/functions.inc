@@ -180,26 +180,32 @@ function plugin_upgrade_nexform() {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.0.1', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexform' LIMIT 1");
                 if (nexform_upgrade_22() == 0) {
                     DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.2.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexform' LIMIT 1");
+                    COM_errorlog("nexForm updated successfully.");
                     return true;
                 } else {
-                    return 1;
+                    COM_errorlog("nexForm was not updated to verion 2.2.0.  Please check any errors before retrying.");
+                    return false;
                 }
             }
             break;
         case '2.0.1':
             if (nexform_upgrade_22() == 0) {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.2.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexform' LIMIT 1");
+                COM_errorlog("nexForm updated successfully.");
                 return true;
             } else {
-                return 1;
+                COM_errorlog("nexForm was not updated to verion 2.2.0.  Please check any errors before retrying.");
+                return false;
             }
             break;
         case '2.1.0':
             if (nexform_upgrade_22() == 0) {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.2.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexform' LIMIT 1");
+                COM_errorlog("nexForm updated Successfully.");
                 return true;
             } else {
-                return 1;
+                COM_errorlog("nexForm was not updated to verion 2.2.0.  Please check any errors before retrying.");
+                return false;
             }
             break;
 
@@ -207,9 +213,10 @@ function plugin_upgrade_nexform() {
 
     /* Check if update completed and return a message number to be shown */
     if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexform'") == $CONF_FE['version']) {
-        return 11;
+        return true;
     } else {
-        return 12;
+        COM_errorlog("nexForm was not updated to verion 2.2.0.  Please check any errors before retrying.");
+        return false;
     }
 }
 

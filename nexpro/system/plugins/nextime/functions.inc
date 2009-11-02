@@ -235,9 +235,11 @@ function plugin_upgrade_nextime() {
 
     /* Check if update completed and return a message number to be shown */
     if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nextime'") == $CONF_NEXTIME['version']) {
-        return 13;
+        COM_errorlog("nexTime updated successfully.");
+        return true;
     } else {
-        return 12;
+        COM_errorlog("nexTime was not updated to verion 1.2.0.  Please check any errors before retrying.");
+        return false;
     }
 }
 

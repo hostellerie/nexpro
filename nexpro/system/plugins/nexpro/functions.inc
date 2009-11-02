@@ -44,7 +44,7 @@ require_once ($_CONF['path_html'] . 'jscalendar/calendar.php');
 // Used for debugging to log messages to the Firebug addon for Firefox from PHP
 require_once ($_CONF['path_system'] . 'nexpro/FirePHPCore/FirePHP.class.php');
 // Load common nextide/nexpro plugin functions
-require_once ($_CONF['path'] . 'plugins/nexpro/lib-nextide.php');  
+require_once ($_CONF['path'] . 'plugins/nexpro/lib-nextide.php');
 
 require_once ($_CONF['path'] . 'plugins/nexpro/nexpro.php');
 require_once ($_CONF['path'] . 'plugins/nexpro/autouninstall.php');
@@ -265,9 +265,11 @@ function plugin_upgrade_nexpro() {
             }
             if (plugin_initconfig_nexpro()) {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.1.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexpro' LIMIT 1");
+                COM_errorlog("nexPro updated successfully.");
                 return true;
             } else {
                 echo 'There was an error upgrading the plugin';
+                COM_errorlog("nexPro was not updated to verion 2.1.0.  Please check any errors before retrying.");
                 return false;
             }
 
@@ -276,9 +278,11 @@ function plugin_upgrade_nexpro() {
 
     /* Check if update completed and return a message number to be shown */
     if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexpro'") == $CONF_NEXPRO['version']) {
-        return 11;
+        COM_errorlog("nexPro updated successfully.");
+        return true;
     } else {
-        return 12;
+        COM_errorlog("nexPro was not updated to verion 2.1.0.  Please check any errors before retrying.");
+        return false;
     }
 }
 

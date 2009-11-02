@@ -244,9 +244,11 @@ function plugin_upgrade_nexfile() {
 
     /* Check if update completed and return a message number to be shown */
     if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexfile'") == '3.0.0') {
-        return 11;
+        return true;
+        COM_errorlog("nexFile upgraded successfully..");
     } else {
-        return 12;
+        return false;
+        COM_errorlog("nexFile was not updated to verion 3.0.0.  Please check any errors before retrying.");
     }
 }
 

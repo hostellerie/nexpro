@@ -35,7 +35,7 @@ if (file_exists ($langfile)) {
     include_once ($_CONF['path'] . 'plugins/nexmenu/language/english.php');
 }
 
-require_once ($_CONF['path'] . 'plugins/nexmenu/nexmenu.php'); 
+require_once ($_CONF['path'] . 'plugins/nexmenu/nexmenu.php');
 require_once ($_CONF['path'] . 'plugins/nexmenu/nexmenu.class.php');
 require_once ($_CONF['path'] . 'plugins/nexmenu/autouninstall.php');
 
@@ -171,31 +171,38 @@ function plugin_upgrade_nexmenu()
     if ($CONF_NEXMENU['installed_version'] < "2.5") {
         if (nexmenu_upgrade_25() == 0 )  {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.5' WHERE `pi_name` = 'nexmenu' LIMIT 1");
+            COM_errorlog("nexMenu updated successfully.");
             return true;
         } else {
-            return 1;
+            COM_errorlog("nexMenu was not updated to verion 3.2.  Please check any errors before retrying.");
+            return false;
         }
     } elseif ($CONF_NEXMENU['installed_version'] == "2.5") {
         DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.6' WHERE `pi_name` = 'nexmenu' LIMIT 1");
+        COM_errorlog("nexMenu updated successfully.");
         return true;
     } elseif ($CONF_NEXMENU['installed_version'] == "2.6" || $CONF_NEXMENU['installed_version'] == "2.5.2") {
         if (nexmenu_upgrade_26() == 0 )  {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.1', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexmenu' LIMIT 1");
             if (nexmenu_upgrade_32() == 0) {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexmenu' LIMIT 1");
+                COM_errorlog("nexMenu updated successfully.");
                 return true;
             } else {
-                return 1;
+                COM_errorlog("nexMenu was not updated to verion 3.2.  Please check any errors before retrying.");
+                return false;
             }
         } else {
-            return 1;
+            return false;
         }
     } elseif ($CONF_NEXMENU['installed_version'] == "3.0") {
         if (nexmenu_upgrade_32() == 0) {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexmenu' LIMIT 1");
+            COM_errorlog("nexMenu updated successfully.");
             return true;
         } else {
-            return 1;
+            COM_errorlog("nexMenu was not updated to verion 3.2.  Please check any errors before retrying.");
+            return false;
         }
         return true;
     } elseif ($CONF_NEXMENU['installed_version'] == "3.1") {
@@ -203,10 +210,12 @@ function plugin_upgrade_nexmenu()
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.2', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexmenu' LIMIT 1");
             return true;
         } else {
-            return 1;
+            COM_errorlog("nexMenu was not updated to verion 3.2.  Please check any errors before retrying.");
+            return false;
         }
     } else {
-        return 1;
+        COM_errorlog("nexMenu was not updated to verion 3.2.  Please check any errors before retrying.");
+        return false;
     }
 }
 

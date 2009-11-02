@@ -185,9 +185,11 @@ function plugin_upgrade_nexlist() {
 
     /* Check if update completed and return a message number to be shown */
     if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexlist'") == $CONF_LL['version']) {
-        return 11;
+        COM_errorlog("nexList was updated successfully.");
+        return true;
     } else {
-        return 12;
+        COM_errorlog("nexList was not updated to verion 2.2.0.  Please check any errors before retrying.");
+        return false;
     }
 }
 
