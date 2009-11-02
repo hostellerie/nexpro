@@ -377,7 +377,8 @@ function plugin_upgrade_nexcontent() {
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.3.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexcontent' LIMIT 1");
                 return true;
             } else {
-                return 1;
+                COM_errorlog("nexContent was not updated to verion 2.3.0.  Please check any errors before retrying.");
+                return false;
             }
         }
         break;
@@ -386,7 +387,8 @@ function plugin_upgrade_nexcontent() {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.3.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexcontent' LIMIT 1");
             return true;
         } else {
-            return 1;
+            COM_errorlog("nexContent was not updated to verion 2.3.0.  Please check any errors before retrying.");
+            return false;
         }
         break;
 
@@ -395,11 +397,13 @@ function plugin_upgrade_nexcontent() {
         break;
     }
 
-    /* Check if update completed and return a message number to be shown */
+    /* GL 1.6.x requires true/false to be returned from a plugin update... */
     if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexcontent'") == $CONF_SE['version']) {
-        return 11;
+        COM_errorlog("Upgrade of nexContent successful.");
+        return true;
     } else {
-        return 12;
+        COM_errorlog("There has been an error during the upgrade of nexContent.  The version of nexContent was not updated to the latest version.");
+        return false;
     }
 }
 
