@@ -748,7 +748,7 @@ function phpblock_nexcontentBlockmenu($pageid='') {
 function plugin_nexmenuCreateMenus_nexcontent() {
     global $_USER,$_CONF,$_TABLES,$CONF_SE,$CONF_NEXMENU;
 
-    if (isset($_USER['theme'])) {
+    if (isset($_USER['theme']) AND DB_count($_TABLES['nexmenu_config'],'theme', $_USER['theme'])) {
         $headerMilonicStyle = DB_getItem($_TABLES['nexmenu_config'],'headermenu_style',"theme='{$_USER['theme']}'");
         $blockMilonicStyle = DB_getItem($_TABLES['nexmenu_config'],'blockmenu_style',"theme='{$_USER['theme']}'");
     } else {
