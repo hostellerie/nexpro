@@ -33,6 +33,12 @@ require_once $_CONF['path_system'] . 'classes/config.class.php';
 
 $_PRJCONF=array();
 $_PRJCONF['version'] = '2.1.0';
+$_PRJCONF['pi_name'] = 'nexproject';
+$_PRJCONF['pi_display_name'] = 'nexProject';
+$_PRJCONF['pi_gl_version'] = '1.6.1';
+
+
+
 
 // Database Definitions
 $_TABLES['prj_category']             = $_DB_table_prefix . 'nxprj_category';

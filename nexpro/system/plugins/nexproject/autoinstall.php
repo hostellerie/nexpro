@@ -53,18 +53,18 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'autoinstall.php') !== false) {
 */
 function plugin_autoinstall_nexproject($pi_name)
 {
-    global $_CONF;
+    global $_CONF,$_PRJCONF;
     @require ($_CONF['path'] . 'plugins/nexproject/nexproject.php');
 
-    $pi_name         = 'nexproject';
-    $pi_display_name = 'nexProject';
+    $pi_name         = $_PRJCONF['pi_name'];
+    $pi_display_name = $_PRJCONF['pi_display_name'];
     $pi_admin        = $pi_display_name . ' Admin';
 
     $info = array(
         'pi_name'         => $pi_name,
         'pi_display_name' => $pi_display_name,
-        'pi_version'      => '2.1.0',
-        'pi_gl_version'   => '1.6.0',
+        'pi_version'      => $_PRJCONF['version'],
+        'pi_gl_version'   => $_PRJCONF['pi_gl_version'],
         'pi_homepage'     => 'http://www.nextide.ca/'
     );
 

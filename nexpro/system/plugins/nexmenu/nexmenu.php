@@ -34,7 +34,7 @@
 // +---------------------------------------------------------------------------+
 $CONF_NEXMENU=array();
 $CONF_NEXMENU['version']='3.2';
-$CONF_NEXMENU['gl_version']='1.6.0';
+$CONF_NEXMENU['gl_version']='1.6.1';
 $CONF_NEXMENU['pi_name']='nexmenu';
 $CONF_NEXMENU['pi_display_name']='nexmenu';
 
@@ -74,7 +74,7 @@ $CONF_NEXMENU['icons'] = array (
     5   => 'custom_menuitem.gif'
 );
 
-/* Load the configuration from the online tables */  
+/* Load the configuration from the online tables */
 require_once $_CONF['path_system'] . 'classes/config.class.php';
 $nexmenu_config = config::get_instance();
 $xCONF_NEXMENU = $nexmenu_config->get_config('nexmenu');

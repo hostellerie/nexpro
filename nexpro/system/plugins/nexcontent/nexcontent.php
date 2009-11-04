@@ -31,7 +31,7 @@ $CONF_SE=array();
 $CONF_SE['version'] = '2.3.0';
 $CONF_SE['pi_name'] = 'nexcontent';
 $CONF_SE['pi_display_name'] = 'nexContent';
-$CONF_SE['gl_version'] = '1.6.0';
+$CONF_SE['gl_version'] = '1.6.1';
 
 
 //This parameter is used during the initial installation of the plugin to ensure that the
