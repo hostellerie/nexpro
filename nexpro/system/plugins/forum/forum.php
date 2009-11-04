@@ -37,7 +37,7 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'forum.php') !== false) {
 }
 
 global $_DB_table_prefix, $_TABLES;
-
+$CONF_FORUM['log_notifications'] = false;		// Set to true to log notifications to error.log
 $CONF_FORUM['imgset'] = $_CONF['layout_url'] .'/forum/image_set';
 $CONF_FORUM['imgset_path'] = $_CONF['path_layout'] .'/forum/image_set';
 

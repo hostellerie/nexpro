@@ -1016,7 +1016,7 @@ if(($method == 'newtopic' || $method == 'postreply' || $method == 'edit') || ($p
         if (SEC_inGroup($CONF_FORUM['notifyall_allowedGroup'])) {
 		    $submissionform_main->set_var('check_notifyall','CHECKED=checked');
         } else {
-            $submissionform_main->set_var('show_notifyall','none');            
+            $submissionform_main->set_var('show_notifyall','none');
         }
         if (!SEC_inGroup($newtopic['use_attachment_grpid'])) {
             $submissionform_main->set_var('use_attachments','none');
@@ -1049,11 +1049,14 @@ if(($method == 'newtopic' || $method == 'postreply' || $method == 'edit') || ($p
         $submissionform_main->set_var('lang_custommsg',$LANG_GF11['custom_msg']);
 
         $submissionform_main->set_var('show_custombox','none');
-        if ($CONF_FORUM['notification_format'] == 'basic') {
+        $submissionform_main->set_var('sel_notify1','');
+        $submissionform_main->set_var('sel_notify2','');
+        $submissionform_main->set_var('sel_notify3','');
+        if ($CONF_FORUM['notify_defaultOption'] == 'basic') {
             $submissionform_main->set_var('sel_notify1','SELECTED=selected');
-        } elseif ($CONF_FORUM['notification_format'] == 'full') {
+        } elseif ($CONF_FORUM['notify_defaultOption'] == 'full') {
             $submissionform_main->set_var('sel_notify2','SELECTED=selected');
-        } elseif ($CONF_FORUM['notification_format'] == 'summary') {
+        } elseif ($CONF_FORUM['notify_defaultOption'] == 'summary') {
             $submissionform_main->set_var('sel_notify3','SELECTED=selected');
         }
     }

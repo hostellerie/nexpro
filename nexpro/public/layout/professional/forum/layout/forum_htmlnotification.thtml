@@ -80,7 +80,7 @@
         <tr valign="top">
             <td style="padding-right:5px;">
                 <div style="padding-left: 25px; padding-right: 25px;">
-                    <h2>{member_name}{notification_type}</h2>
+                    <h2>{notification_type}</h2>
                     <h3><a href="{topic_link}">{topic_name}</a></h3>
                         {content}
                 </div>
