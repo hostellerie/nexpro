@@ -1466,7 +1466,7 @@ function forumPLG_sendNotification($forumid, $topicid, $poster, $type='topic', $
     $textMessage .= sprintf($LANG_GF02['notify_reason'],"{$_CONF['site_url']}/forum/notify.php");
 
     if ($_POST['chk_notifypersonal'] == 1 AND $email_allusers != '') {
-        if ($CONF_FORUM['log_notifications'] == 1) {
+        if ($CONF_FORUM['log_notifications']) {
             COM_errorLog("Forum Notification for topic:$topicid sent to: $toemail");
         }
         $message = $formattedMessage;
@@ -1475,13 +1475,17 @@ function forumPLG_sendNotification($forumid, $topicid, $poster, $type='topic', $
     } elseif (is_array($notifyusers)) {
         reset($notifyusers);
         foreach ($notifyusers as $touid => $toemail) {
-            if ($CONF_FORUM['log_notifications'] == 1) {
-                COM_errorLog("Forum Notification for topic:$topicid sent to: $toemail");
-            }
+
             if ($_POST['notificationtype'] == 'basic' OR DB_getItem($_TABLES['gf_userprefs'],'notification_format',"uid=$touid") == 'text') {
                 $message  = "{$LANG_GF01['HELLO']} $toname,\n\n" . $textMessage;
+                if ($CONF_FORUM['log_notifications']) {
+                    COM_errorLog("Forum TEXT Notification for topic:$topicid sent to: $toemail");
+                }
             } else {
                 $message = $formattedMessage;
+                if ($CONF_FORUM['log_notifications']) {
+                    COM_errorLog("Forum HTML Notification for topic:$topicid sent to: $toemail");
+                }
             }
             COM_mail($toemail,$subjectline,$message,'',true);
         }

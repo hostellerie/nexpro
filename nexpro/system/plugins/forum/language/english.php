@@ -501,8 +501,8 @@ $LANG_GF02['PostTopic']   = 'Post New Topic';
 $LANG_GF02['EditTopic']   = 'Edit Topic';
 $LANG_GF02['quietforum']  = 'Forum has no new topics';
 
-$LANG_GF02['notify_newtopic']  = ', a new topic \'%s\' has been posted by %s in the %s forum. You may view it at:';
-$LANG_GF02['notify_newreply']  = ', a reply has been made to the thread \'%s\' by %s.';
+$LANG_GF02['notify_newtopic']  = 'New topic \'%s\' has been posted by %s in the %s forum. You may view it at:';
+$LANG_GF02['notify_newreply']  = 'Reply has been made to the thread \'%s\' by %s.';
 $LANG_GF02['replynote']        = 'If you Reply to this email, your response will not be archived. Use the link provided above to reply on the site and have your response archived.';
 $LANG_GF02['notify_reason']    = 'You are receiving this email because you have chosen to be notified when a reply has been made to this topic. To stop receiving notifications on this topic go to %s to remove it.';
 $LANG_GF02['notify_premsg']    = '<----------POST Content --------->';
