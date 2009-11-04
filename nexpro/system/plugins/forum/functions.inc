@@ -1144,7 +1144,6 @@ function plugin_centerblock_forum ($where = 1, $page = 1, $topic = '')
         }
 
         while ($A = DB_fetchArray ($result)) {
-            $A['subject'] = @htmlspecialchars($A['subject'],ENT_COMPAT,$CONF_FORUM['charset']);
             $fullsubject = "{$A['subject']}\n{$LANG_GF01['POSTEDBY']}:{$A['name']}{$LANG_GF01['VIEWS']}:{$A['views']}, {$LANG_GF01['REPLIES']}:{$A['replies']}";
             if(strlen ($A['subject']) > $CONF_FORUM['cb_subject_size']) {
                 $A['subject'] = substr ($A['subject'], 0, $CONF_FORUM['cb_subject_size']);
