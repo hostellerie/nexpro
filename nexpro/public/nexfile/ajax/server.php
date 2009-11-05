@@ -264,7 +264,7 @@ switch ($op) {
         $cid = $filter->getCleanData('int',$_GET['cid']);
         $tpl = new Template($_CONF['path_layout'] . 'nexfile');
         $tpl->set_file('form','newfile_form.thtml');
-        $tpl->set_var('newfile_category_options',nexdoc_recursiveAccessOptions('admin',$cid));
+        $tpl->set_var('newfile_category_options',nexdoc_recursiveAccessOptions(array('upload','upload_dir'),$cid));
         $tpl->parse ('output', 'form');
         $data['displayhtml'] = $tpl->finish ($tpl->get_var('output'));
         $retval = json_encode($data);
