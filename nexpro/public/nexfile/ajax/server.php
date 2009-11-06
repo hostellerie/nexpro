@@ -914,11 +914,11 @@ switch ($op) {
             $data['displayhtml'] = nexdocsrv_generateFileListing($listingFolder,$reportmode);
 
         } elseif (nexdoc_deletefile($fid)) {   /* Includes security tests that user can delete this file */
-            $ajaxBackgroundMode = true;
+            if (!in_array($reportmode,$validReportModes))  $ajaxBackgroundMode = true;
             $data['retcode'] = 200;
             $message = '<div class="pluginInfo aligncenter" style="width:100%;height:60px;padding-top:30px;">';
             $message .= 'File was sucessfully deleted. This message will clear in a couple seconds</div>';
-            $data['displayhtml'] = nexdocsrv_generateFileListing($listingFolder,'');
+            $data['displayhtml'] = nexdocsrv_generateFileListing($listingFolder,$reportmode);
             if (is_array($lastRenderedFiles) AND count($lastRenderedFiles) > 0) {
                 $data['lastrenderedfiles'] = serialize($lastRenderedFiles);
             }
@@ -953,7 +953,7 @@ switch ($op) {
                         }
                     }
                 }
-                $ajaxBackgroundMode = true;
+                if (!in_array($reportmode,$validReportModes))  $ajaxBackgroundMode = true;
             }
 
             if ($_POST['reportmode'] == 'incoming') {
@@ -979,7 +979,7 @@ switch ($op) {
                         nexdoc_deletefile($id);
                     }
                 }
-                $ajaxBackgroundMode = true;
+                if (!in_array($reportmode,$validReportModes))  $ajaxBackgroundMode = true;
             }
 
             $data['retcode'] = 200;

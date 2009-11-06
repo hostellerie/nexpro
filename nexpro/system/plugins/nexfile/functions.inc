@@ -244,11 +244,11 @@ function plugin_upgrade_nexfile() {
 
     /* Check if update completed and return a message number to be shown */
     if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexfile'") == '3.0.0') {
-        return true;
         COM_errorlog("nexFile upgraded successfully..");
+        return true;
     } else {
-        return false;
         COM_errorlog("nexFile was not updated to verion 3.0.0.  Please check any errors before retrying.");
+        return false;
     }
 }
 
@@ -942,6 +942,8 @@ function nexdoc_deletefile($fid) {
                     COM_errorLog("Successfully deleted file: {$_FMCONF['storage_path']}$cid/$fname");
                 }
                 fm_updateAuditLog("Delete File id: $fid, Version: $delversion. File: $fname. Single reference - file deleted");
+            } elseif (DB_count($_TABLES['nxfile_files'], array('cid','fname'), array("$cid","$fname")) > 1) {
+                COM_errorLog("Delete physical file skipped - more then 1 record in folder $cid for file: $fname");
             } else {
                 COM_errorLog("Delete file failed - no matching record. Cid: $cid, fname: $fname");
                 fm_updateAuditLog("Delete File id: $fid, Version: $delversion. File: $fname. Other references - not deleted");
