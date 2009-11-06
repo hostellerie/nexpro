@@ -1183,7 +1183,9 @@ function nexdocsrv_generateLeftSideNavigation($data='') {
         }
     }
 
-    $data = nexfile_customLeftsideNavigation($data);
+	if (function_exists(nexfile_customLeftsideNavigation)) {
+		$data = nexfile_customLeftsideNavigation($data);
+	}
 
     return $data;
 
