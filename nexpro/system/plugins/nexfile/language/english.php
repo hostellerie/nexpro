@@ -202,7 +202,8 @@ $LANG_nexfile = array (
     'msg61'        => 'Click to Download this file',
     'msg62'        => 'File Last Updated: Click to see calendar',
     'msg63'        => 'Category Admin',
-    'msg64'        => 'Unsubscribe Me'
+    'msg64'        => 'Unsubscribe Me',
+    'msg65'        => 'Direct Link to file'
 
 );
 
