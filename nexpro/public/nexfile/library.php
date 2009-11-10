@@ -950,6 +950,7 @@ function nexdocsrv_filedetails($fid,$reportmode='') {
         $page->set_var ('LANG_VERSION_NOTE',$LANG_FM02['VERSION_NOTE']);
         $page->set_var ('LANG_DOWNLOAD',$LANG_FM02['DOWNLOAD']);
         $page->set_var ('LANG_DOWNLOAD_MESSAGE',$LANG_nexfile['msg61']);
+        $page->set_var ('LANG_LINK_MESSAGE',$LANG_nexfile['msg65']);
         $page->set_var ('LANG_LASTUPDATED',$LANG_nexfile['msg62']);
         $page->set_var ('current_ver_note',nl2br($curVerNotes));
 

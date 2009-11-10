@@ -661,7 +661,6 @@ var makeAJAXLoadFileDetails = function(id) {
                 try {
                     Dom.get('menubar_downloadlink').href = actionurl_dir + '/download.php?op=download&fid=' + oResults.fid;
                     Event.addListener("menubar_downloadlink", "click", hideFileDetailsPanelDelay);
-                    Event.addListener("downloadfilelink", "click", hideFileDetailsPanelDelay);
 
                 } catch (e) {}
                 if (!oResults.editperm) {
@@ -2386,6 +2385,7 @@ YAHOO.nexfile.showfiles = function() {
                 blockui = false;
                 if (initialfid > 0) {
                     setTimeout('makeAJAXLoadFileDetails(' + initialfid + ')',500);
+                    initialfid = 0;
                 } else if (initialop == 'newprojectfile' && initialparm > 0) {
                     setTimeout('showAddFilePanel()',500);
                 }

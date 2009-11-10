@@ -1,3 +1,6 @@
+Nov 10/2009 (Blaine)
+    Fixed a few nexfile bugs that have appeared: Notification report not working, Direct link to file not working if anonymous.
+
 Nov 4/2009 (Blaine)
     Additional forum developement as part of version 3.2
 

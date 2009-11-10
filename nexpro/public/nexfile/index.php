@@ -42,7 +42,7 @@ $fid = $_CLEAN['int']['fid'];
 if ($fid > 0 AND empty($cid)) {
     $cid = DB_getItem($_TABLES['nxfile_files'],'cid',"fid=$fid AND status=1");
     $pid = DB_getItem($_TABLES['nxfile_categories'],'pid',"cid=$cid");
-    if (empty($cid) OR !fm_getPermission($cid,'view') OR !fm_getPermission($pid,'view')) {
+    if (empty($cid) OR !fm_getPermission($cid,'view') OR ($pid > 0 AND !fm_getPermission($pid,'view'))) {
         $fid = 0;
         $cid = 0;
     }
