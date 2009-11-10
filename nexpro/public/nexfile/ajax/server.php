@@ -102,7 +102,7 @@ switch ($op) {
 
         if ($reportmode == 'notifications') {
             $data['retcode'] = 200;
-            $data .= '<cid>'.$cid.'</cid>';
+            $data['cid'] = $cid;
             $data['activefolder'] = nexdoc_displayActiveFolder($cid,$reportmode);
             $data['displayhtml'] = nexdoc_generateNotificationsReport();
             $data['header'] = nexdoc_formatHeader($cid,$reportmode);
