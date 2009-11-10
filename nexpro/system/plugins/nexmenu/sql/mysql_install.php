@@ -86,7 +86,7 @@ $_SQL[] = "CREATE TABLE {$_TABLES['nxmenu_config']} (
 ) TYPE=MyISAM ;";
 
 
-$_SQL[] = "INSERT INTO {$_TABLES['nxmenu_config']} (`theme`, `header_style`, `block_style`, `multilanguage`, `targetfeatures`, `blockmenu_style`, `blocksubmenu_style`, `headermenu_style`, `headersubmenu_style`, `headermenu_properties`, `blockmenu_properties`, `headerbg`, `headerfg`, `blockbg`, `blockfg`, `onhover_headerbg`, `onhover_headerfg`, `onhover_blockbg`, `onhover_blockfg`, `headersubmenufg`, `headersubmenubg`, `onhover_headersubmenufg`, `onhover_headersubmenubg`, `blocksubmenufg`, `blocksubmenubg`, `onhover_blocksubmenufg`, `onhover_blocksubmenubg`) VALUES 
+$_SQL[] = "INSERT INTO {$_TABLES['nxmenu_config']} (`theme`, `header_style`, `block_style`, `multilanguage`, `targetfeatures`, `blockmenu_style`, `blocksubmenu_style`, `headermenu_style`, `headersubmenu_style`, `headermenu_properties`, `blockmenu_properties`, `headerbg`, `headerfg`, `blockbg`, `blockfg`, `onhover_headerbg`, `onhover_headerfg`, `onhover_blockbg`, `onhover_blockfg`, `headersubmenufg`, `headersubmenubg`, `onhover_headersubmenufg`, `onhover_headersubmenubg`, `blocksubmenufg`, `blocksubmenubg`, `onhover_blocksubmenufg`, `onhover_blocksubmenubg`) VALUES
 ('default', 'CSS', 'CSS', 1, 'targetfeatures=width=700,height=600,left=50,top=50,scrollbars=yes;', 'menuStyle1', 'menuStyle1', 'corpMenuStyle', 'corpSubmenuStyle', 'menuwidth=\"100%\";', '', '#10377C', '#FFFFFF', '#52565B', '#FFFFFF', '#335EA8', '#FFFFFF', '#145FF5', '#FCFCFC', '#F4F3F7', '#237536', '#FFFFFF', '#237536', '#172BB0', '#BBC9EE', '#FCFCFC', '#145FF5'),
 ('professional', 'Milonic', 'CSS', 1, 'targetfeatures=width=700,height=600,left=50,top=50,scrollbars=yes;', 'menuStyle1', 'menuStyle1', 'corpMenuStyle', 'corpSubmenuStyle', 'menuwidth=\"100%\";', '', '#10377C', '#FFFFFF', '#52565B', '#FFFFFF', '#335EA8', '#FFFFFF', '#145BEB', '#FFFFFF', '#F4F3F7', '#237536', '#FFFFFF', '#237536', '#172BB0', '#BBC9EE', '#FCFCFC', '#145FF5'),
 ('nexpro', 'CSS', 'CSS', 1, 'targetfeatures=width=700,height=600,left=50,top=50,scrollbars=yes;', 'menuStyle1', 'menuStyle1', 'corpMenuStyle', 'corpSubmenuStyle', 'menuwidth=\"100%\";', '', '#10377C', '#FFFFFF', '#FFFFFF', '#335EA8', '#335EA8', '#FFFFFF', '#FFFFFF', '#296DC1', '#335EA8', '#FFFFFF', '#296DC1', '#FFFFFFF', '#FFFFFF', '#10377C', '#FFFFFF', '#335EA8');";
@@ -97,7 +97,7 @@ $_SQL[]= "INSERT INTO {$_TABLES['nxmenu']} VALUES (12, 0, 1, 'block', 20, 'Home'
 $_SQL[]= "INSERT INTO {$_TABLES['nxmenu']} VALUES (2, 0, 3, 'block', 30, 'User Menu', '', '', 13, 1);";
 $_SQL[]= "INSERT INTO {$_TABLES['nxmenu']} VALUES (3, 0, 3, 'block', 40, 'Admin Menu', '', '', 13, 1);";
 $_SQL[]= "INSERT INTO {$_TABLES['nxmenu']} VALUES (4, 0, 4, 'block', 50, 'My Static Pages', '', 'spmenu', 2, 1);";
-$_SQL[]= "INSERT INTO {$_TABLES['nxmenu']} VALUES (6, 0, 1, 'block', 70, 'PortalParts', '', 'http://www.portalparts.com', 2, 1);";
+$_SQL[]= "INSERT INTO {$_TABLES['nxmenu']} VALUES (6, 0, 1, 'block', 70, 'Nextide', '', 'http://www.nextide.ca', 2, 1);";
 $_SQL[]= "INSERT INTO {$_TABLES['nxmenu']} VALUES (7, 0, 1, 'block', 80, 'geeklog.net', '', 'http://www.geeklog.net', 2, 1);";
 $_SQL[]= "INSERT INTO {$_TABLES['nxmenu']} VALUES (8, 2, 4, 'block', 10, 'menuitems', '', 'usermenu', 2, 1);";
 $_SQL[]= "INSERT INTO {$_TABLES['nxmenu']} VALUES (9, 3, 4, 'block', 10, 'menuitems', '', 'adminmenu', 2, 1);";
