@@ -249,7 +249,7 @@ function nexdoc_displayFileListing($template,$cid=0,$reportmode='',$level,$folde
         } else {
             $template->set_var('show_foldername','none');
         }
-        while ( list($fid,$subfolderId,$title,$fname,$date,$version,$submitter,$status,$description,$category,$pid,$changedby_uid) = DB_fetchARRAY($resFiles)) {
+        while ( list($fid,$subfolderId,$title,$fname,$date,$version,$submitter,$status,$description,$category,$pid,$changedby_uid,$fsize) = DB_fetchARRAY($resFiles)) {
             if (!in_array($fid,$files)) {
                 $tags = $tagcloud->get_itemtags($fid);
                 $template->set_var('padding_left',($level * $paddingsize) + $paddingsize );
@@ -1444,7 +1444,7 @@ function nexdoc_getFileListingSQL($cid,$reportmode) {
     }
 
     $sql = "SELECT file.fid as fid,file.cid,file.title,file.fname,file.date,file.version,file.submitter,file.status,";
-    $sql .= "detail.description,category.name,category.pid,status_changedby_uid as changedby_uid ";
+    $sql .= "detail.description,category.name,category.pid,status_changedby_uid as changedby_uid, size ";
     $sql .= "FROM {$_TABLES['nxfile_files']} file ";
     $sql .= "LEFT JOIN {$_TABLES['nxfile_filedetail']} detail ON detail.fid=file.fid ";
     $sql .= "LEFT JOIN {$_TABLES['nxfile_categories']} category ON file.cid=category.cid ";
@@ -1467,7 +1467,7 @@ function nexdoc_getFileListingSQL($cid,$reportmode) {
 
     } elseif ($reportmode == 'incoming') {
         $sql = "SELECT id as fid, 0 as cid, orig_filename as title,  queue_filename as fname, timestamp as date, 0 as version, ";
-        $sql .= "uid as submitter, 0 as status, 'N/A' as description, 'Incoming Files' as name, 0 as pid, 0 as changedby_uid ";
+        $sql .= "uid as submitter, 0 as status, 'N/A' as description, 'Incoming Files' as name, 0 as pid, 0 as changedby_uid, size ";
         $sql .= "FROM {$_TABLES['nxfile_import_queue']} ";
         if (!SEC_inGroup('nexfile Admin')) {
             $sql .= "WHERE uid=$uid ";
@@ -1485,7 +1485,7 @@ function nexdoc_getFileListingSQL($cid,$reportmode) {
     } elseif ($reportmode == 'approvals') {
         // Determine if this user has any submitted files that they can approve
         $sql = "SELECT file.id,file.cid,file.title,file.fname,file.date,file.version,file.submitter,file.status,";
-        $sql .= "file.description,category.name,category.pid,0 as changedby_uid ";
+        $sql .= "file.description,category.name,category.pid,0 as changedby_uid, size ";
         $sql .= "FROM {$_TABLES['nxfile_filesubmissions']} file ";
         $sql .= "LEFT JOIN {$_TABLES['nxfile_categories']} category ON file.cid=category.cid ";
         if (!SEC_inGroup('nexfile Admin')) {
