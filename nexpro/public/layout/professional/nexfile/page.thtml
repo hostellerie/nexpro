@@ -79,7 +79,6 @@
         Dom = YAHOO.util.Dom;
         Event = YAHOO.util.Event;
         Event.onDOMReady(function() {
-            alert('test');
             setTimeout('init_nexfile()',1000);
         });
     }

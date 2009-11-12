@@ -4,7 +4,7 @@
                     <div class="floatleft">
                             <input id="chkfile{fid}" type="checkbox" name="chkfile" value="{fid}" onClick="updateCheckedItems(this)">
                             <span style="padding-left:{padding_left}px;">
-                                <a class="filedetailsdialog" href="{details_link_parms}"><img src="{extension_icon}"></a>
+                                <a href="{download_link}"><img src="{extension_icon}" TITLE="Click to download file - File Size: {filesize}"></a>
                             </span>
                             <span class="filedetailslink">
                                 <a id="listingFilenameRec{fid}" href="{download_link}" TITLE="Click to download file - File Size: {filesize}">{file_name}</a>

@@ -16,6 +16,7 @@
                                 <td><label for="catdesc">Description:</label></td>
                                 <td><textarea id="newcat_desc" name="catdesc" rows="3" style="width:265px;font-size:10pt;"></textarea></td>
                             </tr>
+                            {custom_folder_fields}
                             <tr>
                                 <td><label for="catinherit">Inherit Parent Permissions:</label></td>
                                 <td><input type="checkbox" id="newcat_inherit" name="catinherit" value="1"></td>

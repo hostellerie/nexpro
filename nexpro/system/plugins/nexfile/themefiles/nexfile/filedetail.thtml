@@ -3,7 +3,7 @@
 <table class="plugin" width="100%" border="0" cellspacing="0" cellpadding="2" style="padding-bottom:10px;">
     <tr>
         <td class="aligntop" style="padding:15px 10px 5px 10px;">
-            <div style="padding-bottom:10px;"><img src="{fileicon}">&nbsp;<a id="downloadfilelink" href="{site_url}/nexfile/download.php?op=download&fid={fid}" TITLE="{LANG_DOWNLOAD_MESSAGE}" {disable_download}><b>{fname}</b></a>&nbsp;<span style="font-size:8pt;">{current_version}</span></div>
+            <div style="padding-bottom:10px;"><img src="{fileicon}">&nbsp;<a href="{site_url}/nexfile/index.php?fid={fid}" TITLE="{LANG_LINK_MESSAGE}" {disable_download}><b>{fname}</b></a>&nbsp;<span style="font-size:8pt;">{current_version}</span></div>
             <div class="floatleft" style="width:100px;"><b>{LANG_CAT}:</b></div>
             <div class="floatleft">{catname}</div>
             <div class="clearboth"></div>
