@@ -1,3 +1,9 @@
+Nov 12/2009 (Randy)
+    Updated local YUI to v2.8.0r4.
+
+Nov 11/2009 (Randy)
+    Removed hardcoded urls in nexpro plugin.
+
 Nov 10/2009 (Blaine)
     Fixed a few nexfile bugs that have appeared: Notification report not working, Direct link to file not working if anonymous.
 
