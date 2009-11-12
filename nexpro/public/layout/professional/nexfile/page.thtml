@@ -39,7 +39,7 @@
         // Instantiate and configure Loader:
         var loader = new YAHOO.util.YUILoader({
 
-            base: 'https://ajax.googleapis.com/ajax/libs/yui/2.7.0/build/',
+            base: YUIBaseURL + '/', 
             // Identify the components you want to load.  Loader will automatically identify
             // any additional dependencies required for the specified components.
             require: ["container","layout","resize","connection","dragdrop","menu","button","tabview","autocomplete","treeview","element","cookie","uploader","logger","animation"],
@@ -59,6 +59,11 @@
                     setTimeout('init_nexfile()',1000);
                 });
             },
+            onFailure: function(o) { 
+                  alert("The required javascript libraries could not be loaded.  Please refresh your page and try again."); 
+            },
+
+            allowRollup: true, 
 
             // Configure the Get utility to timeout after 10 seconds for any given node insert
             timeout: 10000,
