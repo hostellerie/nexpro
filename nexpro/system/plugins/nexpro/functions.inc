@@ -55,8 +55,8 @@ function plugin_getHeaderCode_nexpro() {
     global $_CONF, $CONF_NEXPRO;
 
     $code = "\n\n" .'<!-- Begin Nextide nexpro -->' ."\n";
-    $code .= '<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/container/assets/container.css">' . LB;
-    $code .= '<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/2.7.0/build/menu/assets/menu.css">' . LB;
+    $code .= '<link rel="stylesheet" type="text/css" href="'.$CONF_NEXPRO['yui_base_url'].'/container/assets/container.css">' . LB;
+    $code .= '<link type="text/css" rel="stylesheet" href="'.$CONF_NEXPRO['yui_base_url'].'/menu/assets/menu.css">' . LB;
 
     $code .= '<script src="' . $_CONF['site_url'] . '/javascript/nexpro.js" language="JavaScript" type="text/javascript"></script>' . LB;
     if ($CONF_NEXPRO['load_treemenu']) {
