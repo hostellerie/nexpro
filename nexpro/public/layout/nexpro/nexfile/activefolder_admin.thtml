@@ -27,6 +27,7 @@
                                 <td width="100">Description:</td>
                                 <td><textarea name="catdesc" rows="3" style="width:265px;font-size:10pt;">{folder_description}</textarea></td>
                             </tr>
+                            {custom_folder_fields}
                             <tr>
                                 <td colspan="2">
                                     <div style="float:left;width:200px;">Alert me if new files are added</div>

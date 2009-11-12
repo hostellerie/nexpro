@@ -1,5 +1,6 @@
 Nov 12/2009 (Randy)
     Updated local YUI to v2.8.0r4.
+    Updated nexFile themefiles.  Removed test output alert from nexFile when running Local YUI libs.
 
 Nov 11/2009 (Randy)
     Removed hardcoded urls in nexpro plugin.

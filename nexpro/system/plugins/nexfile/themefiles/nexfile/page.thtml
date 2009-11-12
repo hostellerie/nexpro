@@ -1,10 +1,18 @@
 
 <script type="text/javascript">
-    var numGetFileThreads = 5;
+    var pagewidth = 0;             // Integer value: Use 0 for 100% width with auto-resizing of layout, or a fixed width in pixels
+    var leftcolwidth = 250;          // Integer value: initial width in pixels for the left column
+    var numGetFileThreads = 5;       // Max number of concurrent AJAX threads to spawn in the background to retrieve & render record details for subfolders
+
+    // Do not modify any variables below
     var nexfilefolders = '';
     var nexfiledetail = '';
     var folderstack = new Array;  // will contain list of folders being processed by AJAX YAHOO.nexfile.getmorefiledata function
     var fileID;
+    var initialfid = {initialfid};
+    var initialcid = {initialcid};
+    var initialop = '{initialop}';
+    var initialparm = {initialparm};
     var siteurl = '{site_url}';
     var ajax_post_handler_url = '{ajax_server_url}';
     var actionurl_dir = '{actionurl_dir}';
@@ -26,42 +34,54 @@
 <script type="text/javascript" src="{site_url}/javascript/php_serializer.js"></script>
 
 <script type="text/javascript">
-    // Instantiate and configure Loader:
-    var loader = new YAHOO.util.YUILoader({
 
-        base: 'https://ajax.googleapis.com/ajax/libs/yui/2.7.0/build/',
-        // Identify the components you want to load.  Loader will automatically identify
-        // any additional dependencies required for the specified components.
-        require: ["container","layout","resize","connection","dragdrop","menu","button","tabview","autocomplete","treeview","element","cookie","uploader","logger","animation"],
+    if (useYuiLoader == true) {
+        // Instantiate and configure Loader:
+        var loader = new YAHOO.util.YUILoader({
 
-        // Configure loader to pull in optional dependencies.  For example, animation
-        // is an optional dependency for slider.
-        loadOptional: true,
+            base: 'https://ajax.googleapis.com/ajax/libs/yui/2.7.0/build/',
+            // Identify the components you want to load.  Loader will automatically identify
+            // any additional dependencies required for the specified components.
+            require: ["container","layout","resize","connection","dragdrop","menu","button","tabview","autocomplete","treeview","element","cookie","uploader","logger","animation"],
 
-        // The function to call when all script/css resources have been loaded
-        onSuccess: function() {
-            blockui=true;
-            $.blockUI();
-            timeDiff.setStartTime();
-            Dom = YAHOO.util.Dom;
-            Event = YAHOO.util.Event;
-            Event.onDOMReady(function() {
-                setTimeout('init_nexfile()',1000);
-            });
-        },
+            // Configure loader to pull in optional dependencies.  For example, animation
+            // is an optional dependency for slider.
+            loadOptional: true,
 
-        // Configure the Get utility to timeout after 10 seconds for any given node insert
-        timeout: 10000,
+            // The function to call when all script/css resources have been loaded
+            onSuccess: function() {
+                blockui=true;
+                $.blockUI();
+                timeDiff.setStartTime();
+                Dom = YAHOO.util.Dom;
+                Event = YAHOO.util.Event;
+                Event.onDOMReady(function() {
+                    setTimeout('init_nexfile()',1000);
+                });
+            },
 
-        // Combine YUI files into a single request (per file type) by using the Yahoo! CDN combo service.
-        combine: false
-    });
+            // Configure the Get utility to timeout after 10 seconds for any given node insert
+            timeout: 10000,
 
+            // Combine YUI files into a single request (per file type) by using the Yahoo! CDN combo service.
+            combine: false
+        });
 
-    // Load the files using the insert() method. The insert method takes an optional
-    // configuration object, and in this case we have configured everything in
-    // the constructor, so we don't need to pass anything to insert().
-    loader.insert();
+        // Load the files using the insert() method. The insert method takes an optional
+        // configuration object, and in this case we have configured everything in
+        // the constructor, so we don't need to pass anything to insert().
+        loader.insert();
+
+    } else {
+        blockui=true;
+        $.blockUI();
+        timeDiff.setStartTime();
+        Dom = YAHOO.util.Dom;
+        Event = YAHOO.util.Event;
+        Event.onDOMReady(function() {
+            setTimeout('init_nexfile()',1000);
+        });
+    }
 
 </script>
 
