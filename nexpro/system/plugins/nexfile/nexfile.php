@@ -41,7 +41,6 @@ $_FMCONF['pi_url']          = 'http://www.nextide.ca/';
 // Should not need to change this setting but we have made it a define
 // Used to create unique filename when using the upload/replace functionality
 $_FMCONF['upload_prefix_character_count']   =   18;
-$_FMCONF['download_chunk_rate']             =   8192;  //set to 8k download chunks.
 
 /* Should not need to adjust these offset which are used to adjust the left side padding of the filelisting display
  * They have been setup as variables in case a site or theme requires some tweaking
