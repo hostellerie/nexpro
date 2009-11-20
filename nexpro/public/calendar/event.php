@@ -74,13 +74,18 @@ function adduserevent ($eid)
         $cal_template->set_var('lang_event', $LANG_CAL_1[12]);
         $event_title = stripslashes($A['title']);
 
-        if (!empty ($A['url']) && ($A['url'] != 'http://')) {
-            $cal_template->set_var ('event_url', $A['url']);
+        if (!empty($A['url']) && ($A['url'] != 'http://')) {
             $event_title = COM_createLink($event_title, $A['url']);
+            $cal_template->set_var('event_url', $A['url']);
+            $cal_template->set_var('event_begin_anchortag',
+                                   '<a href="' . $A['url'] . '">');
+            $cal_template->set_var('event_end_anchortag', '</a>');
         } else {
-            $cal_template->set_var ('event_url', '');
+            $cal_template->set_var('event_url', '');
+            $cal_template->set_var('event_begin_anchortag', '');
+            $cal_template->set_var('event_end_anchortag', '');
         }
-        $cal_template->set_var ('event_title', $event_title);
+        $cal_template->set_var('event_title', $event_title);
         $cal_template->set_var('lang_starts', $LANG_CAL_1[13]);
         $cal_template->set_var('lang_ends', $LANG_CAL_1[14]);
 
@@ -538,22 +543,30 @@ default:
             $A = DB_fetchArray($result);
             if (SEC_hasAccess($A['owner_id'],$A['group_id'],$A['perm_owner'],
                               $A['perm_group'],$A['perm_members'],$A['perm_anon']) > 0) {
+                $cal_templates->set_var('site_url', $_CONF['site_url']);
+                $cal_templates->set_var('site_admin_url', $_CONF['site_admin_url']);
+                $cal_templates->set_var('layout_url', $_CONF['layout_url']);
+
                 if (strftime('%B',strtotime($A['datestart'])) != $currentmonth) {
                     $str_month = $cal->getMonthName(strftime('%m',strtotime($A['datestart'])));
                     $cal_templates->set_var('lang_month', $str_month);
                     $cal_templates->set_var('event_year', strftime('%Y',strtotime($A['datestart'])));
                     $currentmonth = strftime('%B',strtotime($A['datestart']));
                 }
-                $cal_templates->set_var('event_title', stripslashes($A['title']));
-                $cal_templates->set_var('site_url', $_CONF['site_url']);
-                $cal_templates->set_var('site_admin_url', $_CONF['site_admin_url']);
-                $cal_templates->set_var('layout_url', $_CONF['layout_url']);
+
                 $event_title = stripslashes($A['title']);
                 if (!empty($A['url'])) {
                     $event_title = COM_createLink($event_title, $A['url']);
                     $cal_templates->set_var('event_url', $A['url']);
+                    $cal_templates->set_var('event_begin_anchortag',
+                                            '<a href="' . $A['url'] . '">');
+                    $cal_templates->set_var('event_end_anchortag', '</a>');
+                } else {
+                    $cal_templates->set_var('event_begin_anchortag', '');
+                    $cal_templates->set_var('event_end_anchortag', '');
                 }
                 $cal_templates->set_var('event_title', $event_title);
+
                 if (($_CA_CONF['personalcalendars'] == 1)
                         && !COM_isAnonUser()) {
                     $tmpresult = DB_query("SELECT * FROM {$_TABLES['personal_events']} WHERE eid='{$A['eid']}' AND uid={$_USER['uid']}");

@@ -310,6 +310,8 @@ CREATE TABLE [dbo].[{$_TABLES['stories']}] (
     [postmode] [varchar] (10) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
     [advanced_editor_mode] [tinyint] NOT NULL ,
     [frontpage] [tinyint] NULL ,
+    [meta_description] [varchar] (5000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+    [meta_keywords] [varchar] (5000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
     [owner_id] [int] NOT NULL ,
     [group_id] [int] NOT NULL ,
     [perm_owner] [tinyint] NOT NULL ,
@@ -368,6 +370,8 @@ CREATE TABLE [dbo].[{$_TABLES['topics']}] (
     [tid] [varchar] (20) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL ,
     [topic] [varchar] (48) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
     [imageurl] [varchar] (255) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+    [meta_description] [varchar] (5000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
+    [meta_keywords] [varchar] (5000) COLLATE SQL_Latin1_General_CP1_CI_AS NULL ,
     [sortnum] [smallint] NULL ,
     [limitnews] [smallint] NULL ,
     [is_default] [tinyint] NOT NULL ,
@@ -1236,13 +1240,13 @@ $_SQL[] = "
 set identity_insert {$_TABLES['blocks']} on;
 
 
-INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (1,1,'user_block','gldefault','User Functions','all',2,'','',getdate(),1,'',4,2,3,3,2,2);
-INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (2,1,'admin_block','gldefault','Admins Only','all',1,'','',getdate(),1,'',4,2,3,3,2,2);
-INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (3,1,'section_block','gldefault','Topics','all',0,'','',getdate(),1,'',4,2,3,3,2,2);
-INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (4,1,'whats_new_block','gldefault','What''s New','all',3,'','',getdate(),0,'',4,2,3,3,2,2);
-INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (5,1,'first_block','normal','About Nexpro','homeonly',1,'<ul class=\"homepagelists\">\r\n<li>Integrated Forms Engine and online forms editor</li>\r\n<li>Integrated Workflow Engine and user task console</li>\r\n<li>Advanced Document Managment</li>\r\n<li>Automate workflow of online forms </li>','','0000-00-00 00:00:00',0,'',4,2,3,3,2,2);
-INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (6,1,'whosonline_block','phpblock','Who''s Online','all',0,'','',getdate(),0,'phpblock_whosonline',4,2,3,3,2,2);
-INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (7,1,'older_stories','gldefault','Older Stories','all',5,'','',getdate(),1,'',4,2,3,3,2,2);
+INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (1,1,'user_block','gldefault','User Functions','all',30,'','',getdate(),1,'',4,2,3,3,2,2);
+INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (2,1,'admin_block','gldefault','Admins Only','all',20,'','',getdate(),1,'',4,2,3,3,2,2);
+INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (3,1,'section_block','gldefault','Topics','all',10,'','',getdate(),1,'',4,2,3,3,2,2);
+INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (4,1,'whats_new_block','gldefault','What''s New','all',30,'','',getdate(),0,'',4,2,3,3,2,2);
+INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (5,1,'first_block','normal','About Geeklog','homeonly',20,'<p><b>Welcome to Geeklog!</b></p><p>If you''re already familiar with Geeklog - and especially if you''re not: There have been many improvements to Geeklog since earlier versions that you might want to read up on. Please read the <a href=\"docs/english/changes.html\">release notes</a>. If you need help, please see the <a href=\"docs/english/support.html\">support options</a>.</p>','',getdate(),0,'',4,2,3,3,2,2);
+INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (6,1,'whosonline_block','phpblock','Who''s Online','all',10,'','',getdate(),0,'phpblock_whosonline',4,2,3,3,2,2);
+INSERT INTO {$_TABLES['blocks']} (bid, is_enabled, name, type, title, tid, blockorder, content, rdfurl, rdfupdated, onleft, phpblockfn, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES (7,1,'older_stories','gldefault','Older Stories','all',40,'','',getdate(),1,'',4,2,3,3,2,2);
 
 
 set identity_insert {$_TABLES['blocks']} off;
@@ -1405,14 +1409,14 @@ $_SQL[] = "INSERT INTO {$_TABLES['statuscodes']} (code, name) VALUES (1,'Refresh
 $_SQL[] = "INSERT INTO {$_TABLES['statuscodes']} (code, name) VALUES (0,'Normal')";
 $_SQL[] = "INSERT INTO {$_TABLES['statuscodes']} (code, name) VALUES (10,'Archive')";
 
-$_SQL[] = "INSERT INTO {$_TABLES['stories']} (sid, uid, draft_flag, tid, date, title, introtext, bodytext, hits, numemails, comments, related, featured, commentcode, statuscode, postmode, frontpage, owner_id, group_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('welcome', 2, 0, 'NexPro', '2007-08-26 00:08:34', 'Welcome to Nexpro', '<table width=\"100%\" cellspacing=\"1\" cellpadding=\"1\" border=\"0\">\r    <tbody>\r        <tr>\r            <td valign=\"top\"><img width=\"184\" height=\"210\" src=\"http://demo.nextide.ca/images/library/Image/nexpro%20box.jpg\" alt=\"\" /></td>\r            <td valign=\"top\">\r            The <strong>nexPro</strong> Collaboration Server is&nbsp;a suite of Open Source products designed for work automation and&nbsp;web-based applications. Our extensions and plug-ins provide a secure web-based environment <font size=\"2\">for</font> team based collaboration. Through a full range of administrative options, Collaboration Server can be easily configured to provide a rich and controlled set of capabilities that permissions that can be assigned to site content and features. It creates a destination for all team members to interact while providing real-time visibility to&nbsp;related project and group activities.\r            </td>\r        </tr>\r        <tr>\r            <td colspan=\"2\">&nbsp;&nbsp;&nbsp;\r            <ul>\r                <li><strong>nexPro</strong> Collaboration Server&nbsp;comes pre-integrated with document management, work-flow automation, electronic forms, list and menu administration.</li>\r                <li>There is no charge for a nexPro license but we do require you to select one of our&nbsp;annual support contract that includes software maintenance and updates.</li>\r                <li><strong>nexPro</strong> is a solid platform for creating and operating any web based application.</li>\r                <li>Work automation applications like form approval routing can be created entirely with ''mouse clicks''.&nbsp;</li>\r            </ul>\r            </td>\r        </tr>\r    </tbody>\r</table>\r', '', 100, 1, 0, '', 1, -1, 0, 'html', 1, 2, 3, 3, 2, 2, 2)";
+$_SQL[] = "INSERT INTO {$_TABLES['stories']} (sid, uid, draft_flag, tid, date, title, introtext, bodytext, hits, numemails, comments, related, featured, commentcode, statuscode, postmode, frontpage, owner_id, group_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('welcome',2,0,'Geeklog',getdate(),'Welcome to Geeklog!','<p>Welcome and let me be the first to congratulate you on installing Geeklog. Please take the time to read everything in the <a href=\"docs/english/index.html\">docs directory</a>. Geeklog now has enhanced, user-based security.  You should thoroughly understand how these work before you run a production Geeklog Site.\r\r<p>To log into your new Geeklog site, please use this account:\r<p>Username: <b>Admin</b><br>\rPassword: <b>password</b> <p><b>And don''t forget to <a href=\"usersettings.php\">change your password</a> after logging in!</b>','',100,1,0,'',1,0,0,'html',1,2,3,3,2,2,2)";
 
 $_SQL[] = "INSERT INTO {$_TABLES['storysubmission']} (sid, uid, tid, title, introtext, date, postmode) VALUES ('security-reminder',2,'Geeklog','Are you secure?','<p>This is a reminder to secure your site once you have Geeklog up and running. What you should do:</p>\r\r<ol>\r<li>Change the default password for the Admin account.</li>\r<li>Remove the install directory (you won''t need it any more).</li>\r</ol>',getdate(),'html')";
 
 $_SQL[] = "INSERT INTO {$_TABLES['syndication']} (type, topic, header_tid, format, limits, content_length, title, description, filename, charset, language, is_enabled, updated, update_info) VALUES ('article', '::all', 'all', 'RSS-2.0', 10, 1, 'Geeklog Site', 'Another Nifty Geeklog Site', 'geeklog.rss', 'iso-8859-1', 'en-gb', 1, getdate(), NULL)";
 
-$_SQL[] = "INSERT INTO {$_TABLES['topics']} (tid, topic, imageurl, sortnum, limitnews, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('General','General News','/images/topics/topic_news.gif',1,10,6,2,3,2,2,2)";
-$_SQL[] = "INSERT INTO {$_TABLES['topics']} (tid, topic, imageurl, sortnum, limitnews, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('NexPro','NexPro','/images/topics/topic_nexpro.gif',2,10,6,2,3,2,2,2)";
+$_SQL[] = "INSERT INTO {$_TABLES['topics']} (tid, topic, imageurl, meta_description, meta_keywords, sortnum, limitnews, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('General','General News','/images/topics/topic_news.gif','A topic that contains general news related posts.','News, Post, Information',1,10,6,2,3,2,2,2)";
+$_SQL[] = "INSERT INTO {$_TABLES['topics']} (tid, topic, imageurl, meta_description, meta_keywords, sortnum, limitnews, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('Geeklog','Geeklog','/images/topics/topic_gl.gif','A topic that contains posts about Geeklog.','Geeklog, Posts, Information',2,10,6,2,3,2,2,2)";
 
 $_SQL[] = "INSERT INTO {$_TABLES['usercomment']} (uid, commentmode, commentorder, commentlimit) VALUES (1,'nested','ASC',100)";
 $_SQL[] = "INSERT INTO {$_TABLES['usercomment']} (uid, commentmode, commentorder, commentlimit) VALUES (2,'threaded','ASC',100)";
@@ -1430,7 +1434,7 @@ $_SQL[] = "
 set identity_insert {$_TABLES['users']} on
 
 INSERT INTO {$_TABLES['users']} (uid, username, fullname, passwd, email, homepage, sig, regdate, cookietimeout, theme, status, num_reminders) VALUES (1,'Anonymous','Anonymous','',NULL,NULL,'',getdate(),0,NULL,3,0)
-INSERT INTO {$_TABLES['users']} (uid, username, fullname, passwd, email, homepage, sig, regdate, cookietimeout, theme, status, num_reminders) VALUES (2,'Admin','Nexpro SuperUser','5f4dcc3b5aa765d61d8327deb882cf99','root@localhost','http://www.nextide.ca/','',getdate(),28800,NULL,3,0)
+INSERT INTO {$_TABLES['users']} (uid, username, fullname, passwd, email, homepage, sig, regdate, cookietimeout, theme, status, num_reminders) VALUES (2,'Admin','Geeklog SuperUser','5f4dcc3b5aa765d61d8327deb882cf99','root@localhost','http://www.geeklog.net/','',getdate(),28800,NULL,3,0)
 
 set identity_insert {$_TABLES['users']} off
 ";

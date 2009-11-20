@@ -9,7 +9,7 @@
  * 
  * Licensed under GNU General Public License
  *
- * $Id: russian.php,v 1.3 2009/08/14 00:41:54 blaine.lang Exp $
+ * $Id: russian.php,v 1.4 2008/05/02 15:08:10 dhaun Exp $
  */
 
 global $LANG32;

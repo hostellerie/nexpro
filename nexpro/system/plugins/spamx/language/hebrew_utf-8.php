@@ -9,7 +9,7 @@
  * 
  * Licensed under GNU General Public License
  *
- * $Id: hebrew_utf-8.php,v 1.2 2009/08/14 00:41:53 blaine.lang Exp $
+ * $Id: english.php,v 1.23 2008/04/13 11:59:08 dhaun Exp $
  */
 
 global $LANG32;

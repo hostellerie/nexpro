@@ -8,7 +8,7 @@
 // |                                                                           |
 // | Loads the administration UI and sends input to config.class               |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2007-2008 by the following authors:                         |
+// | Copyright (C) 2007-2009 by the following authors:                         |
 // |                                                                           |
 // | Authors: Aaron Blankstein  - kantai AT gmail DOT com                      |
 // +---------------------------------------------------------------------------+
@@ -63,16 +63,15 @@ function configmanager_select_theme_helper()
     $themes = array();
 
     $themeFiles = COM_getThemes(true);
-    usort($themeFiles,
-          create_function('$a,$b', 'return strcasecmp($a,$b);'));
+    usort($themeFiles, 'strcasecmp');
 
     foreach ($themeFiles as $theme) {
-        $words = explode ('_', $theme);
-        $bwords = array ();
+        $words = explode('_', $theme);
+        $bwords = array();
         foreach ($words as $th) {
-            if ((strtolower ($th{0}) == $th{0}) &&
-                (strtolower ($th{1}) == $th{1})) {
-                $bwords[] = strtoupper ($th{0}) . substr ($th, 1);
+            if ((strtolower($th{0}) == $th{0}) &&
+                (strtolower($th{1}) == $th{1})) {
+                $bwords[] = ucfirst($th);
             } else {
                 $bwords[] = $th;
             }
@@ -82,6 +81,21 @@ function configmanager_select_theme_helper()
     }
 
     return $themes;
+}
+
+/**
+* Helper function: Provide timezone dropdown
+*
+* @return   array   Array of (timezone-long-name, timezone-short-name) pairs
+*
+*/
+function configmanager_select_timezone_helper()
+{
+    global $_CONF;
+
+    require_once $_CONF['path_system'] . 'classes/timezoneconfig.class.php';
+
+    return array_flip(TimeZoneConfig::listAvailableTimeZones());
 }
 
 

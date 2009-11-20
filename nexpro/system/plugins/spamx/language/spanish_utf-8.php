@@ -9,7 +9,7 @@
  * 
  * Licensed under GNU General Public License
  *
- * $Id: spanish_utf-8.php,v 1.2 2009/08/14 00:41:54 blaine.lang Exp $
+ * $Id: spanish_utf-8.php,v 1.4 2008/05/02 15:08:10 dhaun Exp $
  */
 
 global $LANG32;

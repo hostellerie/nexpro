@@ -10,7 +10,7 @@
  * 
  * Licensed under GNU General Public License
  *
- * $Id: estonian.php,v 1.2 2009/08/14 00:41:53 blaine.lang Exp $
+ * $Id: estonian.php,v 1.3 2008/09/13 14:27:58 dhaun Exp $
  */
 
 global $LANG32;

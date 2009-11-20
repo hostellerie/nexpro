@@ -8,7 +8,7 @@
 // |                                                                           |
 // | This file provides helper functions for the automatic plugin install.     |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2008 by the following authors:                              |
+// | Copyright (C) 2008-2009 by the following authors:                         |
 // |                                                                           |
 // | Authors: Dirk Haun         - dirk AT haun-online DOT de                   |
 // +---------------------------------------------------------------------------+
@@ -52,7 +52,7 @@ function plugin_autoinstall_links($pi_name)
         'pi_name'         => $pi_name,
         'pi_display_name' => $pi_display_name,
         'pi_version'      => '2.1.0',
-        'pi_gl_version'   => '1.6.0',
+        'pi_gl_version'   => '1.6.1',
         'pi_homepage'     => 'http://www.geeklog.net/'
     );
 
@@ -138,15 +138,15 @@ function plugin_postinstall_links($pi_name)
     $L_SQL = array();
     $L_SQL[] = "INSERT INTO {$_TABLES['linkcategories']} (cid, pid, category, description, tid, created, modified, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('{$_LI_CONF['root']}', 'root', 'Root', 'Website root', '', NOW(), NOW(), #group#, 2, 3, 3, 2, 2)";
 
-    $L_SQL[] = "INSERT INTO {$_TABLES['linkcategories']} (cid, pid, category, description, tid, created, modified, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('nexpro-sites', '{$_LI_CONF['root']}', 'Nexpro Sites', 'Sites using or related to the Nexpro CMS', NULL, NOW(), NOW(), #group#, 2, 3, 3, 2, 2)";
+    $L_SQL[] = "INSERT INTO {$_TABLES['linkcategories']} (cid, pid, category, description, tid, created, modified, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('geeklog-sites', '{$_LI_CONF['root']}', 'Geeklog Sites', 'Sites using or related to the Geeklog CMS', NULL, NOW(), NOW(), #group#, 2, 3, 3, 2, 2)";
 
-    $L_SQL[] = "INSERT INTO {$_TABLES['links']} (lid, cid, url, description, title, hits, date, owner_id, group_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('nexpro.ca', 'nexpro-sites', 'http://www.nextide.ca/', 'Visit the Nexpro homepage for support, FAQs, updates, add-ons, and a great community.', 'Nexpro Project Homepage', 123, NOW(), 1, #group#, 3, 3, 2, 2);";
+    $L_SQL[] = "INSERT INTO {$_TABLES['links']} (lid, cid, url, description, title, hits, date, owner_id, group_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('geeklog.net', 'geeklog-sites', 'http://www.geeklog.net/', 'Visit the Geeklog homepage for support, FAQs, updates, add-ons, and a great community.', 'Geeklog Project Homepage', 123, NOW(), 1, #group#, 3, 3, 2, 2);";
 
     foreach ($L_SQL as $sql) {
         $sql = str_replace('#group#', $admin_group_id, $sql);
         DB_query($sql, 1);
         if (DB_error()) {
-            COM_error("SQL error in Links plugin postinstall, SQL: " . $sql);
+            COM_errorLog("SQL error in Links plugin postinstall, SQL: " . $sql);
             return false;
         }
     }
@@ -181,6 +181,10 @@ function plugin_compatible_with_this_version_links($pi_name)
     }
 
     if (!function_exists('COM_showMessageText')) {
+        return false;
+    }
+
+    if (!function_exists('SEC_getTokenExpiryNotice')) {
         return false;
     }
 

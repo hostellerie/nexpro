@@ -81,7 +81,7 @@ function contactemail($uid,$author,$authoremail,$subject,$message)
     }
 
     if (!empty($author) && !empty($subject) && !empty($message)) {
-        if (COM_isemail($authoremail)) {
+        if (COM_isemail($authoremail) && (strpos($authoremail, '@') === false)) {
             $result = DB_query("SELECT username,fullname,email FROM {$_TABLES['users']} WHERE uid = $uid");
             $A = DB_fetchArray($result);
 
@@ -290,6 +290,8 @@ function mailstory($sid, $to, $toemail, $from, $fromemail, $shortmsg)
 {
     global $_CONF, $_TABLES, $LANG01, $LANG08;
 
+    require_once $_CONF['path_system'] . 'lib-story.php';
+
     $storyurl = COM_buildUrl($_CONF['site_url'] . '/article.php?story=' . $sid);
     if ($_CONF['url_rewrite']) {
         $retval = COM_refresh($storyurl . '?msg=85');
@@ -314,12 +316,12 @@ function mailstory($sid, $to, $toemail, $from, $fromemail, $shortmsg)
         return $retval;
     }
 
-    $sql = "SELECT uid,title,introtext,bodytext,commentcode,UNIX_TIMESTAMP(date) AS day,postmode FROM {$_TABLES['stories']} WHERE sid = '$sid'" . COM_getTopicSql('AND') . COM_getPermSql('AND');
-    $result = DB_query($sql);
-    if (DB_numRows($result) == 0) {
+    $story = new Story();
+    $result = $story->loadFromDatabase($sid, 'view');
+
+    if ($result != STORY_LOADED_OK) {
         return COM_refresh($_CONF['site_url'] . '/index.php');
     }
-    $A = DB_fetchArray($result);
 
     $shortmsg = COM_stripslashes ($shortmsg);
     $mailtext = sprintf ($LANG08[23], $from, $fromemail) . LB;
@@ -336,25 +338,30 @@ function mailstory($sid, $to, $toemail, $from, $fromemail, $shortmsg)
 
     $mailtext .= '------------------------------------------------------------'
               . LB . LB
-              . COM_undoSpecialChars (stripslashes ($A['title'])) . LB
-              . strftime ($_CONF['date'], $A['day']) . LB;
+              . COM_undoSpecialChars($story->displayElements('title')) . LB
+              . strftime ($_CONF['date'], $story->DisplayElements('unixdate')) . LB;
 
     if ($_CONF['contributedbyline'] == 1) {
-        $author = COM_getDisplayName ($A['uid']);
+        $author = COM_getDisplayName($story->displayElements('uid'));
         $mailtext .= $LANG01[1] . ' ' . $author . LB;
     }
-    if ($A['postmode'] === 'wikitext') {
-        $mailtext .= LB
-            . COM_undoSpecialChars(stripslashes(strip_tags(COM_renderWikiText($A['introtext'])))).LB.LB
-            . COM_undoSpecialChars(stripslashes(strip_tags(COM_renderWikiText($A['bodytext'])))).LB.LB
-            . '------------------------------------------------------------'.LB;
-    } else {
-        $mailtext .= LB
-            . COM_undoSpecialChars(stripslashes(strip_tags($A['introtext']))).LB.LB
-            . COM_undoSpecialChars(stripslashes(strip_tags($A['bodytext']))).LB.LB
-            . '------------------------------------------------------------'.LB;
+
+    $introtext = $story->DisplayElements('introtext');
+    $bodytext  = $story->DisplayElements('bodytext');
+    $introtext = COM_undoSpecialChars(strip_tags($introtext));
+    $bodytext  = COM_undoSpecialChars(strip_tags($bodytext));
+
+    $introtext = str_replace(array("\012\015", "\015"), LB, $introtext);
+    $bodytext  = str_replace(array("\012\015", "\015"), LB, $bodytext);
+
+    $mailtext .= LB . $introtext;
+    if (! empty($bodytext)) {
+        $mailtext .= LB . LB . $bodytext;
     }
-    if ($A['commentcode'] == 0) { // comments allowed
+    $mailtext .= LB . LB 
+        . '------------------------------------------------------------' . LB;
+
+    if ($story->DisplayElements('commentcode') == 0) { // comments allowed
         $mailtext .= $LANG08[24] . LB
                   . COM_buildUrl ($_CONF['site_url'] . '/article.php?story='
                                   . $sid . '#comments');
@@ -364,11 +371,19 @@ function mailstory($sid, $to, $toemail, $from, $fromemail, $shortmsg)
                                   . $sid);
     }
 
-    $mailto = COM_formatEmailAddress ($to, $toemail);
-    $mailfrom = COM_formatEmailAddress ($from, $fromemail);
-    $subject = COM_undoSpecialChars(strip_tags(stripslashes('Re: '.$A['title'])));
+    $mailto = COM_formatEmailAddress($to, $toemail);
+    $mailfrom = COM_formatEmailAddress($from, $fromemail);
+    $subject = 'Re: ' . COM_undoSpecialChars(strip_tags($story->DisplayElements('title')));
 
-    $sent = COM_mail ($mailto, $subject, $mailtext, $mailfrom);
+    $sent = COM_mail($mailto, $subject, $mailtext, $mailfrom);
+
+    if ($sent && isset($_POST['cc']) && ($_POST['cc'] == 'on')) {
+        $ccmessage = sprintf($LANG08[38], $to);
+        $ccmessage .= "\n------------------------------------------------------------\n\n" . $mailtext;
+
+        $sent = COM_mail($mailfrom, $subject, $ccmessage, $mailfrom);
+    }
+
     COM_updateSpeedlimit ('mail');
 
     // Increment numemails counter for story
@@ -395,6 +410,8 @@ function mailstoryform ($sid, $to = '', $toemail = '', $from = '',
 {
     global $_CONF, $_TABLES, $_USER, $LANG08, $LANG_LOGIN;
 
+    require_once $_CONF['path_system'] . 'lib-story.php';
+
     $retval = '';
 
     if (COM_isAnonUser() && (($_CONF['loginrequired'] == 1) ||
@@ -417,9 +434,10 @@ function mailstoryform ($sid, $to = '', $toemail = '', $from = '',
         return $retval;
     }
 
-    $result = DB_query("SELECT COUNT(*) AS count FROM {$_TABLES['stories']} WHERE sid = '$sid'" . COM_getTopicSql('AND') . COM_getPermSql('AND'));
-    $A = DB_fetchArray($result);
-    if ($A['count'] == 0) {
+    $story = new Story();
+    $result = $story->loadFromDatabase($sid, 'view');
+
+    if ($result != STORY_LOADED_OK) {
         return COM_refresh($_CONF['site_url'] . '/index.php');
     }
 
@@ -438,11 +456,18 @@ function mailstoryform ($sid, $to = '', $toemail = '', $from = '',
 
     $mail_template = new Template($_CONF['path_layout'] . 'profiles');
     $mail_template->set_file('form', 'contactauthorform.thtml');
-    $mail_template->set_var( 'xhtml', XHTML );
+    $mail_template->set_var('xhtml', XHTML);
     $mail_template->set_var('site_url', $_CONF['site_url']);
     $mail_template->set_var('site_admin_url', $_CONF['site_admin_url']);
     $mail_template->set_var('layout_url', $_CONF['layout_url']);
-    $mail_template->set_var('start_block_mailstory2friend', COM_startBlock($LANG08[17]));
+    $mail_template->set_var('start_block_mailstory2friend',
+                            COM_startBlock($LANG08[17]));
+    $mail_template->set_var('lang_title', $LANG08[31]);
+    $mail_template->set_var('story_title', $story->displayElements('title'));
+    $url = COM_buildUrl($_CONF['site_url'] . '/article.php?story=' . $sid);
+    $mail_template->set_var('story_url', $url);
+    $link = COM_createLink($story->displayElements('title'), $url);
+    $mail_template->set_var('story_link', $link);
     $mail_template->set_var('lang_fromname', $LANG08[20]);
     $mail_template->set_var('name', $from);
     $mail_template->set_var('lang_fromemailaddress', $LANG08[21]);
@@ -451,13 +476,15 @@ function mailstoryform ($sid, $to = '', $toemail = '', $from = '',
     $mail_template->set_var('toname', $to);
     $mail_template->set_var('lang_toemailaddress', $LANG08[19]);
     $mail_template->set_var('toemail', $toemail);
+    $mail_template->set_var('lang_cc', $LANG08[36]);
+    $mail_template->set_var('lang_cc_description', $LANG08[37]);
     $mail_template->set_var('lang_shortmessage', $LANG08[27]);
     $mail_template->set_var('shortmsg', htmlspecialchars($shortmsg));
     $mail_template->set_var('lang_warning', $LANG08[22]);
     $mail_template->set_var('lang_sendmessage', $LANG08[16]);
     $mail_template->set_var('story_id',$sid);
-    PLG_templateSetVars ('emailstory', $mail_template);
     $mail_template->set_var('end_block', COM_endBlock());
+    PLG_templateSetVars('emailstory', $mail_template);
     $mail_template->parse('output', 'form');
     $retval .= $mail_template->finish($mail_template->get_var('output'));
 
@@ -503,36 +530,45 @@ switch ($what) {
         break;
 
     case 'sendstory':
-        $sid = COM_applyFilter ($_POST['sid']);
-        if (empty ($sid)) {
-            $display = COM_refresh ($_CONF['site_url'] . '/index.php');
+        $sid = COM_applyFilter($_POST['sid']);
+        if (empty($sid)) {
+            $display = COM_refresh($_CONF['site_url'] . '/index.php');
         } else {
-            if (empty ($_POST['toemail']) || empty ($_POST['fromemail'])
-                    || !COM_isEmail ($_POST['toemail'])
-                    || !COM_isEmail ($_POST['fromemail'])) {
+            if (empty($_POST['toemail']) || empty($_POST['fromemail']) ||
+                    !COM_isEmail($_POST['toemail']) ||
+                    !COM_isEmail($_POST['fromemail']) ||
+                    (strpos($_POST['to'], '@') !== false) ||
+                    (strpos($_POST['from'], '@') !== false)) {
+                $display .= COM_siteHeader('menu', $LANG08[17])
+                         . mailstoryform ($sid, COM_applyFilter($_POST['to']),
+                                COM_applyFilter($_POST['toemail']),
+                                COM_applyFilter($_POST['from']),
+                                COM_applyFilter($_POST['fromemail']),
+                                $_POST['shortmsg'], 52)
+                         . COM_siteFooter();
+            } else if (empty($_POST['to']) || empty($_POST['from']) ||
+                    empty($_POST['shortmsg'])) {
                 $display .= COM_siteHeader ('menu', $LANG08[17])
-                         . mailstoryform ($sid, COM_applyFilter($_POST['to']), COM_applyFilter($_POST['toemail']),
-                                          COM_applyFilter($_POST['from']), COM_applyFilter($_POST['fromemail']),
-                                          $_POST['shortmsg'], 52)
-                         . COM_siteFooter ();
-            } else if (empty ($_POST['to']) || empty ($_POST['from']) ||
-                    empty ($_POST['shortmsg'])) {
-                $display .= COM_siteHeader ('menu', $LANG08[17])
-                         . mailstoryform ($sid, COM_applyFilter($_POST['to']), COM_applyFilter($_POST['toemail']),
-                                          COM_applyFilter($_POST['from']), COM_applyFilter($_POST['fromemail']),
-                                          $_POST['shortmsg'])
-                         . COM_siteFooter ();
+                         . COM_showMessageText($LANG08[22])
+                         . mailstoryform($sid, COM_applyFilter($_POST['to']),
+                                COM_applyFilter($_POST['toemail']),
+                                COM_applyFilter($_POST['from']),
+                                COM_applyFilter($_POST['fromemail']),
+                                $_POST['shortmsg'])
+                         . COM_siteFooter();
             } else {
-                $msg = PLG_itemPreSave ('emailstory', $_POST['shortmsg']);
-                if (!empty ($msg)) {
-                    $display .= COM_siteHeader ('menu', '')
-                             . COM_errorLog ($msg, 2)
-                             . mailstoryform ($sid, COM_applyFilter($_POST['to']), COM_applyFilter($_POST['toemail']),
-                                              COM_applyFilter($_POST['from']), COM_applyFilter($_POST['fromemail']),
-                                              $_POST['shortmsg'])
-                             . COM_siteFooter ();
+                $msg = PLG_itemPreSave('emailstory', $_POST['shortmsg']);
+                if (!empty($msg)) {
+                    $display .= COM_siteHeader('menu', $LANG08[17])
+                             . COM_errorLog($msg, 2)
+                             . mailstoryform($sid, COM_applyFilter($_POST['to']),
+                                COM_applyFilter($_POST['toemail']),
+                                COM_applyFilter($_POST['from']),
+                                COM_applyFilter($_POST['fromemail']),
+                                $_POST['shortmsg'])
+                             . COM_siteFooter();
                 } else {
-                    $display .= mailstory ($sid, $_POST['to'], $_POST['toemail'],
+                    $display .= mailstory($sid, $_POST['to'], $_POST['toemail'],
                         $_POST['from'], $_POST['fromemail'], $_POST['shortmsg']);
                 }
             }

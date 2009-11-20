@@ -30,7 +30,7 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 //
-// $Id: switchlang.php,v 1.7 2009/08/14 00:30:25 blaine.lang Exp $
+// $Id: switchlang.php,v 1.4 2008/09/14 09:17:41 dhaun Exp $
 
 require_once 'lib-common.php';
 

@@ -493,6 +493,10 @@ select {
   margin:0px;padding:0px;
 }
 
+.configmenu div {
+  padding: 2px 0px 0px 5px;
+}
+
 /* Comments *******************************************************************/
 .commentbar-line1 {
   background:transparent;
@@ -523,6 +527,14 @@ select {
   font-weight:bold;
   font-size:smaller;
   padding:3px 0px 3px 10px;
+}
+.comment-edit {
+  font-style: italic;
+  padding-top:1ex;
+}
+.comment-sig {
+  color:#666666;
+  padding-top:1ex;
 }
 /******************************************************************************/
 .edit-perm-down {
@@ -742,6 +754,9 @@ select {
   color:#000000;
   text-align:right;
 }
+.searchresult-byline {
+  color:green;
+}
 .site-slogan {
   color:#ffffff;
   background:transparent;
@@ -861,6 +876,14 @@ select {
  background: url(images/shadow-bottom-right.png);
 }
 /******************************************************************************/
+#token-expirynotice {
+  padding:1em;
+  border:1px solid #CCCCCC;
+  background:#F7F7F7;
+}
+#token-expirytime {
+  font-weight:bold;
+}
 
 
 .topicoption a:link {
@@ -882,6 +905,8 @@ select {
   background-color:#145FF5;
   color:#FFFFFF;
   text-decoration:none;
+}
+.topicoption-off {
 }
 
 

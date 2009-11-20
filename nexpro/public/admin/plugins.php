@@ -125,7 +125,7 @@ function plugineditor($pi_name, $confirmed = 0)
     }
     $plugin_code_version = PLG_chkVersion($pi_name);
     if (empty($plugin_code_version)) {
-        $code_version = 'N/A';
+        $code_version = $LANG_ADMIN['na'];
     } else {
         $code_version = $plugin_code_version;
     }
@@ -359,26 +359,29 @@ function do_update($pi_name)
 
     $retval = '';
 
-    if (strlen($pi_name) == 0) {
-        $retval .= COM_showMessageText($LANG32[12], $LANG32[13]);
-
-        return $retval;
-    }
-
-    $result = PLG_upgrade($pi_name);
-    if ($result > 0 ) {
-        if ($result === TRUE) { // Catch returns that are just true/false
-            PLG_pluginStateChange($pi_name, 'upgraded');
-            $retval .= COM_refresh($_CONF['site_admin_url']
-                    . '/plugins.php?msg=60');
-        } else {  // Plugin returned a message number
-            $retval = COM_refresh($_CONF['site_admin_url']
-                    . '/plugins.php?msg=' . $result . '&amp;plugin='
-                    . $pi_name);
+    if (! empty($pi_name)) {
+        $result = PLG_upgrade($pi_name);
+        if ($result > 0) {
+            if ($result === TRUE) { // Catch returns that are just true/false
+                PLG_pluginStateChange($pi_name, 'upgraded');
+                $retval = COM_refresh($_CONF['site_admin_url']
+                        . '/plugins.php?msg=60');
+            } else {    // Plugin returned a message number
+                $retval = COM_refresh($_CONF['site_admin_url']
+                        . '/plugins.php?msg=' . $result . '&amp;plugin='
+                        . $pi_name);
+            }
+            return $retval;
+        } else {  // Plugin function returned a false
+            $retval = COM_showMessage(95);
         }
-    } else {  // Plugin function returned a false
-        $retval .= COM_showMessage(95);
+    } else { // no plugin name given
+        $retval = COM_showMessageText($LANG32[12], $LANG32[13]);
     }
+
+    $retval = COM_siteHeader('menu', $LANG32[13])
+            . $retval
+            . COM_siteFooter();
 
     return $retval;
 }
@@ -1033,21 +1036,20 @@ function plugin_do_autoinstall($plugin, $inst_parms, $verbose = true)
     // Add plugin's Admin group to the Root user group
     // (assumes that the Root group's ID is always 1)
     if (count($groups) > 0) {
-      if ($verbose) {
-        COM_errorLog("Attempting to give all users in the Root group access to the '$plugin' Admin group", 1);
-      }
-
-      foreach($groups as $key=>$value){
-        DB_query("INSERT INTO {$_TABLES['group_assignments']} VALUES "
-                     . "($value, NULL, 1)");
-        if (DB_error()) {
-          COM_errorLog('Error adding plugin admin group to Root group', 1);
-          PLG_uninstall($plugin);
-          return false;
+        if ($verbose) {
+            COM_errorLog("Attempting to give all users in the Root group access to the '$plugin' Admin group", 1);
         }
-      }
-    }
 
+        foreach($groups as $key=>$value){
+            DB_query("INSERT INTO {$_TABLES['group_assignments']} VALUES "
+             . "($value, NULL, 1)");
+            if (DB_error()) {
+                COM_errorLog('Error adding plugin admin group to Root group', 1);
+                PLG_uninstall($plugin);
+                return false;
+            }
+        }
+    }
 
     // Pre-populate tables or run any other SQL queries
     if (count($DEFVALUES) > 0) {
@@ -1164,17 +1166,23 @@ function plugin_get_pluginname($plugin)
 
 // MAIN
 $display = '';
-if (isset($_POST['pluginenabler']) && SEC_checkToken()) {
-    if (isset($_POST['enabledplugins'])) {
-        changePluginStatus($_POST['enabledplugins']);
-    } else {
-        changePluginStatus(array());
-    }
+if (isset($_POST['pluginenabler'])) { // JavaScript-triggered POST request
+    if (isset($_POST['updatethisplugin'])) {
+        // translate into a standard update request (see below)
+        $_POST['mode'] = $LANG32[34];
+        $_POST['pi_name'] = $_POST['updatethisplugin'];
+    } elseif (SEC_checkToken()) {
+        if (isset($_POST['enabledplugins'])) {
+            changePluginStatus($_POST['enabledplugins']);
+        } else {
+            changePluginStatus(array());
+        }
 
-    // force a refresh so that the information of the plugin that was just
-    // enabled / disabled (menu entries, etc.) is displayed properly
-    header('Location: ' . $_CONF['site_admin_url'] . '/plugins.php');
-    exit;
+        // force a refresh so that the information of the plugin that was just
+        // enabled / disabled (menu entries, etc.) is displayed properly
+        header('Location: ' . $_CONF['site_admin_url'] . '/plugins.php');
+        exit;
+    }
 }
 
 $mode = '';
@@ -1211,9 +1219,7 @@ if (($mode == $LANG_ADMIN['delete']) && !empty($LANG_ADMIN['delete'])) {
 
 } elseif ((($mode == $LANG32[34]) && !empty($LANG32[34])) && SEC_checkToken()) { // update
     $pi_name = COM_applyFilter($_POST['pi_name']);
-    $display .= COM_siteHeader('menu', $LANG32[13]);
     $display .= do_update($pi_name);
-    $display .= COM_siteFooter();
 
 } elseif ($mode == 'edit') {
     $display .= COM_siteHeader('menu', $LANG32[13]);

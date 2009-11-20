@@ -51,6 +51,9 @@ function install_config()
     $c->add('site_disabled_msg','Geeklog Site is down. Please come back soon.','text',0,0,NULL,510,TRUE);
     $c->add('copyrightyear',date('Y'),'text',0,0,NULL,1440,FALSE);
     $c->add('url_rewrite',FALSE,'select',0,0,1,1800,TRUE);
+    $c->add('meta_tags',0,'select',0,0,23,2000,TRUE);
+    $c->add('meta_description','Geeklog, the open source content management system designed with security in mind.','text',0,0,NULL,2010,TRUE);
+    $c->add('meta_keywords','Geeklog, Blog, Content Management System, CMS, Open Source, Security','text',0,0,NULL,2020,TRUE);
 
     $c->add('fs_mail', NULL, 'fieldset', 0, 1, NULL, 0, TRUE);
     $c->add('site_mail','','text',0,1,NULL,40,TRUE);
@@ -229,6 +232,7 @@ function install_config()
     $c->add('comment_edit',0,'select',4,21,0,1680,TRUE);
     $c->add('commentsubmission',0,'select',4,21,0, 1682, TRUE);
     $c->add('comment_edittime',1800,'text',4,21,NULL,1684,TRUE);
+    $c->add('article_comment_close_enabled',0,'select',4,21,0, 1685, TRUE);
     $c->add('article_comment_close_days',30,'text',4,21,NULL,1686,TRUE);
     $c->add('comment_close_rec_stories',0,'text',4,21,NULL,1688,TRUE);
     $c->add('allow_reply_notifications',0,'select',4,21,0, 1689, TRUE);
@@ -288,7 +292,7 @@ function install_config()
     $c->add('thousand_separator',",",'text',6,29,NULL,440,TRUE);
     $c->add('decimal_separator',".",'text',6,29,NULL,450,TRUE);
     $c->add('decimal_count',"2",'text',6,29,NULL,460,TRUE);
-    $c->add('timezone','Etc/GMT-6','text',6,29,NULL,490,FALSE);
+    $c->add('timezone','UTC','select',6,29,NULL,490,FALSE);
 
     // Subgroup: Miscellaneous
     $c->add('sg_misc', NULL, 'subgroup', 7, 0, NULL, 0, TRUE);

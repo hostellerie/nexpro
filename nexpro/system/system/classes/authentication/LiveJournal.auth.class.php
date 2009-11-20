@@ -29,7 +29,7 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 //
-// $Id: LiveJournal.auth.class.php,v 1.7 2009/08/14 00:44:30 blaine.lang Exp $
+// $Id: LiveJournal.auth.class.php,v 1.4 2007/05/26 14:19:04 dhaun Exp $
 
 // PEAR class to handle XML-RPC
 require_once ('XML/RPC.php');

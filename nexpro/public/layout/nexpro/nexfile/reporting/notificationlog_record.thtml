@@ -1,0 +1,9 @@
+           <tr class="pluginRow{cssid}">
+                <td>{notification_date}</td>
+                <td>{notification_type}</td>
+                <td><a href="{site_url}/users.php?mode=profile&uid={submitter_uid}">{submitter_name}</a></td>
+                <td>{file_name}</td>
+                <td><a href="{site_url}/nexfile/index.php?cid={cid}">{folder_name}</a></td>
+            </tr>
+
+

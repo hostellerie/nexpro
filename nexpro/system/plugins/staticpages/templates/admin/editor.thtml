@@ -40,10 +40,19 @@
             <td>{example_url}</td>
           </tr>
           <tr>
+              <td valign="top" align="right">{lang_metadescription}:</td>
+            <td><textarea name="meta_description" style="width:100%" rows="2">{meta_description}</textarea></td>
+          </tr>
+          <tr>
+            <td valign="top" align="right">{lang_metakeywords}:</td>
+            <td><textarea name="meta_keywords" style="width:100%" rows="2">{meta_keywords}</textarea></td>
+          </tr>              
+          <tr>
               <td valign="top" align="right">{lang_content}:</td>
               <td>
                   <textarea name="sp_content" style="width:100%" cols="45" rows="24">{sp_content}</textarea>
-                  <br{xhtml}><span class="warningsmall">{lang_allowedhtml}</span><br{xhtml}><br{xhtml}>
+                  <br{xhtml}>
+                  {lang_allowed_html}
               </td>
           </tr>
           <tr>
@@ -53,6 +62,10 @@
           <tr>
               <td align="right">{lang_lastupdated}:</td>
               <td>{sp_formateddate}</td>
+          </tr>
+          <tr>
+              <td align="right">{lang_hits}:</td>
+              <td><input type="hidden" name="sp_hits" value="{sp_hits}"{xhtml}>{sp_hits_formatted}</td>
           </tr>
           <tr>
               <td colspan="2"><hr{xhtml}></td>
@@ -117,13 +130,6 @@
           </tr>
           <tr>
               <td colspan="2">{lang_permissions_msg}</td>
-          </tr>
-          <tr>
-              <td colspan="2"><hr{xhtml}></td>
-          </tr>
-          <tr>
-              <td align="right">{lang_hits}:</td>
-              <td><input type="hidden" name="sp_hits" value="{sp_hits}"{xhtml}>{sp_hits_formatted}</td>
           </tr>
           <tr><td>&nbsp;</td></tr>
           <tr>

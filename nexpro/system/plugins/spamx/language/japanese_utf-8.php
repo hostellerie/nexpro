@@ -14,7 +14,7 @@
  * 
  * Licensed under GNU General Public License
  *
- * $Id: japanese_utf-8.php,v 1.3 2009/08/14 00:41:54 blaine.lang Exp $
+ * $Id: japanese_utf-8.php,v 1.14 2008/09/09 18:26:18 dhaun Exp $
  */
 
 global $LANG32;
@@ -163,7 +163,7 @@ $LANG_fs['spamx'] = array(
 // Note: entries 0, 1, 9, and 12 are the same as in $LANG_configselects['Core']
 $LANG_configselects['spamx'] = array(
     0 => array('はい' => 1, 'いいえ' => 0),
-    1 => array('はい' => TRUE, 'いいえ' => FALSE)
+    1 => array('はい' => true, 'いいえ' => false)
 );
 
 ?>

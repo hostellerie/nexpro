@@ -625,62 +625,70 @@ function ADMIN_getListField_blocks($fieldname, $fieldvalue, $A, $icon_arr, $toke
 
     $retval = false;
 
-    $access = SEC_hasAccess($A['owner_id'],$A['group_id'],$A['perm_owner'],$A['perm_group'],$A['perm_members'],$A['perm_anon']);
+    $access = SEC_hasAccess($A['owner_id'], $A['group_id'], $A['perm_owner'],
+                    $A['perm_group'], $A['perm_members'], $A['perm_anon']);
 
-    if (($access > 0) && (hasBlockTopicAccess ($A['tid']) > 0)) {
-        switch($fieldname) {
-            case 'edit':
-                if ($access == 3) {
-                    $retval = COM_createLink($icon_arr['edit'],
-                        "{$_CONF['site_admin_url']}/block.php?mode=edit&amp;bid={$A['bid']}");
+    if (($access > 0) && (hasBlockTopicAccess($A['tid']) > 0)) {
+        switch ($fieldname) {
+        case 'edit':
+            if ($access == 3) {
+                $retval = COM_createLink($icon_arr['edit'],
+                    "{$_CONF['site_admin_url']}/block.php?mode=edit&amp;bid={$A['bid']}");
+            }
+            break;
+
+        case 'title':
+            $retval = stripslashes($A['title']);
+            if (empty($retval)) {
+                $retval = '(' . $A['name'] . ')';
+            }
+            break;
+
+        case 'blockorder':
+            $retval .= $A['blockorder'];
+            break;
+
+        case 'is_enabled':
+            if ($access == 3) {
+                if ($A['is_enabled'] == 1) {
+                    $switch = ' checked="checked"';
+                } else {
+                    $switch = '';
                 }
-                break;
-            case 'title':
-                $retval = stripslashes ($A['title']);
-                if (empty ($retval)) {
-                    $retval = '(' . $A['name'] . ')';
+                $retval = "<input type=\"checkbox\" name=\"enabledblocks[{$A['bid']}]\" "
+                    . "onclick=\"submit()\" value=\"{$A['onleft']}\"$switch" . XHTML . ">";
+                $retval .= "<input type=\"hidden\" name=\"" . CSRF_TOKEN . "\" value=\"{$token}\"" . XHTML . ">";
+            }
+            break;
+
+        case 'move':
+            if ($access == 3) {
+                if ($A['onleft'] == 1) {
+                    $side = $LANG21[40];
+                    $blockcontrol_image = 'block-right.' . $_IMAGE_TYPE;
+                    $moveTitleMsg = $LANG21[59];
+                    $switchside = '1';
+                } else {
+                    $blockcontrol_image = 'block-left.' . $_IMAGE_TYPE;
+                    $moveTitleMsg = $LANG21[60];
+                    $switchside = '0';
                 }
-                break;
-            case 'blockorder':
-                $retval .= $A['blockorder'];
-                break;
-            case 'is_enabled':
-                if ($access == 3) {
-                    if ($A['is_enabled'] == 1) {
-                        $switch = ' checked="checked"';
-                    } else {
-                        $switch = '';
-                    }
-                    $retval = "<input type=\"checkbox\" name=\"enabledblocks[{$A['bid']}]\" "
-                        . "onclick=\"submit()\" value=\"{$A['onleft']}\"$switch" . XHTML . ">";
-                    $retval .= "<input type=\"hidden\" name=\"" . CSRF_TOKEN . "\" value=\"{$token}\"" . XHTML . ">";
-                }
-                break;
-            case 'move':
-                if ($access == 3) {
-                    if ($A['onleft'] == 1) {
-                        $side = $LANG21[40];
-                        $blockcontrol_image = 'block-right.' . $_IMAGE_TYPE;
-                        $moveTitleMsg = $LANG21[59];
-                        $switchside = '1';
-                    } else {
-                        $blockcontrol_image = 'block-left.' . $_IMAGE_TYPE;
-                        $moveTitleMsg = $LANG21[60];
-                        $switchside = '0';
-                    }
-                    $retval.="<img src=\"{$_CONF['layout_url']}/images/admin/$blockcontrol_image\" width=\"45\" height=\"20\" usemap=\"#arrow{$A['bid']}\" alt=\"\"" . XHTML . ">"
-                            ."<map id=\"arrow{$A['bid']}\" name=\"arrow{$A['bid']}\">"
-                            ."<area coords=\"0,0,12,20\"  title=\"{$LANG21[58]}\" href=\"{$_CONF['site_admin_url']}/block.php?mode=move&amp;bid={$A['bid']}&amp;where=up&amp;".CSRF_TOKEN."={$token}\" alt=\"{$LANG21[58]}\"" . XHTML . ">"
-                            ."<area coords=\"13,0,29,20\" title=\"$moveTitleMsg\" href=\"{$_CONF['site_admin_url']}/block.php?mode=move&amp;bid={$A['bid']}&amp;where=$switchside&amp;".CSRF_TOKEN."={$token}\" alt=\"$moveTitleMsg\"" . XHTML . ">"
-                            ."<area coords=\"30,0,43,20\" title=\"{$LANG21[57]}\" href=\"{$_CONF['site_admin_url']}/block.php?mode=move&amp;bid={$A['bid']}&amp;where=dn&amp;".CSRF_TOKEN."={$token}\" alt=\"{$LANG21[57]}\"" . XHTML . ">"
-                            ."</map>";
-                }
-                break;
-            default:
-                $retval = $fieldvalue;
-                break;
+                $csrftoken = '&amp;' . CSRF_TOKEN . '=' . $token;
+                $retval.="<img src=\"{$_CONF['layout_url']}/images/admin/$blockcontrol_image\" width=\"45\" height=\"20\" usemap=\"#arrow{$A['bid']}\" alt=\"\"" . XHTML . ">"
+                        ."<map id=\"arrow{$A['bid']}\" name=\"arrow{$A['bid']}\">"
+                        ."<area coords=\"0,0,12,20\"  title=\"{$LANG21[58]}\" href=\"{$_CONF['site_admin_url']}/block.php?mode=move&amp;bid={$A['bid']}&amp;where=up{$csrftoken}\" alt=\"{$LANG21[58]}\"" . XHTML . ">"
+                        ."<area coords=\"13,0,29,20\" title=\"$moveTitleMsg\" href=\"{$_CONF['site_admin_url']}/block.php?mode=move&amp;bid={$A['bid']}&amp;where=$switchside{$csrftoken}\" alt=\"$moveTitleMsg\"" . XHTML . ">"
+                        ."<area coords=\"30,0,43,20\" title=\"{$LANG21[57]}\" href=\"{$_CONF['site_admin_url']}/block.php?mode=move&amp;bid={$A['bid']}&amp;where=dn${csrftoken}\" alt=\"{$LANG21[57]}\"" . XHTML . ">"
+                        ."</map>";
+            }
+            break;
+
+        default:
+            $retval = $fieldvalue;
+            break;
         }
     }
+
     return $retval;
 }
 
@@ -819,7 +827,7 @@ function ADMIN_getListField_users($fieldname, $fieldvalue, $A, $icon_arr)
         case 'online_days':
             if ($fieldvalue < 0){
                 // users that never logged in, would have a negative online days
-                $retval = "N/A";
+                $retval = $LANG_ADMIN['na'];
             } else {
                 $retval = $fieldvalue;
             }
@@ -860,7 +868,7 @@ function ADMIN_getListField_stories($fieldname, $fieldvalue, $A, $icon_arr)
 {
     global $_CONF, $_TABLES, $LANG_ADMIN, $LANG24, $LANG_ACCESS, $_IMAGE_TYPE;
 
-    static $topics, $topic_access;
+    static $topics, $topic_access, $topic_anon;
 
     if (!isset($topics)) {
         $topics = array();
@@ -934,10 +942,15 @@ function ADMIN_getListField_stories($fieldname, $fieldvalue, $A, $icon_arr)
         break;
 
     case 'ping':
-        $pingico = '<img src="' . $_CONF['layout_url'] . '/images/sendping.'
-                 . $_IMAGE_TYPE . '" alt="' . $LANG24[21] . '" title="'
-                 . $LANG24[21] . '"' . XHTML . '>';
-        if (($A['draft_flag'] == 0) && ($A['unixdate'] < time())) {
+        if (!isset($topic_anon[$A['tid']])) {
+            $topic_anon[$A['tid']] = DB_getItem($_TABLES['topics'], 'perm_anon',
+                "tid = '" . addslashes($A['tid']) . "'");
+        }
+        if (($A['draft_flag'] == 0) && ($A['unixdate'] < time()) &&
+                ($A['perm_anon'] != 0) && ($topic_anon[$A['tid']] != 0)) {
+            $pingico = '<img src="' . $_CONF['layout_url'] . '/images/sendping.'
+                     . $_IMAGE_TYPE . '" alt="' . $LANG24[21] . '" title="'
+                     . $LANG24[21] . '"' . XHTML . '>';
             $url = $_CONF['site_admin_url']
                  . '/trackback.php?mode=sendall&amp;id=' . $A['sid'];
             $retval = COM_createLink($pingico, $url);
@@ -974,54 +987,67 @@ function ADMIN_getListField_syndication($fieldname, $fieldvalue, $A, $icon_arr, 
 {
     global $_CONF, $_TABLES, $LANG_ADMIN, $LANG33, $_IMAGE_TYPE;
 
+    static $added_token;
+
     $retval = '';
 
-    switch($fieldname) {
-        case 'edit':
-            $retval = COM_createLink($icon_arr['edit'],
-                "{$_CONF['site_admin_url']}/syndication.php?mode=edit&amp;fid={$A['fid']}");
-            break;
-        case 'type':
-            if ($A['type'] == 'article') {
-                $retval = $LANG33[55];
-            } else {
-                $retval = ucwords($A['type']);
-            }
-            break;
-        case 'format':
-            $retval = str_replace ('-' , ' ', ucwords ($A['format']));
-            break;
-        case 'updated':
-            $retval = strftime ($_CONF['daytime'], $A['date']);
-            break;
-        case 'is_enabled':
-            if ($A['is_enabled'] == 1) {
-                $switch = ' checked="checked"';
-            } else {
-                $switch = '';
-            }
-            $retval = "<input type=\"checkbox\" name=\"enabledfeeds[]\" "
-                . "onclick=\"submit()\" value=\"{$A['fid']}\"$switch" . XHTML . ">";
+    switch ($fieldname) {
+    case 'edit':
+        $retval = COM_createLink($icon_arr['edit'],
+            "{$_CONF['site_admin_url']}/syndication.php?mode=edit&amp;fid={$A['fid']}");
+        break;
+
+    case 'type':
+        if ($A['type'] == 'article') {
+            $retval = $LANG33[55];
+        } else {
+            $retval = ucwords($A['type']);
+        }
+        break;
+
+    case 'format':
+        $retval = str_replace('-' , ' ', ucwords($A['format']));
+        break;
+
+    case 'updated':
+        $retval = strftime($_CONF['daytime'], $A['date']);
+        break;
+
+    case 'is_enabled':
+        if ($A['is_enabled'] == 1) {
+            $switch = ' checked="checked"';
+        } else {
+            $switch = '';
+        }
+        $retval = "<input type=\"checkbox\" name=\"enabledfeeds[]\" "
+            . "onclick=\"submit()\" value=\"{$A['fid']}\"$switch" . XHTML . ">";
+        if (! isset($added_token)) {
             $retval .= "<input type=\"hidden\" name=\"" . CSRF_TOKEN . "\" value=\"{$token}\"" . XHTML . ">";
-            break;
-        case 'header_tid':
-            if ($A['header_tid'] == 'all') {
-                $retval = $LANG33[43];
-            } elseif ($A['header_tid'] == 'none') {
-                $retval = $LANG33[44];
-            } else {
-                $retval = DB_getItem ($_TABLES['topics'], 'topic',
-                                      "tid = '{$A['header_tid']}'");
-            }
-            break;
-        case 'filename':
-            $url = SYND_getFeedUrl ();
-            $retval = COM_createLink($A['filename'], $url . $A['filename']);
-            break;
-        default:
-            $retval = $fieldvalue;
-            break;
+            $added_token = true;
+        }
+        break;
+
+    case 'header_tid':
+        if ($A['header_tid'] == 'all') {
+            $retval = $LANG33[43];
+        } elseif ($A['header_tid'] == 'none') {
+            $retval = $LANG33[44];
+        } else {
+            $retval = DB_getItem($_TABLES['topics'], 'topic',
+                                 "tid = '{$A['header_tid']}'");
+        }
+        break;
+
+    case 'filename':
+        $url = SYND_getFeedUrl();
+        $retval = COM_createLink($A['filename'], $url . $A['filename']);
+        break;
+
+    default:
+        $retval = $fieldvalue;
+        break;
     }
+
     return $retval;
 }
 
@@ -1032,6 +1058,8 @@ function ADMIN_getListField_syndication($fieldname, $fieldvalue, $A, $icon_arr, 
 function ADMIN_getListField_plugins($fieldname, $fieldvalue, $A, $icon_arr, $token)
 {
     global $_CONF, $LANG_ADMIN, $LANG32;
+
+    static $added_token;
 
     $retval = '';
     
@@ -1046,7 +1074,7 @@ function ADMIN_getListField_plugins($fieldname, $fieldvalue, $A, $icon_arr, $tok
         case 'pi_version':
             $plugin_code_version = PLG_chkVersion ($A['pi_name']);
             if (empty ($plugin_code_version)) {
-                $code_version = 'N/A';
+                $code_version = $LANG_ADMIN['na'];
             } else {
                 $code_version = $plugin_code_version;
             }
@@ -1057,7 +1085,17 @@ function ADMIN_getListField_plugins($fieldname, $fieldvalue, $A, $icon_arr, $tok
             } else {
                 $retval = "{$LANG32[37]}: $pi_installed_version,&nbsp;{$LANG32[36]}: $plugin_code_version";
                 if ($A['pi_enabled'] == 1) {
-                    $retval .= " <b>{$LANG32[38]}</b>";
+                    $retval .= " <b>{$LANG32[38]}</b>"
+                        . ' <input type="image" src="' . $_CONF['layout_url']
+                        . '/images/update.png" alt="[' . $LANG32[38]
+                        . ']" name="updatethisplugin" value="' . $A['pi_name']
+                        . '" onclick="submit()" title="' . $LANG32[42] . '"'
+                        . XHTML . '>';
+                    if (! isset($added_token)) {
+                        $retval .= '<input type="hidden" name="' . CSRF_TOKEN
+                                . '" ' . 'value="' . $token . '"' . XHTML . '>';
+                        $added_token = true;
+                    }
                 }
             }
             break;
@@ -1079,8 +1117,11 @@ function ADMIN_getListField_plugins($fieldname, $fieldvalue, $A, $icon_arr, $tok
                 $retval = '<input type="checkbox" name="enabledplugins['
                         . $A['pi_name'] . ']" onclick="submit()" value="1"'
                         . $switch . XHTML . '>';
-                $retval .= '<input type="hidden" name="' . CSRF_TOKEN . '" '
-                        . 'value="' . $token . '"' . XHTML . '>';
+                if (! isset($added_token)) {
+                    $retval .= '<input type="hidden" name="' . CSRF_TOKEN . '" '
+                            . 'value="' . $token . '"' . XHTML . '>';
+                    $added_token = true;
+                }
             }
             break;
         default:
@@ -1133,8 +1174,7 @@ function ADMIN_getListField_moderation($fieldname, $fieldvalue, $A, $icon_arr)
             $name = htmlspecialchars(COM_stripslashes(DB_getItem($_TABLES['commentsubmissions'], 'name', "cid = '{$A['id']}'")));
         }
         if (empty($name)) {
-            $name = DB_getItem($_TABLES['users'], 'username',
-                               "uid = '{$A['uid']}'");
+            $name = COM_getDisplayName($A['uid']);
         }
         if ($A['uid'] == 1) {
             $retval = $name;
@@ -1157,13 +1197,22 @@ function ADMIN_getListField_moderation($fieldname, $fieldvalue, $A, $icon_arr)
             $retval = DB_getItem($_TABLES['topics'], 'topic',
                                   "tid = '{$A[3]}'");
         } elseif (($fieldname == 2) && ($type == 'comment')) {
+            $commenttext = COM_getTextContent($A['comment']);
+            $excerpt = htmlspecialchars(COM_truncate($commenttext, 140, '...'));
+
             // try to provide a link to the parent item (e.g. article, poll)
             $info = PLG_getItemInfo($A['type'], $A['sid'], 'title,url');
             if (empty($info) || empty($info[0]) || empty($info[1])) {
                 // if not available, display excerpt from the comment
-                $retval = COM_truncate(strip_tags($A['comment']), 40, '...');
+                $retval = htmlspecialchars(COM_truncate($commenttext, 40,
+                                                        '...'));
+                if (strlen($commenttext) > 40) {
+                    $retval = '<span title="' . $excerpt . '">' . $retval
+                            . '</span>';
+                }
             } else {
-                $retval = COM_createLink($info[0], $info[1]);
+                $retval = COM_createLink($info[0], $info[1],
+                                         array('title' => $excerpt));
             }
         } else {
             $retval = COM_makeClickableLinks(stripslashes($fieldvalue));
@@ -1182,40 +1231,49 @@ function ADMIN_getListField_trackback($fieldname, $fieldvalue, $A, $icon_arr, $t
 {
     global $_CONF, $LANG_TRB;
 
+    static $added_token;
+
     $retval = '';
 
     switch($fieldname) {
-        case "edit":
-            $retval = COM_createLink($icon_arr['edit'],
-                "{$_CONF['site_admin_url']}/trackback.php?mode=editservice&amp;service_id={$A['pid']}");
-            break;
-        case "name":
-            $retval = COM_createLink($A['name'], $A['site_url']);
-            break;
-        case "method":
-            if ($A['method'] == 'weblogUpdates.ping') {
-                $retval = $LANG_TRB['ping_standard'];
-            } else if ($A['method'] == 'weblogUpdates.extendedPing') {
-                $retval = $LANG_TRB['ping_extended'];
-            } else {
-                $retval = '<span class="warningsmall">' .
-                        $LANG_TRB['ping_unknown'] .  '</span>';
-            }
-            break;
-        case "is_enabled":
-            if ($A['is_enabled'] == 1) {
-                $switch = ' checked="checked"';
-            } else {
-                $switch = '';
-            }
-            $retval = "<input type=\"checkbox\" name=\"changedservices[]\" "
-                . "onclick=\"submit()\" value=\"{$A['pid']}\"$switch" . XHTML . ">";
+    case 'edit':
+        $retval = COM_createLink($icon_arr['edit'],
+            "{$_CONF['site_admin_url']}/trackback.php?mode=editservice&amp;service_id={$A['pid']}");
+        break;
+
+    case 'name':
+        $retval = COM_createLink($A['name'], $A['site_url']);
+        break;
+
+    case 'method':
+        if ($A['method'] == 'weblogUpdates.ping') {
+            $retval = $LANG_TRB['ping_standard'];
+        } else if ($A['method'] == 'weblogUpdates.extendedPing') {
+            $retval = $LANG_TRB['ping_extended'];
+        } else {
+            $retval = '<span class="warningsmall">' . $LANG_TRB['ping_unknown']
+                    .  '</span>';
+        }
+        break;
+
+    case 'is_enabled':
+        if ($A['is_enabled'] == 1) {
+            $switch = ' checked="checked"';
+        } else {
+            $switch = '';
+        }
+        $retval = "<input type=\"checkbox\" name=\"changedservices[]\" "
+            . "onclick=\"submit()\" value=\"{$A['pid']}\"$switch" . XHTML . ">";
+        if (! isset($added_token)) {
             $retval .= "<input type=\"hidden\" name=\"" . CSRF_TOKEN
                     . "\" value=\"{$token}\"" . XHTML . ">";
-            break;
-        default:
-            $retval = $fieldvalue;
-            break;
+            $added_token = true;
+        }
+        break;
+
+    default:
+        $retval = $fieldvalue;
+        break;
     }
 
     return $retval;

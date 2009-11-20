@@ -81,7 +81,7 @@ function render_cc_item (&$template, $url = '', $image = '', $label = '')
 */
 function commandcontrol($token)
 {
-    global $_CONF, $_TABLES, $LANG01, $LANG29, $LANG_LOGVIEW, $_IMAGE_TYPE, $_DB_dbms;
+    global $_CONF, $_TABLES, $LANG01, $LANG29, $_IMAGE_TYPE, $_DB_dbms;
 
     $retval = '';
 
@@ -127,10 +127,7 @@ function commandcontrol($token)
                         'lang' => $LANG01[116], 'image' => '/images/icons/trackback.'),
                   array('condition' => SEC_hasRights('plugin.edit'),
                         'url' => $_CONF['site_admin_url'] . '/plugins.php',
-                        'lang' => $LANG01[98], 'image' => '/images/icons/plugins.'),
-                  array('condition' => SEC_inGroup('Root'),
-                        'url' => $_CONF['site_admin_url'] . '/logview.php',
-                        'lang' => $LANG_LOGVIEW['logview'], 'image' => '/images/icons/logview.')
+                        'lang' => $LANG01[98], 'image' => '/images/icons/plugins.')
     );
     $admin_templates->set_var('cc_icon_width', floor(100/ICONS_PER_ROW));
 
@@ -319,8 +316,7 @@ function itemlist($type, $token)
                      . '/index.php?mode=editsubmission&amp;id=' . $A[0];
         } elseif ($type == 'comment') {
             $A['edit'] = $_CONF['site_url'] . '/comment.php'
-                    . '?mode=editsubmission&amp;cid=' . $A[0] .
-                    '&' . CSRF_TOKEN . '=' . $token;
+                    . '?mode=editsubmission&amp;cid=' . $A[0];
         } else {
             $A['edit'] = $_CONF['site_admin_url'] . '/' .  $type
                      . '.php?mode=editsubmission&amp;id=' . $A[0];
@@ -746,24 +742,28 @@ function security_check_reminder()
 // MAIN
 
 $display = '';
-$display .= COM_siteHeader ('menu', $LANG29[34]);
-$display .= COM_showMessageFromParameter();
 
-if (isset ($_POST['mode']) && ($_POST['mode'] == 'moderation') && SEC_checkToken()) {
+if (isset($_POST['mode']) && ($_POST['mode'] == 'moderation') &&
+        SEC_checkToken()) {
     $action = array();
     if (isset($_POST['action'])) {
         $action = $_POST['action'];
     }
     if ($_POST['type'] == 'user') {
-        $display .= moderateusers($_POST['id'], $action,
-                                  COM_applyFilter($_POST['count'], true));
+        $mod_result = moderateusers($_POST['id'], $action,
+                                    COM_applyFilter($_POST['count'], true));
     } else {
-        $display .= moderation($_POST['id'], $action, $_POST['type'],
-                               COM_applyFilter ($_POST['count'], true));
+        $mod_result = moderation($_POST['id'], $action, $_POST['type'],
+                                 COM_applyFilter($_POST['count'], true));
     }
+    $display .= COM_siteHeader('menu', $LANG29[34])
+             .  COM_showMessageFromParameter()
+             .  $mod_result;
 } else {
-    $display .= security_check_reminder();
-    $display .= commandcontrol(SEC_createToken());
+    $display .= COM_siteHeader('menu', $LANG29[34])
+             .  COM_showMessageFromParameter()
+             .  security_check_reminder()
+             .  commandcontrol(SEC_createToken());
 }
 
 $display .= COM_siteFooter();

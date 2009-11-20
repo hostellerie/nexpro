@@ -484,72 +484,48 @@ function editpreferences()
     if ($_CONF['allow_user_themes'] == 1) {
         $selection = '<select id="theme" name="theme">' . LB;
 
-        if (empty ($_USER['theme'])) {
+        if (empty($_USER['theme'])) {
             $usertheme = $_CONF['theme'];
         } else {
             $usertheme = $_USER['theme'];
         }
 
-        $themeFiles = COM_getThemes ();
-        usort ($themeFiles,
-               create_function ('$a,$b', 'return strcasecmp($a,$b);'));
+        $themeFiles = COM_getThemes();
+        usort($themeFiles, 'strcasecmp');
 
         foreach ($themeFiles as $theme) {
             $selection .= '<option value="' . $theme . '"';
             if ($usertheme == $theme) {
                 $selection .= ' selected="selected"';
             }
-            $words = explode ('_', $theme);
-            $bwords = array ();
+            $words = explode('_', $theme);
+            $bwords = array();
             foreach ($words as $th) {
-                if ((strtolower ($th{0}) == $th{0}) &&
-                    (strtolower ($th{1}) == $th{1})) {
-                    $bwords[] = strtoupper ($th{0}) . substr ($th, 1);
+                if ((strtolower($th{0}) == $th{0}) &&
+                    (strtolower($th{1}) == $th{1})) {
+                    $bwords[] = ucfirst($th);
                 } else {
                     $bwords[] = $th;
                 }
             }
-            $selection .= '>' . implode (' ', $bwords) . '</option>' . LB;
+            $selection .= '>' . implode(' ', $bwords) . '</option>' . LB;
         }
         $selection .= '</select>';
-        $preferences->set_var ('theme_selector', $selection);
-        $preferences->parse ('theme_selection', 'theme', true);
+        $preferences->set_var('theme_selector', $selection);
+        $preferences->parse('theme_selection', 'theme', true);
     } else {
-        $preferences->set_var ('theme_selection', '');
+        $preferences->set_var('theme_selection', '');
     }
 
-    require_once ('Date/TimeZone.php');
     // Timezone
-    if (empty($_USER['tzid']) && isset($_CONF['timezone'])) {
-        $timezone = $_CONF['timezone'];
-    } else if (!empty($_USER['tzid'])) {
-        $timezone = $_USER['tzid'];
-    } else {
-        $tz_obj = Date_TimeZone::getDefault();
-        $timezone = $tz_obj->id;
-    }
-    $selection = '<select id="tzid" name="tzid">' . LB;
+    require_once $_CONF['path_system'] . 'classes/timezoneconfig.class.php';
 
-    $T = $GLOBALS['_DATE_TIMEZONE_DATA'];
+    $timezone = TimeZoneConfig::getUserTimeZone();
+    $selection = TimeZoneConfig::getTimeZoneDropDown($timezone,
+            array('id' => 'tzid', 'name' => 'tzid'));
 
-    while ($tDetails = current($T)) {
-        $tzcode = htmlspecialchars(key($T));
-        $selection .= '<option value="' . $tzcode . '"';
-        if ($timezone == $tzcode) {
-                $selection .= ' selected="selected"';
-        } else {
-                $selection .= '';
-        }
-        $hours = $tDetails['offset'] / (3600 * 1000);
-        if ($hours > 0) {
-            $hours = "+$hours";
-        }
-        $selection .= ">$hours, {$tDetails['shortname']} ($tzcode)</option>" . LB;
-        next($T);
-    }
-    $selection .= '</select>';
-    $preferences->set_var ('timezone_selector', $selection);
-    $preferences->set_var ('lang_timezone', $LANG04[158]);
+    $preferences->set_var('timezone_selector', $selection);
+    $preferences->set_var('lang_timezone', $LANG04[158]);
 
     if ($A['noicons'] == '1') {
         $preferences->set_var ('noicons_checked', 'checked="checked"');
@@ -878,15 +854,15 @@ function saveuser($A)
         return COM_refresh ($_CONF['site_url'] . '/index.php');
     }
 
-    // If not set or possibly removed from template - initialize variable
-    if (!isset($A['cooktime'])) {
-        $A['cooktime'] = 0;
+    if (! isset($A['cooktime'])) {
+        // If not set or possibly removed from template - set to default
+        $A['cooktime'] = $_CONF['default_perm_cookie_timeout'];
     } else {
-        $A['cooktime'] = COM_applyFilter ($A['cooktime'], true);
+        $A['cooktime'] = COM_applyFilter($A['cooktime'], true);
     }
     // If empty or invalid - set to user default
     // So code after this does not fail the user password required test
-    if (empty($A['cooktime']) OR $A['cooktime'] < 0) {
+    if ($A['cooktime'] < 0) { // note that == 0 is allowed!
         $A['cooktime'] = $_USER['cookietimeout'];
     }
 
@@ -1005,9 +981,8 @@ function saveuser($A)
                 } else {
                     $cooktime = -1000;
                 }
-                setcookie($_CONF['cookie_password'], $passwd, time() + $cooktime,
-                          $_CONF['cookie_path'], $_CONF['cookiedomain'],
-                          $_CONF['cookiesecure']);
+                SEC_setCookie($_CONF['cookie_password'], $passwd,
+                              time() + $cooktime);
             } elseif (SEC_encryptPassword($A['old_passwd']) != $current_password) {
                 return COM_refresh ($_CONF['site_url']
                                     . '/usersettings.php?msg=68');
@@ -1023,13 +998,11 @@ function saveuser($A)
 
         if ($A['cooktime'] <= 0) {
             $cooktime = 1000;
-            setcookie ($_CONF['cookie_name'], $_USER['uid'], time() - $cooktime,
-                       $_CONF['cookie_path'], $_CONF['cookiedomain'],
-                       $_CONF['cookiesecure']);
+            SEC_setCookie($_CONF['cookie_name'], $_USER['uid'],
+                          time() - $cooktime);
         } else {
-            setcookie ($_CONF['cookie_name'], $_USER['uid'],
-                       time() + $A['cooktime'], $_CONF['cookie_path'],
-                       $_CONF['cookiedomain'], $_CONF['cookiesecure']);
+            SEC_setCookie($_CONF['cookie_name'], $_USER['uid'],
+                          time() + $A['cooktime']);
         }
 
         if ($_CONF['allow_user_photo'] == 1) {
@@ -1208,7 +1181,7 @@ function userprofile ($user, $msg = 0)
     $topics = "'" . implode ("','", $tids) . "'";
 
     // list of last 10 stories by this user
-    if (sizeof ($tids) > 0) {
+    if (count($tids) > 0) {
         $sql = "SELECT sid,title,UNIX_TIMESTAMP(date) AS unixdate FROM {$_TABLES['stories']} WHERE (uid = $user) AND (draft_flag = 0) AND (date <= NOW()) AND (tid IN ($topics))" . COM_getPermSQL ('AND');
         $sql .= " ORDER BY unixdate DESC LIMIT 10";
         $result = DB_query ($sql);
@@ -1243,7 +1216,7 @@ function userprofile ($user, $msg = 0)
 
     // list of last 10 comments by this user
     $sidArray = array();
-    if (sizeof ($tids) > 0) {
+    if (count($tids) > 0) {
         // first, get a list of all stories the current visitor has access to
         $sql = "SELECT sid FROM {$_TABLES['stories']} WHERE (draft_flag = 0) AND (date <= NOW()) AND (tid IN ($topics))" . COM_getPermSQL ('AND');
         $result = DB_query($sql);
@@ -1384,13 +1357,13 @@ function savepreferences($A)
     $AETIDS = USER_getAllowedTopics();          // array of strings (fetched, needed to "clean" $TIDS and $ETIDS)
 
     $tids = '';
-    if (sizeof ($TIDS) > 0) {
+    if (count($TIDS) > 0) {
         // the array_intersect mitigates the need to scrub the TIDS input
         $tids = addslashes (implode (' ', array_intersect ($AETIDS, $TIDS)));
     }
 
     $aids = '';
-    if (sizeof ($AIDS) > 0) {
+    if (count($AIDS) > 0) {
         // Scrub the AIDS array to prevent SQL injection and bad values
         foreach ($AIDS as $key => $val) {
             $AIDS[$key] = COM_applyFilter($val, true);
@@ -1418,9 +1391,10 @@ function savepreferences($A)
             }
         }
     }
+    $selectedblocks = trim($selectedblocks);
 
     $etids = '';
-    if (($_CONF['emailstories'] == 1) && (sizeof($ETIDS) > 0)) {
+    if (($_CONF['emailstories'] == 1) && (count($ETIDS) > 0)) {
         // the array_intersect mitigates the need to scrub the ETIDS input
         $etids = addslashes (implode (' ', array_intersect ($AETIDS, $ETIDS)));
     }

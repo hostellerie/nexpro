@@ -30,7 +30,7 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 //
-// $Id: LDAP.auth.class.php,v 1.6 2009/08/14 00:44:30 blaine.lang Exp $
+// $Id: LDAP.auth.class.php,v 1.1 2008/05/01 19:27:48 dhaun Exp $
 
 /**
  * LDAP Remote Authentication class
