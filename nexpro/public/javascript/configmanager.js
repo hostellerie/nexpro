@@ -1,11 +1,11 @@
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | Geeklog 1.5                                                               |
+// | Geeklog 1.6                                                               |
 // +---------------------------------------------------------------------------+
 // | javascript functions to support the online configuration manager          |
 // |                                                                           |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2005,2006 by the following authors:                         |
+// | Copyright (C) 2005-2009 by the following authors:                         |
 // |                                                                           |
 // | Authors: Aaron Blankstein  - kantai AT gmail DOT com                      |
 // +---------------------------------------------------------------------------+
@@ -25,11 +25,6 @@
 // | Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.           |
 // |                                                                           |
 // +---------------------------------------------------------------------------+
-
-// Hide the welcome box that is loaded with the site header
-try{
-  elementShowHide('header-welcomedate','hide');
-} catch(e){ }
 
 function handleAdd(self, array_type, array_name){
  if(array_type.charAt(0) == "*"){

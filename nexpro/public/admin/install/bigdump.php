@@ -69,6 +69,8 @@ $comment[]='-- ';
 // $comment[]='---';                  // Uncomment this line if using proprietary dump created by outdated mysqldump
 // $comment[]='CREATE DATABASE';      // Uncomment this line if your dump contains create database queries in order to ignore them
 $comment[]='/*!';                     // Or add your own string to leave out other proprietary things
+// see http://project.geeklog.net/tracking/view.php?id=955
+$comment[]='SET character_set_client = @saved_cs_client;';
 
 // Connection character set should be the same as the dump file character set (utf8, latin1, cp1251, koi8r etc.)
 // See http://dev.mysql.com/doc/refman/5.0/en/charset-charsets.html for the full list
@@ -88,6 +90,7 @@ define ('TESTMODE',false);           // Set to true to process the file without 
 @ini_set('auto_detect_line_endings', true);
 @set_time_limit(0);
 
+header('Content-Type: text/html; charset=' . $LANG_CHARSET);
 echo INST_getHeader($LANG_MIGRATE[17]);
 
 $error = false;
@@ -386,10 +389,15 @@ if (!$error && isset($_REQUEST["start"]) && isset($_REQUEST["foffset"]) && eregi
 }
 
 if ($error) {
-  echo '<p><a href="migrate.php">' . $LANG_BIGDUMP[30] . '</a> ' . $LANG_BIGDUMP[31] . '</p>' . LB;
+    $backurl = 'migrate.php';
+    if (! empty($language)) {
+        $backurl .= '?language=' . $language;
+    }
+    echo '<p><a href="' . $backurl . '">' . $LANG_BIGDUMP[30] . '</a> '
+         . $LANG_BIGDUMP[31] . '</p>' . LB;
 }
 
-if ($dbconnection) mysql_close();
+if ($dbconnection) mysql_close($dbconnection);
 if ($file && !$gzipmode) fclose($file);
 else if ($file && $gzipmode) gzclose($file);
 

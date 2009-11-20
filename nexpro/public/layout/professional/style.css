@@ -647,6 +647,9 @@ select {
   color:#000000;
   text-align:right;
 }
+.searchresult-byline {
+  color:green;
+}
 .site-slogan {
   color:#ffffff;
   background:transparent;
@@ -741,6 +744,14 @@ select {
   margin:0px;
 }
 /******************************************************************************/
+#token-expirynotice {
+  padding:1em;
+  border:1px solid #CCCCCC;
+  background:#F7F7F7;
+}
+#token-expirytime {
+  font-weight:bold;
+}
 .topicoption,
 .topicoption-off {
 }

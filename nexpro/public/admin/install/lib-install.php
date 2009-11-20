@@ -56,13 +56,16 @@ if (!defined('VERSION')) {
     * This constant defines Geeklog's version number. It will be written to
     * siteconfig.php and the database (in the latter case minus any suffix).
     */
-    define('VERSION', '1.6.0sr1');
+    define('VERSION', '1.6.1rc1');
 }
 if (!defined('XHTML')) {
     define('XHTML', ' /');
 }
 if (!defined('SUPPORTED_PHP_VER')) {
     define('SUPPORTED_PHP_VER', '4.3.0');
+}
+if (!defined('SUPPORTED_MYSQL_VER')) {
+    define('SUPPORTED_MYSQL_VER', '3.23.2');
 }
 
 $_REQUEST = array_merge($_GET, $_POST);
@@ -243,11 +246,12 @@ function INST_phpOutOfDate()
  */
 function mysql_v($_DB_host, $_DB_user, $_DB_pass)
 {
-    if (@mysql_connect($_DB_host, $_DB_user, $_DB_pass) === false) {
+    $db_handle = @mysql_connect($_DB_host, $_DB_user, $_DB_pass);
+    if ($db_handle === false) {
         return false;
     }
 
-    $mysqlv = @mysql_get_server_info();
+    $mysqlv = @mysql_get_server_info($db_handle);
 
     if (!empty($mysqlv)) {
         preg_match('/^([0-9]+).([0-9]+).([0-9]+)/', $mysqlv, $match);
@@ -259,7 +263,7 @@ function mysql_v($_DB_host, $_DB_user, $_DB_pass)
         $mysqlminorv = 0;
         $mysqlrev = 0;
     }
-    @mysql_close();
+    @mysql_close($db_handle);
 
     return array($mysqlmajorv, $mysqlminorv, $mysqlrev);
 }
@@ -273,14 +277,20 @@ function mysql_v($_DB_host, $_DB_user, $_DB_pass)
  */
 function INST_mysqlOutOfDate($db)
 {
+    $minv = explode('.', SUPPORTED_MYSQL_VER);
+
     if ($db['type'] == 'mysql' || $db['type'] == 'mysql-innodb') {
         $myv = mysql_v($db['host'], $db['user'], $db['pass']);
-        if (($myv[0] < 3) || (($myv[0] == 3) && ($myv[1] < 23)) ||
-                (($myv[0] == 3) && ($myv[1] == 23) && ($myv[2] < 2))) {
+
+        if (($myv[0] <  $minv[0]) ||
+           (($myv[0] == $minv[0]) && ($myv[1] <  $minv[1])) ||
+           (($myv[0] == $minv[0]) && ($myv[1] == $minv[1]) && ($myv[2] < $minv[2]))) {
+
             return true;
         }
-        return false;
     }
+
+    return false;
 }
 
 /**
@@ -362,6 +372,11 @@ function INST_prettifyLanguageName($filename)
  */
 function INST_writeConfig($config_file, $db)
 {
+    // we may have included db-config.php elsewhere already, in which case
+    // all of these variables need to be imported from the global namespace
+    global $_DB_host, $_DB_name, $_DB_user, $_DB_pass, $_DB_table_prefix,
+           $_DB_dbms;
+
     require_once $config_file; // Grab the current DB values
 
     $db = array('host' => (isset($db['host']) ? $db['host'] : $_DB_host),
@@ -370,9 +385,12 @@ function INST_writeConfig($config_file, $db)
                 'pass' => (isset($db['pass']) ? $db['pass'] : $_DB_pass),
                 'table_prefix' => (isset($db['table_prefix']) ? $db['table_prefix'] : $_DB_table_prefix),
                 'type' => (isset($db['type']) ? $db['type'] : $_DB_dbms) );
+    if ($db['type'] == 'mysql-innodb') {
+        $db['type'] = 'mysql';
+    }
 
     // Read in db-config.php so we can insert the DB information
-    $dbconfig_file = fopen($config_file, 'r');
+    $dbconfig_file = fopen($config_file, 'rb');
     $dbconfig_data = fread($dbconfig_file, filesize($config_file));
     fclose($dbconfig_file);
 
@@ -385,7 +403,7 @@ function INST_writeConfig($config_file, $db)
     $dbconfig_data = str_replace("\$_DB_dbms = '" . $_DB_dbms . "';", "\$_DB_dbms = '" . $db['type'] . "';", $dbconfig_data); // Database type ('mysql' or 'mssql')
 
     // Write our changes to db-config.php
-    $dbconfig_file = fopen($config_file, 'w');
+    $dbconfig_file = fopen($config_file, 'wb');
     if (!fwrite($dbconfig_file, $dbconfig_data)) {
         return false;
     }
@@ -450,6 +468,8 @@ function INST_dbExists($db)
     $db_exists = false;
     switch ($db['type']) {
     case 'mysql':
+        // deliberate fallthrough - no "break"
+    case 'mysql-innodb':
         if (@mysql_select_db($db['name'], $db_handle)) {
             return true;
         }
@@ -604,7 +624,8 @@ function INST_getAlertMsg($mMessage, $mType = 'notice')
  */
 function INST_checkPost150Upgrade($dbconfig_path, $siteconfig_path)
 {
-    global $_CONF, $_TABLES, $_DB, $_DB_dbms, $_DB_host, $_DB_user, $_DB_pass;
+    global $_CONF, $_TABLES, $_DB, $_DB_dbms, $_DB_host, $_DB_user, $_DB_pass,
+           $language;
 
     require $dbconfig_path;
     require $siteconfig_path;
@@ -653,6 +674,7 @@ function INST_checkPost150Upgrade($dbconfig_path, $siteconfig_path)
             // current version is at least 1.5.0, so upgrade directly
             $req_string = 'index.php?mode=upgrade&step=3'
                         . '&dbconfig_path=' . $dbconfig_path
+                        . '&language=' . $language
                         . '&version=' . $version;
 
             header('Location: ' . $req_string);
@@ -852,18 +874,20 @@ function INST_pluginAutoinstall($plugin, $inst_parms, $verbose = true)
 
     // Add plugin's Admin group to the Root user group 
     // (assumes that the Root group's ID is always 1)
-    if ($admin_group_id > 1) {
+    if (count($groups) > 0) {
         if ($verbose) {
             COM_errorLog("Attempting to give all users in the Root group access to the '$plugin' Admin group", 1);
         }
 
-        DB_query("INSERT INTO {$_TABLES['group_assignments']} VALUES "
-                 . "($admin_group_id, NULL, 1)");
-        if (DB_error()) {
-            COM_errorLog('Error adding plugin admin group to Root group', 1);
-            PLG_uninstall($plugin);
+        foreach ($groups as $key => $value) {
+            DB_query("INSERT INTO {$_TABLES['group_assignments']} VALUES "
+                     . "($admin_group_id, NULL, 1)");
+            if (DB_error()) {
+                COM_errorLog('Error adding plugin admin group to Root group', 1);
+                PLG_uninstall($plugin);
 
-            return false;
+                return false;
+            }
         }
     }
 
@@ -1126,7 +1150,7 @@ function INST_setVersion($siteconfig_path)
 {
     global $_TABLES, $LANG_INSTALL;
 
-    $siteconfig_file = fopen($siteconfig_path, 'r');
+    $siteconfig_file = fopen($siteconfig_path, 'rb');
     $siteconfig_data = fread($siteconfig_file, filesize($siteconfig_path));
     fclose($siteconfig_file);
 
@@ -1137,7 +1161,7 @@ function INST_setVersion($siteconfig_path)
              $siteconfig_data
             );
 
-    $siteconfig_file = @fopen($siteconfig_path, 'w');
+    $siteconfig_file = @fopen($siteconfig_path, 'wb');
     if (! fwrite($siteconfig_file, $siteconfig_data)) {
         exit($LANG_INSTALL[26] . ' ' . $LANG_INSTALL[28]);
     }

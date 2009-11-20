@@ -433,8 +433,7 @@ function CMT_getComment( &$comments, $mode, $type, $order, $delete_option = fals
         $edit = '';
         if ($edit_option) {
             $editlink = $_CONF['site_url'] . '/comment.php?mode=edit&amp;cid='
-                . $A['cid'] . '&amp;sid=' . $A['sid'] . '&amp;type=' . $type
-                . '&amp;' . CSRF_TOKEN . '=' . $token;
+                . $A['cid'] . '&amp;sid=' . $A['sid'] . '&amp;type=' . $type;
             $edit = COM_createLink($LANG01[4], $editlink) . ' | ';
         }
 
@@ -780,7 +779,7 @@ function CMT_commentForm($title,$comment,$sid,$pid='0',$type,$mode,$postmode)
         return $retval;
     } else {
         COM_clearSpeedlimit ($_CONF['commentspeedlimit'], 'comment');
-        
+
         $last = 0;
         if ($mode != 'edit' && $mode != 'editsubmission' 
                 && $mode != $LANG03[28] && $mode != $LANG03[34]) {
@@ -930,7 +929,7 @@ function CMT_commentForm($title,$comment,$sid,$pid='0',$type,$mode,$postmode)
                     $name = htmlspecialchars(COM_checkWords(strip_tags(
                         COM_stripslashes($_COOKIE[$_CONF['cookie_anon_name']]))));
                 } else {
-                    $name = $LANG03[24]; // anonymous user
+                    $name = COM_getDisplayName(1); // anonymous user
                 }
                 $usernameblock = '<input type="text" name="username" size="16" value="' . 
                                  $name . '" maxlength="32"' . XHTML . '>';
@@ -1042,10 +1041,10 @@ function CMT_commentForm($title,$comment,$sid,$pid='0',$type,$mode,$postmode)
  * @param    int         $pid        ID of parent comment
  * @param    string      $type       Type of comment this is (article, polls, etc)
  * @param    string      $postmode   Indicates if text is HTML or plain text
- * @return   int         0 for success, > 0 indicates error
+ * @return   int         -1 == queued, 0 == comment saved, > 0 indicates error
  *
  */
-function CMT_saveComment ($title, $comment, $sid, $pid, $type, $postmode)
+function CMT_saveComment($title, $comment, $sid, $pid, $type, $postmode)
 {
     global $_CONF, $_TABLES, $_USER, $LANG03;
 
@@ -1101,13 +1100,15 @@ function CMT_saveComment ($title, $comment, $sid, $pid, $type, $postmode)
 
     $comment = addslashes(CMT_prepareText($comment, $postmode, $type));
     $title = addslashes(COM_checkWords(strip_tags($title)));
-    if (isset($_POST['username']) && strcmp($_POST['username'],$LANG03[24]) != 0
-            && $uid == 1) {
-        $name = COM_checkWords(strip_tags(COM_stripslashes($_POST['username'])));
-        setcookie($_CONF['cookie_anon_name'], $name, time() + 31536000,
-                  $_CONF['cookie_path'], $_CONF['cookiedomain'],
-                  $_CONF['cookiesecure']);
-        $name = addslashes($name);
+    if (($uid == 1) && isset($_POST['username'])) {
+        $anon = COM_getDisplayName(1);
+        if (strcmp($_POST['username'], $anon) != 0) {
+            $username = COM_checkWords(strip_tags(COM_stripslashes($_POST['username'])));
+            setcookie($_CONF['cookie_anon_name'], $username, time() + 31536000,
+                      $_CONF['cookie_path'], $_CONF['cookiedomain'],
+                      $_CONF['cookiesecure']);
+            $name = addslashes($username);
+        }
     }
 
     // check for non-int pid's
@@ -1116,6 +1117,7 @@ function CMT_saveComment ($title, $comment, $sid, $pid, $type, $postmode)
         $pid = 0;
     }
 
+    COM_updateSpeedlimit('comment');
     if (empty($title) || empty($comment)) {
         COM_errorLog("CMT_saveComment: $uid from {$_SERVER['REMOTE_ADDR']} tried "
                    . 'to submit a comment with invalid $title and/or $comment.');
@@ -1133,7 +1135,7 @@ function CMT_saveComment ($title, $comment, $sid, $pid, $type, $postmode)
                     "'$sid',$uid,'$comment',NOW(),'$title',$pid,'{$_SERVER['REMOTE_ADDR']}','$type'");
         }
 
-        $ret = -1;
+        $ret = -1; // comment queued
     } elseif ($pid > 0) {
         DB_lockTable ($_TABLES['comments']);
         
@@ -1181,7 +1183,7 @@ function CMT_saveComment ($title, $comment, $sid, $pid, $type, $postmode)
     DB_unlockTable($_TABLES['comments']);
 
     // notify of new comment 
-    if ($_CONF['allow_reply_notifications'] == 1 && $pid > 1 && $ret == 0) {
+    if ($_CONF['allow_reply_notifications'] == 1 && $pid > 0 && $ret == 0) {
         $result = DB_query("SELECT cid, uid, deletehash FROM {$_TABLES['commentnotifications']} WHERE cid = $pid");
         $A = DB_fetchArray($result);
         if ($A !== false) {
@@ -1189,7 +1191,7 @@ function CMT_saveComment ($title, $comment, $sid, $pid, $type, $postmode)
         }
     }
 
-    //save user notification information
+    // save user notification information
     if (isset($_POST['notify']) && ($ret == -1 || $ret == 0) ) {
         $deletehash = md5($title . $cid . $comment . rand());
         if ($ret == -1) {
@@ -1200,11 +1202,20 @@ function CMT_saveComment ($title, $comment, $sid, $pid, $type, $postmode)
         }
     }
 
-    // Send notification of comment if no errors and notications enabled for comments
-    if (($ret == 0) && isset ($_CONF['notification']) &&
-            in_array ('comment', $_CONF['notification'])) {
-        CMT_sendNotification ($title, $comment, $uid, $_SERVER['REMOTE_ADDR'],
-                          $type, $cid);
+    // Send notification of comment if no errors and notifications enabled
+    // for comments
+    if ((($ret == -1) || ($ret == 0)) && isset($_CONF['notification']) &&
+            in_array('comment', $_CONF['notification'])) {
+        if ($ret == -1) {
+            $cid = 0; // comment went into the submission queue
+        }
+        if (($uid == 1) && isset($username)) {
+            CMT_sendNotification($title, $comment, $uid, $username,
+                                 $_SERVER['REMOTE_ADDR'], $type, $cid);
+        } else {
+            CMT_sendNotification($title, $comment, $uid, '',
+                                 $_SERVER['REMOTE_ADDR'], $type, $cid);
+        }
     }
     
     return $ret;
@@ -1216,26 +1227,42 @@ function CMT_saveComment ($title, $comment, $sid, $pid, $type, $postmode)
 * @param    $title      string      comment title
 * @param    $comment    string      text of the comment
 * @param    $uid        int         user id
+* @param    $username   string      optional name of anonymous user
 * @param    $ipaddress  string      poster's IP address
 * @param    $type       string      type of comment ('article', 'poll', ...)
-* @param    $cid        int         comment id
+* @param    $cid        int         comment id (or 0 when in submission queue)
+* @return               boolean     true if successfully sent, otherwise false
 *
 */
-function CMT_sendNotification ($title, $comment, $uid, $ipaddress, $type, $cid)
+function CMT_sendNotification($title, $comment, $uid, $username, $ipaddress, $type, $cid)
 {
-    global $_CONF, $_TABLES, $LANG03, $LANG08, $LANG09;
+    global $_CONF, $_TABLES, $LANG01, $LANG03, $LANG08, $LANG09, $LANG29;
 
-    // we have to undo the addslashes() call from savecomment()
-    $title = stripslashes ($title);
-    $comment = stripslashes ($comment);
-
-    // strip HTML if posted in HTML mode
-    if (preg_match ('/<.*>/', $comment) != 0) {
-        $comment = strip_tags ($comment);
+    // sanity check
+    if (($username == $_SERVER['REMOTE_ADDR']) &&
+            ($ipaddress != $_SERVER['REMOTE_ADDR'])) {
+        COM_errorLog("The API for CMT_sendNotification has changed ...");
+        return false;
     }
 
-    $author = COM_getDisplayName ($uid);
-    if (($uid <= 1) && !empty ($ipaddress)) {
+    // we have to undo the addslashes() call from savecomment()
+    $title = stripslashes($title);
+    $comment = stripslashes($comment);
+
+    // strip HTML if posted in HTML mode
+    if (preg_match('/<.*>/', $comment) != 0) {
+        $comment = strip_tags($comment);
+    }
+
+    if ($uid < 1) {
+        $uid = 1;
+    }
+    if (($uid == 1) && !empty($username)) {
+        $author = $username;
+    } else {
+        $author = COM_getDisplayName($uid);
+    }
+    if (($uid == 1) && !empty($ipaddress)) {
         // add IP address for anonymous posters
         $author .= ' (' . $ipaddress . ')';
     }
@@ -1249,22 +1276,28 @@ function CMT_sendNotification ($title, $comment, $uid, $ipaddress, $type, $cid)
 
     if ($_CONF['emailstorieslength'] > 0) {
         if ($_CONF['emailstorieslength'] > 1) {
-            $comment = MBYTE_substr ($comment, 0, $_CONF['emailstorieslength'])
+            $comment = MBYTE_substr($comment, 0, $_CONF['emailstorieslength'])
                      . '...';
         }
         $mailbody .= $comment . "\n\n";
     }
 
-    $mailbody .= $LANG08[33] . ' <' . $_CONF['site_url']
-              . '/comment.php?mode=view&cid=' . $cid . ">\n\n";
+    if ($cid == 0) {
+        $mailsubject = $_CONF['site_name'] . ' ' . $LANG29[41];
+        $mailbody .= $LANG01[10] . ' <' . $_CONF['site_admin_url']
+                  . "/moderation.php>\n\n";
+    } else {
+        $mailsubject = $_CONF['site_name'] . ' ' . $LANG03[9];
+        $mailbody .= $LANG03[39] . ' <' . $_CONF['site_url']
+                  . '/comment.php?mode=view&cid=' . $cid . ">\n\n";
+    }
 
     $mailbody .= "\n------------------------------\n";
     $mailbody .= "\n$LANG08[34]\n";
     $mailbody .= "\n------------------------------\n";
 
-    $mailsubject = $_CONF['site_name'] . ' ' . $LANG03[9];
 
-    COM_mail ($_CONF['site_mail'], $mailsubject, $mailbody);
+    return COM_mail($_CONF['site_mail'], $mailsubject, $mailbody);
 }
 
 /**
@@ -1739,7 +1772,7 @@ function CMT_approveModeration($cid)
     DB_change($_TABLES['commentnotifications'], 'cid', $newcid, 'mid', $cid);
 
     // notify of new published comment
-    if ($_CONF['allow_reply_notifications'] == 1 && $A['pid'] > 1) {
+    if ($_CONF['allow_reply_notifications'] == 1 && $A['pid'] > 0) {
         $result = DB_query("SELECT cid, uid, deletehash FROM {$_TABLES['commentnotifications']} WHERE cid = {$A['pid']}");
         $B = DB_fetchArray($result);
         if ($B !== false) {

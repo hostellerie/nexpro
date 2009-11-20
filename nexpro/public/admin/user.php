@@ -46,7 +46,6 @@ require_once '../lib-common.php';
 /**
 * Security check to ensure user even belongs on this page
 */
-
 require_once 'auth.inc.php';
 
 /**
@@ -131,8 +130,11 @@ function edituser($uid = '', $msg = '')
         $A['status'] = USER_ACCOUNT_ACTIVE;
     }
 
-    $retval .= COM_startBlock ($LANG28[1], '',
-                               COM_getBlockTemplate ('_admin_block', 'header'));
+    $token = SEC_createToken();
+
+    $retval .= COM_startBlock($LANG28[1], '',
+                              COM_getBlockTemplate('_admin_block', 'header'));
+    $retval .= SEC_getTokenExpiryNotice($token);
 
     $user_templates = new Template($_CONF['path_layout'] . 'admin/user');
     $user_templates->set_file (array ('form' => 'edituser.thtml',
@@ -155,7 +157,7 @@ function edituser($uid = '', $msg = '')
 
     $user_templates->set_var('lang_userid', $LANG28[2]);
     if (empty ($A['uid'])) {
-        $user_templates->set_var ('user_id', 'n/a');
+        $user_templates->set_var ('user_id', $LANG_ADMIN['na']);
     } else {
         $user_templates->set_var ('user_id', $A['uid']);
     }
@@ -174,6 +176,15 @@ function edituser($uid = '', $msg = '')
     } else {
         $user_templates->set_var('username', '');
     }
+
+    $remoteservice = '';
+    if ($_CONF['show_servicename'] && ($_CONF['user_login_method']['3rdparty']
+            || $_CONF['user_login_method']['openid'])) {
+        if (! empty($A['remoteservice'])) {
+            $remoteservice = '@' . $A['remoteservice'];
+        }
+    }
+    $user_templates->set_var('remoteservice', $remoteservice);
 
     if ($_CONF['allow_user_photo'] && ($A['uid'] > 0)) {
         $photo = USER_getPhoto ($A['uid'], $A['photo'], $A['email'], -1);
@@ -330,7 +341,7 @@ function edituser($uid = '', $msg = '')
                 '<input type="hidden" name="groups" value="-1"' . XHTML . '>');
     }
     $user_templates->set_var('gltoken_name', CSRF_TOKEN);
-    $user_templates->set_var('gltoken', SEC_createToken());
+    $user_templates->set_var('gltoken', $token);
     $user_templates->parse('output', 'form');
     $retval .= $user_templates->finish($user_templates->get_var('output'));
     $retval .= COM_endBlock (COM_getBlockTemplate ('_admin_block', 'footer'));
@@ -444,7 +455,7 @@ function saveusers ($uid, $username, $fullname, $passwd, $passwd_conf, $email, $
     $userChanged = false;
 
     if ($_USER_VERBOSE) COM_errorLog("**** entering saveusers****",1);
-    if ($_USER_VERBOSE) COM_errorLog("group size at beginning = " . sizeof($groups),1);
+    if ($_USER_VERBOSE) COM_errorLog("group size at beginning = " . count($groups),1);
 
     if ($passwd != $passwd_conf) { // passwords don't match
         return edituser($uid, 67);
@@ -510,6 +521,18 @@ function saveusers ($uid, $username, $fullname, $passwd, $passwd_conf, $email, $
         if ($ucount > 0) {
             // Admin just changed a user's email to one that already exists
             return edituser($uid, 56);
+        }
+
+        if ($_CONF['custom_registration'] &&
+                function_exists('CUSTOM_userCheck')) {
+            $ret = CUSTOM_userCheck($username, $email);
+            if (! empty($ret)) {
+                // need a numeric return value - otherwise use default message
+                if (! is_numeric($ret['number'])) {
+                    $ret['number'] = 400;
+                }
+                return edituser($uid, $ret['number']);
+            }
         }
 
         if (empty ($uid) || !empty ($passwd)) {

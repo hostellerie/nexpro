@@ -11,7 +11,7 @@
  *
  * Licensed under GNU General Public License
  *
- * $Id: french_canada_utf-8.php,v 1.2 2009/08/14 00:41:53 blaine.lang Exp $
+ * $Id: french_canada_utf-8.php,v 1.2 2008/05/02 15:08:10 dhaun Exp $
  */
 
 global $LANG32;

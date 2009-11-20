@@ -30,7 +30,7 @@
 // |                                                                           |
 // +---------------------------------------------------------------------------+
 //
-// $Id: openidhelper.class.php,v 1.2 2009/08/14 00:44:30 blaine.lang Exp $
+// $Id: openidhelper.class.php,v 1.2 2008/09/21 08:37:12 dhaun Exp $
 
 if (strpos(strtolower($_SERVER['PHP_SELF']), 'openidhelper.class.php') !== false) {
     die('This file can not be used on its own.');

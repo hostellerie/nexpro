@@ -53,6 +53,14 @@
             <td style="text-align:right;padding-bottom:15px;">{lang_url}:</td>
             <td style="padding-bottom:15px;">{example_url}</td>
           </tr>
+          <tr>
+              <td valign="top" align="right">{lang_metadescription}:</td>
+            <td><textarea name="meta_description" style="width:100%" rows="2">{meta_description}</textarea></td>
+          </tr>
+          <tr>
+            <td valign="top" align="right">{lang_metakeywords}:</td>
+            <td><textarea name="meta_keywords" style="width:100%" rows="2">{meta_keywords}</textarea></td>
+          </tr>              
            <tr>
                <td colspan="2" style="vertical-align:top;padding-top:10px;">
                     <span id="sel_toolbar" style="padding-left:15px;display:{show_adveditor};">{lang_toolbar}:&nbsp;
@@ -68,13 +76,14 @@
              <tr id="advanced_editarea" style="display:{show_adveditor};">
                 <td colspan="2" style="margin-top:10px;border:1px solid #CCC;">
                   <textarea id="adv_content" name="sp_content">{sp_content}</textarea>
-                  <div class="warningsmall" style="padding:10px;">{lang_allowedhtml}</div>
+                  <br{xhtml}>
+                  {lang_allowed_html}
                 </td>
              </tr>
              <tr id="html_editarea" style="display:{show_htmleditor};">
                 <td colspan="2" style="margin-top:10px;border:1px solid #CCC;">
                   <textarea id="html_content" name="sp_content" cols="45" rows="24" style="width:100%" wrap="virtual">{sp_content}</textarea>
-                  <div class="warningsmall" style="padding:10px;">{lang_allowedhtml}</div>
+                  <div class="warningsmall" style="padding:10px;">{lang_allowed_html}</div>
                 </td>
              </tr>
           <tr>
@@ -84,6 +93,10 @@
           <tr>
               <td align="right">{lang_lastupdated}:</td>
               <td>{sp_formateddate}</td>
+          </tr>
+          <tr>
+              <td align="right">{lang_hits}:</td>
+              <td><input type="hidden" name="sp_hits" value="{sp_hits}"{xhtml}>{sp_hits_formatted}</td>
           </tr>
           <tr>
               <td colspan="2"><hr{xhtml}></td>
@@ -148,13 +161,6 @@
           </tr>
           <tr>
               <td colspan="2">{lang_permissions_msg}</td>
-          </tr>
-          <tr>
-              <td colspan="2"><hr{xhtml}></td>
-          </tr>
-          <tr>
-              <td align="right">{lang_hits}:</td>
-              <td><input type="hidden" name="sp_hits" value="{sp_hits}"{xhtml}>{sp_hits_formatted}</td>
           </tr>
           <tr><td>&nbsp;</td></tr>
           <tr>

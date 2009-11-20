@@ -1,6 +1,6 @@
 <!-- start userprefs/user_settings.thtml -->
 {navmenu}
-<table width="100%" border="0" cellspacing="1" cellpadding="3" class="pluginSolidOutline" style="margin-top:20px;">    
+<table width="100%" border="0" cellspacing="1" cellpadding="3" class="pluginSolidOutline" style="margin-top:20px;">
     <tr>
         <td width="20%" class="pluginCellTitle" style="padding:2px 0px 2px 5px;">{LANG_feature}</td>
         <td class="pluginCellTitle" style="padding:2px 0px 2px 5px;">{LANG_setting}</td>
@@ -64,6 +64,18 @@
     </td>
     </tr>
     <tr>
+    <td class="pluginCellSubTitle">{LANG_GF92[showiframe]}</td>
+    <td class="pluginCellText pluginCellFill">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="pluginSolidOutline">
+        <tr>
+            <td class="pluginCellText pluginCellFill" style="padding-left:6px;">{LANG_GF92[showiframedscp]}</td>
+            <td class="pluginCellText pluginCellFill" nowrap width="3%"><input type="radio" name="xshowiframe" value="1" {showiframe_yes}>{LANG_GF01[YES]}&nbsp;</td>
+            <td class="pluginCellText pluginCellFill" style="padding-right:6px;" nowrap width="3%"><input type="radio" name="xshowiframe" value="0" {showiframe_no}>{LANG_GF01[NO]}</td>
+        </tr>
+        </table>
+    </td>
+    </tr>
+    <tr>
     <td class="pluginCellSubTitle">{LANG_GF02[msg130]}</td>
     <td class="pluginCellText pluginCellFill">
         <table width="100%" border="0" cellspacing="0" cellpadding="0" class="pluginSolidOutline">
@@ -71,6 +83,32 @@
             <td class="pluginCellText pluginCellFill" style="padding-left:6px;">{LANG_GF02[msg131]}</td>
             <td class="pluginCellText pluginCellFill" nowrap width="3%"><input type="radio" name="xviewanonposts" value="1" {viewanonposts_yes}>{LANG_GF01[YES]}&nbsp;</td>
             <td class="pluginCellText pluginCellFill" style="padding-right:6px;" nowrap width="3%"><input type="radio" name="xviewanonposts" value="0" {viewanonposts_no}>{LANG_GF01[NO]}</td>
+        </tr>
+        </table>
+    </td>
+    </tr>
+
+    <tr>
+    <td class="pluginCellSubTitle">{LANG_GF02[msg167]}</td>
+    <td class="pluginCellText pluginCellFill">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="pluginSolidOutline">
+        <tr>
+            <td class="pluginCellText pluginCellFill" style="padding-left:6px;">{LANG_GF02[msg168]}</td>
+            <td class="pluginCellText pluginCellFill" nowrap width="3%"><input type="radio" name="xenablenotify" value="1" {emailnotify_yes}">{LANG_GF01[YES]}&nbsp;</td>
+            <td class="pluginCellText pluginCellFill" style="padding-right:6px;" nowrap width="3%"><input type="radio" name="xenablenotify" value="0" {emailnotify_no}>{LANG_GF01[NO]}</td>
+        </tr>
+        </table>
+    </td>
+    </tr>
+
+    <tr>
+    <td class="pluginCellSubTitle">{LANG_GF02[msg205]}</td>
+    <td class="pluginCellText pluginCellFill">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="pluginSolidOutline">
+        <tr>
+            <td class="pluginCellText pluginCellFill" style="padding-left:6px;">{LANG_GF02[msg206]}</td>
+            <td class="pluginCellText pluginCellFill" nowrap width="3%"><input type="radio" name="xemailformat" value="text" {emailformat_text}>{LANG_GF01[TEXT]}&nbsp;</td>
+            <td class="pluginCellText pluginCellFill" style="padding-right:6px;" nowrap width="3%"><input type="radio" name="xemailformat" value="html" {emailformat_html}>{LANG_GF01[HTML]}</td>
         </tr>
         </table>
     </td>
@@ -99,19 +137,7 @@
         </table>
     </td>
     </tr>
-    <tr>
-    <td class="pluginCellSubTitle">{LANG_GF92[showiframe]}</td>
-    <td class="pluginCellText pluginCellFill">
-        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="pluginSolidOutline">
-        <tr>
-            <td class="pluginCellText pluginCellFill" style="padding-left:6px;">{LANG_GF92[showiframedscp]}</td>
-            <td class="pluginCellText pluginCellFill" nowrap width="3%"><input type="radio" name="xshowiframe" value="1" {showiframe_yes}>{LANG_GF01[YES]}&nbsp;</td>
-            <td class="pluginCellText pluginCellFill" style="padding-right:6px;" nowrap width="3%"><input type="radio" name="xshowiframe" value="0" {showiframe_no}>{LANG_GF01[NO]}</td>
-        </tr>
-        </table>
-    </td>
-    </tr>
-</table>
+ </table>
 <p></p>
 <table width="100%" border="0" cellspacing="1" cellpadding="3">
     <tr>
