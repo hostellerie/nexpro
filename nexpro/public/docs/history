@@ -1,5 +1,33 @@
 Geeklog History/Changes:
 
+Nov 22, 2009 (1.6.1)
+------------
+
+Changes since 1.6.1rc1:
+- It wasn't possible to email a user via their profile page - checked the wrong
+  field for '@' characters (cf. bug #0000992; reported by rayleigh) [Dirk]
+- Fixed use of wrong constant in unpacker.class.php [Blaine]
+- Updated the age-old help texts and added help files for comment and user
+  submissions as well as the draft stories list [Dirk]
+- The success message at the end of the install recommended setting
+  db-config.php and siteconfig.php to 755. These files don't need to be
+  executable, so recommend 644 instead (bug #0001036) [Dirk]
+
+- Updated Estonian language files, provided by Artur Räpp
+- Updated German language files, provided by Markus Wollschläger
+- Updated Japanese language files, provided by the Geeklog.jp group
+
+Static Pages Plugin
+-------------------
+- Content in curly braces in a static page was mistaken for template variables
+  in the static pages editor (bug #0001038) [Dirk]
+- Added missing code to handle $_SP_CONF['includesearchcenterblocks'] and
+  $_SP_CONF['includesearchphp'] options that was accidentally left out when
+  merging Tom's patch [Dirk]
+- Removed reference to undeclared variable in SP_render_content (bug #0001032)
+  [Dirk]
+
+
 Nov 8, 2009 (1.6.1rc1)
 -----------
 
@@ -22,8 +50,8 @@ Changes since 1.6.1b1:
 
 - Updated Hebrew language files, provided by LWC
 
-Links Plugins
--------------
+Links Plugin
+------------
 - When URL rewriting is enabled, return rewritten URLs for search results [Dirk]
 
 Static Pages Plugin
@@ -77,7 +105,7 @@ Nov 1, 2009 (1.6.1b1)
   bugs with the "Disable Comments" option in 1.6.0) may result in values outside
   of the range of the year dropdown for that option, in which case it reverted
   to the previous(!) year and caused comments to be closed immediately [Dirk]
-- When viewing your own profile page, you now get an "edit" link that take you
+- When viewing your own profile page, you now get an "edit" link that takes you
   to "My Account" [Dirk]
 - Additional checks in "Mail Story to a Friend", "Send mail to user", and
   "Mail Users" dialogs to make sure users don't enter email addresses into the

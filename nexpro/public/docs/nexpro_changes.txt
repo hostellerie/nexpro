@@ -1,3 +1,6 @@
+Nov 23/2009 (Randy)
+    Updated last bug fix from Geeklog 1.6.1 release in nexPro's base for static pages and history file.
+
 Nov 12/2009 (Randy)
     Updated local YUI to v2.8.0r4.
     Updated nexFile themefiles.  Removed test output alert from nexFile when running Local YUI libs.
