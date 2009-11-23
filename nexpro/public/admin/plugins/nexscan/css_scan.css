@@ -1,0 +1,39 @@
+.file_detail {
+  margin: 0px;
+  padding: 0px;
+  border-collapse: collapse;
+  border: 1px solid #81A9E2;
+  width: 100%;
+}
+
+.file_header {
+  padding: 0px 0px 0px 50px;
+  margin: 0px;
+  text-align: left;
+  vertical-align: top;
+  font: 1.2em 'Calibri';
+  background-color: #DEEBFB;
+}
+
+.line_number {
+  padding: 0px;
+  margin: 0px;
+  width: 60px;
+  text-align: right;
+  vertical-align: top;
+  font: 0.8em 'Courier New';
+  padding: 0px 5px 0px 5px;
+  background-color: #DEEBFB;
+}
+
+.line_detail {
+  padding: 0px 5px 0px 5px;
+  margin: 0px;
+  font: 0.8em 'Courier New';
+  border-left: 1px solid #81A9E2;
+}
+
+.highlight {
+  background-color: #FFFF00;
+}
+
