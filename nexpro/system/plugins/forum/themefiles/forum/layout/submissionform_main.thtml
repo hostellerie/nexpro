@@ -1,0 +1,88 @@
+<!-- start submissionform_main.thtml -->
+       </TR>
+        <TR>
+            <TD class="pluginCellSubTitle">&nbsp;{LANG_SUBJECT}:</TD>
+            <TD class="pluginCellText pluginCellFill"><INPUT TYPE="text" NAME="subject" VALUE="{subject}" id="input1" tabindex="5" SIZE="70">
+            </TD>
+        </TR>
+        <TR>
+            <TD class="pluginCellSubTitle" style="vertical-align:top;padding-top:10px;">{smilies}
+                <div class="fshowhideopt" style="position:relative;bottom:-120px;" onClick="showhide_options();"><a href="#" onClick="return false;"><span id="showoptions">Show Options</span></a></div>
+            </TD>
+            <TD class="pluginCellText pluginCellFill" style="padding-left: 5px;">
+                <textarea name="comment" id="input2" rows="15" wrap="virtual" tabindex="6" class="post" style="width:99%" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);">{post_message}</textarea>
+            </TD>
+        </TR>
+        <tr style="display:{use_attachments};">
+            <TD class="pluginCellSubTitle" style="vertical-align:top;padding-top:10px;">{LANG_attachments}<div class="pluginTinyText">{LANG_maxattachments}</div></TD>
+            <TD class="pluginCellText pluginCellFill" style="padding-left: 5px;">
+                <div id="divforumfile">
+                {attachments}
+                <table style="display:{show_attachments};">
+                    <tr>
+                        <td style="padding:5px;"><input type="file" name="file_forum" size="40"></td>
+                        <td style="padding-left:10px;display:{show_filemgmt_option};"><input type="checkbox" name="chk_usefilemgmt" value="1" onClick="elementShowHide('filemgmtoption','toggle');">&nbsp;{LANG_usefilemgmt}</td>
+                    </tr>
+                    <tr id="filemgmtoption" style="display:none;">
+                        <td style="padding-left:5px;">{LANG_description}:<br><textarea name="filemgmt_desc" cols="40" rows="3"></textarea></td>
+                        <td style="vertical-align:top;padding-left:10px;">{LANG_category}:&nbsp;{filemgmt_category_options}</td>
+                    </tr>
+                 </table>
+                 </div>
+            </TD>
+        </TR>
+        {captcha}
+        <TR id="forumoptions" style="display:none;">
+            <TD class="pluginCellSubTitle">&nbsp;</TD>
+            <TD class="pluginCellText pluginCellFill" style="padding:5px 15px 5px 15px;">
+                <fieldset><legend>Topic Options</legend>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td nowrap width="20%" style="padding-right:5px;display:{hide_notify};">{notify_prompt}</td>
+                        <td width="20%" style="padding-left:5px;">{mode_prompt}</td>
+                        <td width="20%" style="padding-left:5px;">{locked_prompt}</td>
+                        <td width="20%" style="padding-left:5px;">{sticky_prompt}</td>
+                        <td width="20%" style="padding-left:5px;">{edit_prompt}</td>
+                    </tr>
+                </table>
+                </fieldset>
+                <fieldset style="display:{show_notifyoptions};"><legend>{lang_notifyoptions}</legend>
+                <table width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td nowrap width="35%" style="padding-right:5px;">
+                            <select name="notificationtype" onChange="selnotification(this.value);">
+                                <option value="basic" {sel_notify1}>{lang_notify1}</option>
+                                <option value="full" {sel_notify2}>{lang_notify2}</option>
+                                <option value="summary" {sel_notify3}>{lang_notify3}</option>
+                                <option value="custom" {sel_notify4}>{lang_notify4}</option>
+                            </select>
+                        </td>
+                        <td nowrap width="65%" style="border-left:1px solid #CCC;padding-left:10px;display:{show_notifyall}">{lang_notifyoverride}&nbsp;<input type="checkbox" name="chk_notifyall" value="1" {chk_notifyall}></td>
+                    </tr>
+                </table>
+                </fieldset>
+                <div id="customnotification" style="display:{show_custombox};">
+                <fieldset><legend>{lang_notifycustom}</legend>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin:5px;">
+                    <tr>
+                        <td><textarea name="customnotification" style="width:98%" rows="6">{lang_custommsg}</textarea></td>
+                    </tr>
+                </table>
+                </fieldset>
+                </div>
+            </TD>
+        </TR>
+        <TR>
+            <td class="pluginCellSubTitle" style="padding:15px 5px 15px 10px; vertical-align:center;">{LANG_SUBMIT}</td>
+            <td class="pluginCellText pluginCellFill alignright">
+                <table border="0" cellspacing="0" cellpadding="0" style="float:right;">
+                    <tr>
+                        <td><INPUT TYPE="submit" NAME="preview" VALUE="{LANG_PREVIEW}" tabindex="7"></td>
+                        <td style="padding-left:6px;padding-right:6px;"><INPUT TYPE="submit" NAME="submit" VALUE="{LANG_SUBMIT}" tabindex="8"></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+</table>
+
+<!-- end submissionform_main.thtml -->

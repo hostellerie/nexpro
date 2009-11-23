@@ -1,0 +1,147 @@
+/* Common Styling for CSS Menu */
+/* ================================================================
+This copyright notice must be untouched at all times.
+
+The original version of this stylesheet and the associated (x)html
+is available at http://www.cssplay.co.uk/
+Copyright (c) 2005-2007 Stu Nicholls. All rights reserved.
+This stylesheet and the assocaited (x)html may be modified in any
+way to fit your requirements.
+
+Mar 25/2007: Blaine Lang
+CSS Modified to work with glMenu
+=================================================================== */
+
+/* Block Menu CSS */
+
+.menu {
+  font-size:11px;
+  background:transparent;
+}
+
+/* remove all the bullets, borders and padding from the default list styling */
+.menu ul {
+  padding:0;
+  margin:0;
+  list-style-type:none;
+  width:150px;
+  position: relative;
+  z-index:10;
+}
+/* hack for IE5.5 */
+* html .menu ul {
+  margin-left:-16px;
+  ma\rgin-left:0;
+}
+
+/* position relative so that you can position the sub levels */
+.menu li {
+  position:relative;
+}
+
+#menuitem_current a {
+  color:#FCFCFC;
+  background-color:#145FF5;
+}
+
+.subtable li#menuitem_current a {
+  color:#FCFCFC;
+  background-color:#145FF5;
+}
+
+/* style the links */
+.menu a,
+.menu a:visited {
+  display:block;
+  text-decoration:none;
+  height:25px;
+  line-height:25px;
+  width:149px;
+  color:#FFFFFF;
+  background:#52565B;
+  text-indent:5px;
+  border:1px solid #145FF5;
+  border-width:0px 1px 1px 0px;
+}
+
+.menu table {
+  position:absolute;
+  top:0;
+  left:0;
+  z-index:10;}
+
+/* hack for IE5.5 */
+* html .menu a,
+* html .menu a:visited {
+  width:150px;
+  w\idth:149px;
+}
+
+/* style the link hover */
+.menu a:hover {
+  color:#FCFCFC;
+  background:#145FF5;
+}
+
+/* hide the sub levels and give them a positon absolute so that they take up no room */
+.menu ul ul {
+  visibility:hidden;
+  position:absolute;
+  top:-30px;
+  left:120px;
+  padding:30px;
+  background:transparent url(images/non-existent.gif);
+}
+/* make the second level visible when hover on first level list OR link */
+.menu ul :hover ul{
+  visibility:visible;
+}
+/* keep the third level hidden when you hover on first level list OR link */
+.menu ul :hover ul ul{
+  visibility:hidden;
+}
+/* keep the fourth level hidden when you hover on second level list OR link */
+.menu ul :hover ul :hover ul ul{
+  visibility:hidden;
+}
+/* make the third level visible when you hover over second level list OR link */
+.menu ul :hover ul :hover ul{
+  visibility:visible;
+}
+/* make the fourth level visible when you hover over third level list OR link */
+.menu ul :hover ul :hover ul :hover ul {
+  visibility:visible;
+}
+
+a.drop:link, a.drop:visited {
+    background:#52565B url(../images/fly.gif) center right no-repeat;
+}
+
+a.drop:hover {
+    background:#145FF5 url(../images/fly.gif) center right no-repeat;
+}
+
+.menu .subtable li > a {
+  color:#172BB0;
+  background:#BBC9EE;
+}
+.menu .subtable li > a:hover {
+  color:#FCFCFC;
+  background:#145FF5;
+}
+
+.menu .subtable a.drop {
+    background:#BBC9EE url(../images/fly.gif) center right no-repeat;
+}
+.menu .subtable a.drop:hover {
+    background:#145FF5 url(../images/fly.gif) center right no-repeat;
+}
+
+#blockmenuitemimage {
+    position:relative;
+    bottom:5px;
+}
+#blocksubmenuitemimage {
+    position:relative;
+    bottom:1px;
+}

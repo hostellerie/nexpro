@@ -1,0 +1,5 @@
+           <span id="newfolderlink" class="yui-button yui-link-button" style="display:none;">
+                <span class="first-child">
+                    <a href="#">New Folder</a>
+                </span>
+           </span>

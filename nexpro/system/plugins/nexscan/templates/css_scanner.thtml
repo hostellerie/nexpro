@@ -1,0 +1,64 @@
+<h2>{LANG_scan_options}</h2>
+<form name="css_scanner" method="post" action="{site_admin_url}/plugins/nexscan/index.php">
+<input type="hidden" name="op" value="scan">
+
+<table class="plugin" width="100%">
+    <tr>
+        <td width="120">{LANG_scan_name}</td>
+        <td><input type="text" name="scan_name" value="" size="60"></td>
+    </tr>
+    <tr>
+        <td width="120">{LANG_css_files}</td>
+        <td>
+            <div class="pluginSmallText">
+                <a href="#" onClick="toggle_all_checks('css_files', true); return false;">{LANG_check_all}</a>
+                <a href="#" onClick="toggle_all_checks('css_files', false); return false;">{LANG_uncheck_all}</a>
+            </div>
+            {css_files}
+        </td>
+    </tr>
+    <tr>
+        <td>{LANG_scan_file_types}</td>
+        <td>{file_types}</td>
+    </tr>
+    <tr>
+        <td>{LANG_scan_dirs}</td>
+        <td><textarea name="scan_dirs" rows="4" style="width:98%">{scan_dirs}</textarea></td>
+    </tr>
+    <tr>
+        <td>{LANG_only_show_orphans}</td>
+        <td><input type="checkbox" name="orphans_only" value="1" {orphans_checked}></td>
+    </tr>
+    <tr>
+        <td>{LANG_fuzzy_filter}</td>
+        <td><input type="checkbox" name="fuzzy_filter" value="1" {fuzzy_checked}></td>
+    </tr>
+    <tr>
+        <td colspan="2" style="text-align: center;"><input type="submit" value="{LANG_scan}"></td>
+    </tr>
+</table>
+
+</form>
+
+<h2>{LANG_previous_scans}</h2>
+<table class="plugin" width="100%">
+    {previous_scans}
+</table>
+
+<script type="text/javascript">
+
+function toggle_all_checks(id, toggle) {
+    var i;
+    var check;
+
+    for (i = 0; i == i; i++) {
+        check = document.getElementById(id + i);
+        if (check == null) {
+            break;
+        }
+
+        check.checked = toggle;
+    }
+}
+
+</script>
