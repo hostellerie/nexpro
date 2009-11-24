@@ -131,7 +131,7 @@ function plugin_load_configuration_nexfile($pi_name)
     return plugin_initconfig_nexfile();
 }
 
-/**
+  /**
 * Plugin postinstall
 *
 * We're inserting our default data here since it depends on other stuff that
@@ -140,8 +140,14 @@ function plugin_load_configuration_nexfile($pi_name)
 * @return   boolean     true = proceed with install, false = an error occured
 *
 */
-function plugin_postinstallnexfile($pi_name)
+function plugin_postinstall_nexfile($pi_name)
 {
+    global $_TABLES;
+
+    $sql = "INSERT INTO {$_TABLES['blocks']} "
+         . "(is_enabled,name,type,title,tid,blockorder,onleft,phpblockfn,group_id,owner_id,perm_owner,perm_group,perm_members,perm_anon) "
+         . " VALUES ('1','Latest Files','phpblock','latestfiles','all',0,0,'phpblock_nexfile_latestfiles',2,2,3,3,2,2)";
+    DB_query($sql);
 
     return true;
 }

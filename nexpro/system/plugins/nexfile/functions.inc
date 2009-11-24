@@ -1475,7 +1475,7 @@ function phpblock_nexfile_latestfiles() {
     $sql .= "LEFT JOIN {$_TABLES['nxfile_files']} files ON acc.catid = files.cid ";
     $sql .= "WHERE view = '1' AND ( uid = '{$_USER['uid']}' OR grp_id ";
     $sql .= "IN ( $grp_list ) ) ";
-    $sql .= "AND fid IS NOT NULL AND status = '0' ";
+    $sql .= "AND fid IS NOT NULL AND status = 1 ";
     $sql .= "GROUP BY fid ORDER BY date desc LIMIT 7";
 
     $query = DB_query($sql);
@@ -1490,8 +1490,8 @@ function phpblock_nexfile_latestfiles() {
             $fname = substr ($fname, 0, 23);
             $fname .= '...';
         }
-        $alttag .= "Description:$description\nAuthor:&nbsp;$author\nDate:&nbsp;$date\nVersion:&nbsp;$version";
-        $retval .= "<tr><td class=\"plgAlt$i\"><img src=\"{$_CONF['layout_url']}/images/triangle-red.png\">&nbsp;<a href=\"{$_CONF['site_url']}/nexfile/details.php?fid=$fid\" TITLE=\"$alttag\">$fname</a></td></tr>";
+        $alttag .= nl2br("Description:$description\nAuthor:&nbsp;$author\nDate:&nbsp;$date\nVersion:&nbsp;$version");
+        $retval .= "<tr><td class=\"plgAlt$i\"><img src=\"{$_CONF['layout_url']}/images/triangle-red.png\">&nbsp;<a href=\"{$_CONF['site_url']}/nexfile/index.php?fid=$fid\" TITLE=\"$alttag\">$fname</a></td></tr>";
         $i = ($i == 2) ? 1:2;
     }
     $retval .= "<tr><td class=\"plgAlt$i\" style=\"text-align:right;padding:5 10 5 0px;\"><a href=\"{$_CONF['site_url']}/nexfile/index.php\">View all Documents ...</a></td></tr>";
