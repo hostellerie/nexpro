@@ -1,0 +1,10 @@
+        <tr align="center" style="border-top:1px solid #CCC;">
+          <td width="20%" class="alignleft">{username}</td>
+          <td>{view_perm}</td>
+          <td>{upload_perm}</td>
+          <td>{uploaddir_perm}</td>
+          <td>{uploadver_perm}</td>
+          <td>{approve_perm}</td>
+          <td>{admin_perm}</td>
+          <td><a class="deleteperm" href="?accid={accid}">Delete</a></td>
+        </tr>

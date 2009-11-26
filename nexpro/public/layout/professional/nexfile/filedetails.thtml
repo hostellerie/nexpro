@@ -1,0 +1,89 @@
+
+<div id="filedetails">
+    <div id="filedetails_titlebar" class="hd">File Details</div>
+    <div id="filedetailsmenubar" class="yuimenubar" style="border:0px;">
+        <div class="bd" style="margin:0px;padding:0px 2px 2px 2px;border:0px;font-size:11pt;">
+            <ul class="first-of-type">
+                <li id="displaymenubaritem" class="yuimenubaritem first-of-type">
+                    <a id="menubar_downloadlink" href="{action_url}" TITLE="Download file">Download</a>
+                </li>
+                <li id="editmenubaritem" class="yuimenubaritem first-of-type">
+                    <a id="editfiledetailslink" href="#" TITLE="Edit file">Edit</a>
+                </li>
+                <li id="addmenubaritem" class="yuimenubaritem first-of-type">
+                    <a id="newversionlink" href="#" TITLE="Upload new version">New Version</a>
+                </li>
+                <li id="approvemenubaritem" class="yuimenubaritem first-of-type">
+                    <a id="approvefiledetailslink" href="#" TITLE="Approve File Submission">Approve</a>
+                </li>
+                <li id="deletemenubaritem" class="yuimenubaritem first-of-type">
+                    <a id="deletefiledetailslink" href="#" TITLE="Delete file">Delete</a>
+                </li>
+                <li id="lockmenubaritem" class="yuimenubaritem first-of-type">
+                    <a id="lockfiledetailslink" href="#" TITLE="Lock file">Lock</a>
+                </li>
+                <li id="notifymenubaritem" class="yuimenubaritem first-of-type">
+                    <a id="notifyfiledetailslink" href="#" TITLE="Enable email notification for any updates">Subscribe</a>
+                </li>
+                <li id="broadcastmenubaritem" class="yuimenubaritem first-of-type">
+                    <a id="broadcastnotificationlink" href="#" TITLE="Send out a broadcast update notification">Broadcast Notification</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+        <div id="filedetails_statusmsg" class="pluginInfo alignleft" style="display:none;"></div>
+        <div id="displayfiledetails" class="alignleft" style="display:block;">
+
+        </div>
+
+        <div id="editfiledetails" class="alignleft" style="display:none;">
+        <form id="frmFileDetails" name="frmFileDetails" method="POST">
+            <input type="hidden" name="op" value="updatefile">
+            <input type="hidden" name="cid" value="{current_category}">
+            <input type="hidden" name="id" value="">
+            <input type="hidden" name="version" value="">
+            <input type="hidden" name="tagstore" value="">
+            <input type="hidden" name="approved" value="">
+
+            <table width="100%" style="margin:10px;">
+                <tr>
+                    <td width="100"><label>File Name</label></td>
+                    <td width="225"><input type="text" name="filetitle" size="29" value="" style="width:195px;" /></td>
+                    <td width="80"><label>Folder</label></td>
+                    <td width="255" id="folderoptions"></td>
+                </tr>
+                <tr style="vertical-align:top;">
+                    <td rowspan="3"><label>Description</label></td>
+                    <td rowspan="3"><textarea rows="6" cols="30" name="description" style="width:195px;"></textarea></td>
+                    <td><label>Owner</label></td>
+                    <td><span id="disp_owner"></span></td>
+                </tr>
+                <tr style="vertical-align:top;">
+                    <td><label>Date</label></td>
+                    <td><span id="disp_date"></span></td>
+                </tr>
+                <tr>
+                    <td><label>Size</label></td>
+                    <td><span id="disp_size"></span></td>
+                </tr>
+                <tr style="vertical-align:top;">
+                    <td><label>Version Note</label></td>
+                    <td><textarea rows="3" cols="30" name="version_note" style="width:195px;"></textarea></td>
+                    <td><label>Tags</label></td>
+                    <td><div id="tagsfield" style="padding-bottom:15px;">
+                            <input id="editfile_tags" name="tags" type="text" size="30" style="width:210px" />
+                            <div id="editfile_autocomplete" style="width:210px;"></div>
+                        </div>
+                        <div id="tagswarning" class="pluginAlert" style="width:180px;display:none;">Folder Perms not set</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="padding-top:10px;text-align:center;">
+                        <input type="button" value="Submit"  onClick="makeAJAXUpdateFileDetails(this.form)"/>
+                        <span style="padding-left:10px;"><input id="filedetails_cancel" type="button" value="Cancel"></span>
+                    </td>
+                </tr>
+            </table>
+        </form>
+        </div>
+</div>

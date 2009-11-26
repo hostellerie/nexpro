@@ -1,0 +1,18 @@
+<div id="{classname}_title" class="pluginInfo" style="{bgcolor}margin: 3px;">
+    <div style="cursor: hand;" onClick="toggle_class_report('{classname}_{scan_num}'); return false;">
+        <h3>
+            <img id="{classname}_{scan_num}_arrow" src="{site_admin_url}/plugins/nexscan/images/arrow-right.gif">
+            {classname}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{LANG_total_found}: {total_found}
+        </h3>
+    </div>
+    <div id="{classname}_{scan_num}_details" style="display: none;">
+        <br>
+        <table class="plugin">
+            <tr>
+                <th nowrap>{LANG_found_in_file}</th>
+                <th nowrap>{LANG_line_number}</th>
+            </tr>
+            {results}
+        </table>
+    </div>
+</div>

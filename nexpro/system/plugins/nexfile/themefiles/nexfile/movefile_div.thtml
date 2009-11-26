@@ -1,0 +1,26 @@
+            <div id="moveQueueFileDialog" style="display:none;">
+                <div class="hd">Move Selected File</div>
+                <div class="pluginInfo alignleft" style="color:#000;font-size:90%">Select the destination folder from the selection below.</div>
+                <div class="bd" style="text-align:left;">
+                    <form id="frmQueueFileMove" name="frmQueueFileMove" method="post">
+                        <input type="hidden" name="id" value="">
+                        <table class="formtable">
+                            <tr>
+                                <td><label for="parent">New Folder:</label>&nbsp;</td>
+                                <td><select id="movesinglefile" name="newcid" style="width:270px">
+                                        {movefolder_options}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align:center;padding:15px;">
+                                    <input id="btnMoveQueueFileSubmit" type="button" value="Submit">
+                                    <span style="padding-left:10px;">
+                                        <input id="btnMoveQueueFileCancel" type="button" value="cancel">
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                     </form>
+                </div>
+            </div>

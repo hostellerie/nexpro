@@ -1,0 +1,77 @@
+{doctype}
+<html{lang_attribute}{xmlns}>
+<head>
+<title>{page_title_and_site_name}</title>
+<meta http-equiv="Content-Script-Type" content="text/javascript"{xhtml}>
+<meta http-equiv="Content-Style-Type" content="text/css"{xhtml}>
+<!-- link rel="SHORTCUT ICON" href="{site_url}/favicon.ico" -->
+<!-- <meta http-equiv="Pragma" content="no-cache"{xhtml}> -->
+<link rel="stylesheet" type="text/css" href="{css_url}" title="{theme}"{xhtml}>
+
+{feed_url}
+{rel_links}
+{plg_headercode}
+{advanced_editor}
+<!-- Load Common Javascript Libraries -->
+<script type="text/javascript" src="{site_url}/javascript/common.js"></script>
+<!-- Load Javascript pngfix -->
+<script type="text/javascript" src="{site_url}/javascript/pngfix.js"></script>
+<!-- Load custom Javascript functions -->
+{header_javascript}
+<script type="text/javascript">
+var nxp_layout_url = '{layout_url}';
+</script>
+</head>
+
+<body dir="{direction}" onLoad="setBlockStatus();">
+    <table style="border-collapse: collapse; margin: 0px;" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td class="site-border-top-left">&nbsp;</td>
+            <td>
+                <table style="border-collapse: collapse; margin: 0px;" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="site-frame-left">&nbsp;</td>
+                        <td class="site-border-top">&nbsp;</td>
+                        <td class="site-frame-right">&nbsp;</td>
+                    </tr>
+                </table>
+            </td>
+            <td class="site-border-top-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="site-border-left">&nbsp;</td>
+            <td>
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" class="header-logobg-container-inner">
+                    <tr>
+                        <td class="header-logobg-left">
+                            <a href="{site_url}/"><img src="{site_logo}" alt="{site_name}" border="0" align="abstop"></a>
+                        </td>
+                        <td class="header-logobg-right">
+                            <div class="searchform-box">
+                                <form class="searchform-elements" name="searchform" action="{site_url}/search.php" method="GET">
+                                    <input type="text" name="query" size="28" maxlength="255" style="background:#F9F9F9; border:1px solid #2A4DAB; width:150px;">
+                                    <input type="hidden" name="type" value="all">
+                                    <input type="hidden" name="mode" value="search">
+                                    <input type="image" name="Submit" alt="Search" src="{layout_url}/images/go-button.png" align="absbottom"><br>
+                                    <a href="{site_url}/search.php">{button_advsearch}</a>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="header-navigation-container">
+                            {nexmenu}
+                        </td>
+                    </tr>
+                </table>
+                <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                    <tr>
+                        {left_blocks}
+                        <td class="story-container" width="100%" style="vertical-align:top;">
+                            <div id="header-welcomedate" class="header-welcomeanddate-box">
+                                <div class="header-welcomeanddate-text">
+                                    <a href="{site_url}">{welcome_msg}</a><br>{datetime}
+                                </div>
+                            </div>
+
+                            <!-- START OF CONTENT AREA -->

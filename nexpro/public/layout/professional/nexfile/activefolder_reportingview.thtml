@@ -1,0 +1,9 @@
+        <!-- DIV active if in Report Mode -->
+        <div style="width:100%;display:{show_reportmodeheader};height:26x;padding-bottom:5px;padding-top:5px;background-color:#F2F2F2;">
+            <div class="pluginReportTitle floatleft" style="width:70;padding-left:2px;padding-bottom:10px;vertical-align:top;">
+                <div style="float:left;padding-left:60px;white-space:nowrap;">{report_heading}</div>
+            </div>
+            {ajaxstatus_reportmode}
+            {ajaxactivity_reportmode}
+            <div class="clearboth"></div>
+        </div>

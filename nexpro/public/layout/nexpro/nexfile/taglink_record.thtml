@@ -1,0 +1,1 @@
+<div class="listing_searchtag"><a href="#" onClick="makeAJAXSearchTags('{searchtag}');return false;">{desctag}</a></div>

@@ -1,0 +1,14 @@
+<div style="padding: 4px 15px 4px 15px; margin: 0px;" class="pluginRow{stylesheet_row}">
+    <div style="cursor: hand;" onClick="toggle_class_report('stylesheet{scan_num}'); return false;">
+        <h1 style="padding: 0px; margin: 0px;"><img id="stylesheet{scan_num}_arrow" src="{site_admin_url}/plugins/nexscan/images/arrow-right.gif">
+        {stylesheet_name}</h1>
+    </div>
+
+    <div id="stylesheet{scan_num}_details" style="display: none;">
+        <h2>{LANG_class_reports}</h2>
+        {class_reports}
+
+        <h2>{LANG_id_reports}</h2>
+        {id_reports}
+    </div>
+</div>

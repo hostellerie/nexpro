@@ -1,0 +1,2 @@
+<div class="loading" style="background-color:#FAFAFA;padding-left:{message_padding}px; "><span style="padding-right:10px;">Standby loading more records ....</span><span style="color:#000">[&nbsp;<a href="?cid={subfolder_id}&fid={fid}&fnum={foldernumber}&level={level}&pass2=1" class="morefolderdata">Click here if files do not appear</a>&nbsp;]</span>
+</div>

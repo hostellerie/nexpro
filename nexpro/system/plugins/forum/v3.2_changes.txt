@@ -1,0 +1,75 @@
+Geeklog Forum Plugin Changes for version 3.1
+Date: Oct 21/2009
+
+Blaine Lang
+
+
+*** Summary of changes ***
+Moved online settings admin to now use the integrated Online Config Manager in Geeklog
+
+Version 3.2 includes:
+ > Ability to add attachments which can either be handled by the forum 
+   or have the attachments saved in nexfile 3.0 or the Geeklog filemgmt plugin.
+   Removed dependancy on Media Gallery for Image Resizing, now using simpleimage.class.php
+
+ > New notification options for user that is posting (if enabled). 
+   This may not be a feature used on public forum sites, but is a needed feature for private forum use.
+   Often we want to push a notification to all site users that have view access to the forum, or
+   want to include the full post as part of the notification.
+
+ > Support for HTML formatted email notification
+   New topic and reply contents can not be included in Email notification
+   User preference for HTML format or Text Format notification as well as if they want the post contents to be included.
+
+
+Added support for the new GL 1.6 auto installer and PLG_autoinstall functions
+Removed the install.php
+
+Added the new search API function - code from Sami Mazen Barakat (furiousdog)
+
+Added the changes to display the forum topic as the site title - code from Dirk Haun
+
+Changed table names to support autoinstall feature - table name needs to match the $_TABLES array key value
+	Table names before change:
+            $_TABLES['gf_userprefs']    = $_DB_table_prefix . 'forum_userprefs';	
+            $_TABLES['gf_topic']        = $_DB_table_prefix . 'forum_topic';
+            $_TABLES['gf_categories']   = $_DB_table_prefix . 'forum_categories';
+            $_TABLES['gf_forums']       = $_DB_table_prefix . 'forum_forums';
+            $_TABLES['gf_settings']     = $_DB_table_prefix . 'forum_settings';
+            $_TABLES['gf_watch']        = $_DB_table_prefix . 'forum_watch';
+            $_TABLES['gf_moderators']   = $_DB_table_prefix . 'forum_moderators';
+            $_TABLES['gf_banned_ip']    = $_DB_table_prefix . 'forum_banned_ip';
+            $_TABLES['gf_log']          = $_DB_table_prefix . 'forum_log';
+            $_TABLES['gf_userinfo']     = $_DB_table_prefix . 'forum_userinfo';
+            $_TABLES['gf_attachments']  = $_DB_table_prefix . 'forum_attachments';
+            $_TABLES['gf_bookmarks']    = $_DB_table_prefix . 'forum_bookmarks';
+	
+	Table names after change (v3.1)
+            $_TABLES['gf_userprefs']    = $_DB_table_prefix . 'gf_userprefs';
+            $_TABLES['gf_topic']        = $_DB_table_prefix . 'gf_topic';
+            $_TABLES['gf_categories']   = $_DB_table_prefix . 'gf_categories';
+            $_TABLES['gf_forums']       = $_DB_table_prefix . 'gf_forums';
+            $_TABLES['gf_settings']     = $_DB_table_prefix . 'gf_settings';
+            $_TABLES['gf_watch']        = $_DB_table_prefix . 'gf_watch';
+            $_TABLES['gf_moderators']   = $_DB_table_prefix . 'gf_moderators';
+            $_TABLES['gf_banned_ip']    = $_DB_table_prefix . 'gf_banned_ip';
+            $_TABLES['gf_log']          = $_DB_table_prefix . 'gf_log';
+            $_TABLES['gf_userinfo']     = $_DB_table_prefix . 'gf_userinfo';
+            $_TABLES['gf_attachments']  = $_DB_table_prefix . 'gf_attachments';
+            $_TABLES['gf_bookmarks']    = $_DB_table_prefix . 'gf_bookmarks';
+
+Modifications to support nexfile 3.0 - earlier versions of nexfile not supported now.
+  - Support for the basic filemanager plugin still available
+  - Option is set in the online config manager
+
+Fixed a bug when creating new topic and the 'attachment' feature was not enabled 
+ - did not appear in the new forum post form
+
+Fixed a bug with the forum stats - reporting table format
+
+Fixed a bug in forum_buildFeedsSql if grouplist is empty
+
+Fized a bug in the move topic (split topic) where the reply count could get set to -1
+
+
+
