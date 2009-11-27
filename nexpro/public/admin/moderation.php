@@ -81,7 +81,7 @@ function render_cc_item (&$template, $url = '', $image = '', $label = '')
 */
 function commandcontrol($token)
 {
-    global $_CONF, $_TABLES, $LANG01, $LANG29, $_IMAGE_TYPE, $_DB_dbms;
+    global $_CONF, $_TABLES, $LANG01, $LANG29, $LANG_LOGVIEW, $_IMAGE_TYPE, $_DB_dbms;
 
     $retval = '';
 
@@ -127,7 +127,10 @@ function commandcontrol($token)
                         'lang' => $LANG01[116], 'image' => '/images/icons/trackback.'),
                   array('condition' => SEC_hasRights('plugin.edit'),
                         'url' => $_CONF['site_admin_url'] . '/plugins.php',
-                        'lang' => $LANG01[98], 'image' => '/images/icons/plugins.')
+                        'lang' => $LANG01[98], 'image' => '/images/icons/plugins.'),
+                  array('condition' => SEC_inGroup('Root'),
+                        'url' => $_CONF['site_admin_url'] . '/logview.php',
+                        'lang' => $LANG_LOGVIEW['logview'], 'image' => '/images/icons/logview.')
     );
     $admin_templates->set_var('cc_icon_width', floor(100/ICONS_PER_ROW));
 
