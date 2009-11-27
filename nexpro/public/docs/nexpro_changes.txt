@@ -1,3 +1,6 @@
+Nov 27/2009 (Randy)
+    Updates to nexPro plugin to fail the installation in the event the file structure for the nexPro plugin was not done correctly.
+
 Nov 23/2009 (Randy)
     Updated last bug fix from Geeklog 1.6.1 release in nexPro's base for static pages and history file.
 
