@@ -1,5 +1,11 @@
+Nov 27/2009 (Randy)
+    Updates to nexPro plugin to fail the installation in the event the file structure for the nexPro plugin was not done correctly.
+
 Nov 24 2009 (Blaine)
     Added the PHPMailer class to the nexpro plugin
+    Modified the email_attachment function in lib-nextide.php to use PHPMailer.
+    Addressed issue sending attachments using a remote SMTP Server.
+
     Modified the email_attachment function in lib-nextide.php to use PHPMailer.
     Addressed issue sending attachments using a remote SMTP Server.
 
