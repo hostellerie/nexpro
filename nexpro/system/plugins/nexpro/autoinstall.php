@@ -167,7 +167,49 @@ function plugin_compatible_with_this_version_nexpro($pi_name)
         return false;
     }
 
+    //now here we are going to check if all of the files are installed in the right areas:
+    $farray=array(
+        $_CONF['path'].'system/nexpro/classes/multiupload.class.php',
+        $_CONF['path'].'system/nexpro/classes/nexfilter.class.php',
+        $_CONF['path'].'system/nexpro/classes/TreeMenu.php',
+        $_CONF['path'].'system/nexpro/classes/nexreport/formatter.class.php',
+        $_CONF['path'].'system/nexpro/classes/nexreport/report.php',
+        $_CONF['path'].'system/nexpro/classes/nexreport/format/display.class.php',
+        $_CONF['path'].'system/nexpro/classes/nexreport/format/excel.class.php',
+        $_CONF['path'].'system/nexpro/classes/nexreport/type/users.php',
+        $_CONF['path_html'].'javascript/php_serializer.js',
+        $_CONF['path_html'].'javascript/nexYUICal.js'
+    );
+
+    $missingfiles=false;
+    $errormessage="";
+    foreach($farray as $file_to_check){
+        $handle=@fopen($file_to_check,"r");
+        if($handle===false){
+                $missingfiles=true;
+                $errormessage.="nexPro plugin requires the {$file_to_check} to exist.\n";
+        }
+
+    }
+    if($missingfiles){
+        COM_errorlog("You need to move all of the nexPro plugin files to the proper directories before installation.\n". $errormessage);
+        return false;
+    }
+
+
+    //now check if the sanitize class has a specific method within it:
+    require_once($_CONF['path'].'system/classes/sanitize.class.php');
+    $testsanitize=new sanitizer();
+    if(!method_exists($testsanitize,'normalize')){
+        COM_errorlog("The {$_CONF['path']}/system/classes/sanitize.class.php file needs to be updated with the one provided with the nexPro plugin.");
+        COM_errorlog("Please update the sanitize.class.php file to install the nexPro plugin");
+        return false;
+    }
+
     return true;
+
+
+
 }
 
 ?>
