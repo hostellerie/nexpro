@@ -2810,6 +2810,18 @@ function COM_adminMenu( $help = '', $title = '', $position = '' )
             $link_array[$LANG01[113]] = $menu_item;
         }
 
+        if( SEC_inGroup( 'Root' ))
+        {
+            $url = $_CONF['site_admin_url'] . '/logview.php';
+            $adminmenu->set_var( 'option_url', $url );
+            $adminmenu->set_var( 'option_label', $LANG01['logview'] );
+            $adminmenu->set_var( 'option_count',$LANG_ADMIN['na']);
+
+            $menu_item = $adminmenu->parse( 'item',
+                    ( $thisUrl == $url ) ? 'current' : 'option' );
+            $link_array[$LANG01['logview']] = $menu_item;
+        }
+
         if( $_CONF['link_versionchecker'] == 1 AND SEC_inGroup( 'Root' ))
         {
             $adminmenu->set_var( 'option_url',

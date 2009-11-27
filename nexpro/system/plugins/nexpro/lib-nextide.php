@@ -347,6 +347,7 @@ function wrap_each(&$item) {
 
 
 /* Function to handle email'ing attachements
+* Using the PHPMailer Class  from www.codeworxtech.com
 * @param        string       $to            Receiver, or receivers of the mail (email address). The formatting of this string must comply with RFC 2822.
 * @param        string       $from          Who this message is from.
 * @param        string       $subject       Subject for this email
@@ -355,52 +356,39 @@ function wrap_each(&$item) {
 * @param        string       $filename      Name of the file to attach
 * @return       boolean                     Returns TRUE if the mail was successfully accepted for delivery, FALSE otherwise.
 *
-* RFC 2822 examples for $to and $from
-    * user@example.com
-    * user@example.com, anotheruser@example.com
-    * User <user@example.com>
-    * User <user@example.com>, Another User <anotheruser@example.com>
-
 */
 function mail_attachment($to,$from,$subject,$message,$directory,$filename) {
     global $_CONF;
+    require_once('class.phpmailer.php');
 
-    $mimeboundary = 'x' . md5(time()) . 'x';
+    $mail = new PHPMailer(true); // the true param means it will throw exceptions on errors, which we need to catch
 
-    $to=str_replace(",",",\n\t",$to);
+    $mail->IsSMTP(); // telling the class to use SMTP
 
-    $header .= "From: {$from}\n";
-    $header .= "Reply-To: {$from}\n";
-    //$header  = "Return-Path: {$from}\n";
-    $header .= "To: {$to}\n";
-
-    $header .= "MIME-Version: 1.0\n";
-    $header .= "Content-Type: multipart/mixed; boundary=\"{$mimeboundary}\"\n\n";
-
-    $body .= "--{$mimeboundary}\n";
-    $body .= "Content-Type: text/html; charset=\"iso-8859-1\"\n";
-    $body .= "Content-Transfer-Encoding:8bit\n\n";
-    $body .= $message ."\n\n";
-
-    $fullFilename = "{$directory}{$filename}";
-    if (file_exists($fullFilename)) {
-        $fileSize = filesize($fullFilename);
-        $pos = strrpos($filename,'.') + 1;
-        $fileType = strtolower(substr($filename, $pos));
-        $fp = fopen($fullFilename,"rb");
-        $fileData = fread($fp,$fileSize);
-        fclose($fp);
-        $data = chunk_split(base64_encode($fileData));
-        $body .= "--{$mimeboundary}\n";
-        $body .= "Content-Type: application/octet-stream; name=\"{$filename}\"\n";
-        $body .= "Content-Transfer-Encoding: base64\n";
-        $body .= "Content-Disposition: attachment; filename=\"{$filename}\"\n\n";
-        $body .= $data."\n\n";
+    try {
+      $mail->Host       = $_CONF['mail_settings']['host']; // SMTP server
+      $mail->SMTPDebug  = false;                     // enables SMTP debug information (for testing)
+      $mail->AddReplyTo($from);
+      $mail->AddAddress($to);
+      $mail->SetFrom($from);
+      $mail->Subject = $subject;
+      $mail->MsgHTML($message);
+      $mail->AddAttachment("{$directory}{$filename}");      // attachment
+      if ($mail->Send()) {
+        COM_errorLog("Message Sent OK");
+        return true;
+      } else {
+        COM_errorLog("Message Sent OK");
+        return true;
+      }
+    } catch (phpmailerException $e) {
+      COM_errorLog("PHP Mailer error: " .  $e->errorMessage()); //Pretty error messages from PHPMailer
+      return false;
+    } catch (Exception $e) {
+      COM_errorLog("PHP Mailer error: " . $e->getMessage()); //Boring error messages from anything else!
+      return false;
     }
-    $body .= "--{$mimeboundary}--\n";
-    $retval = mail("",$subject,$body,$header,"-f{$from}");
 
-    return $retval;
  }
 
 /**
