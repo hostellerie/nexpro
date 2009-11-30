@@ -1145,7 +1145,7 @@ $LANG33 = array(
 
 $LANG_LOGVIEW = array(
     'logview' => 'Logview',
-    'info' => 'glFusion Log file administration',
+    'info' => 'Log file administration',
     'logs' => 'Logs',
     'view' => 'View Log File',
     'clear' => 'Clear Log File',
