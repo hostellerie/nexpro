@@ -5,7 +5,7 @@
 // | Sept 30, 2009                                                             |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
-// | library.php                                                                 |
+// | library.php                                                               |
 // +---------------------------------------------------------------------------+
 // | Copyright (C) 2007-2009 by the following authors:                         |
 // | Blaine Lang            - blaine DOT lang AT nextide DOT ca                |
@@ -1718,7 +1718,7 @@ function nexdoc_generateNotificationsReport() {
 
 
 function nexdocsrv_getMoreActions($op) {
-
+    global $_USER;
     $retval = '<option value="0">More Actions ...</option>';
     switch ($op) {
         case 'approvals':
@@ -1733,12 +1733,16 @@ function nexdocsrv_getMoreActions($op) {
             $retval .= '<option value="delete">Delete selected Notifications</option>';
             break;
         default:
-            $retval .= '<option value="delete">Delete selected files</option>';
-            $retval .= '<option value="move">Move selected files</option>';
-            $retval .= '<option value="subscribe">Subscribe to update notifications</option>';
-            $retval .= '<option value="archive">Download selected files as an archive</option>';
-            $retval .= '<option value="markfavorite">Mark Favorite</option>';
-            $retval .= '<option value="clearfavorite">Clear Favorite</option>';
+            if (COM_isAnonUser()) {
+                $retval .= '<option value="archive">Download as an archive</option>';
+            } else {
+                $retval .= '<option value="delete">Delete selected files</option>';
+                $retval .= '<option value="move">Move selected files</option>';
+                $retval .= '<option value="subscribe">Subscribe to update notifications</option>';
+                $retval .= '<option value="archive">Download as an archive</option>';
+                $retval .= '<option value="markfavorite">Mark Favorite</option>';
+                $retval .= '<option value="clearfavorite">Clear Favorite</option>';
+            }
             break;
 
     }
