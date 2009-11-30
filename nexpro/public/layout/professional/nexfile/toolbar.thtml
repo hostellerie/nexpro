@@ -3,7 +3,7 @@
         {newfolder_menuitem}
         {newfile_menuitem}
       </div>
-      <div style="float:left;position:absolute;left:350px;">
+      <div style="float:left;position:relative;left:50px;">
           <form name="frmtoolbar" action="{site_url}/nexfile/download.php" method="post" style="margin:0px;">
               <input type="hidden" name="checkeditems" value="">
               <input type="hidden" name="checkedfolders" value="">
@@ -11,14 +11,7 @@
               <input type="hidden" name="newcid" value="">
               <input type="hidden" name="reportmode" value="{report_option}">
               <div class="floatleft" style="padding-top:5px;">
-                <select id="multiaction" class="disabled_element" name="multiaction" style="width:160px;" onChange="if (checkMultiAction(this.value)) submit(); postSubmitMultiactionResetIfNeed(this.value);" disabled="disabled">
-                    <option value="0">More Actions ...</option>
-                    <option value="delete">Delete selected files</option>
-                    <option value="move">Move selected files</option>
-                    <option value="archive">Download selected files as an archive</option>
-                    <option value="markfavorite">Mark Favorite</option>
-                    <option value="clearfavorite">Clear Favorite</option>
-                </select>
+                <select id="multiaction" class="disabled_element" name="multiaction" style="width:160px;" onChange="if (checkMultiAction(this.value)) submit(); postSubmitMultiactionResetIfNeed(this.value);" disabled="disabled"></select>
               </div>
           </form>
       </div>
