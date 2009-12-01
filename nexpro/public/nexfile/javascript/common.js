@@ -1666,7 +1666,7 @@ function upload() {
             description: document.getElementById("newfile_desc").value,
             versionnote: document.getElementById("newfile_notes").value,
             notify: document.getElementById("updatenotify").checked,
-            cookie: document.cookie
+            cookie_session: document.getElementById("cookie_session").value
         });
         fileID = null;
     }

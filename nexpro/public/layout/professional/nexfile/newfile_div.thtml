@@ -5,6 +5,7 @@
                         <input type="hidden" id="newfile_op" name="op" value="savefile">
                         <input type="hidden" name="tagstore" value="">
                         <input type="hidden" id="newfile_fid" name="fid" value="">
+                        <input type="hidden" id="cookie_session" name="cookie_session" value="{cookie_session}">
                         <!-- This is where the file ID is stored after SWFUpload uploads the file and gets the ID back from upload.php -->
                         <table class="formtable">
                             <tr>
