@@ -39,7 +39,7 @@ $charset = COM_getCharset();
 // We can sent the cookies in the post form data and then extract and filter the data to rebuild the COOKIE array
 // Also now need this to support Geeklog 1.6.1 that enables HTTP only cookie support.
 // Javascript no longer has access to the gl_session id in the cookie - issue only apparent in the YUI upload form
-if ($_POST['op'] == 'savefile' OR (!isset($_USER['uid']) AND isset($_POST['cookie']))) {
+if ((!isset($_USER['uid']) AND isset($_POST['cookie_session']))) { 
 
     $_COOKIE[$_CONF['cookie_session']] = COM_applyFilter($_POST['cookie_session']);
 
