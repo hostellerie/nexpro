@@ -37,14 +37,11 @@ $charset = COM_getCharset();
 
 // Code added to handle the issue with the default $_COOKIE array being sent by the Flash Image uploader
 // We can sent the cookies in the post form data and then extract and filter the data to rebuild the COOKIE array
-// Note: IE does not have this issue - review the note
+// Also now need this to support Geeklog 1.6.1 that enables HTTP only cookie support.
+// Javascript no longer has access to the gl_session id in the cookie - issue only apparent in the YUI upload form
 if ($_POST['op'] == 'savefile' OR (!isset($_USER['uid']) AND isset($_POST['cookie']))) {
-    $cookievars = explode(';',$_POST['cookie']);
-    foreach ($cookievars as $cookieparts) {
-        $cookie = explode('=',$cookieparts);
-        $cookie[0] = trim($cookie[0]);
-        $_COOKIE[$cookie[0]] = COM_applyFilter($cookie[1]);
-    }
+
+    $_COOKIE[$_CONF['cookie_session']] = COM_applyFilter($_POST['cookie_session']);
 
     // Have a valid session id now from the COOKIE - ReInitialize the session data
     if (isset($_COOKIE[$_CONF['cookie_session']])) {
@@ -55,6 +52,7 @@ if ($_POST['op'] == 'savefile' OR (!isset($_USER['uid']) AND isset($_POST['cooki
             $_RIGHTS = explode(',', SEC_getUserPermissions());
         }
     }
+
 }
 
 //set up the user
