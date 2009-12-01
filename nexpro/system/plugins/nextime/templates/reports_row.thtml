@@ -15,10 +15,10 @@
     <tr>
         <td colspan="5">
             <table>
-                <tr><td>
+                <tr><td nowrap=true>
                     <input type=button value="Report By Employee" onclick="document.getElementById('empreportdateranges').innerHTML='';document.getElementById('reportbyemployee_status').innerHTML='';document.getElementById('byEmpsdate').value='';;document.getElementById('byEmpedate').value='';document.getElementById('byEmpGoButton').style.display='none';YAHOO.nextide.container.panel20.show();document.getElementById('reportbyemployee_status').innerHTML='';" id="reportByEmployeeButton" style='display:none'>
                     <input type=button value="Report By Task" onclick="document.getElementById('taskreportdateranges').innerHTML='';document.getElementById('reportbytask_status').innerHTML='';document.getElementById('byTasksdate').value='';document.getElementById('byTaskedate').value='';document.getElementById('byTaskGoButton').style.display='none';YAHOO.nextide.container.panel30.show();" id="reportByTaskButton" style='display:none'>
-                    <input type=button value="Report By Project" onclick="document.getElementById('projectreportdateranges').innerHTML='';document.getElementById('reportbyproject_status').innerHTML='';document.getElementById('byProjectsdate').value='';document.getElementById('byProjectedate').value='';document.getElementById('byProjectGoButton').style.display='none';YAHOO.nextide.container.panel50.show();" id="reportByProjectButton" style='display:none'><br>
+                    <input type=button value="Report By Project" onclick="document.getElementById('projectreportdateranges').innerHTML='';document.getElementById('reportbyproject_status').innerHTML='';document.getElementById('byProjectsdate').value='';document.getElementById('byProjectedate').value='';document.getElementById('byProjectGoButton').style.display='none';YAHOO.nextide.container.panel50.show();" id="reportByProjectButton" style='display:none'>
                     <input type=button value="Free Form Data" onclick="document.getElementById('freeformreportdateranges').innerHTML='';document.getElementById('reportbyfreeform_status').innerHTML='';document.getElementById('byFreeFormsdate').value='';document.getElementById('byFreeFormedate').value='';document.getElementById('byFreeFormGoButton').style.display='none';YAHOO.nextide.container.panel60.show();" id="reportByFreeFormButton" style='display:none'>
 
                 </td></tr>
