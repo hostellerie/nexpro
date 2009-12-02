@@ -2,19 +2,13 @@
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
 // | nexContent Plugin v2.3.0 for the nexPro Portal Server                     |
-// | October 9, 2009                                                           |
+// | December 2009                                                             |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
 // | install_defaults.php                                                      |
-// |                                                                           |
-// | Initial Installation Defaults used when loading the online configuration  |
-// | records. These settings are only used during the initial installation     |
-// | and not referenced any more once the plugin is installed.                 |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2007-2009 by the following authors:                         |
-// | Blaine Lang            - Blaine.Lang@nextide.ca                           |
-// | Randy Kolenko          - Randy.Kolenko@nextide.ca                         |
-// | Eric de la Chevrotiere - Eric.delaChevrotiere@nextide.ca                  |
+// | Copyright (C) 2007-2010 by the following authors:                         |
+// | Blaine Lang            - Blaine DOT Lang AT nextide DOT ca                |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |

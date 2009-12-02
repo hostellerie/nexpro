@@ -2,15 +2,13 @@
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
 // | nexTime Plugin v1.2.0 for the nexPro Portal Server                        |
-// | Date: Sept. 23, 2009                                                      |
+// | December 2009                                                             |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
-// | base_table_class.php - base table class for nextime                       |
+// | base_table_class.php                                                      |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2009 by the following authors:                              |
-// |  Author: Randy Kolenko   - randy@nextide.ca                               |
-// +---------------------------------------------------------------------------+
-// | Base table class which each table will simply extend                      |
+// | Copyright (C) 2007-2010 by the following authors:                         |
+// | Randy Kolenko          - Randy DOT Kolenko AT nextide DOT ca              |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |
@@ -28,7 +26,7 @@
 // | Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.           |
 // |                                                                           |
 // +---------------------------------------------------------------------------+
-
+//
 class TABLE{
     var $fulltablename;     // table name
     var $tablename;         // alias name

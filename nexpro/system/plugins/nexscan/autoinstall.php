@@ -1,14 +1,14 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexScan v1.0.0 - CSS Scan Plugin for nexPro                               |
-// | November 19, 2009                                                         |
+// | nexScan Plugin v1.0.0 for the nexPro Portal Server                        |
+// | December 2009                                                             |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
 // | autoinstall.php                                                           |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2008 by the following authors:                              |
-// | Eric de la Chevrotiere - Eric.delaChevrotiere@nextide.ca                  |
+// | Copyright (C) 2007-2010 by the following authors:                         |
+// | Eric de la Chevrotiere - Eric DOT delaChevrotiere AT nextide DOT ca       |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |

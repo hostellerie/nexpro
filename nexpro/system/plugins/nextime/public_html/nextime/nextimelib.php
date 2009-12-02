@@ -2,15 +2,13 @@
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
 // | nexTime Plugin v1.2.0 for the nexPro Portal Server                        |
-// | Date: Sept. 23, 2009                                                      |
+// | December 2009                                                             |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
-// | reports.php - report generator for the nexTime Plugin                     |
+// | nextimelib.php                                                            |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2009 by the following authors:                              |
-// |  Author: Randy Kolenko   - randy@nextide.ca                               |
-// +---------------------------------------------------------------------------+
-// | This page lets the end user generate the required reports                 |
+// | Copyright (C) 2007-2010 by the following authors:                         |
+// | Randy Kolenko          - Randy DOT Kolenko AT nextide DOT ca              |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |

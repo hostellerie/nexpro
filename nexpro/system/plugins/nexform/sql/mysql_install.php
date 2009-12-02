@@ -1,15 +1,15 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexForm Plugin v2.0.1 for the nexPro Portal Server                        |
-// | May 20, 2008                                                              |
+// | nexForm Plugin v2.2.0 for the nexPro Portal Server                        |
+// | December 2009                                                             |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
-// | nexform_mysql_install_2.0.1.php                                           |
+// | mysql_install.php                                                         |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2007-2008 by the following authors:                         |
-// | Blaine Lang            - Blaine.Lang@nextide.ca                           |
-// | Eric de la Chevrotiere - Eric.delaChevrotiere@nextide.ca                  |
+// | Copyright (C) 2007-2010 by the following authors:                         |
+// | Blaine Lang            - Blaine DOT Lang AT nextide DOT ca                |
+// | Eric de la Chevrotiere - Eric DOT delaChevrotiere AT nextide DOT ca       |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |

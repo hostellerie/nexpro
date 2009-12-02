@@ -3,15 +3,13 @@
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
 // | nexTime Plugin v1.2.0 for the nexPro Portal Server                        |
-// | Date: Sept. 23, 2009                                                      |
+// | December 2009                                                             |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
-// | index.php - base landing page for the timesheet plugin                    |
+// | index.php                                                                 |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2009 by the following authors:                              |
-// |  Author: Randy Kolenko   - randy@nextide.ca                               |
-// +---------------------------------------------------------------------------+
-// | This page provides a list of abilities that the end user can do           |
+// | Copyright (C) 2007-2010 by the following authors:                         |
+// | Randy Kolenko          - Randy DOT Kolenko AT nextide DOT ca              |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |
