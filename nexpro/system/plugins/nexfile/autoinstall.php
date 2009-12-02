@@ -3,14 +3,13 @@
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
 // | nexFile Plugin v3.0.0 for the nexPro Portal Server                        |
-// | Sept 20, 2009                                                             |
+// | December 2009                                                             |
+// | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
 // | autoinstall.php                                                           |
-// |                                                                           |
-// | This file provides helper functions for the automatic plugin install.     |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2007-2009 by the following authors:                         |
-// | Blaine Lang            - Blaine.Lang@nextide.ca                           |
+// | Copyright (C) 2007-2010 by the following authors:                         |
+// | Blaine Lang            - Blaine DOT Lang AT nextide DOT ca                |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |
@@ -28,7 +27,7 @@
 // | Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.           |
 // |                                                                           |
 // +---------------------------------------------------------------------------+
-
+//
 require_once ($_CONF['path'] . 'plugins/nexfile/nexfile.php');
 require_once ($_CONF['path'] . 'plugins/nexfile/autouninstall.php');
 

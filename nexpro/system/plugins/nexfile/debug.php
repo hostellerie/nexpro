@@ -1,14 +1,14 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexFile Plugin v2.2.1 for the nexPro Portal Server                        |
-// | May 20, 2008                                                              |
+// | nexFile Plugin v3.0.0 for the nexPro Portal Server                        |
+// | December 2009                                                             |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
 // | debug.php                                                                 |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2007-2008 by the following authors:                         |
-// | Blaine Lang            - Blaine.Lang@nextide.ca                           |
+// | Copyright (C) 2007-2010 by the following authors:                         |
+// | Blaine Lang            - Blaine DOT Lang AT nextide DOT ca                |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |

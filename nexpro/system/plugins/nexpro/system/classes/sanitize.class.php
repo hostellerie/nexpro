@@ -2,14 +2,16 @@
 
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | Geeklog 1.4                                                               |
+// | nexPro Plugin v2.0.1 for the nexPro Portal Server                         |
+// | December 2009                                                             |
+// | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
 // | sanitize.class.php                                                        |
-// |                                                                           |
-// | Geeklog data filtering or sanitizing class library.                       |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2007-2009 by the following authors:                         |
-// | Authors: Blaine Lang      - blaine AT portalparts DOT com                 |
+// | Copyright (C) 2007-2010 by the following authors:                         |
+// | Blaine Lang            - Blaine DOT Lang AT nextide DOT ca                |
+// | Randy Kolenko          - Randy DOT Kolenko AT nextide DOT ca              |
+// | Eric de la Chevrotiere - Eric DOT delaChevrotiere AT nextide DOT ca       |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |

@@ -1,14 +1,14 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexMenu Plugin v3.2 for the nexPro Portal Server                          |
-// | Sept 16, 2009                                                             |
+// | nexMenu Plugin v2.5.1 for the nexPro Portal Server                        |
+// | December 2009                                                             |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
 // | functions.inc                                                             |
 // +---------------------------------------------------------------------------+
-// | Copyright (C) 2007-2008 by the following authors:                         |
-// | Blaine Lang            - Blaine.Lang@nextide.ca                           |
+// | Copyright (C) 2007-2010 by the following authors:                         |
+// | Blaine Lang            - Blaine DOT Lang AT nextide DOT ca                |
 // +---------------------------------------------------------------------------+
 // |                                                                           |
 // | This program is free software; you can redistribute it and/or             |
