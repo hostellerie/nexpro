@@ -41,6 +41,10 @@ $CONF_NS['types_to_scan'] = array ('.php', '.inc', '.thtml', '.html', '.js');   
 $_TABLES['nxscan_cssscan']  = $_DB_table_prefix . 'nxscan_cssscan';
 $_TABLES['nxscan_options']  = $_DB_table_prefix . 'nxscan_options';
 
+$CONF_NS['dependent_plugins']=array(
+    'nexpro'    => '2.1.0'
+);
+
 
 require_once $_CONF['path_system'] . 'classes/config.class.php';
 $nexscan_config = config::get_instance();
