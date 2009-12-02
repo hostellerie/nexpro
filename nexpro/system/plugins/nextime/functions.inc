@@ -53,7 +53,7 @@ function plugin_geticon_nextime()
 {
     global $_CONF;
 
-    //return $_CONF['layout_url'] . '/nextime/images/admin/nextime.gif';
+    return $_CONF['layout_url'] . '/nextime/images/admin/nextime.gif';
 }
 
 
