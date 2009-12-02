@@ -41,6 +41,22 @@ else
 require_once ($_CONF['path'] . 'plugins/nexscan/nexscan.php');
 require_once ($_CONF['path'] . 'plugins/nexscan/autouninstall.php');
 
+
+/**
+* Returns the URL of the plugin's icon
+*
+* @return   string      URL of the icon
+*
+*/
+function plugin_geticon_nexscan()
+{
+    global $_CONF;
+
+    return $_CONF['site_admin_url'] . '/plugins/nexscan/images/nexscan.gif';
+}
+
+
+
 /**
 * returns the main option for this plugin
 
@@ -90,7 +106,7 @@ function plugin_cclabel_nexscan()
     global $_TABLES, $_CONF,$LANG_NS01;
 
     if (SEC_inGroup('Root')) {
-        return array($LANG_NS01['adminmenutitle'],$_CONF['site_admin_url'] . "/plugins/nexscan/index.php",$_CONF['layout_url'] . '/nexscan/images/nexscan.png');
+        return array($LANG_NS01['adminmenutitle'],$_CONF['site_admin_url'] . "/plugins/nexscan/index.php",$_CONF['site_admin_url'] . '/plugins/nexscan/images/nexscan.gif');
     }
 
 }
