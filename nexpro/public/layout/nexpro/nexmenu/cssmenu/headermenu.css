@@ -46,18 +46,18 @@ CSS Modified to work with glMenu
   line-height:24px;
   text-decoration:none;
   text-indent:5px;
-  border:1px solid #FFF;
-  border-width:1px 0px 1px 1px;
+  border:0px solid #FFF;
+  border-width:1px 1px 0px 0px;
   white-space:nowrap;
   padding-right:25px;
 }
 
 /* Set up the sub level borders */
 #pmenu li ul li a, #pmenu li ul li a:visited {
-    border-width:0px 1px 1px 1px;
+    border-width:1px 1px 0px 0px;
 }
 #pmenu li a.enclose, #pmenu li a.enclose:visited {
-    border-width:1px;
+    border-width:1px 1px 0px 0px;
 }
 
 /* Set up the list items */
@@ -75,6 +75,7 @@ CSS Modified to work with glMenu
 #pmenu li:hover > a {
   background:#335EA8;
   color:#FFFFFF;
+  text-decoration: none;
 }
 
 /* Set up the sublevel lists with a position absolute for flyouts and overrun padding. The transparent gif is for IE to work */
