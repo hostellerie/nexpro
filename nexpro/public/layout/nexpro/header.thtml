@@ -2,6 +2,7 @@
 <html{lang_attribute}{xmlns}>
 <head>
 <title>{page_title_and_site_name}</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
 <meta http-equiv="Content-Script-Type" content="text/javascript"{xhtml}>
 <meta http-equiv="Content-Style-Type" content="text/css"{xhtml}>
 <!-- link rel="SHORTCUT ICON" href="{site_url}/favicon.ico" -->
