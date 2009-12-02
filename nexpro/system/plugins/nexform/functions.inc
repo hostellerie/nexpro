@@ -175,6 +175,7 @@ function plugin_upgrade_nexform() {
 
     switch ($curversion) {
         case '2.0.0':
+        case '1.2.0':
             if (nexform_upgrade_201() == 0 )  {
                 DB_query("ALTER TABLE {$_TABLES['nxform_fields']} ADD `label_padding` SMALLINT( 1 ) NULL AFTER `col_padding`");
                 DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '2.0.1', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexform' LIMIT 1");
