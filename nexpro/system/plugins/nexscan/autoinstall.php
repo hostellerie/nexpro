@@ -138,16 +138,44 @@ function plugin_postinstall_nexscan($pi_name)
 */
 function plugin_compatible_with_this_version_nexscan($pi_name)
 {
-    global $_CONF, $_DB_dbms;
+    global $_CONF, $_DB_dbms, $_TABLES, $CONF_NS;
 
+    $install_flag=true;
+
+    if(!function_exists('NXCOM_normalizeVersionNumbers')){
+        $install_flag=false;
+        COM_errorLog ('The nexpro plugin must be installed and enabled for nexTime to work.  Please install and enable the nexpro plugin before continuing to install nexTime');
+    }else{
+        foreach($CONF_NS['dependent_plugins'] as $plugin=>$required_version){
+            $sql="SELECT pi_enabled, pi_version from {$_TABLES['plugins']} WHERE pi_name='{$plugin}'";
+            $res=DB_query($sql);
+            list($pi_enabled, $pi_version)=DB_fetchArray($res);
+            $pi_enabled=intval($pi_enabled);
+            $pi_version=floatval($pi_version);
+
+            $arr=array($pi_version,$required_version);
+            $arr=NXCOM_normalizeVersionNumbers($arr);
+
+            if(!version_compare($arr[0], $arr[1],">=")){
+                COM_errorLog ('The ' . $plugin . ' plugin must have a minimum of ' . $required_version . ' for nexTime to work.  Please install and enable the '. $plugin .' v'.$required_version.' plugin before continuing to install nexTime');
+                $install_flag=false;
+            }
+            if($pi_enabled==0){
+               COM_errorLog ('The ' . $plugin . ' plugin must be installed/enabled for nexTime to work.  Please install and enable the '. $plugin .' v'.$required_version.' plugin before continuing to install nexTime');
+               $install_flag=false;
+            }
+        }
+    }
     // check if we support the DBMS the site is running on
     $dbFile = $_CONF['path'] . 'plugins/' . $pi_name . '/sql/'
             . $_DB_dbms . '_install.php';
     if (! file_exists($dbFile)) {
-        return false;
+        $install_flag=false;
     }
 
-    return true;
+    return $install_flag;
 }
+
+
 
 ?>
