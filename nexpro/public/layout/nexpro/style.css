@@ -345,7 +345,11 @@ select {
   padding: 0px;
   margin: 0px;
 }
-.block-box-left,
+.block-box-left {
+  border: 1px solid #2A4DAB;
+  border-collapse: collapse;
+  width: 150px;
+}
 .block-box-right {
   border: 1px solid #2A4DAB;
   border-collapse: collapse;
@@ -373,7 +377,7 @@ select {
 .block-bg-spreader {
   /* this is making sure that the blocks have a minimum width */
   background:transparent;
-  width:180px;
+  width:150px;
   height:1px;
 }
 .block-content,
@@ -389,9 +393,9 @@ select {
   background: #FFFFFF;
   color:#002280;
   font-size: 0.9em;
-  padding-bottom:2px;
-  padding-top:2px;
-  padding-left:10px;
+  padding-bottom:0px;
+  padding-top:0px;
+  padding-left:0px;
   clear:both
 }
 
@@ -408,7 +412,7 @@ select {
 .block-content-left a:hover {
   background:transparent;
   color:#296DC1;
-  text-decoration: underline;
+  text-decoration: none;
 }
 .block-content-left a:active {
   background:transparent;
