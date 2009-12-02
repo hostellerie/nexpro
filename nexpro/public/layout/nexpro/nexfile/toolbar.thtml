@@ -1,0 +1,34 @@
+  <div class="nexfiletoolbar" style="margin-top:5px;margin-right:4px;padding:5px;display:{hideheader};">
+      <div style="float:left;display:{hideheader};">
+        {newfolder_menuitem}
+        {newfile_menuitem}
+      </div>
+      <div style="float:left;position:relative;left:50px;">
+          <form name="frmtoolbar" action="{site_url}/nexfile/download.php" method="post" style="margin:0px;">
+              <input type="hidden" name="checkeditems" value="">
+              <input type="hidden" name="checkedfolders" value="">
+              <input type="hidden" name="cid" value="{current_category}">
+              <input type="hidden" name="newcid" value="">
+              <input type="hidden" name="reportmode" value="{report_option}">
+              <div class="floatleft" style="padding-top:5px;">
+                <select id="multiaction" class="disabled_element" name="multiaction" style="width:160px;" onChange="if (checkMultiAction(this.value)) submit(); postSubmitMultiactionResetIfNeed(this.value);" disabled="disabled"></select>
+              </div>
+          </form>
+      </div>
+      <div style="position:relative;bottom:1px;">
+          <div style="display:{hideheader};">
+            <form name="fsearch" style="float:right;margin:0px 0px 0px 10px;" onSubmit="makeAJAXSearch();return false;">
+                <input type="hidden" name="tags" value="{current_searchtags}">
+                <table>
+                    <tr>
+                        <td><input type="text" size="30" name="query" id="searchquery" style="height:16px;padding-top:5px;" value="{search_query}"></td>
+                        <td><input type="button" id="searchbutton" value="Search"></td>
+                    </tr>
+                </table>
+            </form>
+          </div>
+          <div class="tagsearchboxcontainer" style="display:{hideheader};">
+              <div><a id="showsearchtags" href="#">Tags</a></div>
+          </div>
+      </div>
+   </div>

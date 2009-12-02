@@ -1,0 +1,4 @@
+
+<span style="padding-left:{padding_left}px;">
+    <a href="#" onClick="makeAJAXGetFolderListing({catid});return false;">{folder_name}</a><span style="font-size:11pt;font-weight:bold;padding-left:3px; color:#666;">&gt;</span>
+</span>

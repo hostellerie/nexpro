@@ -1,0 +1,72 @@
+            <div id="newfiledialog" style="display:none;">
+                <div id="newfiledialog_heading" class="hd"></div>
+                <div class="bd" style="text-align:left;">
+                    <form name="frmNewFile" method="post" enctype="multipart/form-data">
+                        <input type="hidden" id="newfile_op" name="op" value="savefile">
+                        <input type="hidden" name="tagstore" value="">
+                        <input type="hidden" id="newfile_fid" name="fid" value="">
+                        <input type="hidden" id="cookie_session" name="cookie_session" value="{cookie_session}">
+                        <!-- This is where the file ID is stored after SWFUpload uploads the file and gets the ID back from upload.php -->
+                        <table class="formtable">
+                            <tr>
+                                <td width="30%" style="padding-top:10px;"><label for="filename">File:</label><span class="required">*</span></td>
+                                <td width="70%">
+                                    <div id="fileProgress">
+                                        <div id="fileName"></div>
+                                        <div id="progressBar" class="uploaderprogress"></div>
+                                    </div>
+                                    <div id="uploaderUI" style="width:65px;height:25px;margin-left:5px;float:left"></div>
+                                    <div class="uploadButton" style="float:left">
+                                        <a class="rolloverButton" href="#" onClick="upload(); return false;"></a>
+                                    </div>
+                                    <div id="btnClearUpload" style="padding-left:10px;padding-top:10px;float:left;visibility:hidden;">
+                                        <a href="#" onClick="uploaderInit(); return false;">Clear</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="newfiledialog_filename">
+                                <td width="30%"><label for="filename">Display Name:</label></td>
+                                <td width="70%"><input type="text" id="newfile_displayname" style="width:290px" /></td>
+                            </tr>
+                            <tr id="newfiledialog_folderrow">
+                                <td><label for="category">Parent Folder:</label><span class="required">*</span></td>
+                                <td id="newfile_selcategory"><select id="newfile_category" name="category" style="width:290px" onChange="onCategorySelect(this);">
+                                        {newfile_category_options}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="tags">Tags:</label></td>
+                                <td><div style="padding-bottom:15px;">
+                                        <input id="newfile_tags" type="text" size="40" style="width:290px" />
+                                        <div id="newfile_autocomplete"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr id="newfiledialog_filedesc">
+                                <td style="padding-top:10px;"><label for="filedesc">Description:</label></td>
+                                <td style="padding-top:10px;"><textarea id="newfile_desc" name="filedesc" rows="3" style="font-size:10pt;width:290px"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td><label for="versionnote">Version Notes:</label></td>
+                                <td><textarea id="newfile_notes" name="versionnote" rows="2" style="font-size:10pt;width:290px"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td><label for="notify">Email Notification:</label></td>
+                                <td><input id="updatenotify" name="updatenotify" type="checkbox" value="1">&nbsp;Yes</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="padding:15px 0px;">
+                                    <div class="floatleft required">*&nbsp;Required</div>
+                                    <div class="floatleft" style="width:80%;text-align:center;">
+                                        <input id="btnNewFileSubmit" type="button" value="Submit" onClick="upload(); return false;">
+                                        <span style="padding-left:10px;">
+                                            <input id="btnNewFileCancel" type="button" value="Cancel">
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                     </form>
+                </div>
+            </div>

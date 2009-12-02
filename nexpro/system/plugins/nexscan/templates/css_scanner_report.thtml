@@ -1,0 +1,105 @@
+<div id="progress" style="display: none; float: right; padding: 5px;">
+<img src="{site_admin_url}/plugins/nexscan/images/progress.gif">
+</div>
+
+<a href="#" onClick="history.go(-1);">{LANG_back_to_options}</a><br><br>
+
+<div id="result_div">
+</div>
+
+<script type="text/javascript">
+
+var scan_flag = true;
+var scan_num = 0;
+
+function toggle_class_report(classname) {
+    var div = document.getElementById(classname + '_details');
+    var img = document.getElementById(classname + '_arrow');
+
+    if (div.style.display == 'none') {
+        div.style.display = '';
+        img.src = '{site_admin_url}/plugins/nexscan/images/arrow-down.gif';
+    }
+    else {
+        div.style.display = 'none';
+        img.src = '{site_admin_url}/plugins/nexscan/images/arrow-right.gif';
+    }
+}
+
+function scan_newwindow(url) {
+    window.open(url,'_blank',"height=600,width=800,status=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,resizable=yes");
+}
+
+function scan_css() {
+    scan_num = 0;
+    GetCssReport.request(scan_num);
+}
+
+//ajax function start here
+var GetCssReport = {
+    handleSuccess:function(o) {
+
+        if(o.responseXML !== undefined) {
+            var root    = o.responseXML.documentElement;
+            //var retval  = root.getElementsByTagName('retval')[0].firstChild.nodeValue;
+            //var retval  = root.getElementsByTagName('retval')[0].firstChild.nodeValue;
+            var retvalpnode = root.getElementsByTagName('retval')[0];
+            var retval = '';
+            for (var i = 0; i < retvalpnode.childNodes.length; i++) {
+                retval += retvalpnode.childNodes[i].nodeValue;
+            }
+
+            if (retval != -1) {
+                document.getElementById('result_div').innerHTML += retval;
+                GetCssReport.request(++scan_num);
+            }
+            else {
+                document.getElementById('progress').style.display = 'none';
+            }
+        }
+    },
+
+    handleFailure:function(o) {
+    },
+
+    request:function(scanNum) {
+        document.getElementById('progress').style.display = '';
+        YAHOO.util.Connect.asyncRequest('GET', '{site_admin_url}/plugins/nexscan/index.php?op=scanfile&scan_id={scan_id}&scan_num=' + scanNum, GetCssReportCallback);
+    }
+}
+
+var GetCssReportCallback = {
+    success: GetCssReport.handleSuccess,
+    failure: GetCssReport.handleFailure,
+    timeout: 600000,
+    scope: GetCssReport
+}
+
+if(useYuiLoader){
+    (function() { 
+        var loader = new YAHOO.util.YUILoader({ 
+            base: YUIBaseURL+'/', 
+            require: ["event","connection","container","dom","yahoo","yuiloader"], 
+            loadOptional: true, 
+            filter: "MIN", 
+            allowRollup: true, 
+            onFailure: function(o) { 
+                  alert("The required javascript libraries could not be loaded.  Please refresh your page and try again."); 
+            },
+            onSuccess: function() { 
+                init_scan();
+            } 
+        }); 
+     
+    // Load the files using the insert() method. 
+    loader.insert(); 
+    })(); 
+}else{
+    init_scan();
+}
+
+function init_scan() {
+    YAHOO.util.Event.onDOMReady(scan_css);
+}
+
+</script>

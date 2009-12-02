@@ -1,0 +1,24 @@
+            <div id="broadcastDialog" style="display:none;">
+                <div class="hd">Send out a Broadcast Notification</div>
+                <div class="pluginInfo alignleft" style="color:#000;font-size:90%">Broadcast email will be sent to all site members that have view access to this folder alerting them. A link to this file will be included.</div>
+                <div class="bd" style="text-align:left;">
+                    <form id="frmBroadcast" name="frmBroadcast" method="post">
+                        <input type="hidden" name="fid" value="">
+                        <input type="hidden" name="cid" value="">
+                        <table class="formtable">
+                            <tr>
+                                <td><label for="parent">Message:</label>&nbsp;</td>
+                                <td><textarea name="message" rows="4" style="width:300px;font-size:10pt;"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align:center;padding:15px;">
+                                    <input id="btnBroadcastSubmit" type="button" value="Send">
+                                    <span style="padding-left:10px;">
+                                        <input id="btnBroadcastCancel" type="button" value="cancel">
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                     </form>
+                </div>
+            </div>
