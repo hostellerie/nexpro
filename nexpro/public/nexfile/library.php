@@ -36,7 +36,7 @@ if (strpos ($_SERVER['PHP_SELF'], 'library.php') !== false) {
 $paddingsize = $_FMCONF['paddingsize'];
 $filedescriptionOffset = $_FMCONF['filedescriptionOffset'];
 
-require_once( $_CONF['path_system'] . 'classes/tagcloud.class.php' );
+require_once( $_CONF['path_system'] . 'nexpro/classes/tagcloud.class.php' );
 $actionurl = "{$_CONF['site_url']}/nexfile/index.php";
 $validReportModes = array (
     'latestfiles',
