@@ -927,7 +927,7 @@ function nexdoc_deletefile($fid) {
         list ($cid,$title,$version,$submitter,$fsize) = DB_fetchArray($query);
         if ($submitter == $_USER['uid'] OR fm_getPermission($cid,'admin')) {
             // Update site master tags table
-            require_once( $_CONF['path_system'] . 'classes/tagcloud.class.php' );
+            require_once( $_CONF['path_system'] . 'nexpro/classes/tagcloud.class.php' );
             $tagcloud = new nexfileTagCloud();
             $tagcloud->clear_tags($fid);
 

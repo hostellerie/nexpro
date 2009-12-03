@@ -44,7 +44,7 @@ function plugin_autouninstall_nexfile ()
 {
 
     global $_TABLES,$_CONF;
-    require_once( $_CONF['path_system'] . 'classes/tagcloud.class.php' );
+    require_once( $_CONF['path_system'] . 'nexpro/classes/tagcloud.class.php' );
 
     $query = DB_query("SELECT itemid FROM {$_TABLES['tagworditems']} WHERE type = 'nexfile'");
     if (DB_numRows($query) > 0) {

@@ -1,3 +1,5 @@
+Dec 3/2009 (Blaine)
+    Moved the tagcoud.class.php file to under system/nexpro/classes and updated all code references
 Nov 27/2009 (Randy)
     Updates to nexPro plugin to fail the installation in the event the file structure for the nexPro plugin was not done correctly.
 

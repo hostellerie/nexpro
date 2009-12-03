@@ -170,7 +170,7 @@ function plugin_compatible_with_this_version_nexpro($pi_name)
     //now here we are going to check if all of the files are installed in the right areas:
     $farray=array(
         $_CONF['path'].'system/nexpro/classes/multiupload.class.php',
-        $_CONF['path'].'system/nexpro/classes/nexfilter.class.php',
+        $_CONF['path'].'system/nexpro/classes/tagcloud.class.php',
         $_CONF['path'].'system/nexpro/classes/TreeMenu.php',
         $_CONF['path'].'system/nexpro/classes/nexreport/formatter.class.php',
         $_CONF['path'].'system/nexpro/classes/nexreport/report.php',
