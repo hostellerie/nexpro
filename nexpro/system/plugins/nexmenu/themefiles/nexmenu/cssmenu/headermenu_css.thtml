@@ -13,7 +13,6 @@ CSS Modified to work with glMenu
 =================================================================== */
 
 #headermenu {
-  font-size:9pt;
   margin:0px;
   position:relative;
   width:100%;
@@ -41,7 +40,7 @@ CSS Modified to work with glMenu
 #pmenu a, #pmenu a:visited {
   display:block;
   width:120px;
-  font-size:9pt;
+  font-size:11px;
   color:{header_fgcolor};
   height:25px;
   line-height:24px;
@@ -105,6 +104,7 @@ CSS Modified to work with glMenu
   top:0;
   left:0;
   z-index:100;
+  font-size:1em;
 }
 
 /* The following CSS Styles are only requried for IE 5.5 and 6 */

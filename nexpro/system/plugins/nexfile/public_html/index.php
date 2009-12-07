@@ -42,7 +42,7 @@ $fid = $_CLEAN['int']['fid'];
 if ($fid > 0 AND empty($cid)) {
     $cid = DB_getItem($_TABLES['nxfile_files'],'cid',"fid=$fid AND status=1");
     $pid = DB_getItem($_TABLES['nxfile_categories'],'pid',"cid=$cid");
-    if (empty($cid) OR !fm_getPermission($cid,'view') OR !fm_getPermission($pid,'view')) {
+    if (empty($cid) OR !fm_getPermission($cid,'view') OR ($pid > 0 AND !fm_getPermission($pid,'view'))) {
         $fid = 0;
         $cid = 0;
     }
@@ -107,6 +107,7 @@ $tpl->set_var('action_url', $actionurl);
 $tpl->set_var('ajax_server_url', "{$_CONF['site_url']}/nexfile/ajax/server.php");
 $tpl->set_var('actionurl_dir', "{$_CONF['site_url']}/nexfile");
 $tpl->set_var('imgset', "{$_CONF['layout_url']}/nexfile/images");
+$tpl->set_var('cookie_session',$_COOKIE[$_CONF['cookie_session']]);
 $tpl->set_var('current_category', $cid);
 $tpl->set_var('initialfid', $fid);
 $tpl->set_var('initialcid', $cid);
