@@ -37,14 +37,11 @@ $charset = COM_getCharset();
 
 // Code added to handle the issue with the default $_COOKIE array being sent by the Flash Image uploader
 // We can sent the cookies in the post form data and then extract and filter the data to rebuild the COOKIE array
-// Note: IE does not have this issue - review the note
-if ($_POST['op'] == 'savefile' OR (!isset($_USER['uid']) AND isset($_POST['cookie']))) {
-    $cookievars = explode(';',$_POST['cookie']);
-    foreach ($cookievars as $cookieparts) {
-        $cookie = explode('=',$cookieparts);
-        $cookie[0] = trim($cookie[0]);
-        $_COOKIE[$cookie[0]] = COM_applyFilter($cookie[1]);
-    }
+// Also now need this to support Geeklog 1.6.1 that enables HTTP only cookie support.
+// Javascript no longer has access to the gl_session id in the cookie - issue only apparent in the YUI upload form
+if ((!isset($_USER['uid']) AND isset($_POST['cookie_session']))) { 
+
+    $_COOKIE[$_CONF['cookie_session']] = COM_applyFilter($_POST['cookie_session']);
 
     // Have a valid session id now from the COOKIE - ReInitialize the session data
     if (isset($_COOKIE[$_CONF['cookie_session']])) {
@@ -55,6 +52,7 @@ if ($_POST['op'] == 'savefile' OR (!isset($_USER['uid']) AND isset($_POST['cooki
             $_RIGHTS = explode(',', SEC_getUserPermissions());
         }
     }
+
 }
 
 //set up the user
@@ -102,7 +100,7 @@ switch ($op) {
 
         if ($reportmode == 'notifications') {
             $data['retcode'] = 200;
-            $data .= '<cid>'.$cid.'</cid>';
+            $data['cid'] = $cid;
             $data['activefolder'] = nexdoc_displayActiveFolder($cid,$reportmode);
             $data['displayhtml'] = nexdoc_generateNotificationsReport();
             $data['header'] = nexdoc_formatHeader($cid,$reportmode);
@@ -264,7 +262,7 @@ switch ($op) {
         $cid = $filter->getCleanData('int',$_GET['cid']);
         $tpl = new Template($_CONF['path_layout'] . 'nexfile');
         $tpl->set_file('form','newfile_form.thtml');
-        $tpl->set_var('newfile_category_options',nexdoc_recursiveAccessOptions('admin',$cid));
+        $tpl->set_var('newfile_category_options',nexdoc_recursiveAccessOptions(array('upload','upload_dir'),$cid));
         $tpl->parse ('output', 'form');
         $data['displayhtml'] = $tpl->finish ($tpl->get_var('output'));
         $retval = json_encode($data);
@@ -914,11 +912,11 @@ switch ($op) {
             $data['displayhtml'] = nexdocsrv_generateFileListing($listingFolder,$reportmode);
 
         } elseif (nexdoc_deletefile($fid)) {   /* Includes security tests that user can delete this file */
-            $ajaxBackgroundMode = true;
+            if (!in_array($reportmode,$validReportModes))  $ajaxBackgroundMode = true;
             $data['retcode'] = 200;
             $message = '<div class="pluginInfo aligncenter" style="width:100%;height:60px;padding-top:30px;">';
             $message .= 'File was sucessfully deleted. This message will clear in a couple seconds</div>';
-            $data['displayhtml'] = nexdocsrv_generateFileListing($listingFolder,'');
+            $data['displayhtml'] = nexdocsrv_generateFileListing($listingFolder,$reportmode);
             if (is_array($lastRenderedFiles) AND count($lastRenderedFiles) > 0) {
                 $data['lastrenderedfiles'] = serialize($lastRenderedFiles);
             }
@@ -953,7 +951,7 @@ switch ($op) {
                         }
                     }
                 }
-                $ajaxBackgroundMode = true;
+                if (!in_array($reportmode,$validReportModes))  $ajaxBackgroundMode = true;
             }
 
             if ($_POST['reportmode'] == 'incoming') {
@@ -979,7 +977,7 @@ switch ($op) {
                         nexdoc_deletefile($id);
                     }
                 }
-                $ajaxBackgroundMode = true;
+                if (!in_array($reportmode,$validReportModes))  $ajaxBackgroundMode = true;
             }
 
             $data['retcode'] = 200;

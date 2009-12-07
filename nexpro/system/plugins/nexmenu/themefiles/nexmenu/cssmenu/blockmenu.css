@@ -40,8 +40,9 @@ CSS Modified to work with glMenu
 }
 
 #menuitem_current a {
-  color:#296DC1;
+  color:#145FF5;
   background-color:#FFFFFF;
+  text-decoration: underline;
 }
 
 .subtable li#menuitem_current a {
@@ -53,15 +54,16 @@ CSS Modified to work with glMenu
 .menu a,
 .menu a:visited {
   display:block;
-  text-decoration:none;
-  height:25px;
-  line-height:25px;
-  width:149px;
-  color:#335EA8;
+  height:20px;
+  line-height:20px;
+  width:145px;
+  color:#145FF5;
   background:#FFFFFF;
   text-indent:5px;
-  border:1px solid #FFFFFF;
-  border-width:0px 1px 1px 0px;
+  border:0px solid #145FF5;
+  border-width:0px 0px 0px 0px;
+  padding-left: 5px;
+  text-decoration: none;
 }
 
 .menu table {
@@ -79,8 +81,8 @@ CSS Modified to work with glMenu
 
 /* style the link hover */
 .menu a:hover {
-  color:#296DC1;
-  background:#FFFFFF;
+  color:#FCFCFC;
+  background:#145FF5;
 }
 
 /* hide the sub levels and give them a positon absolute so that they take up no room */
@@ -118,7 +120,7 @@ a.drop:link, a.drop:visited {
 }
 
 a.drop:hover {
-    background:#FFFFFF url(../images/fly.gif) center right no-repeat;
+    background:#145FF5 url(../images/fly.gif) center right no-repeat;
 }
 
 .menu .subtable li > a {

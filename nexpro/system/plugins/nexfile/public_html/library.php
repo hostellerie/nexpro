@@ -249,7 +249,7 @@ function nexdoc_displayFileListing($template,$cid=0,$reportmode='',$level,$folde
         } else {
             $template->set_var('show_foldername','none');
         }
-        while ( list($fid,$subfolderId,$title,$fname,$date,$version,$submitter,$status,$description,$category,$pid,$changedby_uid) = DB_fetchARRAY($resFiles)) {
+        while ( list($fid,$subfolderId,$title,$fname,$date,$version,$submitter,$status,$description,$category,$pid,$changedby_uid,$fsize) = DB_fetchARRAY($resFiles)) {
             if (!in_array($fid,$files)) {
                 $tags = $tagcloud->get_itemtags($fid);
                 $template->set_var('padding_left',($level * $paddingsize) + $paddingsize );
@@ -950,6 +950,7 @@ function nexdocsrv_filedetails($fid,$reportmode='') {
         $page->set_var ('LANG_VERSION_NOTE',$LANG_FM02['VERSION_NOTE']);
         $page->set_var ('LANG_DOWNLOAD',$LANG_FM02['DOWNLOAD']);
         $page->set_var ('LANG_DOWNLOAD_MESSAGE',$LANG_nexfile['msg61']);
+        $page->set_var ('LANG_LINK_MESSAGE',$LANG_nexfile['msg65']);
         $page->set_var ('LANG_LASTUPDATED',$LANG_nexfile['msg62']);
         $page->set_var ('current_ver_note',nl2br($curVerNotes));
 
@@ -1183,7 +1184,9 @@ function nexdocsrv_generateLeftSideNavigation($data='') {
         }
     }
 
-    $data = nexfile_customLeftsideNavigation($data);
+	if (function_exists(nexfile_customLeftsideNavigation)) {
+		$data = nexfile_customLeftsideNavigation($data);
+	}
 
     return $data;
 
@@ -1441,7 +1444,7 @@ function nexdoc_getFileListingSQL($cid,$reportmode) {
     }
 
     $sql = "SELECT file.fid as fid,file.cid,file.title,file.fname,file.date,file.version,file.submitter,file.status,";
-    $sql .= "detail.description,category.name,category.pid,status_changedby_uid as changedby_uid ";
+    $sql .= "detail.description,category.name,category.pid,status_changedby_uid as changedby_uid, size ";
     $sql .= "FROM {$_TABLES['nxfile_files']} file ";
     $sql .= "LEFT JOIN {$_TABLES['nxfile_filedetail']} detail ON detail.fid=file.fid ";
     $sql .= "LEFT JOIN {$_TABLES['nxfile_categories']} category ON file.cid=category.cid ";
@@ -1464,7 +1467,7 @@ function nexdoc_getFileListingSQL($cid,$reportmode) {
 
     } elseif ($reportmode == 'incoming') {
         $sql = "SELECT id as fid, 0 as cid, orig_filename as title,  queue_filename as fname, timestamp as date, 0 as version, ";
-        $sql .= "uid as submitter, 0 as status, 'N/A' as description, 'Incoming Files' as name, 0 as pid, 0 as changedby_uid ";
+        $sql .= "uid as submitter, 0 as status, 'N/A' as description, 'Incoming Files' as name, 0 as pid, 0 as changedby_uid, size ";
         $sql .= "FROM {$_TABLES['nxfile_import_queue']} ";
         if (!SEC_inGroup('nexfile Admin')) {
             $sql .= "WHERE uid=$uid ";
@@ -1482,7 +1485,7 @@ function nexdoc_getFileListingSQL($cid,$reportmode) {
     } elseif ($reportmode == 'approvals') {
         // Determine if this user has any submitted files that they can approve
         $sql = "SELECT file.id,file.cid,file.title,file.fname,file.date,file.version,file.submitter,file.status,";
-        $sql .= "file.description,category.name,category.pid,0 as changedby_uid ";
+        $sql .= "file.description,category.name,category.pid,0 as changedby_uid, size ";
         $sql .= "FROM {$_TABLES['nxfile_filesubmissions']} file ";
         $sql .= "LEFT JOIN {$_TABLES['nxfile_categories']} category ON file.cid=category.cid ";
         if (!SEC_inGroup('nexfile Admin')) {
@@ -1715,7 +1718,7 @@ function nexdoc_generateNotificationsReport() {
 
 
 function nexdocsrv_getMoreActions($op) {
-
+    global $_USER;
     $retval = '<option value="0">More Actions ...</option>';
     switch ($op) {
         case 'approvals':
@@ -1730,12 +1733,16 @@ function nexdocsrv_getMoreActions($op) {
             $retval .= '<option value="delete">Delete selected Notifications</option>';
             break;
         default:
-            $retval .= '<option value="delete">Delete selected files</option>';
-            $retval .= '<option value="move">Move selected files</option>';
-            $retval .= '<option value="subscribe">Subscribe to update notifications</option>';
-            $retval .= '<option value="archive">Download selected files as an archive</option>';
-            $retval .= '<option value="markfavorite">Mark Favorite</option>';
-            $retval .= '<option value="clearfavorite">Clear Favorite</option>';
+            if (COM_isAnonUser()) {
+                $retval .= '<option value="archive">Download as an archive</option>';
+            } else {
+                $retval .= '<option value="delete">Delete selected files</option>';
+                $retval .= '<option value="move">Move selected files</option>';
+                $retval .= '<option value="subscribe">Subscribe to update notifications</option>';
+                $retval .= '<option value="archive">Download as an archive</option>';
+                $retval .= '<option value="markfavorite">Mark Favorite</option>';
+                $retval .= '<option value="clearfavorite">Clear Favorite</option>';
+            }
             break;
 
     }
