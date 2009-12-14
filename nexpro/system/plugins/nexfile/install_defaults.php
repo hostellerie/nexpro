@@ -78,6 +78,7 @@ function plugin_initconfig_nexfile()
 
     unset($_FMCONF['defCatGroup']);     // New format - can not merge
     if (!empty($_FMCONF['excludeGroups'])) {
+        $_FMCONF['excludeGroups'] = str_replace("'",'',$_FMCONF['excludeGroups']);  // Remove the quotes
         $_FMCONF['excludeGroups'] = explode(',',$_FMCONF['excludeGroups']);
     }
 
@@ -159,7 +160,6 @@ function plugin_initconfig_nexfile()
         $c->add('fs_perms', NULL, 'fieldset', 0, 1, NULL, 0, true, 'nexfile');
         $c->add('excludeGroups',$_FMCONF_DEFAULT['excludeGroups'],'%text',0,1,0,100,true,'nexfile');
         $c->add('includeCoreGroups',$_FMCONF_DEFAULT['includeCoreGroups'],'%text',0,1,0,110,true,'nexfile');
-        $c->add('includeCoreGroups',$_FMCONF_DEFAULT['includeCoreGroups'],'%text',0,1,0,120,true,'nexfile');
 
         $c->add('defOwnerRights', $_FMCONF_DEFAULT['defOwnerRights'],'%text',0,1,NULL,130,TRUE,'nexfile');
         $c->add('defCatGroupRights', $_FMCONF_DEFAULT['defCatGroupRights'],'%text',0,1,NULL,140,TRUE,'nexfile');
