@@ -1182,66 +1182,70 @@ function fm_createCategory($catpid,$catname,$catdesc='',$bypass=false) {
     $errmsg = '';
     // Verify user has admin access rights
     if ($bypass OR fm_getPermission($catpid,'admin')) {
-        // Determine the max folder order and add the new folder to the bottom.
-        $query = DB_query("SELECT max(folderorder) FROM {$_TABLES['nxfile_categories']} WHERE pid = $catpid");
-        list ($maxorder) = DB_fetchArray($query);
-        $maxorder = $maxorder + 10;
-        DB_query("INSERT INTO {$_TABLES['nxfile_categories']} (pid,name,description,folderorder) VALUES ($catpid,'$catname','$catdesc',$maxorder)");
-        $cid = DB_insertId();
-        $catdir = $_FMCONF['storage_path'] . $cid;
-        $error = 0;    // Check for error creating directories. If so - then delete new category record
-        if (!file_exists($catdir)) {
-            $catresult = fm_createCatFolder($catdir);
-            if (!$catresult) {
+        if (DB_count($_TABLES['nxfile_categories'], array('pid','name'), array($catpid,"$catname")) == 0) {
+            // Determine the max folder order and add the new folder to the bottom.
+            $query = DB_query("SELECT max(folderorder) FROM {$_TABLES['nxfile_categories']} WHERE pid = $catpid");
+            list ($maxorder) = DB_fetchArray($query);
+            $maxorder = $maxorder + 10;
+            DB_query("INSERT INTO {$_TABLES['nxfile_categories']} (pid,name,description,folderorder) VALUES ($catpid,'$catname','$catdesc',$maxorder)");
+            $cid = DB_insertId();
+            $catdir = $_FMCONF['storage_path'] . $cid;
+            $error = 0;    // Check for error creating directories. If so - then delete new category record
+            if (!file_exists($catdir)) {
+                $catresult = fm_createCatFolder($catdir);
+                if (!$catresult) {
+                    $errmsg .= sprintf($LANG_FMERR['err12'],$catdir);
+                    $error = 1;
+                } else {
+                    $catinherit = COM_applyFilter($_POST['catinherit'],true);;
+                    if ($catpid > 0 AND $catinherit == 1) {
+                        // Retrieve parent User access records - for each record create a new one for this category
+                        $sql = "SELECT uid,view,upload,upload_direct,upload_ver,approval,admin FROM {$_TABLES['nxfile_access']} "
+                             . "WHERE uid > 0 AND catid = {$catpid}";
+                        $query1 = DB_query($sql);
+                        while ( list($acc_uid,$acc_view,$acc_upload,$acc_uploaddirect,$acc_uploadver,$acc_approval,$acc_admin) = DB_fetchARRAY($query1)) {
+                            $sql = "INSERT INTO {$_TABLES['nxfile_access']} "
+                                 . "(catid,uid,grp_id,view,upload,upload_direct,upload_ver,approval,admin) VALUES "
+                                 . "('$cid','$acc_uid',0,'$acc_view','$acc_upload','$acc_uploaddirect','$acc_uploadver','$acc_approval','$acc_admin')";
+                            DB_query($sql);
+                        }
+                        // Retrieve parent Group access records - for each record create a new one for this category
+                        $sql2 = "SELECT grp_id,view,upload,upload_direct,upload_ver,approval,admin "
+                              . "FROM {$_TABLES['nxfile_access']} WHERE grp_id > 0 AND catid = {$catpid}";
+                        $query2 = DB_query($sql2);
+                        while ( list($acc_grpid,$acc_view,$acc_upload,$acc_uploaddirect,$acc_uploadver,$acc_approval,$acc_admin) = DB_fetchARRAY($query2)) {
+                            $sql3 = "INSERT INTO {$_TABLES['nxfile_access']} "
+                                 . "(catid,uid,grp_id,view,upload,upload_direct,upload_ver,approval,admin) VALUES "
+                                 . "('$cid',0,'$acc_grpid','$acc_view','$acc_upload','$acc_uploaddirect','$acc_uploadver','$acc_approval','$acc_admin') ";
+                            DB_query($sql3);
+                        }
+
+                    } else {
+                        // Create default permissions record for the user that created the category
+                        fm_updateCatPerms($cid,$_FMCONF['defOwnerRights'],$_USER['uid'],"");
+                        fm_updateCatPerms($cid,$_FMCONF['defCatGroupRights'],"",$_FMCONF['defCatGroup'] );
+                    }
+
+                    $catresult = fm_createCatFolder($catdir .'/submissions');
+                    if (!$catresult) {
+                        $errmsg .= sprintf($LANG_FMERR['err14'],$catdir);
+                        $error = 1;
+                    }
+                }
+            } else {
                 $errmsg .= sprintf($LANG_FMERR['err12'],$catdir);
                 $error = 1;
-            } else {
-                $catinherit = COM_applyFilter($_POST['catinherit'],true);;
-                if ($catpid > 0 AND $catinherit == 1) {
-                    // Retrieve parent User access records - for each record create a new one for this category
-                    $sql = "SELECT uid,view,upload,upload_direct,upload_ver,approval,admin FROM {$_TABLES['nxfile_access']} "
-                         . "WHERE uid > 0 AND catid = {$catpid}";
-                    $query1 = DB_query($sql);
-                    while ( list($acc_uid,$acc_view,$acc_upload,$acc_uploaddirect,$acc_uploadver,$acc_approval,$acc_admin) = DB_fetchARRAY($query1)) {
-                        $sql = "INSERT INTO {$_TABLES['nxfile_access']} "
-                             . "(catid,uid,grp_id,view,upload,upload_direct,upload_ver,approval,admin) VALUES "
-                             . "('$cid','$acc_uid',0,'$acc_view','$acc_upload','$acc_uploaddirect','$acc_uploadver','$acc_approval','$acc_admin')";
-                        DB_query($sql);
-                    }
-                    // Retrieve parent Group access records - for each record create a new one for this category
-                    $sql2 = "SELECT grp_id,view,upload,upload_direct,upload_ver,approval,admin "
-                          . "FROM {$_TABLES['nxfile_access']} WHERE grp_id > 0 AND catid = {$catpid}";
-                    $query2 = DB_query($sql2);
-                    while ( list($acc_grpid,$acc_view,$acc_upload,$acc_uploaddirect,$acc_uploadver,$acc_approval,$acc_admin) = DB_fetchARRAY($query2)) {
-                        $sql3 = "INSERT INTO {$_TABLES['nxfile_access']} "
-                             . "(catid,uid,grp_id,view,upload,upload_direct,upload_ver,approval,admin) VALUES "
-                             . "('$cid',0,'$acc_grpid','$acc_view','$acc_upload','$acc_uploaddirect','$acc_uploadver','$acc_approval','$acc_admin') ";
-                        DB_query($sql3);
-                    }
-
-                } else {
-                    // Create default permissions record for the user that created the category
-                    fm_updateCatPerms($cid,$_FMCONF['defOwnerRights'],$_USER['uid'],"");
-                    fm_updateCatPerms($cid,$_FMCONF['defCatGroupRights'],"",$_FMCONF['defCatGroup'] );
-                }
-
-                $catresult = fm_createCatFolder($catdir .'/submissions');
-                if (!$catresult) {
-                    $errmsg .= sprintf($LANG_FMERR['err14'],$catdir);
-                    $error = 1;
-                }
             }
-        } else {
-            $errmsg .= sprintf($LANG_FMERR['err12'],$catdir);
-            $error = 1;
-        }
+            if ($error != 0 ) {
+                DB_query("DELETE FROM {$_TABLES['nxfile_categories']} WHERE cid={$cid}");
+                $cid = 0;
+            }
+            DB_query("UPDATE {$_TABLES['nxfile_usersettings']} set allowable_view_folders = ''");
 
-        if ($error != 0 ) {
-            DB_query("DELETE FROM {$_TABLES['nxfile_categories']} WHERE cid={$cid}");
+        } else {
+            $errmsg .= $LANG_FMERR['err17'];
             $cid = 0;
         }
-
-        DB_query("UPDATE {$_TABLES['nxfile_usersettings']} set allowable_view_folders = ''");
 
     } else {
         $errmsg .= $LANG_FMERR['err16'];

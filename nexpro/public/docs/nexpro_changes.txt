@@ -1,3 +1,12 @@
+Dec 14/2009 (Blaine)
+    Tweaked the CSS for the nexfile plugin to address conflict with nexproject's CSS
+    Added logic to not allow duplicate files being uploaded to same folder
+    Added logic to not allow duplicate folders to be created under same parent
+    Added logic to report duplicates when moving files
+    Fixed issue with 'select all' not working correctly in all cases (single empty folder or single file)
+    Added JS code to handle toggling all files and subfolders if you click on a folder's checkbox
+    Fixed a AJAX issue where multiple AJAX requests were sometimes being triggered
+
 Dec 3/2009 (Blaine)
     Moved the tagcoud.class.php file to under system/nexpro/classes and updated all code references
 Nov 27/2009 (Randy)

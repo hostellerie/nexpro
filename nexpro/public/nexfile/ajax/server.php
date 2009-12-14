@@ -39,7 +39,7 @@ $charset = COM_getCharset();
 // We can sent the cookies in the post form data and then extract and filter the data to rebuild the COOKIE array
 // Also now need this to support Geeklog 1.6.1 that enables HTTP only cookie support.
 // Javascript no longer has access to the gl_session id in the cookie - issue only apparent in the YUI upload form
-if ((!isset($_USER['uid']) AND isset($_POST['cookie_session']))) { 
+if ((!isset($_USER['uid']) AND isset($_POST['cookie_session']))) {
 
     $_COOKIE[$_CONF['cookie_session']] = COM_applyFilter($_POST['cookie_session']);
 
@@ -529,9 +529,11 @@ switch ($op) {
         $data['op'] = 'savefile';
         $data['message'] = '';
         $data['cid'] = $_CLEAN['cid'];
-        if (fm_getPermission($_CLEAN['cid'],'upload_dir') AND !empty($uploadfilename)) {
+        if (DB_count($_TABLES['nxfile_files'], array('cid','fname'), array("{$_CLEAN['cid']}","$uploadfilename")) > 0) {
+            $data['error'] = 'Duplicate File in this folder';
+            $data['retcode'] = 400;
+        } elseif (fm_getPermission($_CLEAN['cid'],'upload_dir') AND !empty($uploadfilename)) {
             if (empty($_CLEAN['filetitle'])) $_CLEAN['filetitle'] = $uploadfilename;
-
             $directory = "{$_FMCONF['storage_path']}{$_CLEAN['cid']}";
             if ( fm_uploadfile($directory,$uploadfilename) ) {
                 if (!get_magic_quotes_gpc()) {
@@ -608,6 +610,7 @@ switch ($op) {
            $data['retcode'] = 400;
            $data['error'] = 'Error: You do not have upload permission for that folder';
        }
+
         $retval = json_encode($data);
         break;
 
@@ -999,26 +1002,51 @@ switch ($op) {
         $fileitems = $filter->getDbData('text',$_POST['checkeditems']);
         $files = explode(',',$fileitems);
 
+        $duplicates = 0;
         $movedfiles = 0;
         $newcid = $filter->getCleanData('int',$_POST['newcid']);
         if ($newcid > 0 AND $uid > 1 ) {
             foreach ($files as $id) {
                 if ($id > 0 ) {
-                    if ($_POST['reportmode'] == 'incoming') {
-                        if (nexdoc_moveQueuefile($id,$newcid)) {
+                    if ($reportmode == 'incoming') {
+                        $fname = DB_getItem($_TABLES['nxfile_import_queue'],'orig_filename',"id={$id}");
+                        $fnameDB = addslashes($fname);  // Need to add slashes for DB call to not fail
+                        if (DB_count($_TABLES['fm_files'], array('cid','fname'), array("$newcid","$fnameDB")) > 0) {
+                            $duplicates++;
+                        } elseif (nexdoc_moveQueuefile($id,$newcid)) {
                             $movedfiles++;
                         }
-                    } elseif (nexdoc_movefile($id,$newcid)) {
-                        $movedfiles++;
+                    } else {
+                        $fname = DB_getItem($_TABLES['nxfile_files'],'fname',"fid=$id");
+                        $fnameDB = addslashes($fname);  // Need to add slashes for DB call to not fail
+                        if (DB_count($_TABLES['nxfile_files'], array('cid','fname'), array("$newcid","$fnameDB")) > 0) {
+                            $duplicates++;
+                        } elseif (nexdoc_movefile($id,$newcid)) {
+                            $movedfiles++;
+                        }
                     }
                 }
             }
         }
+
         if ($movedfiles > 0) {
-            $message = "Successfully moved $movedfiles files to this folder";
+            $message = "Successfully moved $movedfiles files to this folder.";
+            if ($duplicates > 0) {
+                if ($duplicates == 1) {
+                    $message .= "&nbsp;File could not be moved as it is a duplicate.";
+                } else {
+                    $message .= "&nbsp;$duplicates files could not be moved as they are duplicates.";
+                }
+            }
             $cid = $newcid;
         } elseif ($newcid == 0) {
            $message = 'Unable to move any files - Invalid new folder selected';
+        } elseif ($duplicates > 0) {
+            if ($duplicates == 1) {
+                $message = "File could not be moved as it is a duplicate.";
+            } else {
+                $message = "$duplicates files could not be moved as they are duplicates.";
+            }
         } else {
            $message = 'Unable to move any files - invalid folder or insufficient rights';
         }

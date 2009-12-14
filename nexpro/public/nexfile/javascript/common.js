@@ -1824,23 +1824,34 @@ function toggleCheckedItems(obj,files) {
                     } catch (e) {}
                 document.frmfilelisting.chkfile.checked = obj.checked ? true : false;
             }
+
         } catch(e) {
-            // Check or un-check the folder checkboxes
-            if (document.frmfilelisting.chkfolder) {
-                for (i=0; i<document.frmfilelisting.chkfolder.length; i++) {
-                    document.frmfilelisting.chkfolder[i].checked = obj.checked ? true : false;
-                }
-            }
-            // Check or un-check the folder checkboxes
-            if (document.frmfilelisting.chkfolder) {
-                for (i=0; i<document.frmfilelisting.chkfolder.length; i++) {
-                    document.frmfilelisting.chkfolder[i].checked = obj.checked ? true : false;
+
+            try {
+                if (document.frmfilelisting.chkfile.value > 0) {
+                    document.frmfilelisting.chkfile.checked = obj.checked ? true : false;
                     if (obj.checked) {
-                        var itemvalue = document.frmfilelisting.chkfolder[i].value;
-                        selectedFoldersField.value = selectedFoldersField.value + itemvalue + ',';
+                        var itemvalue = document.frmfilelisting.chkfile.value;
+                        selectedFilesField.value = itemvalue;
                     }
                 }
-            }
+                // Check or un-check the folder checkboxes
+                if (document.frmfilelisting.chkfolder.length) {
+                    for (i=0; i<document.frmfilelisting.chkfolder.length; i++) {
+                        document.frmfilelisting.chkfolder[i].checked = obj.checked ? true : false;
+                        if (obj.checked) {
+                            var itemvalue = document.frmfilelisting.chkfolder[i].value;
+                            selectedFoldersField.value = selectedFoldersField.value + itemvalue + ',';
+                        }
+                    }
+                } else {
+                   try {
+                        document.frmfilelisting.chkfolder.checked = obj.checked ? true : false;
+                        if (obj.checked)
+                            selectedFoldersField.value = document.frmfilelisting.chkfolder.value;
+                    } catch(e) {}
+                }
+            } catch (e) {}
 
         }
 
@@ -1849,20 +1860,11 @@ function toggleCheckedItems(obj,files) {
         selectedFoldersField.value = selectedFoldersField.value.replace(/,$/g, '');
 
     } else if (obj.value > 0) {
-        // convert to an array
-        files = files.split(',');
-        for (i=0; i<files.length; i++) {
-            if (obj.checked) {
-                try {
-                    Dom.get('chkfile' + files[i]).checked=true;
-                } catch (e) {}
+        // Find any checkboxes (subfolders or files) under this subfolder and toggle the checkboxes
+        $("#subfolder"+obj.value+"_contents :input[type=checkbox]").each(function() {
+            $(this).attr('checked',!$(this).attr('checked'));
+        });
 
-            } else {
-                try {
-                    Dom.get('chkfile' + files[i]).checked=false;
-                } catch (e) {}
-            }
-        }
         // Need to update the hidden field in the header form - the 'More Actions' dropdown form
         selectedFilesField.value = '';
         selectedFoldersField.value = '';
