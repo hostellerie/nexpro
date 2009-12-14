@@ -6,6 +6,7 @@ Dec 14/2009 (Blaine)
     Fixed issue with 'select all' not working correctly in all cases (single empty folder or single file)
     Added JS code to handle toggling all files and subfolders if you click on a folder's checkbox
     Fixed a AJAX issue where multiple AJAX requests were sometimes being triggered
+    Fixed issue with install that was incorrectly setting excludeCoreGroups setting when merging with older version setting
 
 Dec 3/2009 (Blaine)
     Moved the tagcoud.class.php file to under system/nexpro/classes and updated all code references
