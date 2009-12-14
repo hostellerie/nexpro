@@ -87,9 +87,7 @@ var init_nexfile = function() {
         uploader.addListener('uploadCompleteData',onUploadResponse);
         document.getElementById('btnNewFileSubmit').disabled=true;
         Dom.setStyle('newfilelink','display','');
-        var oLinkButton2 = new YAHOO.widget.Button("newfilelink");
-        Event.addListener("newfilelink", "click", showAddFilePanel, YAHOO.container.newfiledialog, true);
-    } catch(e) { alert('failed to load uploader') }
+       } catch(e) { alert('failed to load uploader') }
 
 
     <!-- File Tags Panel -->
@@ -208,8 +206,6 @@ var init_nexfile = function() {
         Dom.setStyle('newfolderlink','display','');
         var oLinkButton1 = new YAHOO.widget.Button("newfolderlink");
         Event.addListener("newfolderlink", "click", showAddCategoryPanel, YAHOO.container.newfolderdialog, true);
-        Event.addListener("btnNewFolderSubmit", "click", makeAJAXCreateFolder, YAHOO.container.newfolderdialog, true);
-        Event.addListener("filedetails_cancel", "click", hideFileDetailsPanel);
     } catch(e) {}
 
     try {
@@ -222,19 +218,14 @@ var init_nexfile = function() {
     try {
         Dom.setStyle('folderadmin','display','');
         var oLinkButton3 = new YAHOO.widget.Button("folderadmin");
-        //oLinkButton3.set('disabled',false);
         Event.addListener("folderadmin", "click", function(e) { document.location = actionurl_dir + '/admin.php?op=folderadmin&wkspace=' + workspace } );
         Event.addListener("btnNewFolderCancel", "click", YAHOO.container.newfolderdialog.hide, YAHOO.container.newfolderdialog, true);
     } catch(e) {}
 
-    Event.addListener("btnMoveFolderCancel", "click", YAHOO.container.batchfilemovedialog.hide, YAHOO.container.batchfilemovedialog, true);
-    Event.addListener("btnMoveFolderSubmit", "click", moveSelectedFiles);
+
     Event.addListener("btnMoveQueueFileCancel", "click", YAHOO.container.moveQueueFileDialog.hide, YAHOO.container.moveQueueFileDialog, true);
     Event.addListener("btnMoveQueueFileSubmit", "click", moveQueueFile);
 
-
-    Event.addListener("newversionlink", "click", showAddNewVersion, YAHOO.container.newfiledialog, true);
-    Event.addListener("btnNewFileCancel", "click", YAHOO.container.newfiledialog.hide,YAHOO.container.newfiledialog,true);
     Event.addListener("showsearchtags", "click", YAHOO.container.tagspanel.show, YAHOO.container.tagspanel, true);
     Event.addListener("searchbutton", "click", makeAJAXSearch);
     Event.addListener("cancelalert", "click", closeAlert);

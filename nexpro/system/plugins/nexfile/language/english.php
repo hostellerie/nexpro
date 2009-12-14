@@ -224,6 +224,7 @@ $LANG_FMERR = array (
     'err14'         => "Error - Unable to create directory: %s/submissions\n",
     'err15'         => "Error - Unable to create directory: %s/submmissions/images\n",
     'err16'         => 'ERROR: Invalid Access to CREATE File Category',
+    'err17'         => 'ERROR: Duplicate directory name',
     'upload1'       => '<br><blockquote>You must select a category and input a file title.</blockquote><center><button  onclick=\'javascript:history.go(-1)\'>return</button></center><br>',
     'upload2'       => 'Error: Upload File form data incorrect',
     'upload3'       => 'Error no file was added - incomplete information',
