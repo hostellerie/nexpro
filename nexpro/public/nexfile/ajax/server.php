@@ -278,6 +278,15 @@ switch ($op) {
         $retval = json_encode($data);
         break;
 
+    case 'rendermovefileform':
+        $tpl = new Template($_CONF['path_layout'] . 'nexfile');
+        $tpl->set_file('form','movefile_form.thtml');
+        $tpl->set_var('movefolder_options',nexdoc_recursiveAccessOptions('admin'));
+        $tpl->parse ('output', 'form');
+        $data['displayhtml'] = $tpl->finish ($tpl->get_var('output'));
+        $retval = json_encode($data);
+        break;
+
 
     case 'setfolderorder':
         $filter->cleanData('int',array('cid' => $_GET['cid'],'listingcid' => $_GET['listingcid']));
@@ -1011,7 +1020,7 @@ switch ($op) {
                     if ($reportmode == 'incoming') {
                         $fname = DB_getItem($_TABLES['nxfile_import_queue'],'orig_filename',"id={$id}");
                         $fnameDB = addslashes($fname);  // Need to add slashes for DB call to not fail
-                        if (DB_count($_TABLES['fm_files'], array('cid','fname'), array("$newcid","$fnameDB")) > 0) {
+                        if (DB_count($_TABLES['nxfile_files'], array('cid','fname'), array("$newcid","$fnameDB")) > 0) {
                             $duplicates++;
                         } elseif (nexdoc_moveQueuefile($id,$newcid)) {
                             $movedfiles++;
@@ -1163,7 +1172,8 @@ switch ($op) {
             }
 
             // Setup the folder option select HTML options
-            $folderoptions = fm_recursiveCatAdmin($data['folder'],'0','1');
+            $cid = intval($data['cid']);
+            $folderoptions = fm_recursiveCatAdmin($cid,'0','1');
             if (fm_getPermission($data['cid'],'admin')) {
                 $folderoptions = '<option value="0">Top Level</option>' . $folderoptions;
                 $data['folderoptions'] = '<select name="folder" style="width:220px;">' . $folderoptions . '</select>';
@@ -1172,33 +1182,55 @@ switch ($op) {
             }
 
             if (fm_getPermission($data['cid'],'admin')) {
+                $data['downloadperm'] = true;
                 $data['editperm'] = true;
                 $data['deleteperm'] = true;
                 $data['addperm'] = true;
                 $data['lockperm'] = true;
                 $data['notifyperm'] = true;
                 $data['broadcastperm'] = true;
-            } elseif (fm_getPermission($data['cid'],'upload_ver')) {
-                $data['addperm'] = true;
-                if ($data['submitter'] == $uid) {
-                    $data['deleteperm'] = true;
-                }
-                if ($data['status_changedby_uid'] == 0 OR $data['status_changedby_uid'] == $uid) {
+            } elseif ($data['locked']) {
+                if ($data['status_changedby_uid'] == $uid) {
                     $data['lockperm'] = true;
-                } else {
-                    $data['lockperm'] = false;
+                    $data['addperm'] = true;
+                    if ($data['submitter'] == $uid) {
+                        $data['deleteperm'] = true;
+                    }
+                } elseif ($data['status_changedby_uid'] > 0) {
+                    if ($data['submitter'] == $uid) {
+                        $data['lockperm'] = true;
+                    } else {
+                        $data['downloadperm'] = false;
+                    }
                 }
                 $data['notifyperm'] = true;
             } elseif($uid > 1) {
                 if ($data['submitter'] == $uid) {
                     $data['deleteperm'] = true;
+                    $data['lockperm'] = true;
+                }
+                if (fm_getPermission($data['cid'],'upload_ver')) {
+                    $data['addperm'] = true;
                 }
                 $data['notifyperm'] = true;
             }
             if (fm_getPermission($data['cid'],'view',0,false)) {
                 $data['tagperms'] = true;   // Able to set or change tags
+                if ($data['locked']) {
+                    if ($data['submitter'] == $uid OR $data['status_changedby_uid'] == $uid) {
+                        $data['downloadperm'] = true;
+                    } else {
+                        $data['downloadperm'] = false;
+                    }
+                } else {
+                    $data['downloadperm'] = true;
+                    if ($data['submitter'] == $uid) {
+                        $data['editperm'] = true;
+                    }
+                }
             } else {
                 $data['tagperms'] = false;
+                $data['downloadperm'] = false;
             }
 
         } else {
@@ -1528,7 +1560,11 @@ switch ($op) {
     case 'movequeuefile':
         $filter->cleanData('int',array('id' => $_POST['id'],'newcid' => $_POST['newcid']));
         $_CLEAN = $filter->normalize($filter->getDbData());
-        if (nexdoc_moveQueuefile($_CLEAN['id'],$_CLEAN['newcid'])) {
+        $filename = DB_getItem($_TABLES['nxfile_import_queue'],'orig_filename',"id={$_CLEAN['id']}");
+        if (file_exists("{$_FMCONF['storage_path']}{$_CLEAN['newcid']}/{$filename}")) {
+            $data['retcode'] = 500;
+            $data['errmsg'] = $LANG_FMERR['err18'];
+        } elseif (nexdoc_moveQueuefile($_CLEAN['id'],$_CLEAN['newcid'])) {
             $data['retcode'] = 200;
             $data = nexdocsrv_generateLeftSideNavigation($data);
             $data['displayhtml'] = nexdocsrv_generateFileListing(0,'incoming');

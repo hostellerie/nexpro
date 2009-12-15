@@ -508,12 +508,7 @@ function nexdoc_getCategoryOptions($cid) {
     global $_TABLES,$LANG_FM02;
 
     $category_options = '';
-    if ($cid > 0) {
-        $selected = DB_getItem($_TABLES['nxfile_categories'],'name',"cid=$cid");
-    } else {
-        $selected = '';
-    }
-    $category_options = fm_recursiveCatAdmin($selected,'0','1');
+    $category_options = fm_recursiveCatAdmin($cid,'0','1');
 
     if (SEC_hasRights('nexfile.admin')) {
         $category_options = LB . '<option value="0">'.$LANG_FM02['TOP_CAT'].'</option>' . LB . $category_options;
@@ -1143,19 +1138,21 @@ function nexdocsrv_generateLeftSideNavigation($data='') {
             'icon' => 'icon-fileowned');
     }
 
-    if (!SEC_hasRights('nexfile Admin')) {
-            $incoming = DB_count($_TABLES['nxfile_import_queue']);
-    } else {
-        $incoming = DB_count($_TABLES['nxfile_import_queue']);
-    }
+    if (!COM_isAnonUser()) {
+        if (SEC_hasRights('nexfile.admin')) {
+           $incoming = DB_count($_TABLES['nxfile_import_queue']);
+        } else {
+            $incoming = DB_count($_TABLES['nxfile_import_queue'],'uid',$uid);
+        }
 
-    if ($incoming > 0) {
-        $incoming_msg = "&nbsp;($incoming)";
-            $data['reports'][] = array(
-            'name' => "Incoming&nbsp;Files{$incoming_msg}",
-            'link' => "reportmode=incoming",
-            'parent' => 'allitems',
-            'icon' => 'icon-fileowned');
+        if ($incoming > 0) {
+            $incoming_msg = "&nbsp;($incoming)";
+                $data['reports'][] = array(
+                'name' => "Incoming&nbsp;Files{$incoming_msg}",
+                'link' => "reportmode=incoming",
+                'parent' => 'allitems',
+                'icon' => 'icon-fileowned');
+        }
     }
 
     // Setup the Most Recent folders for this user
@@ -1879,7 +1876,6 @@ function nexdoc_getGroupOptions() {
     global $_TABLES,$_FMCONF,$LANG_nexfile;
 
     $options = '';
-
     if (count($_FMCONF['excludeGroups']) > 0) {
         $excludeGroups = $_FMCONF['excludeGroups'];  // Don't want to alter the global value
         array_walk($excludeGroups, 'wrap_each');

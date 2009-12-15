@@ -1,3 +1,19 @@
+@todo: 
+  - Add support to edit the folder order when editing the folder. This way we can also move top level folders
+  - Add support to to re-arrange file listing order
+
+
+Dec 15/2009 (Blaine)
+    Fixed the code to generate folder options to support multiple folder names of same name
+    Reworked logic to set the menu options when displaying a file details and how lock file worked
+      > Owner of file is now able to unlock file if someone else locks it
+    Added logic to test for duplicate file when moving a file from the incoming queue
+    Reworked logic to generate the folder options for the movefile dialog in the incoming file listing
+       > now will request latest folder options when you click on the move link
+    Fixed a couple search issues
+    Tweaked the toolbar and folder admin layout
+    Fixed a bug where anonymous was seeing the incoming queue report options.
+
 Dec 14/2009 (Blaine)
     Tweaked the CSS for the nexfile plugin to address conflict with nexproject's CSS
     Added logic to not allow duplicate files being uploaded to same folder
