@@ -416,14 +416,14 @@ function fm_recursiveCatAddFileList($selected='',$cid='0',$level='1',$selectlist
 * Returns a formatted listbox of categories user has ADMIN Access
 * First checks for View access so that delegated admin can be just for sub-categories
 *
-* @param        string              $selected     Will make this item the selected item in the listbox
+* @param        int                 $selected     selected category id
 * @param        string              $cid          Parent category to start at and then recursively check
 * @param        string              $level        Used by this function as it calls itself to control the ident formatting
 * @param        string              $selectlist   Used by this function to be able to append to the formatted select list
 * @param        string              $restricted   Used if you do not want to show this categories subfolders
 * @return       string                            Return a formatted HTML Select listbox of categories
 */
-function fm_recursiveCatAdmin($selected='',$cid='0',$level='1',$selectlist='',$restricted='') {
+function fm_recursiveCatAdmin($selected=0,$cid='0',$level='1',$selectlist='',$restricted='') {
     global $_TABLES;
     $query = DB_QUERY("SELECT cid,pid,name FROM {$_TABLES['nxfile_categories']} WHERE PID='$cid' ORDER BY CID");
     while ( list($cid,$pid,$name,$description) = DB_fetchARRAY($query)) {
@@ -439,7 +439,7 @@ function fm_recursiveCatAdmin($selected='',$cid='0',$level='1',$selectlist='',$r
                 if (fm_getPermission($cid,'admin')) {
                     if ($indent != '') $name = " $name";
                     $selectlist .= '<option value="' . $cid;
-                    if (trim($name) == $selected) {
+                    if (is_int($selected) AND $cid == $selected) {
                         $selectlist .= '" selected="selected">' .$indent .$name . '</option>' . LB;
                     } else {
                         $selectlist .= '">' . $indent .$name . '</option>' . LB;
@@ -456,8 +456,8 @@ function fm_recursiveCatAdmin($selected='',$cid='0',$level='1',$selectlist='',$r
                 if (fm_getPermission($cid,'admin')) {
                     if ($indent != '') $name = " $name";
                     $selectlist .= '<option value="' . $cid;
-                    if (trim($name) == $selected) {
-                        $selectlist .= '" selected="selected">' . $indent . $name . '</option>' . LB;
+                    if (is_int($selected) AND $cid == $selected) {
+                        $selectlist .= '" selected="selected">' .$indent .$name . '</option>' . LB;
                     } else {
                         $selectlist .= '">' . $indent . $name . '</option>' . LB;
                     }
@@ -1495,7 +1495,7 @@ function phpblock_nexfile_latestfiles() {
             $fname .= '...';
         }
         $alttag .= nl2br("Description:$description\nAuthor:&nbsp;$author\nDate:&nbsp;$date\nVersion:&nbsp;$version");
-        $retval .= "<tr><td class=\"plgAlt$i\"><img src=\"{$_CONF['layout_url']}/images/triangle-red.png\">&nbsp;<a href=\"{$_CONF['site_url']}/nexfile/index.php?fid=$fid\" TITLE=\"$alttag\">$fname</a></td></tr>";
+        $retval .= "<tr><td class=\"plgAlt$i\"><img src=\"{$_CONF['layout_url']}/nexfile/images/triangle-red.png\">&nbsp;<a href=\"{$_CONF['site_url']}/nexfile/index.php?fid=$fid\" TITLE=\"$alttag\">$fname</a></td></tr>";
         $i = ($i == 2) ? 1:2;
     }
     $retval .= "<tr><td class=\"plgAlt$i\" style=\"text-align:right;padding:5 10 5 0px;\"><a href=\"{$_CONF['site_url']}/nexfile/index.php\">View all Documents ...</a></td></tr>";
