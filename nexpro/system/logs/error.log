@@ -1,0 +1,47 @@
+12/11/09 13:31:03 - good 
+12/11/09 13:45:24 - Array
+(
+    [op] => save
+    [max_row_number] => 1
+    [nextime_activity_id0] => 27
+    [task_id0] => 29
+    [project_id0] => 28
+    [regular_time0] => 03.00
+    [comment0] => blah
+    [username] => admin
+    [password] => 5f4dcc3b5aa765d61d8327deb882cf99
+    [datestamp0] => 1260507600
+)
+ 
+12/11/09 13:47:28 - Array
+(
+    [op] => save
+    [max_row_number] => 1
+    [nextime_activity_id0] => 27
+    [task_id0] => 29
+    [project_id0] => 28
+    [regular_time0] => 04.00
+    [comment0] => ho hum
+    [username] => admin
+    [password] => 5f4dcc3b5aa765d61d8327deb882cf99
+    [datestamp0] => 1260507600
+)
+ 
+12/11/09 14:32:25 - Array
+(
+    [op] => save
+    [max_row_number] => 1
+    [nextime_activity_id0] => 27
+    [task_id0] => 29
+    [project_id0] => 28
+    [regular_time0] => 03.00
+    [comment0] => just a test entry
+    [username] => admin
+    [password] => 5f4dcc3b5aa765d61d8327deb882cf99
+    [datestamp0] => 1260507600
+)
+ 
+12/15/09 08:50:27 - 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1. SQL in question: SELECT fullname FROM gl_users WHERE uid= 
+12/15/09 08:50:27 - 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1. SQL in question: SELECT fullname FROM gl_users WHERE uid= 
+12/15/09 08:50:27 - 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1. SQL in question: SELECT fullname FROM gl_users WHERE uid= 
+12/15/09 08:50:27 - 1064: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'or a.ug_main_grp_id=1) and a.ug_uid>2 GROUP BY a.ug_uid, b.fullname ORDER BY b.f' at line 1. SQL in question: SELECT a.ug_uid, b.fullname FROM gl_group_assignments a INNER JOIN gl_users b on a.ug_uid=b.uid WHERE (a.ug_main_grp_id= or a.ug_main_grp_id=1) and a.ug_uid>2 GROUP BY a.ug_uid, b.fullname ORDER BY b.fullname ASC 

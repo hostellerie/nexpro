@@ -88,7 +88,7 @@ if (!defined('CSRF_TOKEN')) {
 *       used through out the page.
 *
 * @param        int     $uid            User ID to get information for. If empty current user.
-* @return	array	Associative Array grp_name -> ug_main_grp_id of group ID's user belongs to
+* @return   array   Associative Array grp_name -> ug_main_grp_id of group ID's user belongs to
 *
 */
 function SEC_getUserGroups($uid='')
@@ -276,7 +276,7 @@ function SEC_isModerator()
 * Checks to see if current user has access to a topic
 *
 * @param        string      $tid        ID for topic to check on
-* @return       int 	returns 3 for read/edit 2 for read only 0 for no access
+* @return       int     returns 3 for read/edit 2 for read only 0 for no access
 *
 */
 function SEC_hasTopicAccess($tid)
@@ -307,7 +307,7 @@ function SEC_hasTopicAccess($tid)
 * @param        int     $perm_group     Permissions the gorup has
 * @param        int     $perm_members   Permissions logged in members have
 * @param        int     $perm_anon      Permissions anonymous users have
-* @return       int 	returns 3 for read/edit 2 for read only 0 for no access
+* @return       int     returns 3 for read/edit 2 for read only 0 for no access
 *
 */
 function SEC_hasAccess($owner_id,$group_id,$perm_owner,$perm_group,$perm_members,$perm_anon)
@@ -542,7 +542,7 @@ function SEC_getUserPermissions($grp_id='', $uid='')
 * @param        array       $perm_members   Array of member permissions
 * @param        array       $perm_anon      Array of anonymous user permissions
 * @return       array       returns numeric equivalent for each permissions array (2 = read, 3=edit/read)
-* @see	SEC_getPermissionsHTML
+* @see  SEC_getPermissionsHTML
 * @see  SEC_getPermissionValue
 *
 */
@@ -1086,10 +1086,10 @@ function SEC_createToken($ttl = 1200)
     if (isset($last_token)) {
         return $last_token;
     }
-    
+
     /* Figure out the full url to the current page */
     $pageURL = COM_getCurrentURL();
-    
+
     /* Generate the token */
     $token = md5($_USER['uid'].$pageURL.uniqid (rand (), 1));
     $pageURL = addslashes($pageURL);
@@ -1102,13 +1102,13 @@ function SEC_createToken($ttl = 1200)
     /* Destroy tokens for this user/url combination */
     $sql = "DELETE FROM {$_TABLES['tokens']} WHERE owner_id={$_USER['uid']} AND urlfor='$pageURL'";
     DB_query($sql);
-    
+
     /* Create a token for this user/url combination */
     /* NOTE: TTL mapping for PageURL not yet implemented */
     $sql = "INSERT INTO {$_TABLES['tokens']} (token, created, owner_id, urlfor, ttl) "
            . "VALUES ('$token', NOW(), {$_USER['uid']}, '$pageURL', $ttl)";
     DB_query($sql);
-           
+
     $last_token = $token;
 
     /* And return the token to the user */
@@ -1126,22 +1126,22 @@ function SEC_createToken($ttl = 1200)
 function SEC_checkToken()
 {
     global $_USER, $_TABLES, $_DB_dbms;
-    
+
     $token = ''; // Default to no token.
     $return = false; // Default to fail.
-    
+
     if(array_key_exists(CSRF_TOKEN, $_GET)) {
         $token = COM_applyFilter($_GET[CSRF_TOKEN]);
     } else if(array_key_exists(CSRF_TOKEN, $_POST)) {
         $token = COM_applyFilter($_POST[CSRF_TOKEN]);
     }
-    
+
     if (trim($token) != '') {
         $sql['mysql'] = "SELECT ((DATE_ADD(created, INTERVAL ttl SECOND) < NOW()) AND ttl > 0) as expired, owner_id, urlfor FROM {$_TABLES['tokens']} WHERE token='$token'";
-        $sql['mssql'] = "SELECT owner_id, urlfor, expired = 
-                      CASE 
+        $sql['mssql'] = "SELECT owner_id, urlfor, expired =
+                      CASE
                          WHEN (DATEADD(s,ttl,created) < getUTCDate()) AND (ttl>0) THEN 1
-                
+
                          ELSE 0
                       END
                     FROM {$_TABLES['tokens']} WHERE token='$token'";
@@ -1166,14 +1166,14 @@ function SEC_checkToken()
             } else {
                 $return = true; // Everything is AOK in only one condition...
             }
-           
+
             // It's a one time token. So eat it.
             DB_delete($_TABLES['tokens'], 'token', $token);
         }
     } else {
         $return = false; // no token.
     }
-    
+
     return $return;
 }
 
