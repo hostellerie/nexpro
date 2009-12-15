@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://localhost/nexpro161/polls/index.php?pid=geeklogfeaturepoll&amp;aid=-1</loc>
+    <loc>http://server/polls/index.php?pid=geeklogfeaturepoll&amp;aid=-1</loc>
     <changefreq>daily</changefreq>
     <lastmod>2009-11-24</lastmod>
   </url>
   <url>
-    <loc>http://localhost/nexpro161/staticpages/index.php?page=20091130145448177</loc>
+    <loc>http://server/staticpages/index.php?page=20091130145448177</loc>
     <changefreq>weekly</changefreq>
     <lastmod>2009-11-30</lastmod>
   </url>

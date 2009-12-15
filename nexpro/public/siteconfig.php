@@ -24,7 +24,7 @@ $_CONF['site_enabled'] = true;
 // items in the debug trace.
 // $_CONF['rootdebug'] = true;
 
-$_CONF['path'] = 'C:\Users\Administrator\Desktop\web\nexproHG\nexpro\system/';
+$_CONF['path'] = 'path/to/nexpro/system/';
 $_CONF['path_system'] = $_CONF['path'] . 'system/';
 
 $_CONF['default_charset'] = 'iso-8859-1';
