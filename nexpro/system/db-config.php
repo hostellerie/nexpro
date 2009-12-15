@@ -15,9 +15,9 @@ if (strpos(strtolower($_SERVER['PHP_SELF']), 'db-config.php') !== false) {
 global $_DB_host, $_DB_name, $_DB_user, $_DB_pass, $_DB_table_prefix, $_DB_dbms;
 
 $_DB_host = 'localhost';
-$_DB_name = 'db';
+$_DB_name = 'nexpro161';
 $_DB_user = 'root';
-$_DB_pass = 'password';
+$_DB_pass = 'sqladm1n';
 $_DB_table_prefix = 'gl_';
 $_DB_dbms = 'mysql';
 

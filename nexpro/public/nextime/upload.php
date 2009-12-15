@@ -111,7 +111,8 @@ switch($op) {
         echo "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
         $uid=nxtime_testuser($username,$password);
         if($uid>0){
-            $testdate=strftime("%Y/%m/%d 00:00:00",time());
+            $ds=$_POST['datestamp0'];
+            $testdate=strftime($ds." 00:00:00",time());
             $testintdate=strtotime($testdate);
             $_POST['datestamp0']=$testintdate;
             $_USER['uid']=$uid;
