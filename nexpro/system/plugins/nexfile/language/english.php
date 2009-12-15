@@ -203,7 +203,8 @@ $LANG_nexfile = array (
     'msg62'        => 'File Last Updated: Click to see calendar',
     'msg63'        => 'Category Admin',
     'msg64'        => 'Unsubscribe Me',
-    'msg65'        => 'Direct Link to file'
+    'msg65'        => 'Direct Link to file',
+    'msg66'        => 'Keyword Search'
 
 );
 
@@ -225,6 +226,7 @@ $LANG_FMERR = array (
     'err15'         => "Error - Unable to create directory: %s/submmissions/images\n",
     'err16'         => 'ERROR: Invalid Access to CREATE File Category',
     'err17'         => 'ERROR: Duplicate directory name',
+    'err18'         => 'ERROR: Duplicate file in directory',
     'upload1'       => '<br><blockquote>You must select a category and input a file title.</blockquote><center><button  onclick=\'javascript:history.go(-1)\'>return</button></center><br>',
     'upload2'       => 'Error: Upload File form data incorrect',
     'upload3'       => 'Error no file was added - incomplete information',
