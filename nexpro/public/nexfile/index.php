@@ -113,6 +113,7 @@ $tpl->set_var('initialfid', $fid);
 $tpl->set_var('initialcid', $cid);
 $tpl->set_var('initialop', $op);                                      // Used with nexproject presently: to create new files
 $tpl->set_var('initialparm', COM_applyFilter($_GET['parm'],true));    // Used with nexproject presently - expecting it to be an integer
+$tpl->set_var('searchprompt',$LANG_nexfile['msg66']);
 
 if (in_array($op,$validReportModes)) {
     $tpl->set_var('report_option',$op); // Save in the form 'frmtoolbar' - will be used by AJAX and JS code

@@ -23,6 +23,22 @@
 // +---------------------------------------------------------------------------+
 
 
+function closeAlert() {
+    Dom.setStyle('cancelalert', 'display', 'none'); // Hide the cancel icon
+    // Note: Key to this working is having the div's overflow:auto set
+    var myAnim = new YAHOO.util.Anim('nexfile_alert', { height: { to: 0 }},1, YAHOO.util.Easing.easeOut);
+    myAnim.animate();
+    timer = setTimeout("Dom.setStyle('nexfile_alert', 'display', 'none')", 1000);
+}
+
+function showAlert(message) {
+    Dom.get('nexfile_alert_content').innerHTML = message;
+    Dom.setStyle('nexfile_alert', 'display', '');
+    Dom.setStyle('cancelalert', 'display', ''); // Show the cancel icon
+    var myAnim = new YAHOO.util.Anim('nexfile_alert', { height: { to: 30 }},1, YAHOO.util.Easing.easeOut);
+    myAnim.animate();
+}
+
 function updateAjaxStatus(message) {
     try {
         Dom.get('nexfile_ajaxStatus').innerHTML = '';
@@ -584,8 +600,7 @@ function moveSelectedFiles() {
                     renderFileListing(oResults);
                 }
                 if (oResults.message != '') {
-                    Dom.get('nexfile_alert_content').innerHTML = oResults.message;
-                    Dom.setStyle('nexfile_alert','display','');
+                    showAlert(oResults.message);
                 }
                 Dom.get('headerchkall').checked = false;
                 Dom.get('multiaction').selectedIndex=0;
@@ -606,6 +621,8 @@ function moveSelectedFiles() {
     YAHOO.util.Connect.setForm(formObject);
     YAHOO.util.Connect.asyncRequest('POST', surl, callback);
 }
+
+
 
 function makeAJAXCreateFolder() {
     var surl = ajax_post_handler_url + '?op=createfolder';
@@ -637,6 +654,7 @@ function makeAJAXCreateFolder() {
 
 
 var makeAJAXLoadFileDetails = function(id) {
+    closeAlert();
     var reportmode = document.frmtoolbar.reportmode.value;
     YAHOO.container.filedetails.focusFirst();
     Dom.get('displayfiledetails').innerHTML = '';
@@ -658,11 +676,18 @@ var makeAJAXLoadFileDetails = function(id) {
             var oResults = eval('(' + json + ')');
             if (oResults.error.length == 0) {
                 Dom.get('displayfiledetails').innerHTML = oResults.displayhtml;
-                try {
-                    Dom.get('menubar_downloadlink').href = actionurl_dir + '/download.php?op=download&fid=' + oResults.fid;
-                    Event.addListener("menubar_downloadlink", "click", hideFileDetailsPanelDelay);
 
-                } catch (e) {}
+                if (!oResults.downloadperm) {
+                    YAHOO.container.menuBar.getItem(0).cfg.setProperty("disabled", true);
+                    YAHOO.util.Event.removeListener("menubar_downloadlink", "click");
+                } else {
+                    YAHOO.container.menuBar.getItem(0).cfg.setProperty("disabled", false);
+                    if (!Event.getListeners('menubar_downloadlink')) {   // Check first to see if listener already active
+                        Dom.get('menubar_downloadlink').href = actionurl_dir + '/download.php?op=download&fid=' + oResults.fid;
+                        Event.addListener("menubar_downloadlink", "click", hideFileDetailsPanelDelay);
+                    }
+                }
+
                 if (!oResults.editperm) {
                     YAHOO.container.menuBar.getItem(1).cfg.setProperty("disabled", true);
                     YAHOO.util.Event.removeListener("editfiledetailslink", "click");
@@ -857,7 +882,6 @@ function makeAJAXShowFolderPerms(formObject) {
             if (oResults.retcode == 200) {
                 Dom.get('folderperms_content').innerHTML = oResults.html;
                 YAHOO.container.folderperms.cfg.setProperty("visible",true);
-                Event.addListener("filedetails_cancel", "click", hideFileDetailsPanel);
                 Event.addListener("folderperms_cancel", "click", YAHOO.container.folderperms.hide, YAHOO.container.folderperms, true);
             } else {
                 alert('Error retrieving folder permissions');
@@ -884,7 +908,6 @@ function makeAJAXUpdateFolderPerms(formObject) {
             if (oResults.retcode == 200) {
                 Dom.get('folderperms_content').innerHTML = oResults.html;
                 YAHOO.container.folderperms.cfg.setProperty("visible",true);
-                Event.addListener("filedetails_cancel", "click", hideFileDetailsPanel);
                 Event.addListener("folderperms_cancel", "click", YAHOO.container.folderperms.hide, YAHOO.container.folderperms, true);
             } else {
                 alert('Error retrieving folder permissions');
@@ -1279,6 +1302,35 @@ function makeAJAXDeleteQueueFile(fid) {
     YAHOO.util.Connect.asyncRequest('POST', surl, callback);
 }
 
+function showMoveQueueFile(id) {
+
+    var surl = ajax_post_handler_url + '?op=rendermovefileform';
+    var callback = {
+        success: function(o) {
+            var json = o.responseText.substring(o.responseText.indexOf('{'), o.responseText.lastIndexOf('}') + 1);
+            var oResults = eval('(' + json + ')');
+            Dom.get('movebatchfiledialog_form').innerHTML = oResults.displayhtml;
+            YAHOO.container.moveQueueFileDialog.cfg.setProperty("visible",true);
+            document.frmQueueFileMove.id.value=id;
+            if (!Event.getListeners('btnMoveQueueFileSubmit')) {   // Check first to see if listener already active
+                Event.addListener("btnMoveQueueFileSubmit", "click", moveQueueFile);
+            }
+            if (!Event.getListeners('btnMoveQueueFileCancel')) {   // Check first to see if listener already active
+                Event.addListener("btnMoveQueueFileCancel", "click",YAHOO.container.moveQueueFileDialog.hide, YAHOO.container.moveQueueFileDialog, true);
+            }
+        },
+        failure: function(o) {
+            YAHOO.log('AJAX error loading move folder options : ' + o.status);
+        },
+        argument: {},
+        timeout:55000
+    }
+    YAHOO.util.Connect.asyncRequest('POST', surl, callback);
+
+}
+
+
+
 function moveQueueFile() {
     YAHOO.container.moveQueueFileDialog.hide();
 
@@ -1312,6 +1364,7 @@ function moveQueueFile() {
 
 
 function makeAJAXSearch(form) {
+    if (document.fsearch.query.value == '' || document.fsearch.query.value == searchprompt) return;
     clearAjaxActivity();
     if (!blockui)  {
         blockui=true;
@@ -1336,7 +1389,7 @@ function makeAJAXSearch(form) {
                 updateAjaxStatus('File listing generated in: ' + timeDiff.getDiff() + 'ms');
 
             } else {
-                alert('Error processing tag search');
+                alert('Error processing keyword search');
                 updateAjaxStatus();
             }
 
@@ -1383,14 +1436,6 @@ function makeAJAXBroadcastNotification () {
 
 }
 
-
-function closeAlert() {
-    Dom.setStyle('cancelalert', 'display', 'none'); // Hide the cancel icon
-    // Note: Key to this working is having the div's overflow:auto set
-    var myAnim = new YAHOO.util.Anim('nexfile_alert', { height: { to: 0 }},1, YAHOO.util.Easing.easeOut);
-    myAnim.animate();
-    timer = setTimeout("Dom.setStyle('nexfile_alert', 'display', 'none')", 1000);
-}
 
 
 /* START - Functions to handle the New File Upload */
@@ -2313,7 +2358,7 @@ YAHOO.nexfile.showfiles = function() {
     }
     var reportmode = document.frmtoolbar.reportmode.value;
     var surl = ajax_post_handler_url + '?op=getfilelisting&cid='+cid + '&reportmode=' + reportmode;
-    document.fsearch.query.value = '';
+    document.fsearch.query.value = searchprompt;
     YAHOO.container.tagspanel.hide();
     Dom.setStyle('showactivetags','display','none');
     var listingcallback = {

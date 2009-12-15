@@ -222,10 +222,7 @@ var init_nexfile = function() {
         Event.addListener("btnNewFolderCancel", "click", YAHOO.container.newfolderdialog.hide, YAHOO.container.newfolderdialog, true);
     } catch(e) {}
 
-
-    Event.addListener("btnMoveQueueFileCancel", "click", YAHOO.container.moveQueueFileDialog.hide, YAHOO.container.moveQueueFileDialog, true);
-    Event.addListener("btnMoveQueueFileSubmit", "click", moveQueueFile);
-
+    Event.addListener("filedetails_cancel", "click", hideFileDetailsPanel);
     Event.addListener("showsearchtags", "click", YAHOO.container.tagspanel.show, YAHOO.container.tagspanel, true);
     Event.addListener("searchbutton", "click", makeAJAXSearch);
     Event.addListener("cancelalert", "click", closeAlert);
@@ -296,8 +293,7 @@ var init_nexfile = function() {
                 Event.preventDefault(e);
                 var params = target.getAttribute('href');
                 var id = parseURL(params,'fid');
-                document.frmQueueFileMove.id.value=id;
-                YAHOO.container.moveQueueFileDialog.cfg.setProperty("visible",true);
+                showMoveQueueFile(id);
             } else if (Dom.hasClass(target,'morefolderdata')) {
                 Event.preventDefault(e);
                 var params = target.getAttribute('href');
