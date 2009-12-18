@@ -56,6 +56,7 @@ if (isset($customNexfileReportModes) AND count($customNexfileReportModes) > 0) {
 
 $ajaxBackgroundMode = false;    // Set true to activate the background AJAX driven file listing mode
 $lastModifiedFolderDate = 0;    // Used in nexdoc_displayFolderListing() to determine the most recent data and bubble the date up for all parents.
+$lastModifiedParentFolderDate = array();
 $selectedTopLevelFolder = 0;    // Current top level folder - used to reset the last modified folder date when displaying folders
 
 if(!COM_isAnonUser()) {
@@ -103,8 +104,10 @@ if($_USER['uid'] < 2) {
 function nexdoc_displayFolderListing($template,$id=0,$reportmode='',$level=0,$folderprefix='',$rowid=1) {
    // COM_errorLog("nexdoc_displayFolderListing - folder:$id, level $level");
     global $_CONF,$_TABLES,$actionurl,$allowableViewFolders,$paddingsize;
-    global $allowableViewFoldersSql,$lastModifiedFolderDate,$selectedTopLevelFolder;
+    global $allowableViewFoldersSql,$lastModifiedFolderDate,$lastModifiedParentFolderDate,$selectedTopLevelFolder;
 
+    $stepNumber = 10;
+    $folderOrder = 10;
     if ($id > 0 AND !in_array($id,$allowableViewFolders)) {
         COM_errorLog("No view access to category $id");
         return;
@@ -112,9 +115,25 @@ function nexdoc_displayFolderListing($template,$id=0,$reportmode='',$level=0,$fo
     $template->set_var('imgset', "{$_CONF['layout_url']}/nexfile/images");
     $retval = '';
 
+    if (empty($folderprefix)) {
+        $q1 = DB_query("SELECT cid,pid,folderorder FROM {$_TABLES['nxfile_categories']} WHERE cid=$id");
+        list ($cid,$pid,$folderorder) = DB_fetchArray($q1);
+        if ($pid != 0) {
+            $folderprefix = $folderorder / 10;
+            while ($pid != 0) {
+                $q2 = DB_query("SELECT cid,pid,folderorder FROM {$_TABLES['nxfile_categories']} WHERE cid=$pid");
+                list ($cid,$pid,$folderorder) = DB_fetchArray($q2);
+                if ($pid == 0) break;
+                $folderprefix = $folderorder / 10 . '.' . $folderprefix;
+            }
+        } else {
+            $folderprefix = $folderorder / 10;
+        }
+    }
+
     $level++;
     if ($level == 1) {
-        $retval .= nexdoc_displayFileListing($template,$id,$reportmode,$level,$folder_number);
+        $retval .= nexdoc_displayFileListing($template,$id,$reportmode,$level,$folderprefix);
     }
 
     $sql = '';
@@ -132,24 +151,31 @@ function nexdoc_displayFolderListing($template,$id=0,$reportmode='',$level=0,$fo
             $sql .= "ORDER BY folderorder";
         }
         $resFolders = DB_QUERY($sql);
+        if (!isset($lastModifiedParentFolderDate[$id])) $lastModifiedParentFolderDate[$id] = 0;
         if (DB_numRows($resFolders) > 0) {
             $i = $rowid;
             while ( list($folderId,$pid,$folderName,$folderDesc,$order) = DB_fetchARRAY($resFolders)) {
+                if ($order != $folderOrder) {
+                    DB_query("UPDATE {$_TABLES['nxfile_categories']} SET folderorder = $folderOrder WHERE cid = $folderId");
+                    $order = $folderorder;
+                }
+                $folderOrder += $stepNumber;
+
                 if (empty($folderprefix)) {
                     $formattedFolderNumber = $i;
                 } else {
                     $formattedFolderNumber = "{$folderprefix}.{$i}";
                 }
-                if ($pid == $selectedTopLevelFolder) $lastModifiedFolderDate = 0;
                 //COM_errorLog("nexdoc_displayFolderListing - cid:$folderId, pid: $pid");
                 $subfolderlisting = nexdoc_displayFileListing($template,$folderId,$reportmode,$level,$formattedFolderNumber);
-
                 if (DB_count($_TABLES['nxfile_categories'],'pid',$folderId)) {
                     // Show any sub-subfolders - calling this function again recursively
                     $subfolderlisting .= nexdoc_displayFolderListing($template,$folderId,$reportmode,$level,$formattedFolderNumber);
+                    if ($lastModifiedParentFolderDate[$folderId] > $lastModifiedParentFolderDate[$pid]){
+                       $lastModifiedParentFolderDate[$pid] = $lastModifiedParentFolderDate[$folderId];
+                    }
                 }
-                $template->set_var('padding_right',0);
-                $template->set_var('folder_desc_padding_left',23 + (($level) * 30) );   // Version 3.0 - not presently used
+                $template->set_var('folder_desc_padding_left',23 + (($level) * 30) );
                 $template->set_var('folder_id',$folderId);
                 $template->set_var('parent_folder_id',$pid);
                 $template->set_var('folder_name',$folderName);
@@ -157,10 +183,10 @@ function nexdoc_displayFolderListing($template,$id=0,$reportmode='',$level=0,$fo
                 $template->set_var('folder_link',"{$_CONF['site_url']}/nexfile/index.php?cid={$folderId}");
                 $template->set_var('folder_contents',$subfolderlisting);
                 $template->set_var('folder_number',"{$formattedFolderNumber}.0");
-                if ($lastModifiedFolderDate > 0) {
-                    $template->set_var('last_modified_date', strftime($_CONF['shortdate'],$lastModifiedFolderDate));
+                if ($lastModifiedParentFolderDate[$folderId] > 0) {
+                    $template->set_var('last_modified_date', strftime($_CONF['shortdate'],$lastModifiedParentFolderDate[$folderId]));
                 } else {
-                    $template->set_var('last_modified_date', '');
+                    $template->set_var('last_modified_date','');
                 }
                 //nexdoc_formatNotificationIcon($template,0,$folderId);
 
@@ -205,7 +231,7 @@ function nexdoc_displayFolderListing($template,$id=0,$reportmode='',$level=0,$fo
 function nexdoc_displayFileListing($template,$cid=0,$reportmode='',$level,$foldernumber) {
     global $_CONF,$_TABLES,$_FMCONF,$uid,$recordCountPass1,$recordCountPass2;
     global $allowableViewFoldersSql,$LANG_nexfile,$validReportModes,$lastModifiedFolderDate,$lastRenderedFolder;
-    global $paddingsize,$filedescriptionOffset,$ajaxBackgroundMode;
+    global $lastModifiedParentFolderDate,$paddingsize,$filedescriptionOffset,$ajaxBackgroundMode;
 
     $folderAdmin = false;
     $i = 1;
@@ -228,7 +254,7 @@ function nexdoc_displayFileListing($template,$cid=0,$reportmode='',$level,$folde
         } else {
             $i = $recordCountPass2 + 1;
         }
-    } elseif ($reportmode != 'getallfiles') {
+    } elseif ($reportmode != 'getallfiles' AND !in_array($reportmode,$validReportModes)) {
         if ($lastRenderedFolder == $cid) {
             $i = $recordCountPass1 + 1;
         }
@@ -249,6 +275,7 @@ function nexdoc_displayFileListing($template,$cid=0,$reportmode='',$level,$folde
         } else {
             $template->set_var('show_foldername','none');
         }
+
         while ( list($fid,$subfolderId,$title,$fname,$date,$version,$submitter,$status,$description,$category,$pid,$changedby_uid,$fsize) = DB_fetchARRAY($resFiles)) {
             if (!in_array($fid,$files)) {
                 $tags = $tagcloud->get_itemtags($fid);
@@ -264,12 +291,20 @@ function nexdoc_displayFileListing($template,$cid=0,$reportmode='',$level,$folde
                 $template->set_var('filesize',fm_formatFileSize($fsize));
                 $template->set_var('file_name',$title);
                 $template->set_var('modified_date', strftime($_CONF['shortdate'],$date));
-                if ($i == 1 AND $date > $lastModifiedFolderDate) {
+                if ($i == 1) {
                     $lastModifiedFolderDate = $date;
+                    $lastModifiedParentFolderDate[$subfolderId] = $date;
+                    if ($date > $lastModifiedParentFolderDate[$pid]) {
+                        $lastModifiedParentFolderDate[$pid] = $date;
+                    }
                 }
                 $template->set_var('folder_link',"{$_CONF['site_url']}/nexfile/index.php?cid={$subfolderId}");
                 $template->set_var('folder_name',$category);
-                $template->set_var('file_number',"$foldernumber.$i");
+                if (empty($foldernumber)) {
+                    $template->set_var('file_number',"$i");
+                } else {
+                    $template->set_var('file_number',"$foldernumber.$i");
+                }
                 $template->set_var('subfolder_id',$subfolderId);
 
                 if ($status > 0) {
@@ -565,15 +600,18 @@ function nexdoc_displayActiveFolder($cid=0,$reportmode='') {
         fm_getRecursiveCatIDs ($list,$cid,'view');
         $tpl->set_var('folder_count',count($list));
         $numfiles = 0;
+        $totalsize = 0;
         foreach ($list as $folderid) {
-            $q = DB_query("SELECT count(fid) FROM {$_TABLES['nxfile_files']} WHERE cid=$folderid");
-            list($x) = DB_fetchArray($q);
-            $numfiles = $numfiles + $x;
+            $q = DB_query("SELECT count(fid),sum(size) FROM {$_TABLES['nxfile_files']} WHERE cid=$folderid GROUP BY cid");
+            list($count,$size) = DB_fetchArray($q);
+            $numfiles = $numfiles + $count;
+            $totalsize = $totalsize + $size;
         }
         $tpl->set_var('file_count',$numfiles);
+        $tpl->set_var('total_size',fm_formatFileSize($totalsize));
 
-        $query = DB_QUERY("SELECT pid,name,description from {$_TABLES['nxfile_categories']} WHERE cid='$cid'");
-        list($pid,$activeFolderName,$folderDescription) = DB_fetchArray($query);
+        $query = DB_QUERY("SELECT pid,name,description,folderorder from {$_TABLES['nxfile_categories']} WHERE cid='$cid'");
+        list($pid,$activeFolderName,$folderDescription,$folderorder) = DB_fetchArray($query);
         if ($pid == 0) {
             $tpl->set_var('show_parentfolder','none');    // used in activefolder_admin.thtml only
         }
@@ -581,6 +619,7 @@ function nexdoc_displayActiveFolder($cid=0,$reportmode='') {
         $tpl->set_var('active_category_id',$cid);
         $tpl->set_var('active_folder_name',$activeFolderName);
         $tpl->set_var('folder_description',$folderDescription);
+        $tpl->set_var('folderorder',$folderorder);
 
         $categoryOptions .= nexdoc_recursiveAccessOptions(array('admin'),$pid);
         $tpl->set_var('activefolder_options',$categoryOptions);
@@ -1170,7 +1209,7 @@ function nexdocsrv_generateLeftSideNavigation($data='') {
         }
     }
 
-    $query = DB_QUERY("SELECT cid,pid,name,description from {$_TABLES['nxfile_categories']} WHERE pid='0' ORDER BY CID");
+    $query = DB_QUERY("SELECT cid,pid,name,description from {$_TABLES['nxfile_categories']} WHERE pid='0' ORDER BY folderorder");
     while ( list($categoryId,$pid,$name,$description) = DB_fetchARRAY($query)) {
         if (fm_getPermission($categoryId,'view')) {
             $data['topfolders'][] = array(
