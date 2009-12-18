@@ -1,6 +1,10 @@
 @todo: (Nexfile)
-  - Add support to edit the folder order when editing the folder. This way we can also move top level folders
   - Add support to to re-arrange file listing order
+
+Dec 18/2009 (Blaine)
+  - Added support to edit the folder order when editing the folder. This way we can also move top level folders
+  - Fixed the way the folder and file number was being generated - multiple bugs fixed
+  - Folder Admin now shows total size of folder and subfolders
 
 Dec 16/2009 (Blaine)
     Fixed issue with Admin Approve new file submission

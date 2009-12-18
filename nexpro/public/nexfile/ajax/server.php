@@ -353,6 +353,7 @@ switch ($op) {
         $filter->cleanData('int',array(
             'cid' => $_POST['cid'],
             'catpid'  => $_POST['catpid'],
+            'folderorder' => $_POST['folderorder'],
             'fileadded' => $_POST['fileadded_notify'],
             'filechanged' => $_POST['filechanged_notify']
             ));
@@ -362,6 +363,19 @@ switch ($op) {
             $data['retcode'] =  200;
             $data['cid'] = $_CLEAN['cid'];
             DB_query("UPDATE {$_TABLES['nxfile_categories']} SET name='{$_CLEAN['catname']}', description='{$_CLEAN['catdesc']}' WHERE cid='{$_CLEAN['cid']}'");
+            if (DB_getItem($_TABLES['fm_category'],'folderorder',"cid={$_CLEAN['cid']}") != $_CLEAN['folderorder']) {
+                 DB_query("UPDATE {$_TABLES['nxfile_categories']} SET folderorder='{$_CLEAN['folderorder']}' WHERE cid='{$_CLEAN['cid']}'");
+                /* Re-order any folders that may have just been moved */
+                $query = DB_query("SELECT cid,folderorder from {$_TABLES['nxfile_categories']} WHERE pid={$_CLEAN['catpid']} ORDER BY folderorder");
+                $folderOrder = 10;
+                $stepNumber = 10;
+                while ( list($cid,$order) = DB_fetchARRAY($query)) {
+                    if ($order != $folderOrder) {
+                        DB_query("UPDATE {$_TABLES['nxfile_categories']} SET folderorder = $folderOrder WHERE cid = $cid");
+                    }
+                    $folderOrder += $stepNumber;
+                }
+            }
 
             // Update the personal folder notifications for user
             if ($_CLEAN['filechanged'] == 1 OR $_CLEAN['fileadded'] == 1) {
