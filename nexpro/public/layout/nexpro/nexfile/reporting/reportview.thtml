@@ -8,7 +8,7 @@
                     </ul>
                     <div class="yui-content">
                         <div id="tab1">
-                            <div class="heading">
+                            <div class="nexfileheading">
                                 <div class="floatleft"><input id="chkallfiles" type="checkbox" value="all" onclick="toggleCheckedNotificationItems(this);"></div>
                                 <div class="floatleft" style="width:80%;padding-left:5px;">
                                     <div class="floatleft" style="width:35%">File Name</div>
@@ -20,20 +20,20 @@
                            {filelisting_records}
                         </div>
                         <div id="tab2">
-                            <div class="heading">
+                            <div class="nexfileheading">
                                 <div class="floatleft"><input id="chkallfolders" type="checkbox" value="all" onclick="toggleCheckedNotificationItems(this);"></div>
                                 <div class="floatleft" style="width:80%;padding-left:5px;">
                                     <div class="floatleft" style="width:60%">Folder</div>
                                     <div class="floatleft" style="width:15%">Date Added</div>
-                                    <div class="floatright" style="width:5%;padding-right:5px;">Changes</div>
-                                    <div class="floatright" style="width:10%;">New Files</div>
+                                    <div class="floatright" style="width:5%;padding-left:5px;padding-right:5px;">Changes</div>
+                                    <div class="floatright" style="width:10%;white-space:nowrap;">New Files</div>
                                 </div>
                                 <div class="floatright" style="width:5%;padding-right:10px;">Action</div>
                             </div>
                            {folderlisting_records}
                         </div>
                         <div id="tab3">
-                            <div class="heading">
+                            <div class="nexfileheading">
                                 <div id="notificationlog_report">
                                     <div style="padding:5px;"><a id="clearnotificationhistory" href="#">Clear History</a><span style="padding-left:20px;">Log of notification emails sent - max 100</span></div>
                                     <table width="100%" class="plugin">

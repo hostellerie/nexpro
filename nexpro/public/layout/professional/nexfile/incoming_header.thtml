@@ -1,4 +1,4 @@
-            <div class="heading">
+            <div class="nexfileheading">
                 <div class="floatleft"><input id="headerchkall" type="checkbox" value="all" onclick="toggleCheckedItems(this);"></div>
                 <div class="floatleft" style="padding-left:35px;padding-right:10px;">
                     <div class="floatleft">File Name</div>

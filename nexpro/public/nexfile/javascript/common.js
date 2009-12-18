@@ -526,6 +526,7 @@ function checkMultiAction(selectoption) {
                     Dom.get('headerchkall').checked = false;
                     Dom.get('multiaction').selectedIndex=0;
                     Dom.get('multiaction').disabled = true;
+                    YAHOO.nexfile.alternateRows.init('listing_record','#FFF','#EBEBEB');
                 } else {
                     alert('Error processing request');
                 }
@@ -1451,9 +1452,9 @@ function handleContentReady () {
     var ff = new Array({description:"All Files", extensions:"*.*"},
                        {description:"Images", extensions:"*.jpg;*.png;*.gif"},
                        {description:"Videos", extensions:"*.avi;*.mov;*.mpg"});
-
     // Apply new set of file filters to the uploader.
     uploader.setFileFilters(ff);
+
     document.getElementById("fileName").innerHTML = '';
     uploader.enable();
     Dom.setStyle('btnClearUpload','visibility','hidden');

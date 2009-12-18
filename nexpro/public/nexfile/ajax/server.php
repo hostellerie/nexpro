@@ -538,6 +538,7 @@ switch ($op) {
         $data['op'] = 'savefile';
         $data['message'] = '';
         $data['cid'] = $_CLEAN['cid'];
+
         if (DB_count($_TABLES['nxfile_files'], array('cid','fname'), array("{$_CLEAN['cid']}","$uploadfilename")) > 0) {
             $data['error'] = 'Duplicate File in this folder';
             $data['retcode'] = 400;
@@ -1625,21 +1626,16 @@ switch ($op) {
         $_CLEAN = $filter->normalize($filter->getDbData());
         if ($uid > 1 AND $_CLEAN['cid'] >= 1) {
             // Update the personal folder notifications for user
-            if ($_CLEAN['filechanged'] == 1 OR $_CLEAN['fileadded'] == 1) {
-                if (DB_count($_TABLES['nxfile_notifications'],array('cid','uid'),array($_CLEAN['cid'],$uid)) == 0) {
-                    $sql  = "INSERT INTO {$_TABLES['nxfile_notifications']} (cid,cid_newfiles,cid_changes,uid,date) ";
-                    $sql .= "VALUES ({$_CLEAN['cid']},{$_CLEAN['fileadded']},{$_CLEAN['filechanged']},$uid,UNIX_TIMESTAMP() )";
-                    DB_query($sql);
-                } else {
-                    $sql  = "UPDATE {$_TABLES['nxfile_notifications']} set cid_newfiles = {$_CLEAN['fileadded']}, ";
-                    $sql .= "cid_changes={$_CLEAN['filechanged']}, date=UNIX_TIMESTAMP() ";
-                    $sql .= "WHERE uid=$uid and cid={$_CLEAN['cid']}";
-                    DB_query($sql);
-                }
+            if (DB_count($_TABLES['nxfile_notifications'],array('cid','uid'),array($_CLEAN['cid'],$uid)) == 0) {
+                $sql  = "INSERT INTO {$_TABLES['nxfile_notifications']} (cid,cid_newfiles,cid_changes,uid,date) ";
+                $sql .= "VALUES ({$_CLEAN['cid']},{$_CLEAN['fileadded']},{$_CLEAN['filechanged']},$uid,UNIX_TIMESTAMP() )";
+                DB_query($sql);
             } else {
-                DB_query("DELETE FROM {$_TABLES['nxfile_notifications']} WHERE uid=$uid and cid={$_CLEAN['cid']}");
+                $sql  = "UPDATE {$_TABLES['nxfile_notifications']} set cid_newfiles = {$_CLEAN['fileadded']}, ";
+                $sql .= "cid_changes={$_CLEAN['filechanged']}, date=UNIX_TIMESTAMP() ";
+                $sql .= "WHERE uid=$uid and cid={$_CLEAN['cid']}";
+                DB_query($sql);
             }
-
             $data['retcode'] = 200;
             $data['displayhtml'] = nexdoc_generateNotificationsReport();
         } else {

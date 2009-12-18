@@ -719,7 +719,6 @@ function fm_sendNotification($id,$type=1) {
     global $_CONF,$_TABLES,$_USER, $REMOTE_ADDR, $_FMCONF,$LANG_FM10;
 
     $target_users = array();
-
     switch ( $type ) {
         case "1":    // New File added where $id = file id. Send to all subscribed users
             $sql = "SELECT file.fid,file.fname,file.cid,file.submitter,category.name FROM "
@@ -728,11 +727,6 @@ function fm_sendNotification($id,$type=1) {
 
             $query = DB_query($sql);
             list($fid,$fname,$cid,$submitter,$catname) = DB_fetchARRAY($query);
-            if ($cid > 0) {
-                $queryNotifyUsers = DB_query("SELECT uid FROM {$_TABLES['nxfile_notifications']} WHERE cid_newfiles = 1 AND cid={$cid}");
-            } else {
-                $queryNotifyUsers = DB_query("SELECT uid FROM {$_TABLES['nxfile_notifications']} WHERE cid_newfiles = 1 AND fid={$fid}");
-            }
             break;
 
         case "2":    // File submission being approved by admin where $id = file id. Send only to user
@@ -760,30 +754,27 @@ function fm_sendNotification($id,$type=1) {
 
             $query = DB_query($sql);
             list($fid,$fname,$cid,$submitter,$catname) = DB_fetchARRAY($query);
-            if ($cid > 0) {
-                $queryNotifyUsers = DB_query("SELECT uid FROM {$_TABLES['nxfile_notifications']} WHERE cid_changes = 1 AND (fid={$fid} OR cid={$cid})");
-            } else {
-                $queryNotifyUsers = DB_query("SELECT uid FROM {$_TABLES['nxfile_notifications']} WHERE fid={$fid} AND cid_changes = 1");
-            }
             break;
     }
 
     if ($type == 1 OR $type == 4) {
         if ($_FMCONF['notify_newfile'] == 1) {  // Site default to notify all users on new files
-            $queryNotifyUsers = DB_query("SELECT uid FROM {$_TABLES['users']} WHERE status = " . USER_ACCOUNT_ACTIVE);
+            $queryNotifyUsers = DB_query("SELECT uid FROM {$_TABLES['users']} WHERE uid > 1 AND status = " . USER_ACCOUNT_ACTIVE);
             while ( list($uid) = DB_fetchARRAY($queryNotifyUsers)) {
-                if (DB_count($_TABLES['nxfile_usersettings'],array('uid','notify_newfile',array($uid,0))))  {
-                    $personalSetting = false;   // Found user setting to not be notified
-                } else {
-                    $personalSetting = true;
-                }
-                $personalException = DB_count($_TABLES['nxfile_notifications'], array ('cid','uid','cid_newfiles'), array ($cid,$uid,1));
+                if (fm_getPermission($cid,'view',$uid)) {
+                    if (DB_count($_TABLES['nxfile_usersettings'],array('uid','notify_newfile',array($uid,0))))  {
+                        $personalSetting = false;   // Found user setting to not be notified
+                    } else {
+                        $personalSetting = true;
+                    }
+                    $personalException = DB_count($_TABLES['nxfile_notifications'], array ('cid','uid','cid_newfiles'), array ($cid,$uid,0));
 
-                // Only want to notify users that don't have setting disabled or exception record
-                if ($personalSetting == TRUE AND $personalException == FALSE AND $uid != $submitter) {
-                    // Now just test that this user has view access to this folder
-                    if (fm_getPermission($cid,'view')) {
-                        $target_users[] = $uid;
+                    // Only want to notify users that don't have setting disabled or exception record
+                    if ($personalSetting == TRUE AND $personalException == FALSE AND $uid != $submitter) {
+                        // Now just test that this user has view access to this folder
+                        if (fm_getPermission($cid,'view')) {
+                            $target_users[] = $uid;
+                        }
                     }
                 }
             }
@@ -794,10 +785,12 @@ function fm_sendNotification($id,$type=1) {
                  . "WHERE a.notify_newfile = 1 and b.status=" . USER_ACCOUNT_ACTIVE;
             $queryNotifyUsers = DB_query($sql);
             while ( list($uid) = DB_fetchARRAY($queryNotifyUsers)) {
-                $personalException = DB_count($_TABLES['nxfile_notifications'], array ('fid','ignore_filechanges'), array ($id,1));
-                // Only want to notify users that don't have setting disabled or exception record
-                if ($personalException === FALSE) {
-                    $target_users[] = $uid;
+                if (fm_getPermission($cid,'view',$uid)) {
+                    $personalException = DB_count($_TABLES['nxfile_notifications'], array ('fid','ignore_filechanges'), array ($id,1));
+                    // Only want to notify users that don't have setting disabled or exception record
+                    if ($personalException === FALSE) {
+                        $target_users[] = $uid;
+                    }
                 }
             }
         }
@@ -807,6 +800,34 @@ function fm_sendNotification($id,$type=1) {
     if (count($target_users) > 0) {
 
         if ($type == 2 OR $type == 3 ) {    // Only send to user that submitted the file
+            $query = DB_query("SELECT username,email FROM {$_TABLES['users']} WHERE uid=$submitter");
+            list ($username,$to) = DB_fetchArray($query);
+            $subject = "{$_CONF['site_name']} - {$LANG_FM10[$type]['SUBJECT']}";
+            $message  = $LANG_FM10[$type]['HELLO'] .' '. $username . ",\n\n";
+            if ($type == 2) {
+                $message .= sprintf($LANG_FM10[2]['LINE1'], $username,$catname);
+                $message .= sprintf($LANG_FM10[2]['LINE2'], $fname, "{$_CONF['site_url']}/nexfile/index.php?cid={$cid}");
+                $message .= $LANG_FM10[2]['LINE3'] . $LANG_FM10[2]['ADMIN']."\n";
+                $message .= $LANG_FM10[2]['LINE4'];
+            } else {
+                $message .= sprintf($LANG_FM10[3]['LINE1'], $fname);
+                $message .= $LANG_FM10[3]['LINE2'];
+            }
+            $message .= $_CONF[site_url] . "\n";
+            if ($_FMCONF['email_enabled']) {
+                COM_mail($to, $subject, $message);
+                $logentry = 'Nexfile' ."," .$to ."," .$subject;
+                fm_logNotification($logentry);
+                $sql = "INSERT INTO {$_TABLES['nxfile_notificationlog']} (target_uid,submitter_uid,notification_type,datetime) "
+                     . "VALUES ($submitter,$submitter,'$type',UNIX_TIMESTAMP() )";
+                DB_query($sql);
+                return true;
+            } else {
+                COM_errorLog("Nexfile - fm_sendEmail Warning: Email Disabled");
+                return false;
+            }
+
+        } else {
             $subject = "{$_CONF['site_name']} - {$LANG_FM10[$type]['SUBJECT']}";
             $submitter_name = DB_getItem($_TABLES['users'],"username", "uid=$submitter");
             $message .= sprintf($LANG_FM10[$type]['LINE1'], $submitter_name,$catname);
@@ -831,37 +852,19 @@ function fm_sendNotification($id,$type=1) {
                     list ($username,$email) = DB_fetchArray($query);
                     if (!empty($email)) {
                         $distribution[] = $email;
-                        $sql = "INSERT INTO {$_TABLES['nxfile_notificationlog']} (target_uid,submitter_uid,notification_type,fid,cid,datetime) "
-                             . "VALUES ($target_uid,$submitter,$type,$fid,$cid,UNIX_TIMESTAMP() )";
+                        if ($type == 2) {
+                            $sql = "INSERT INTO {$_TABLES['nxfile_notificationlog']} (target_uid,submitter_uid,notification_type,fid,cid,datetime) "
+                                 . "VALUES ($target_uid,$submitter,$type,$fid,$cid,UNIX_TIMESTAMP() )";
+                        } else {
+                            $sql = "INSERT INTO {$_TABLES['nxfile_notificationlog']} (target_uid,submitter_uid,notification_type,fid,cid,datetime) "
+                                 . "VALUES ($target_uid,$submitter,$type,0,0,UNIX_TIMESTAMP() )";
+                        }
                         DB_query($sql);
                     }
                     $lastuser = $target_uid;
                 }
             }
             return fm_sendEmail($distribution,$subject,$message);
-
-        } else {
-            $query = DB_query("SELECT username,email FROM {$_TABLES['users']} WHERE uid=$submitter");
-            list ($username,$to) = DB_fetchArray($query);
-            $subject = "{$_CONF['site_name']} - {$LANG_FM10[$type]['SUBJECT']}";
-            $message  = $LANG_FM10[$type]['HELLO'] .' '. $username . ",\n\n";
-            $message .= sprintf($LANG_FM10[$type]['LINE1'], $fname);
-            $message .= $LANG_FM10[$type]['LINE2'];
-            $message .= $LANG_FM10[$type]['LINE3'] . $LANG_FM10[$type]['ADMIN']."\n";
-            $message .= $_CONF[site_url] . "\n";
-            if ($_FMCONF['email_enabled']) {
-                COM_mail($to, $subject, $message);
-                $type = "Nexfile";
-                $logentry = $type ."," .$to ."," .$subject;
-                fm_logNotification($logentry);
-                $sql = "INSERT INTO {$_TABLES['nxfile_notificationlog']} (target_uid,submitter_uid,notification_type,datetime) "
-                     . "VALUES ($submitter,$submitter,$type,UNIX_TIMESTAMP() )";
-                DB_query($sql);
-                return true;
-            } else {
-                COM_errorLog("Nexfile - fm_sendEmail Warning: Email Disabled");
-                return false;
-            }
 
         }
 
@@ -886,7 +889,7 @@ function fm_sendEmail($distribution,$subject,$message) {
         if (is_array($distribution) AND count($distribtion >= 1)) {
             $bccDistributionList = implode(',',$distribution);
             $to = "{$_FMCONF['from_email']} <{$_CONF['noreply_mail']}>";
-            COM_mail($to, $subject, $message,'',$false,0,'',$bccDistributionList);
+            COM_mail($to, $subject, $message,'',$false,0,array('cc' => $bccDistributionList));
 
             // Log notification for admin viewing and tracking
             $type = "Nexfile";

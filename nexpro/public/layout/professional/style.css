@@ -2297,9 +2297,16 @@ div .css { height:300px; overflow:auto; width:auto; min-height:100px; }
     width:100%
 }
 
-#filelistingheader .heading {
-    font-family:arial,verdana,tahoma,helvetica,sans-serif;
-    font-weight: normal;
+#reportlisting_container .nexfileheading {
+    font-size:10pt;
+    color:#333;
+    clear:both;
+    display:inline-block;
+    width:100%;
+}
+
+
+#filelistingheader .nexfileheading {
     font-size:12pt;
     background-color: #DAE0ED;
     color:#333;
@@ -2309,7 +2316,7 @@ div .css { height:300px; overflow:auto; width:auto; min-height:100px; }
     padding:5px;
 }
 
-#filelistingheader .heading a {
+#filelistingheader .nexfileheading a {
     font-size:9pt !important;
     position:relative;bottom:2px;
     text-decoration:none;
