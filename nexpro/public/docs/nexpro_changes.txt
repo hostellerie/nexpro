@@ -1,7 +1,11 @@
-@todo: 
+@todo: (Nexfile)
   - Add support to edit the folder order when editing the folder. This way we can also move top level folders
   - Add support to to re-arrange file listing order
 
+Dec 16/2009 (Blaine)
+    Fixed issue with Admin Approve new file submission
+    Fixed multiple issues with new notification logic
+    Tweaked the notification reporting CSS/Templates
 
 Dec 15/2009 (Blaine)
     Fixed the code to generate folder options to support multiple folder names of same name
