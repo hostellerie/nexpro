@@ -348,7 +348,7 @@ select {
 .block-box-left {
   border: 1px solid #2A4DAB;
   border-collapse: collapse;
-  width: 150px;
+  width: 160px;
 }
 .block-box-right {
   border: 1px solid #2A4DAB;
@@ -377,7 +377,7 @@ select {
 .block-bg-spreader {
   /* this is making sure that the blocks have a minimum width */
   background:transparent;
-  width:150px;
+  width:180px;
   height:1px;
 }
 .block-content,
@@ -393,9 +393,9 @@ select {
   background: #FFFFFF;
   color:#002280;
   font-size: 0.9em;
-  padding-bottom:0px;
-  padding-top:0px;
-  padding-left:0px;
+  padding-top:2px;
+  padding-left:5px;
+  padding-bottom: 2px;
   clear:both
 }
 

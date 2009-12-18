@@ -24,7 +24,7 @@ CSS Modified to work with glMenu
   padding:0;
   margin:0;
   list-style-type:none;
-  width:150px;
+  width:140px;
   position: relative;
   z-index:10;
 }
@@ -59,7 +59,7 @@ CSS Modified to work with glMenu
   width:149px;
   color:#FFFFFF;
   background:#52565B;
-  text-indent:5px;
+  text-indent:0px;
   border:1px solid #145FF5;
   border-width:0px 1px 1px 0px;
 }
@@ -124,6 +124,7 @@ a.drop:hover {
 .menu .subtable li > a {
   color:#172BB0;
   background:#BBC9EE;
+  text-indent: 5px;
 }
 .menu .subtable li > a:hover {
   color:#FCFCFC;
