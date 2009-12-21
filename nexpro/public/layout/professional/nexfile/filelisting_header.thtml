@@ -1,0 +1,18 @@
+            <div class="nexfileheading">
+                <div class="floatleft"><input id="headerchkall" type="checkbox" value="all" onclick="toggleCheckedItems(this);"></div>
+                <div class="floatleft" style="padding-left:35px;padding-right:10px;">
+                    <div class="floatleft">File Name
+                        <span id="showhidedetail" style="padding-left:20px;">
+                            [&nbsp;<a href="#" onClick="showhideFileDetail();">Show File Details</a>&nbsp;]
+                        </span>
+                        <span id="expandcollapsefolders" style="display:{showfolderexpandlink};padding-left:5px;">
+                            [&nbsp;<a id="expandcollapsefolderslink" href="?op=expand" onClick="expandCollapseFolders(this);return false;">Expand Folders</a>&nbsp;]
+                        </span>
+                    </div>
+                </div>
+                <div class="floatright" style="padding-right:10px;">
+                        <div class="floatright">{LANG_actionheading}</div>
+                        <div class="floatright" style="padding-right:30px;">{LANG_dateheading}</div>
+                        <div class="floatright" style="display:{showfolder};padding-right:20px">Folder</div>
+                </div>
+            </div>

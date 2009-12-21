@@ -1,0 +1,7 @@
+
+                <div style="{comment_minheight};">
+                    {topic_comment}
+                </div>
+                <div style="clear:both;"></div>
+                {attachments}
+

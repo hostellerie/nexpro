@@ -1,0 +1,89 @@
+        <div id="reportlisting_container" style="margin-right:5px;display:none;">
+                <div id="notification_report" class="yui-navset">
+                    <ul class="yui-nav">
+                        <li class="selected"><a href="#tab1"><em><div style="width:75px;">Files</div></em></a></li>
+                        <li><a href="#tab2"><em><div style="width:75px;">Folders</div></em></a></li>
+                        <li><a href="#tab3"><em><div style="width:110px;">Notification&nbsp;History</div></em></a></li>
+                        <li><a href="#tab4"><em><div style="width:75px;">Settings</div></em></a></li>
+                    </ul>
+                    <div class="yui-content">
+                        <div id="tab1">
+                            <div class="nexfileheading">
+                                <div class="floatleft"><input id="chkallfiles" type="checkbox" value="all" onclick="toggleCheckedNotificationItems(this);"></div>
+                                <div class="floatleft" style="width:80%;padding-left:5px;">
+                                    <div class="floatleft" style="width:35%">File Name</div>
+                                    <div class="floatleft" style="width:24%">Folder</div>
+                                    <div class="floatright" style="padding-right:140px;">Date Added</div>
+                                </div>
+                                <div class="floatright" style="width:10%;padding-right:10px;">Action</div>
+                            </div>
+                           {filelisting_records}
+                        </div>
+                        <div id="tab2">
+                            <div class="nexfileheading">
+                                <div class="floatleft"><input id="chkallfolders" type="checkbox" value="all" onclick="toggleCheckedNotificationItems(this);"></div>
+                                <div class="floatleft" style="width:80%;padding-left:5px;">
+                                    <div class="floatleft" style="width:60%">Folder</div>
+                                    <div class="floatleft" style="width:15%">Date Added</div>
+                                    <div class="floatright" style="width:5%;padding-left:5px;padding-right:5px;">Changes</div>
+                                    <div class="floatright" style="width:10%;white-space:nowrap;">New Files</div>
+                                </div>
+                                <div class="floatright" style="width:5%;padding-right:10px;">Action</div>
+                            </div>
+                           {folderlisting_records}
+                        </div>
+                        <div id="tab3">
+                            <div class="nexfileheading">
+                                <div id="notificationlog_report">
+                                    <div style="padding:5px;"><a id="clearnotificationhistory" href="#">Clear History</a><span style="padding-left:20px;">Log of notification emails sent - max 100</span></div>
+                                    <table width="100%" class="plugin">
+                                        <tr>
+                                            <th width="15%">Date</th>
+                                            <th width="15%">Type</th>
+                                            <th width="15%">Submitter</th>
+                                            <th width="25%">File</th>
+                                            <th width="20%">Folder</th>
+                                        </tr>
+                                        {notification_history_records}
+                                    </table>
+                                </div>
+                                <div id="notificationlog_norecords" style="display:none;padding:10px;">No notification history on file</div>
+                             </div>
+
+                        </div>
+                        <div id="tab4">
+                            <div>Setup your personal notification defaults. Individual folder and file notifications can also be used to over-ride these defaults.<ul><li>If you want to be notified of all new new files being added for all folders you have access, then you only need to enable the setting here</li><li>If you <b>only</b> want to be notified of new files being added to selected folders, then disable the setting here and enable the notification for those selected folders only</li><li>Folder Notification options are set by first selecting that folder and once the folder listing is in the main right panel, click on the folder name in the main right panel above the file listing to view/update the notification options<li>Broadcast Notifications can be sent out by folder administrators  even if you are not subscribed to updates unless you disable broadcasts here</li></ul></div>
+
+                            <table class="plugin" cellpadding="0" cellspacing="1" width="100%">
+                                <tr>
+                                    <th>Personal Notification Setting</th>
+                                    <th>Default</th>
+                                </tr>
+                                <tr>
+                                    <td>New Files being added</td>
+                                    <td>
+                                        <div style="float:left;width:60px;">Yes<input type="radio" name="fileadded_notify" value="1" {chk_fileadded_on}></div>
+                                        No<input type="radio" name="fileadded_notify" value="0" {chk_fileadded_off}></td>
+                                </tr>
+                                <tr>
+                                    <td>Files updated</td>
+                                    <td>
+                                        <div style="float:left;width:60px;">Yes<input type="radio" name="fileupdated_notify" value="1" {chk_filechanged_on}></div>
+                                        No<input type="radio" name="fileupdated_notify" value="0" {chk_filechanged_off}></td>
+                                </tr>
+                                <tr>
+                                    <td>Allow Admin Broadcasts</td>
+                                    <td>
+                                        <div style="float:left;width:60px;">Yes<input type="radio" name="admin_broadcasts" value="1" {chk_broadcasts_on}></div>
+                                        No<input type="radio" name="admin_broadcasts" value="0" {chk_broadcasts_off}></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="aligncenter" style="padding:5px;font-size:12pt;">
+                                        <input type="submit" value="Save Settings" onClick="doAJAXUpdateNotificationSettings(this.form);return false;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+        </div>

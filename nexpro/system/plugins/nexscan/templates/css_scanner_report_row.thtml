@@ -1,0 +1,4 @@
+    <tr class="pluginRow{row}">
+        <td><a href="#" onClick="scan_newwindow('{site_admin_url}/plugins/nexscan/index.php?op=preview&filename={filename}&class={classname}'); return false;">{found_in_file}</a></td>
+        <td>{line_number}</td>
+    </tr>

@@ -1,0 +1,7 @@
+            <div id="moveQueueFileDialog" style="display:none;">
+                <div class="hd">Move Selected File</div>
+                <div class="pluginInfo alignleft" style="color:#000;font-size:90%">Select the destination folder from the selection below.</div>
+                <div id="movebatchfiledialog_form" class="bd" style="text-align:left;">
+
+                </div>
+            </div>

@@ -1,0 +1,11 @@
+<!-- headersubmenu.thtml -->
+    <li class="top">
+        <a class="top_link"  href="{menuitem_url}"><span class="down">{menuitem_label}</span>
+        <!--[if gte IE 7]><!--></a><!--<![endif]--><!--[if lte IE 6]><table><tr><td><![endif]-->
+        <ul class="sub">
+                {submenu_items}
+        </ul>
+        <!--[if lte IE 6]></td></tr></table></a><![endif]-->
+    </li>
+
+
