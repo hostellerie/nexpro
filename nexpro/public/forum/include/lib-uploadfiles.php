@@ -29,7 +29,7 @@
 
 function gf_check4files($id,$tempfile=false) {
     global $_FILES,$_CONF,$_TABLES,$_USER,$CONF_FORUM,$LANG_GF00;
-    global $_FM_TABLES,$CONF_FORUM,$filemgmt_FileStore;
+    global $_FM_TABLES,$CONF_FORUM,$filemgmt_FileStore,$_FMCONF;
 
     $filelinks = '';
     $uploadfile = $_FILES['file_forum'];
@@ -80,7 +80,7 @@ function gf_check4files($id,$tempfile=false) {
             $filename = "$filename:{$uploadfile['name']}";
             $pos = strrpos($filename,'.') + 1;
             $fileExtension = substr($filename, $pos);
-            $filter = new sanitizer();            
+            $filter = new sanitizer();
             $mimetype =  $filter->getCleanData('text',$uploadfile['type']);
 
             if ($tempfile) {

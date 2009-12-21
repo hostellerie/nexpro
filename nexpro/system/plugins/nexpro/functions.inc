@@ -118,7 +118,7 @@ function plugin_getHeaderCode_nexpro() {
         }
 
         if ($CONF_NEXPRO['load_yui_layout']) {
-            $code .= '<link type="text/css" rel="stylesheet" href="' . $CONF_NEXPRO['yui_base_url'] . '/reset-fonts-grids/reset-fonts-grids.css">' .LB;
+            //$code .= '<link type="text/css" rel="stylesheet" href="' . $CONF_NEXPRO['yui_base_url'] . '/reset-fonts-grids/reset-fonts-grids.css">' .LB;
             $code .= '<link type="text/css" rel="stylesheet" href="' . $CONF_NEXPRO['yui_base_url'] . '/resize/assets/skins/sam/resize.css">' .LB;
             $code .= '<link type="text/css" rel="stylesheet" href="' . $CONF_NEXPRO['yui_base_url'] . '/layout/assets/skins/sam/layout.css">' .LB;
             $code .= '<script type="text/javascript" src="' . $CONF_NEXPRO['yui_base_url'] . '/resize/resize-min.js"></script>' . LB;

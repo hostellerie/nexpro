@@ -889,7 +889,7 @@ function fm_sendEmail($distribution,$subject,$message) {
         if (is_array($distribution) AND count($distribtion >= 1)) {
             $bccDistributionList = implode(',',$distribution);
             $to = "{$_FMCONF['from_email']} <{$_CONF['noreply_mail']}>";
-            COM_mail($to, $subject, $message,'',$false,0,array('cc' => $bccDistributionList));
+            COM_mail($to, $subject, $message,$_CONF['noreply_mail'],false,0,array('Bcc' => $bccDistributionList));
 
             // Log notification for admin viewing and tracking
             $type = "Nexfile";

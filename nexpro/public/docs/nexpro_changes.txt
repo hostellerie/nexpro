@@ -1,6 +1,12 @@
 @todo: (Nexfile)
   - Add support to to re-arrange file listing order
 
+Dec 21/2009 (Blaine)
+  - Fix to nexfile to use Bcc to send out email notifications
+  - Forum bug with saving attachment to nexfile - missing global define in gf_check4files()
+  - Commented out sending out the inclusion of YUI reset-fonts-grids.css in plugin_getHeaderCode_nexpro() as it was messing up themes.
+    > Don't think we need it.
+
 Dec 18/2009 (Blaine)
   - Added support to edit the folder order when editing the folder. This way we can also move top level folders
   - Fixed the way the folder and file number was being generated - multiple bugs fixed
@@ -69,13 +75,13 @@ Oct 26/2009 (Blaine)
     Forum plugin updates for version 3.2
 
 Oct 23/2009 (Blaine)
-    Modifications to nexmenu's config inclusion mechanism.    
+    Modifications to nexmenu's config inclusion mechanism.
     Tweaks to the default SQL installation and initial menu theme
 
 Oct 22/2009 (Randy)
     Modifications to each nex* plugin for the autoinstaller to respect each plugin's config information.
     Modifications to nexfile's config inclusion mechanism.
-    
+
 
 Oct 21/2009 (Randy)
     Added search support to nexcontent.
@@ -83,7 +89,7 @@ Oct 21/2009 (Randy)
 Oct 20/2009 (Randy)
     Update to nexflow to change wrong table name definitions in code.  Update to files to not include config.php.
     Updated the base to include all of the proper plugin structures in the system/plugins directory.
-    
+
 Oct 19/2009 (Blaine)
     Moved lib-nextide.php to be part of the nexpro plugin and no need now for that file to be copied/installed by the user.
 
@@ -232,7 +238,7 @@ Oct 6/2009 (Randy)
     Updates to nextime,nexproject to sort out YUI issues
     Updates to nexproject for autoinstaller
     Updates to nextime's installer to support new autouninstall feature
-    Updates to nexproject's installer to support new autouninstall feature    
+    Updates to nexproject's installer to support new autouninstall feature
 
 Oct 6/2009 (Blaine)
     Nexfile updates to work with nexproject - support to popup add file dialog and redirect upon success
@@ -248,7 +254,7 @@ Oct 5/2009 (Randy)
     removal of outdated nextime sql files.
     removal of manual installer.
 
-    rework of nexproject javascript to support useYuiLoader js parm.  
+    rework of nexproject javascript to support useYuiLoader js parm.
     rework of nextime javascript to support useYuiLoader js parm.
 
 
@@ -293,9 +299,9 @@ Sept 25/2009 (Randy)
     Nextime plugin updated to use YUI on demand
     Nextime plugin updated to use YUI on demand
     nextime.js file added to consolidate some js functionality thanks to the on-demand loader
-    reworked nextime template files  
+    reworked nextime template files
     nexList plugin updated to use online config
-    nexlist upgrade process updated  
+    nexlist upgrade process updated
 
 Sept 23/2009 (Randy)
     Included nexTime plugin in the bundle
@@ -306,7 +312,7 @@ Sept 23/2009 (Randy)
 
 
 Sept 23/2009 (Blaine)
-    Nexcontent: Updated the install defaults to remove redundant or unused parms. 
+    Nexcontent: Updated the install defaults to remove redundant or unused parms.
                 Tweaked the config order, language and config UI types
     Nexcontent: Added the upgrade functions to upgrade to version 2.3.0
     Nexflow: Added the upgrade function to version 3.1
@@ -324,7 +330,7 @@ Sept 22/2009 (Blaine)
     Updated the nexflow plugin to use the online config features
     Updated the nexmenu plugin to use the online config features
     Additional updates to the nexform install - moved additional config options to use the online config
-    Added support for the new 1.6 PluginAPI PLG_pluginStateChange 
+    Added support for the new 1.6 PluginAPI PLG_pluginStateChange
       for the following plugins to be disabled if the nexpro plugin is un-installed or disabled:
      - nexmenu
      - nexform
@@ -348,7 +354,7 @@ Sept 15/2009 (Blaine)
 Sept 14/2009 (Blaine):
     Additional updates for the nexfile 3.0
     Updated lib-nextide to include the function mail_attachment()
-    Updated javascript/nexpro.js - added function arrayRemoveItem() 
+    Updated javascript/nexpro.js - added function arrayRemoveItem()
     Added javascript/php_serializer.js - able to read PHP serialized arrays passed back via AJAX
 
 
@@ -363,16 +369,16 @@ Aug 12/2009 (Blaine):
                         Updated to use the YUI uploader for the nexflow template admin
 
 
-Aug 12/2008 (Blaine): 
+Aug 12/2008 (Blaine):
     SQL injection issue in plugin_templatesetvars_nexContent.
     $_GET['page'] was being used raw in a SQL query
-    Changed: 
+    Changed:
       - plugins/nexcontent/functions.inc
 
-July 19/2008 (Blaine): 
+July 19/2008 (Blaine):
     Security patch for the forum plugin to address a XSS issue in the search code
     Also fixed for an issue handling quotes in the search API function
-    Changed: 
+    Changed:
       - plugins/forum/functions.inc and config.php
       - public_html/index.php
 
