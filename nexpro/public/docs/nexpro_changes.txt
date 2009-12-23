@@ -1,6 +1,9 @@
 @todo: (Nexfile)
   - Add support to to re-arrange file listing order
 
+Dec 23/2009 (Randy)
+    - Cleaned up the installation folders for a base Geeklog installation of nexpro plugins
+
 Dec 21/2009 (Blaine)
   - Fix to nexfile to use Bcc to send out email notifications
   - Forum bug with saving attachment to nexfile - missing global define in gf_check4files()
