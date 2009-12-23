@@ -16,7 +16,7 @@ global $_DB_host, $_DB_name, $_DB_user, $_DB_pass, $_DB_table_prefix, $_DB_dbms;
 
 $_DB_host = 'localhost';
 $_DB_name = 'nexpro';
-$_DB_user = 'root';
+$_DB_user = 'user';
 $_DB_pass = 'password';
 $_DB_table_prefix = 'gl_';
 $_DB_dbms = 'mysql';
