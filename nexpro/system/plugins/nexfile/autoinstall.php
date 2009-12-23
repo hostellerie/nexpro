@@ -145,7 +145,7 @@ function plugin_postinstall_nexfile($pi_name)
 
     $sql = "INSERT INTO {$_TABLES['blocks']} "
          . "(is_enabled,name,type,title,tid,blockorder,onleft,phpblockfn,group_id,owner_id,perm_owner,perm_group,perm_members,perm_anon) "
-         . " VALUES ('1','Latest Files','phpblock','latestfiles','all',0,0,'phpblock_nexfile_latestfiles',2,2,3,3,2,2)";
+         . " VALUES ('1','Latest Files','phpblock','Latest Files','all',0,0,'phpblock_nexfile_latestfiles',2,2,3,3,2,2)";
     DB_query($sql);
 
     return true;
