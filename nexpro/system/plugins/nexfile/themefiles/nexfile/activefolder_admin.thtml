@@ -5,13 +5,13 @@
     }
 </style>
 <![endif]-->
-                    <div id="activefolder" style="margin-bottom:10px;"><a href="#" onclick="edit_activefolder();" TITLE="Click to edit folder options or administrate folder">{active_folder_name}</a></div>
+                    <div id="activefolder"><a href="#" onclick="edit_activefolder();" TITLE="Click to edit folder options or administrate folder">{active_folder_name}</a></div>
                     <div id="edit_activefolder" style="display:none;">
                         <form name="frm_activefolder" method="post" action="{action_url}">
                         <input type="hidden" name="op" value="updatefolder">
                         <input type="hidden" name="cid" value="{active_category_id}">
                         <div style="float:left;width:420px;">
-                        <table>
+                        <table class="plugin" style="margin-bottom:10px;">
                             <tr>
                                 <td width="100">Folder Name:</td>
                                 <td><input type="text" name="categoryname" value="{active_folder_name}" style="width:270px"></td>
@@ -26,6 +26,10 @@
                             <tr>
                                 <td width="100">Description:</td>
                                 <td><textarea name="catdesc" rows="3" style="width:265px;font-size:10pt;">{folder_description}</textarea></td>
+                            </tr>
+                            <tr>
+                                <td width="100">Folder Order:</td>
+                                <td><input type="text" name="folderorder" value="{folderorder}" size="5"><span class="pluginTinyText" style="padding-left:10px;">Displayed in increments of 10 for easy editing</span></td>
                             </tr>
                             {custom_folder_fields}
                             <tr>
@@ -57,7 +61,7 @@
                         </table>
                         </div>
                         <div class="floatleft">
-                            <table class="plugin">
+                            <table class="plugin" style="margin-bottom:10px;">
                                 <tr>
                                     <td colspan="2" class="pluginReportTitle">Stats that include this folder and all subfolders</td>
                                 </tr>
@@ -66,6 +70,9 @@
                                 </tr>
                                 <tr>
                                     <td width="100" class="pluginRow2">File Count :</td><td class="pluginRow1">{file_count}</td>
+                                </tr>
+                                <tr>
+                                    <td width="100" class="pluginRow1">Total Size :</td><td class="pluginRow1">{total_size}</td>
                                 </tr>
                             </table>
                         </div>
