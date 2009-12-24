@@ -52,21 +52,9 @@ ul.homepagelists li{
                    display              : table;
                  }
 
-.clearboth {
-  clear:both;
-}
 .clearleft {
   clear:left;
 }
-.clearfix {
-  display:inline-block;
-}
-.clearfix:after { /* clear floats by applying the clearfix class to float-encasing block !*/
-  clear:both;
-  content:".";
-  display:block;
-  height:0;
-  visibility: hidden;
-}
+
 
 /* End of nexPro CSS Definitions */
