@@ -25,12 +25,13 @@
     var timerArray = new Array();
     var lastfiledata = new Array();
     var expandedfolders = new Array();
+    var searchprompt = '{searchprompt}'
 </script>
 
 <script type="text/javascript" src="{site_url}/javascript/jquery-1.3.1.min.js"></script>
 <script type="text/javascript" src="{site_url}/nexfile/javascript/plugins.js"></script>
 <script type="text/javascript" src="{site_url}/nexfile/javascript/initapplication.js"></script>
-<script type="text/javascript" src="{site_url}/nexfile/javascript/common.js"></script>
+<script type="text/javascript" src="{site_url}/nexfile/javascript/common.js?date=12162009"></script>
 <script type="text/javascript" src="{site_url}/javascript/php_serializer.js"></script>
 
 <script type="text/javascript">
@@ -39,7 +40,7 @@
         // Instantiate and configure Loader:
         var loader = new YAHOO.util.YUILoader({
 
-            base: YUIBaseURL + '/', 
+            base: YUIBaseURL + '/',
             // Identify the components you want to load.  Loader will automatically identify
             // any additional dependencies required for the specified components.
             require: ["container","layout","resize","connection","dragdrop","menu","button","tabview","autocomplete","treeview","element","cookie","uploader","logger","animation"],
@@ -59,11 +60,11 @@
                     setTimeout('init_nexfile()',1000);
                 });
             },
-            onFailure: function(o) { 
-                  alert("The required javascript libraries could not be loaded.  Please refresh your page and try again."); 
+            onFailure: function(o) {
+                  alert("The required javascript libraries could not be loaded.  Please refresh your page and try again.");
             },
 
-            allowRollup: true, 
+            allowRollup: true,
 
             // Configure the Get utility to timeout after 10 seconds for any given node insert
             timeout: 10000,
@@ -154,7 +155,7 @@
 
         {toolbar}
 
-          <div class="tagsearchboxcontainer" style="display:{hideheader};">
+          <div class="tagsearchboxcontainer">
               <div id="tagspanel" style="display:none;">
                 <div class="hd">Search Tags</div>
                     <div class="bd tagcloud">
@@ -196,7 +197,7 @@
           <div id="tagsearchbox">Search Tags:&nbsp;<span id="activesearchtags">{searchtags}</span></div>
         </div>
         <div style="margin-right:0px;">
-            <div id="filelistingheader" style="margin-bottom:10px;display:{hideheader};">
+            <div id="filelistingheader" style="margin-bottom:10px;">
                 {filelisting_header}
             </div>
             <form name="frmfilelisting" action="{action_url}" method="post" style="margin:0px;">
