@@ -1,6 +1,9 @@
 @todo: (Nexfile)
   - Add support to to re-arrange file listing order
 
+Jan 4/2009 (Blaine)
+    - Fix to upload.php to handle quotes in filename's with GPC Quotes Runtime enabled.
+
 Dec 23/2009 (Randy)
     - Cleaned up the installation folders for a base Geeklog installation of nexpro plugins
 
