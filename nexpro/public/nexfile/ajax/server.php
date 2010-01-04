@@ -75,7 +75,7 @@ if (isset($_REQUEST['pending'])) {
     $logmessage = "op:$op, user: $uid, reportmode: {$_GET['reportmode']}";
 }
 $firephp->log($logmessage);
-COM_errorLog ($logmessage);
+//COM_errorLog ($logmessage);
 
 
 $data = array();
@@ -479,7 +479,6 @@ switch ($op) {
 
     case 'getfolderperms':
         $cid = $filter->getCleanData('int',$_GET['cid']);
-        COM_errorLog("getfolderperms - cid: $cid");
         if ($cid > 0) {
             $data['html'] = nexdocsrv_folderperms($cid);
             $data['retcode'] = 200;
