@@ -89,7 +89,11 @@ function nxfile_uploadFile($fileArray, $username='', $password=''){
 
     $uid = intval(DB_getItem($_TABLES['users'],"uid","username='$username' AND passwd='$password'"));
     $fullname = DB_getItem($_TABLES['users'],"fullname","uid=$uid");
-    $filename = $fileArray['name'];
+    if (get_magic_quotes_gpc()) {
+        $filename = stripslashes($_POST['filename']);
+    } else {
+        $filename = $_POST['filename'];
+    }
     $filesize = intval($fileArray['size']);
     $mimetype = $fileArray['type'];
     $outputInformation = '';
@@ -125,15 +129,15 @@ function nxfile_uploadFile($fileArray, $username='', $password=''){
         } else {
             $outputInformation .=  "Upload of a file that attempted to match the export table but failed.\n";
             $outputInformation .=  "This file will be placed into the upload queue.\n";
-            $moved = @rename($fileArray['tmp_name'],"{$_FMCONF['storage_path']}queue/{$fileArray['name']}");
+            $moved = @rename($fileArray['tmp_name'],"{$_FMCONF['storage_path']}queue/$filename");
             if($moved){
             // Update the incoming queue.
                 $t=time();
-                $fileArray['name'] = (!get_magic_quotes_gpc()) ? addslashes($fileArray['name']) : $fileArray['name'];
-                $tempfilename=substr($fileArray['name'],$_FMCONF['upload_prefix_character_count']);
+                $filenameDB =  addslashes($filename);
+                $tempfilename = substr($filenameDB,$_FMCONF['upload_prefix_character_count']);
                 $description = "Uploaded by $fullname on " . date("F j, Y, g:i a") . ', via the Nexfile desktop agent';
                 $sql  = "INSERT INTO {$_TABLES['nxfile_import_queue']} (orig_filename,queue_filename,timestamp,uid,size,mimetype,description ) ";
-                $sql .= "values ('{$tempfilename}','{$fileArray['name']}','{$t}', $uid,$filesize,'$mimetype','$description')";
+                $sql .= "values ('{$tempfilename}','$filenameDB','{$t}', $uid,$filesize,'$mimetype','$description')";
                 DB_query($sql);
 	        } else {
 	            $outputInformation .= "Sorry, there is already a file with that name in the queue";
@@ -144,22 +148,22 @@ function nxfile_uploadFile($fileArray, $username='', $password=''){
 
         // Dump this into the upload queue for processing later
         $outputInformation .=  "Upload of a file to the queue.\n";
-        $moved = @rename($fileArray['tmp_name'],"{$_FMCONF['storage_path']}queue/{$fileArray['name']}");
+        $moved = @rename($fileArray['tmp_name'],"{$_FMCONF['storage_path']}queue/{$filename}");
         if($moved){
             //now we update the incoming queue.
             $description = "Uploaded by $fullname on " . date("F j, Y, g:i a") . ', via the Nexfile desktop agent';
             $t = time();
-            $fileArray['name'] = (!get_magic_quotes_gpc()) ? addslashes($fileArray['name']) : $fileArray['name'];
-            $tempfilename = substr($fileArray['name'],$_FMCONF['upload_prefix_character_count']);
+            $filenameDB = addslashes($filename);
+            $tempfilename = substr($filenameDB,$_FMCONF['upload_prefix_character_count']);
             $sql  = "INSERT INTO {$_TABLES['nxfile_import_queue']} (orig_filename,queue_filename,timestamp,uid,size,mimetype,description ) ";
-            $sql .= "values ('{$tempfilename}','{$fileArray['name']}','{$t}', $uid,$filesize,'$mimetype','$description')";
+            $sql .= "values ('{$tempfilename}','$filenameDB','{$t}', $uid,$filesize,'$mimetype','$description')";
             DB_query($sql);
         } else {
             $outputInformation .= "Sorry, there is already a file with that name in the queue";
         }
     }
 
-    $outputInformation .=  ("File: {$fileArray['name']} has been uploaded...\n" );
+    $outputInformation .=  ("File: $filename has been uploaded...\n" );
     return $outputInformation;
 
 }
