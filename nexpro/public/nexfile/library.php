@@ -804,6 +804,8 @@ function nexdoc_moveQueuefile($id,$newcid) {
                     DB_query("INSERT INTO {$_TABLES['nxfile_fileversions']} (fid,fname,ftype,version,notes,size,date,uid,status)
                         VALUES ('$fid','$fname','file','1','','$filesize','$date','$submitter','1')");
 
+                    PLG_itemSaved($fid, 'nexfile_filesaved'); 
+
                     // Optionally add notification records and send out notifications to all users with view access to this new file
                     if (DB_getItem($_TABLES['nxfile_categories'], 'auto_create_notifications', "cid={$newcid}") == 1) {
                         fm_autoCreateNotifications($fid, $newcid);
