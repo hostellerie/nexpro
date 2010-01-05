@@ -1,8 +1,13 @@
 @todo: (Nexfile)
   - Add support to to re-arrange file listing order
 
-Jan 4/2009 (Blaine)
-    - Fix to upload.php to handle quotes in filename's with GPC Quotes Runtime enabled.
+Jan 5/2010 (Blaine)
+    - Nexfile: Added test to ensure you can not create folders with no name
+    - Nexfile: Added additional PLG_itemSave calls on filesave and queue file moved
+    - Nexfile: Added PLG_preItemSave on folder create
+
+Jan 4/2010 (Blaine)
+    - Nexfile: Fix to upload.php to handle quotes in filename's with GPC Quotes Runtime enabled.
 
 Dec 23/2009 (Randy)
     - Cleaned up the installation folders for a base Geeklog installation of nexpro plugins

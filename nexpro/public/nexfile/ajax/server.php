@@ -420,28 +420,36 @@ switch ($op) {
         $catdesc    = $_CLEAN['text']['catdesc'];
         $catinherit = $_CLEAN['int']['catinherit'];
 
-        if (fm_getPermission($catpid,'admin')) {
-            $catresult = fm_createCategory($catpid,$catname,$catdesc);
-            if ($catresult['0'] > 0 ) {
-                $newcid = $catresult['0'];
-                if ($autonotify == 1) {     // Version 3.0 -- not presently being used
-                    DB_query("UPDATE {$_TABLES['nxfile_categories']} set auto_create_notifications='1' WHERE cid='$newcid'");
-                }
+        if (empty($catname)) {
+            $data['errmsg'] = 'Empty Folder Name';
+            $data['retcode'] =  500;
+        } elseif (fm_getPermission($catpid,'admin')) {
+            if (PLG_itemPreSave('nexfile_folder_create',$_CLEAN)) {
+                $catresult = fm_createCategory($catpid,$catname,$catdesc);
+                if ($catresult['0'] > 0 ) {
+                    $newcid = $catresult['0'];
+                    if ($autonotify == 1) {     // Version 3.0 -- not presently being used
+                        DB_query("UPDATE {$_TABLES['nxfile_categories']} set auto_create_notifications='1' WHERE cid='$newcid'");
+                    }
 
-                PLG_itemSaved($newcid, 'nexfile_folder_create');
+                    PLG_itemSaved($newcid, 'nexfile_folder_create');
 
-                fm_updateAuditLog("New Category: $newcid created");
-                $data['retcode'] =  200;
-                $data['cid'] = $newcid;
-                if ($catpid == 0) {
-                    $data['displaycid'] = $newcid;
+                    fm_updateAuditLog("New Category: $newcid created");
+                    $data['retcode'] =  200;
+                    $data['cid'] = $newcid;
+                    if ($catpid == 0) {
+                        $data['displaycid'] = $newcid;
+                    } else {
+                        $data['displaycid'] = $catpid;
+                    }
                 } else {
-                    $data['displaycid'] = $catpid;
+                    $data['retcode'] =  500;
+                    $data['errmsg'] = $catresult['1'];
+                    COM_errorLog("nexfile: Error creating new folder -> {$catresult['1']}");
                 }
             } else {
+                $data['errmsg'] = 'Missing Data or Improper Data';
                 $data['retcode'] =  500;
-                $data['errmsg'] = $catresult['1'];
-                COM_errorLog("nexfile: Error creating new folder -> {$catresult['1']}");
             }
 
         } else {
@@ -578,6 +586,8 @@ switch ($op) {
                 DB_query("INSERT INTO {$_TABLES['nxfile_fileversions']} (fid,fname,ftype,version,notes,size,date,uid,status)
                     VALUES ('$fid','$uploadfilename','file','1','{$_CLEAN['vernote']}','$filesize','$date','$uid','1')");
 
+                PLG_itemSaved($fid, 'nexfile_filesaved');
+
                 // Optionally add notification records and send out notifications to all users with view access to this new file
                 if (DB_getItem($_TABLES['nxfile_categories'], 'auto_create_notifications', "cid={$_CLEAN['cid']}") == 1) {
                     fm_autoCreateNotifications($fid, $_CLEAN['cid']);
@@ -618,6 +628,8 @@ switch ($op) {
                 $sql .= "'{$_CLEAN['description']}','{$_CLEAN['vernote']}','$filesize','$mimetype','$fileExtension','$uid','$date','{$_CLEAN['tags']}')";
                 DB_query($sql);
                 $sid = DB_insertId();
+
+                PLG_itemSaved($sid, 'nexfile_filesubmission');
 
                 // Determine if any users that have upload.admin permission for this category
                 // or nexfile admin rights should be notified of new file awaiting approval
