@@ -138,9 +138,9 @@ function plugin_postinstall_links($pi_name)
     $L_SQL = array();
     $L_SQL[] = "INSERT INTO {$_TABLES['linkcategories']} (cid, pid, category, description, tid, created, modified, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('{$_LI_CONF['root']}', 'root', 'Root', 'Website root', '', NOW(), NOW(), #group#, 2, 3, 3, 2, 2)";
 
-    $L_SQL[] = "INSERT INTO {$_TABLES['linkcategories']} (cid, pid, category, description, tid, created, modified, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('geeklog-sites', '{$_LI_CONF['root']}', 'Geeklog Sites', 'Sites using or related to the Geeklog CMS', NULL, NOW(), NOW(), #group#, 2, 3, 3, 2, 2)";
+    $L_SQL[] = "INSERT INTO {$_TABLES['linkcategories']} (cid, pid, category, description, tid, created, modified, group_id, owner_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('nextide-sites', '{$_LI_CONF['root']}', 'Nextide Sites', 'Sites using or related to the NexPro Suite', NULL, NOW(), NOW(), #group#, 2, 3, 3, 2, 2)";
 
-    $L_SQL[] = "INSERT INTO {$_TABLES['links']} (lid, cid, url, description, title, hits, date, owner_id, group_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('geeklog.net', 'geeklog-sites', 'http://www.geeklog.net/', 'Visit the Geeklog homepage for support, FAQs, updates, add-ons, and a great community.', 'Geeklog Project Homepage', 123, NOW(), 1, #group#, 3, 3, 2, 2);";
+    $L_SQL[] = "INSERT INTO {$_TABLES['links']} (lid, cid, url, description, title, hits, date, owner_id, group_id, perm_owner, perm_group, perm_members, perm_anon) VALUES ('nextide.ca', 'nextide-sites', 'http://www.nextide.ca/', 'Visit the Nextide homepage for support, FAQs, updates, add-ons, and a great community.', 'NexPro Project Homepage', 123, NOW(), 1, #group#, 3, 3, 2, 2);";
 
     foreach ($L_SQL as $sql) {
         $sql = str_replace('#group#', $admin_group_id, $sql);
