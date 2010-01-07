@@ -2,7 +2,7 @@
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
 // | nexForm Plugin v2.2.0 for the nexPro Portal Server                        |
-// | December 2009                                                             |
+// | January 2010                                                              |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
 // | lib-uploadfiles.php                                                       |
