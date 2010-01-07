@@ -78,8 +78,9 @@ if(!COM_isAnonUser()) {
 
 } else {
     $allowableViewFolders = fm_getAllowableCategories('view',false);
-    $allowableViewFoldersSql = implode(',',$allowableViewFolders);  // Format to use for SQL statement - test for allowable categories
 }
+$allowableViewFoldersSql = implode(',',$allowableViewFolders);  // Format to use for SQL statement - test for allowable categories
+
 
 /* Rendering the files in a folder can be a 3 pass process to not delay the loading of the main user interface for very large folders
    The inital pass (pass 1) is used when the UI and folder listing is first being generated for the user
