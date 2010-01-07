@@ -1,8 +1,8 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexMenu Plugin v2.5.1 for the nexPro Portal Server                        |
-// | December 2009                                                             |
+// | nexMenu Plugin v3.2 for the nexPro Portal Server                          |
+// | January 2010                                                              |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
 // | procss.php                                                                |
