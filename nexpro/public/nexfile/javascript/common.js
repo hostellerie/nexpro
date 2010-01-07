@@ -60,7 +60,7 @@ function updateAjaxStatus(message) {
 
 function clearAjaxActivity() {
     clear_ajaxactivity = true;
-    YAHOO.log('Clear ' + timerArray.length + ' timers');
+    //YAHOO.log('Clear ' + timerArray.length + ' timers');
     for(var i=0; i< timerArray.length; i++) {
         clearTimeout(timerArray[i]);
     }
@@ -127,12 +127,12 @@ function togglefolderoptions() {
 
 function toggle_filedetails(e) {
     if (Dom.get('editfiledetailslink').innerHTML == 'Display') {
-        YAHOO.log('toggle_filedetails - none ');
+        //YAHOO.log('toggle_filedetails - none ');
         Dom.setStyle('displayfiledetails', 'display', '');
         Dom.setStyle('editfiledetails', 'display', 'none');
         Dom.get('editfiledetailslink').innerHTML = 'Edit';
     } else {
-        YAHOO.log('toggle_filedetails - block');
+        //YAHOO.log('toggle_filedetails - block');
         Dom.setStyle('displayfiledetails', 'display', 'none');
         Dom.setStyle('editfiledetails', 'display', '');
         Dom.get('editfiledetailslink').innerHTML = 'Display';
@@ -1153,7 +1153,7 @@ function makeAJAXGetFolderListing(cid) {
     var surl = ajax_post_handler_url + '?op=getfolderlisting&cid=' + cid;
     var callback = {
         success: function(o) {
-            YAHOO.log('getFolderListing Return: ' + timeDiff.getDiff() + 'ms');
+            //YAHOO.log('getFolderListing Return: ' + timeDiff.getDiff() + 'ms');
             var root = o.responseXML.documentElement;
             var oResults = new Object();
             oResults.retcode = parseXML(root,'retcode');
@@ -1167,12 +1167,12 @@ function makeAJAXGetFolderListing(cid) {
                     Event.addListener("newfilelink", "click", showAddFilePanel);
                 }
                 document.frmtoolbar.cid.value = oResults.cid;
-                YAHOO.log('getFolderlisiting: initiate rendering filelisting:' + timeDiff.getDiff() + 'ms');
+                //YAHOO.log('getFolderlisiting: initiate rendering filelisting:' + timeDiff.getDiff() + 'ms');
                 renderFileListing(oResults);
                 Dom.setStyle('expandcollapsefolders','display','');
-                YAHOO.log('getFolderlisiting: initiate rendering leftside navigation:' + timeDiff.getDiff() + 'ms');
+                //YAHOO.log('getFolderlisiting: initiate rendering leftside navigation:' + timeDiff.getDiff() + 'ms');
                 YAHOO.nexfile.showLeftNavigation();
-                YAHOO.log('getFolderlisiting Updated page completed in: ' + timeDiff.getDiff() + 'ms');
+                //YAHOO.log('getFolderlisiting Updated page completed in: ' + timeDiff.getDiff() + 'ms');
                 updateAjaxStatus('File listing generated in: ' + timeDiff.getDiff() + 'ms');
                 timer = setTimeout("Dom.setStyle('nexfile_ajaxStatus','visibility','hidden')", 3000);
                 if (blockui)  {
@@ -1182,9 +1182,9 @@ function makeAJAXGetFolderListing(cid) {
                 try {
                     var lastRenderedFiles = parseXML(root,'lastrenderedfiles');
                     if (lastRenderedFiles) {
-                        YAHOO.log('showfiles: initiate getmorefiledata:' + timeDiff.getDiff() + 'ms');
+                        //YAHOO.log('showfiles: initiate getmorefiledata:' + timeDiff.getDiff() + 'ms');
                         YAHOO.nexfile.getmorefiledata(lastRenderedFiles);
-                        YAHOO.log('showfiles: completed getmorefiledata:' + timeDiff.getDiff() + 'ms');
+                        //YAHOO.log('showfiles: completed getmorefiledata:' + timeDiff.getDiff() + 'ms');
                     }
                 } catch(e) {}
 
@@ -1736,7 +1736,7 @@ function onUploadResponse(o) {
     var json = o.data.substring(o.data.indexOf('{'), o.data.lastIndexOf('}') + 1);
     var oResults = eval('(' + json + ')');
     if (oResults.retcode == 200) {
-        YAHOO.log('upload Response: ' + oResults.retcode);
+        //YAHOO.log('upload Response: ' + oResults.retcode);
         if (oResults.op == 'savefile') {
             if (oResults.message != '') {
                 Dom.get('nexfile_alert_content').innerHTML = oResults.message;
@@ -2222,7 +2222,7 @@ YAHOO.nexfile.getmorefiledata = function(data) {
 };
 
 YAHOO.nexfile.threadedRequestManager = function(i) {
-    YAHOO.log('YAHOO.nexfile.threadedRequestManager - i: ' + i);
+    //YAHOO.log('YAHOO.nexfile.threadedRequestManager - i: ' + i);
     if (folderstack.length > numGetFileThreads) {
         timerArray[i] = setTimeout('YAHOO.nexfile.threadedRequestManager(' + i + ')',500);
     } else if (i == 0 || lastfiledata.length > 0) {
@@ -2243,7 +2243,7 @@ YAHOO.nexfile.generateThreadedFileRequest = function(requestdata) {
             + requestdata[2] + '",'     //  foldernunber
             + requestdata[3] + ')'      //  level - folder depth
             ,interval);
-        YAHOO.log('Schedule getmoredateRequest for cid: ' + requestdata[0] + ' in ' + interval + ' ms');
+        //YAHOO.log('Schedule getmoredateRequest for cid: ' + requestdata[0] + ' in ' + interval + ' ms');
 }
 
 YAHOO.nexfile.getmorefiledataRequest = function(cid,fid,foldernumber,level) {
@@ -2302,7 +2302,7 @@ YAHOO.nexfile.getmorefolderdataRequest = function(cid,fid,foldernumber,level,pas
         $.blockUI();
     }
     timeDiff.setStartTime(); // Reset the timer
-    YAHOO.log('getmorefolderdata: start AJAX call:' + timeDiff.getDiff() + 'ms');
+    //YAHOO.log('getmorefolderdata: start AJAX call:' + timeDiff.getDiff() + 'ms');
     var surl = ajax_post_handler_url + '?op=getmorefolderdata' + '&pending=' + folderstack.length;
     postdata = 'cid='+ cid;
     postdata += '&foldernumber=' + foldernumber;
@@ -2312,7 +2312,7 @@ YAHOO.nexfile.getmorefolderdataRequest = function(cid,fid,foldernumber,level,pas
     }
     var callback = {
         success: function(o) {
-            YAHOO.log('getmorefiledata(' + cid + '): return from AJAX call:' + timeDiff.getDiff() + 'ms');
+            //YAHOO.log('getmorefiledata(' + cid + '): return from AJAX call:' + timeDiff.getDiff() + 'ms');
             var root = o.responseXML.documentElement;
             var oResults = new Object();
             oResults.retcode = parseXML(root,'retcode');
@@ -2344,7 +2344,7 @@ YAHOO.nexfile.getmorefolderdataRequest = function(cid,fid,foldernumber,level,pas
 
 /* Make the AJAX call to generate an updated file listing and leftside navigation */
 YAHOO.nexfile.showfiles = function() {
-    YAHOO.log('showfiles: start AJAX call:' + timeDiff.getDiff() + 'ms');
+    //YAHOO.log('showfiles: start AJAX call:' + timeDiff.getDiff() + 'ms');
     clearAjaxActivity();
     if (!blockui)  {
         blockui=true;
@@ -2376,7 +2376,7 @@ YAHOO.nexfile.showfiles = function() {
                 document.frmBroadcast.message.value = '';
                 Dom.get('filelistingheader').innerHTML = oResults.header;
 
-                YAHOO.log('showfiles: start rendering filelisting:' + timeDiff.getDiff() + 'ms');
+                //YAHOO.log('showfiles: start rendering filelisting:' + timeDiff.getDiff() + 'ms');
 
                 if (reportmode == 'notifications') {
                     Dom.get('filelisting_container').innerHTML = oResults.displayhtml;
@@ -2392,7 +2392,7 @@ YAHOO.nexfile.showfiles = function() {
                 } else {
                     renderFileListing(oResults);
                 }
-                YAHOO.log('showfiles: completed rendering filelisting:' + timeDiff.getDiff() + 'ms');
+                //YAHOO.log('showfiles: completed rendering filelisting:' + timeDiff.getDiff() + 'ms');
 
                 Dom.get('activesearchtags').innerHTML = '';     // clear any active search tags
                 document.fsearch.tags.value='';
@@ -2502,7 +2502,7 @@ YAHOO.nexfile.alternateRows = {
         // get all the tables with that particular class name
         recordList = Dom.getElementsByClassName(className);
         var closedfolders = new Array();
-        YAHOO.log("Set alternating row colors");
+        //YAHOO.log("Set alternating row colors");
 
         // loop through them
         var color = firstColor;

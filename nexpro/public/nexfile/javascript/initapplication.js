@@ -36,7 +36,7 @@ var init_nexfile = function() {
     } else {
         layoutPageWidth = pagewidth;
     }
-    YAHOO.log('width: ' + layoutPageWidth);
+    //YAHOO.log('width: ' + layoutPageWidth);
     var layout = new YAHOO.widget.Layout(el,{
         height: Dom.getClientHeight(), //Height of the viewport
         width: layoutPageWidth, //Width of the outer element
