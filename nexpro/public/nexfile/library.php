@@ -318,7 +318,7 @@ function nexdoc_displayFileListing($template,$cid=0,$reportmode='',$level,$folde
                 $template->set_var('file_description',nl2br($description));
                 if ($reportmode == 'approvals') {
                     $submitterName = DB_getItem($_TABLES['users'],'username',"uid=$submitter");
-                    $template->set_var('action_link',"<a href=\"{$_CONF['site_url']}/users.php?mode=profile&uid={$submitter}\">{$submitterName}</a>");
+                    $template->set_var('download_action_link',"<a href=\"{$_CONF['site_url']}/users.php?mode=profile&uid={$submitter}\">{$submitterName}</a>");
                 } elseif ($reportmode == 'incoming') {
                     if ($status == lockedstatus) {
                         $template->parse('download_action_link','download_disabled');
@@ -1889,8 +1889,9 @@ function nexdoc_recursiveAccessOptions($perms,$selected='',$cid='0',$level='1',$
                     } else {
                         $selectlist .= '">' . $indent .$name . '</option>' . LB;
                     }
+                    $selectlist = nexdoc_recursiveAccessOptions($perms,$selected,$cid,$level+1,$selectlist,$restricted);
                 }
-                $selectlist = nexdoc_recursiveAccessOptions($perms,$selected,$cid,$level+1,$selectlist,$restricted);
+
             } else {
                 if ($level > 1) {
                     for ($i=2; $i<= $level; $i++) {
