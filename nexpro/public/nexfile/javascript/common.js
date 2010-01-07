@@ -2110,15 +2110,15 @@ function renderLeftNavigation(oResults) {
         YAHOO.container.newfolderdialog.hide();
     } catch (e) {}
 
-    var tree;
-    tree = new YAHOO.widget.TreeView("nexfileNavTreeDiv");
+
+    var tree = new YAHOO.widget.TreeView("nexfileNavTreeDiv");
     var root = tree.getRoot();
     if((oResults.reports) && (oResults.reports.length)) {
         //Result is an array if more than one result, string otherwise
         if(YAHOO.lang.isArray(oResults.reports)) {
             var reportlinks = new YAHOO.widget.TextNode("Reports", root, true);
             reportlinks.labelStyle = "icon-files";
-            for (var i=0, j=oResults.reports.length; i<j; i++) {
+            for (var i=0; i<oResults.reports.length; i++) {
                 eval('var menuobj = { label: "' + oResults.reports[i]['name'] + '", href:"' + oResults.reports[i]['link'] + '" }');
                 var tempNode = new YAHOO.widget.TextNode(menuobj, reportlinks, false);
                 tempNode.labelStyle = oResults.reports[i]['icon'];
@@ -2131,7 +2131,7 @@ function renderLeftNavigation(oResults) {
         if(YAHOO.lang.isArray(oResults.recentfolders)) {
             var recentfolders = new YAHOO.widget.TextNode("Recent&nbsp;Folders", root, true);
             recentfolders.labelStyle = "icon-allfolders";
-            for (var i=0, j=oResults.recentfolders.length; i<j; i++) {
+            for (var i=0; i<oResults.recentfolders.length; i++) {
                 eval('var menuobj = { label: "' + oResults.recentfolders[i]['name'] + '", href:"' + oResults.recentfolders[i]['link'] + '" }');
                 var tempNode = new YAHOO.widget.TextNode(menuobj, recentfolders, false);
                 tempNode.labelStyle = oResults.recentfolders[i]['icon'];
@@ -2145,7 +2145,7 @@ function renderLeftNavigation(oResults) {
         if(YAHOO.lang.isArray(oResults.topfolders)) {
             var topfolders = new YAHOO.widget.TextNode("Top&nbsp;Level&nbsp;Folders", root, true);
             topfolders.labelStyle = "icon-allfolders";
-            for (var i=0, j=oResults.topfolders.length; i<j; i++) {
+            for (var i=0; i<oResults.topfolders.length; i++) {
                 eval('var menuobj = { label: "' + oResults.topfolders[i]['name'] + '", href:"' + oResults.topfolders[i]['link'] + '" }');
                 var tempNode = new YAHOO.widget.TextNode(menuobj, topfolders, false);
                 tempNode.labelStyle = oResults.topfolders[i]['icon'];
@@ -2180,10 +2180,6 @@ function renderFileListing(oResults) {
         if (linkobj) expandCollapseFolders(linkobj,'expand')
     }
     if (nexfiledetail == 'expanded')  showhideFileDetail('show');
-    // Disabled after finding a bug in IE if content with corners is below browser viewport and content has to be scrolled to view
-    // Content was wrapping and appearing in wrong position
-    //jQuery('.listing_searchtag').corner("8px");
-    //jQuery('.listing_activetag').corner("8px");
 
     folderList = Dom.getElementsByClassName('folder_withhover');
     for(var i=0; i< folderList.length; i++) {
