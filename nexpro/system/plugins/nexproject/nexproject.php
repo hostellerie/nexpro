@@ -54,8 +54,8 @@ $_TABLES['prj_statuslog']            = $_DB_table_prefix . 'nxprj_statuslog';
 $_TABLES['prj_session']              = $_DB_table_prefix . 'nxprj_sessions';
 $_TABLES['prj_filters']              = $_DB_table_prefix . 'nxprj_filters';
 $_TABLES['prj_lockcontrol']          = $_DB_table_prefix . 'nxprj_lockcontrol';
-$_TABLES['prj_projPerms']            = $_DB_table_prefix . 'nxprj_projPerms';
-$_TABLES['prj_taskSemaphore']        = $_DB_table_prefix . 'nxprj_taskSemaphore';
+$_TABLES['prj_projPerms']            = $_DB_table_prefix . 'nxprj_projperms';
+$_TABLES['prj_taskSemaphore']        = $_DB_table_prefix . 'nxprj_tasksemaphore';
 
 $nexproject_config = config::get_instance();
 $_PRJCONF_2 = $nexproject_config->get_config('nexproject');
