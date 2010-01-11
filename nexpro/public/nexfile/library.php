@@ -153,8 +153,10 @@ function nexdoc_displayFolderListing($template,$id=0,$reportmode='',$level=0,$fo
         }
         $resFolders = DB_QUERY($sql);
         if (!isset($lastModifiedParentFolderDate[$id])) $lastModifiedParentFolderDate[$id] = 0;
-        if (DB_numRows($resFolders) > 0) {
+        $foldercount = DB_numRows($resFolders);
+        if ($foldercount > 0) {
             $i = $rowid;
+            $j = 1;
             while ( list($folderId,$pid,$folderName,$folderDesc,$order) = DB_fetchARRAY($resFolders)) {
                 if ($order != $folderOrder) {
                     DB_query("UPDATE {$_TABLES['nxfile_categories']} SET folderorder = $folderOrder WHERE cid = $folderId");
@@ -206,7 +208,7 @@ function nexdoc_displayFolderListing($template,$id=0,$reportmode='',$level=0,$fo
                     } else {
                         $template->set_var('hide_moveup','');
                     }
-                    if ($order < $maxorder) {
+                    if ($j < $foldercount) {
                         $template->set_var('hide_movedown','');
                     } else {
                         $template->set_var('hide_movedown','none');
@@ -219,6 +221,7 @@ function nexdoc_displayFolderListing($template,$id=0,$reportmode='',$level=0,$fo
                 $template->parse('folderlisting','subfolder');
                 $retval .= $template->get_var('folderlisting');
                 $i++;
+                $j++;
             }
         } elseif ($level == 1) {
             $retval .= "<div id=\"subfolder{$GLOBALS['lastRenderedFiles'][0][0]}_rec{$GLOBALS['lastRenderedFiles'][0][1]}_bottom\">";
@@ -1890,6 +1893,9 @@ function nexdoc_recursiveAccessOptions($perms,$selected='',$cid='0',$level='1',$
                         $selectlist .= '">' . $indent .$name . '</option>' . LB;
                     }
                     $selectlist = nexdoc_recursiveAccessOptions($perms,$selected,$cid,$level+1,$selectlist,$restricted);
+                } elseif ($perms == 'admin') {
+                    // Need to check for any folders with admin even subfolders of parents that user does not have access              
+                    $selectlist = nexdoc_recursiveAccessOptions($perms,$selected,$cid,$level+1,$selectlist,$restricted);                 
                 }
 
             } else {

@@ -3,7 +3,9 @@
 
 
 
-
+Jan 11/2010 (Blaine)
+    - Nexfile: Fixed a bug with not showing all folders user had access to when creating a new folder
+    - Nexfile: Fixed a bug to refresh alternating colors after removing files
 
 Jan 8/2010 (Randy)
     - Update to nexProject table defs to resolve project perms table naming issue. 
