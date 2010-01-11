@@ -424,7 +424,8 @@ switch ($op) {
             $data['errmsg'] = 'Empty Folder Name';
             $data['retcode'] =  500;
         } elseif (fm_getPermission($catpid,'admin')) {
-            if (PLG_itemPreSave('nexfile_folder_create',$_CLEAN)) {
+            $test = PLG_itemPreSave('nexfile_folder_create',$_CLEAN);
+            if (empty($test)) {
                 $catresult = fm_createCategory($catpid,$catname,$catdesc);
                 if ($catresult['0'] > 0 ) {
                     $newcid = $catresult['0'];
