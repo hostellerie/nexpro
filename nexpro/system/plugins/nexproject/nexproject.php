@@ -31,7 +31,7 @@
 require_once $_CONF['path_system'] . 'classes/config.class.php';
 
 $_PRJCONF=array();
-$_PRJCONF['version'] = '2.1.0';
+$_PRJCONF['version'] = '2.1.1';
 $_PRJCONF['pi_name'] = 'nexproject';
 $_PRJCONF['pi_display_name'] = 'nexProject';
 $_PRJCONF['pi_gl_version'] = '1.6.1';

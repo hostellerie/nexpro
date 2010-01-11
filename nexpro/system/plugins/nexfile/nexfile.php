@@ -34,7 +34,7 @@ $_FMCONF=array();
 $_FMCONF['pi_display_name'] = 'nexfile';
 $_FMCONF['pi_name']         = 'nexfile';
 $_FMCONF['gl_version']      = '1.6.1';
-$_FMCONF['version']         = '3.0.0';
+$_FMCONF['version']         = '3.0.1';
 $_FMCONF['pi_url']          = 'http://www.nextide.ca/';
 
 
