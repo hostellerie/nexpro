@@ -349,10 +349,12 @@ class tagcloud {
             $i = 1;
             while ($A = DB_fetchArray($query)) {
                 $tagids[] = $A['id'];
+                // REGEX - search for id that is the first id or has a leading comma
+                //         must then have a trailing , or be the end of the field
                 if ($i > 1) {
-                    $sql .= "AND tags REGEXP '{$A['id']}' ";
+                    $sql .= "AND tags REGEXP '(^|,){$A['id']}(,|$)' ";
                 } else {
-                    $sql .= "tags REGEXP '{$A['id']}' ";
+                    $sql .= "tags REGEXP '(^|,){$A['id']}(,|$)' ";
                 }
                 $i++;;
             }
