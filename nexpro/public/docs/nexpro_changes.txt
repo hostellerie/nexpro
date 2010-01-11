@@ -1,6 +1,11 @@
 @todo: (Nexfile)
   - Add support to to re-arrange file listing order
 
+Jan 11/2010 (Randy)
+    - Updates to nexproject and nexfile headers
+    - version updates to nexproject and nexfile
+    - upgrade function fixes for nexproject and nexfile
+
 Jan 11/2010 (Blaine)
     - Nexfile: Fixed a bug preventing new creation of new folders. 
       Caused by late change to add support for PreSave in ajax/server - createfolder method
