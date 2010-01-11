@@ -177,7 +177,7 @@ if ($op == 'download') {
         header("Content-type: {$mime}");
         header("Content-disposition: attachment;filename={$newfilename[0]}");
         while(!feof($fp)){
-            $data = fread($fp,$_FMCONF['download_chunk_rate']);
+            $data = fread($fp,$_FMCONF['downloadchunkrate']);
             echo $data;
         }
         exit;
