@@ -127,36 +127,36 @@ function plugin_dopluginsearch_nexfile($query, $datestart, $dateend, $topic, $ty
 {
     global $_TABLES, $LANG_FM00;
 
-	if(!COM_isAnonUser()) {
-		// This cached setting will really only benefit when there are many thousand access records like portal23
-		// User setting (all users) is cleared each time a folder permission is updated.
-		// But this library is also included for all AJAX requests
-		$data = DB_getItem($_TABLES['nxfile_usersettings'],'allowable_view_folders',"uid={$_USER['uid']}");
-		if (empty($data)) {
-			$allowableViewFolders = fm_getAllowableCategories('view',false);
-			$data = serialize($allowableViewFolders);
-			if (!DB_count($_TABLES['nxfile_usersettings'],'uid',$_USER['uid'])) {
-			   DB_query("INSERT INTO {$_TABLES['nxfile_usersettings']} (uid,allowable_view_folders) VALUES ({$_USER['uid']},'$data')");
-			} else {
-				DB_query("UPDATE {$_TABLES['nxfile_usersettings']} set allowable_view_folders = '$data' WHERE uid={$_USER['uid']}");
-			}
-		} else {
-			$allowableViewFolders = unserialize($data);
-		}
+    if(!COM_isAnonUser()) {
+        // This cached setting will really only benefit when there are many thousand access records like portal23
+        // User setting (all users) is cleared each time a folder permission is updated.
+        // But this library is also included for all AJAX requests
+        $data = DB_getItem($_TABLES['nxfile_usersettings'],'allowable_view_folders',"uid={$_USER['uid']}");
+        if (empty($data)) {
+            $allowableViewFolders = fm_getAllowableCategories('view',false);
+            $data = serialize($allowableViewFolders);
+            if (!DB_count($_TABLES['nxfile_usersettings'],'uid',$_USER['uid'])) {
+               DB_query("INSERT INTO {$_TABLES['nxfile_usersettings']} (uid,allowable_view_folders) VALUES ({$_USER['uid']},'$data')");
+            } else {
+                DB_query("UPDATE {$_TABLES['nxfile_usersettings']} set allowable_view_folders = '$data' WHERE uid={$_USER['uid']}");
+            }
+        } else {
+            $allowableViewFolders = unserialize($data);
+        }
 
-	} else {
-		$allowableViewFolders = fm_getAllowableCategories('view',false);
-		$allowableViewFoldersSql = implode(',',$allowableViewFolders);  // Format to use for SQL statement - test for allowable categories
-	}
+    } else {
+        $allowableViewFolders = fm_getAllowableCategories('view',false);
+        $allowableViewFoldersSql = implode(',',$allowableViewFolders);  // Format to use for SQL statement - test for allowable categories
+    }
 
     // Make sure the query is SQL safe
     $query = trim(addslashes($query));
 
-	$sql  = "SELECT a.fid AS id, a.title, b.description, ";
-	$sql .= "CONCAT ('/nexfile/index.php?fid=', a.fid) as url ";
-	$sql .= "FROM {$_TABLES['nxfile_files']} a ";
-	$sql .= "LEFT JOIN {$_TABLES['nxfile_filedetail']} b on a.fid=b.fid ";
-	$sql .= "WHERE 1=1 ";
+    $sql  = "SELECT a.fid AS id, a.title, b.description, ";
+    $sql .= "CONCAT ('/nexfile/index.php?fid=', a.fid) as url ";
+    $sql .= "FROM {$_TABLES['nxfile_files']} a ";
+    $sql .= "LEFT JOIN {$_TABLES['nxfile_filedetail']} b on a.fid=b.fid ";
+    $sql .= "WHERE 1=1 ";
     if (!empty($allowableViewFoldersSql)) {
         $sql .= "AND file.cid in ($allowableViewFoldersSql) ";
     }
@@ -178,8 +178,8 @@ function plugin_dopluginsearch_nexfile($query, $datestart, $dateend, $topic, $ty
     }
 
     $search = new SearchCriteria('nexfile', $LANG_FM00['searchlabel']);
-	$columns = array('title' => 'a.title', 'b.description', 'a.fname');
-	list($sql,$ftsql) = $search->buildSearchSQL($keyType, $query, $columns, $sql);
+    $columns = array('title' => 'a.title', 'b.description', 'a.fname');
+    list($sql,$ftsql) = $search->buildSearchSQL($keyType, $query, $columns, $sql);
     $search->setSQL($sql);
     $search->setFTSQL($ftsql);
     $search->setRank(4);
@@ -238,16 +238,16 @@ function plugin_upgrade_nexfile() {
     $curversion = DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexfile'");
     if (intval($curversion) < 3) {
         if (upgrade_300() == 0 )  {
-            DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.0.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexfile' LIMIT 1");
+            DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.0.1', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexfile' LIMIT 1");
         }
     }
 
     /* Check if update completed and return a message number to be shown */
-    if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexfile'") == '3.0.0') {
+    if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexfile'") == '3.0.1') {
         COM_errorlog("nexFile upgraded successfully..");
         return true;
     } else {
-        COM_errorlog("nexFile was not updated to verion 3.0.0.  Please check any errors before retrying.");
+        COM_errorlog("nexFile was not updated to verion 3.0.1.  Please check any errors before retrying.");
         return false;
     }
 }

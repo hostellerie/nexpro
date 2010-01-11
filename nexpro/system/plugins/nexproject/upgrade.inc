@@ -31,7 +31,7 @@
 
 
 
-function nexproject_upgrade_210() {
+function nexproject_upgrade_211() {
     global $_TABLES, $_PRJCONF, $_CONF,$_DB_table_prefix;
 
     $base_path = $_CONF['path'] . 'plugins/nexproject/';
@@ -59,7 +59,7 @@ function nexproject_upgrade_210() {
         return 0;
       }
     }else{
-      COM_errorLog("Success - Completed nexProject plugin version 2.0.3 update",1);
+      COM_errorLog("Success - Completed nexProject plugin version 2.1.1 update",1);
       return 0;
     }
 
