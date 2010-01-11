@@ -1213,6 +1213,7 @@ function makeAJAXSetFolderOrder(cid,direction) {
             var oResults = eval('(' + json + ')');
             if (oResults.retcode == 200) {
                 renderFileListing(oResults);
+                YAHOO.nexfile.alternateRows.init('listing_record','#FFF','#EBEBEB');                 
             } else {
                 alert('Error setting folder order');
             }
