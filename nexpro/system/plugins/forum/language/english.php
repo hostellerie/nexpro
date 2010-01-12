@@ -314,9 +314,9 @@ $LANG_GF02['msg18']    = 'Error! Not all required fields were completed or were 
 $LANG_GF02['msg19']    = 'Your message has been posted.';
 $LANG_GF02['msg20']    = 'Reply Added, Your reply has been posted. Returning to Forum';
 $LANG_GF02['msg21']    = 'Sorry, you are unauthorized to do this. Please <a href="javascript:history.back()">Go Back</a> or <a href="%s/users.php?mode=login">Login</a><br><br>';
+$LANG_GF02['msg22']    = '- Forum Post Notification';
 
 /*
-$LANG_GF02['msg22']    = '- Forum Post Notification';
 $LANG_GF02['msg23a']   = "A reply has been made to the thread '%s' by %s.\n\nThis topic was started by %s in the %s forum. ";
 $LANG_GF02['msg23b']   = "A new topic '%s' has been posted by %s in the %s forum on the %s website. You may view it at:\n%s/forum/viewtopic.php?showtopic=%s\n";
 $LANG_GF02['msg23c']   = "You may view it at:\n%s/forum/viewtopic.php?showtopic=%s&lastpost=true\n";
@@ -501,8 +501,8 @@ $LANG_GF02['PostTopic']   = 'Post New Topic';
 $LANG_GF02['EditTopic']   = 'Edit Topic';
 $LANG_GF02['quietforum']  = 'Forum has no new topics';
 
-$LANG_GF02['notify_newtopic']  = 'New topic \'%s\' has been posted by %s in the %s forum. You may view it at:';
-$LANG_GF02['notify_newreply']  = 'Reply has been made to the thread \'%s\' by %s.';
+$LANG_GF02['notify_newtopic']  = 'a new topic \'%s\' has been posted by %s in the %s forum.';
+$LANG_GF02['notify_newreply']  = 'a reply has been made to the thread \'%s\' by %s.';
 $LANG_GF02['replynote']        = 'If you Reply to this email, your response will not be archived. Use the link provided above to reply on the site and have your response archived.';
 $LANG_GF02['notify_reason']    = 'You are receiving this email because you have chosen to be notified when a reply has been made to this topic. To stop receiving notifications on this topic go to %s to remove it.';
 $LANG_GF02['notify_premsg']    = '<----------POST Content --------->';
