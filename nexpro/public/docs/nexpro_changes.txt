@@ -1,6 +1,9 @@
 @todo: (Nexfile)
   - Add support to to re-arrange file listing order
 
+Jan 12/2010 (Blaine)
+    - Forum: Fix for the basic text notification. Update to plugins/functions.inc and language/english.php
+
 Jan 11/2010 (Blaine)
     - Nexfile: Fix for the download for editing feature - wrong reference to config parm
     - Nexfile/Nexprpo: Fix to the nexpro tagcloud.class.php to address an issue with the tag search

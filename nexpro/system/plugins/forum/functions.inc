@@ -77,8 +77,8 @@ if ( !empty($_USER['uid']) && $_USER['uid'] > 1 ) {
         $CONF_FORUM['notify_once']                = $userprefs['notify_once'];
     }
 }
-
 $CONF_FORUM['use_glfilter'] = 1; // always use the filter...
+
 $CONF_FORUM['leftblocks'] = array ('forum_menu');
 $CONF_FORUM['leftblocks'] = ppGetUserBlocks($CONF_FORUM['leftblocks']);
 
@@ -1378,6 +1378,7 @@ function forumPLG_sendNotification($forumid, $topicid, $poster, $type='topic', $
     }
     $topicname = DB_getItem($_TABLES['gf_topic'],'subject',"id=$topicid");
     $forum_name = DB_getItem($_TABLES['gf_forums'],forum_name, "forum_id='$forumid'");
+    $subjectline = "{$_CONF['site_name']} {$LANG_GF02['msg22']}";
     $notifyextracontent = '';
 
     if ($_POST['notificationtype'] != 'basic') {
@@ -1424,8 +1425,6 @@ function forumPLG_sendNotification($forumid, $topicid, $poster, $type='topic', $
             $tpl->set_var('content',$_POST['customnotification']);
         }
 
-        $subjectline = "{$_CONF['site_name']} {$LANG_GF02['msg22']}";
-
         $tpl->set_var('member_name',$postername);
         $tpl->set_var('topic_link',"{$_CONF['site_url']}/forum/viewtopic.php?showtopic=$topicid");
         $tpl->set_var('admin_link',"{$_CONF['site_url']}/forum/notify.php");
@@ -1457,12 +1456,13 @@ function forumPLG_sendNotification($forumid, $topicid, $poster, $type='topic', $
     }
 
     if ($type == 'forum') {
-        $textMessage .= sprintf($LANG_GF02['notify_newtopic'],$topicrec['subject'],$postername,$forum_name, $_CONF['site_name'],$_CONF['site_url'],$pid);
+        $textMessage .= sprintf($LANG_GF02['notify_newtopic'],$topicname,$postername,$forum_name, $_CONF['site_name'],$_CONF['site_url'],$pid);
     } else {
-        $textMessage .= sprintf($LANG_GF02['notify_newreply'],$topicrec['subject'],$postername);
+        $textMessage .= sprintf($LANG_GF02['notify_newreply'],$topicname,$postername);
     }
     $textMessage .= $notifyextracontent;
-    $textMessage .= sprintf($LANG_GF02['notify_reason'],"{$_CONF['site_url']}/forum/notify.php");
+    $textMessage .= "\nLink to topic: {$_CONF['site_url']}/forum/viewtopic.php?showtopic=$topicid";
+    $textMessage .= "\n\n" . sprintf($LANG_GF02['notify_reason'],"{$_CONF['site_url']}/forum/notify.php");
 
     if ($_POST['chk_notifypersonal'] == 1 AND $email_allusers != '') {
         if ($CONF_FORUM['log_notifications']) {
@@ -1474,9 +1474,9 @@ function forumPLG_sendNotification($forumid, $topicid, $poster, $type='topic', $
     } elseif (is_array($notifyusers)) {
         reset($notifyusers);
         foreach ($notifyusers as $touid => $toemail) {
-
+            $toname = COM_getDisplayName($touid);
             if ($_POST['notificationtype'] == 'basic' OR DB_getItem($_TABLES['gf_userprefs'],'notification_format',"uid=$touid") == 'text') {
-                $message  = "{$LANG_GF01['HELLO']} $toname,\n\n" . $textMessage;
+                $message  = "{$LANG_GF01['HELLO']} $toname,\n" . $textMessage;
                 if ($CONF_FORUM['log_notifications']) {
                     COM_errorLog("Forum TEXT Notification for topic:$topicid sent to: $toemail");
                 }
