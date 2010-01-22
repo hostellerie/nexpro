@@ -1247,6 +1247,7 @@ function makeAJAXSearchTags(searchtags,removetag) {
                 Dom.get('activefolder_container').innerHTML = oResults.activefolder;
                 Dom.get('filelistingheader').innerHTML = oResults.header;
                 renderFileListing(oResults);
+                YAHOO.nexfile.alternateRows.init('listing_record', '#FFF', '#EBEBEB');                 
                 if (oResults.searchtags) {
                     Dom.setStyle('showactivetags','display','block');
                     Dom.get('activesearchtags').innerHTML = oResults.currentsearchtags;
@@ -1386,8 +1387,9 @@ function makeAJAXSearch(form) {
             }
             if (oResults.retcode == 200) {
                 Dom.get('activefolder_container').innerHTML = oResults.activefolder;
-                Dom.get('filelistingheader').innerHTML = oResults.header;
+                Dom.get('filelistingheader').innerHTML = oResults.header; 
                 renderFileListing(oResults);
+                YAHOO.nexfile.alternateRows.init('listing_record', '#FFF', '#EBEBEB');                 
                 updateAjaxStatus('File listing generated in: ' + timeDiff.getDiff() + 'ms');
 
             } else {

@@ -808,7 +808,7 @@ function nexdoc_moveQueuefile($id,$newcid) {
                     DB_query("INSERT INTO {$_TABLES['nxfile_fileversions']} (fid,fname,ftype,version,notes,size,date,uid,status)
                         VALUES ('$fid','$fname','file','1','','$filesize','$date','$submitter','1')");
 
-                    PLG_itemSaved($fid, 'nexfile_filesaved'); 
+                    PLG_itemSaved($fid, 'nexfile_filesaved');
 
                     // Optionally add notification records and send out notifications to all users with view access to this new file
                     if (DB_getItem($_TABLES['nxfile_categories'], 'auto_create_notifications', "cid={$newcid}") == 1) {
@@ -1409,9 +1409,11 @@ function nexdoc_displayTagSearchListing($query,&$data) {
     }
     $tagcloud = new nexfileTagCloud();
     $itemids = $tagcloud->search($query);
-    if ($itemids) $itemids = implode(',',$itemids);
+    if ($itemids !== FALSE) $itemids = implode(',',$itemids);
     if (!empty($itemids)) {
         $sql .= "AND file.fid in ($itemids) ";
+    } else {
+        $sql .= "AND 1 = 2";    // No tags match query - return 0 records
     }
 
     $sql .= "ORDER BY file.date DESC ";
@@ -1894,8 +1896,8 @@ function nexdoc_recursiveAccessOptions($perms,$selected='',$cid='0',$level='1',$
                     }
                     $selectlist = nexdoc_recursiveAccessOptions($perms,$selected,$cid,$level+1,$selectlist,$restricted);
                 } elseif ($perms == 'admin') {
-                    // Need to check for any folders with admin even subfolders of parents that user does not have access              
-                    $selectlist = nexdoc_recursiveAccessOptions($perms,$selected,$cid,$level+1,$selectlist,$restricted);                 
+                    // Need to check for any folders with admin even subfolders of parents that user does not have access
+                    $selectlist = nexdoc_recursiveAccessOptions($perms,$selected,$cid,$level+1,$selectlist,$restricted);
                 }
 
             } else {
