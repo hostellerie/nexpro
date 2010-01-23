@@ -32,6 +32,11 @@
 include ('../lib-common.php');
 include ('library.php');
 
+ if (!SEC_inGroup($_FMCONF['access_mode'])) {
+     echo COM_refresh($_CONF['site_url']);
+     exit;     
+ }
+
 $filter = new sanitizer();
 $filter->cleanData('int',array('cid' => $_REQUEST['cid'], 'fid' => $_GET['fid']));
 $filter->cleanData('char',array('op' => $_REQUEST['op']));

@@ -39,6 +39,10 @@ function showAlert(message) {
     myAnim.animate();
 }
 
+function closeAlertDelayed(delay) {
+   timer = setTimeout('closeAlert()', delay);    
+}
+
 function updateAjaxStatus(message) {
     try {
         Dom.get('nexfile_ajaxStatus').innerHTML = '';
@@ -602,7 +606,10 @@ function moveSelectedFiles() {
                 }
                 if (oResults.message != '') {
                     showAlert(oResults.message);
+                    closeAlertDelayed(5000);                    
                 }
+                if (document.frmtoolbar.reportmode.value = 'incoming') 
+                    document.frmtoolbar.reportmode.value = '';
                 Dom.get('headerchkall').checked = false;
                 Dom.get('multiaction').selectedIndex=0;
                 Dom.get('multiaction').disabled = true;
@@ -1348,9 +1355,13 @@ function moveQueueFile() {
                 renderLeftNavigation(oResults);
                 Dom.get('filelisting_container').innerHTML = oResults.displayhtml;
                 YAHOO.nexfile.alternateRows.init('listing_record', '#FFF', '#EBEBEB');
+                if (oResults.message != '') {
+                    showAlert(oResults.message);
+                    closeAlertDelayed(5000);
+                }                
                 clearCheckedItems();
             } else {
-                alert(oResults.errmsg);
+                alert(oResults.message);
             }
             updateAjaxStatus();
         },
@@ -2026,6 +2037,7 @@ function toggleCheckedNotificationItems(obj) {
 // Two Functions used to initialize panels and forms for Add New File 'upload' and Add new Version 'edit'
 function showAddFilePanel() {
     var activefolder = document.frmtoolbar.cid.value;
+    document.frmNewFile.op.value = 'savefile';      
     Dom.setStyle('newfiledialog_folderrow', 'display', '');
     Dom.setStyle('newfiledialog_filedesc', 'display', '');
     Dom.setStyle('newfiledialog_filename', 'display', '');
@@ -2072,6 +2084,9 @@ function showAddNewVersion() {
     Dom.get('newfile_notes').value='';
     Dom.get('updatenotify').checked='';
     YAHOO.container.newfiledialog.cfg.setProperty("visible",true);
+    if (!Event.getListeners('btnNewFileCancel')) {   // Check first to see if listener already active
+        Event.addListener("btnNewFileCancel", "click",hideNewFilePanel, YAHOO.container.newfiledialog, true);
+    }    
 }
 
 function showAddCategoryPanel() {

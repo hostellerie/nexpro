@@ -1,5 +1,16 @@
 @todo: (Nexfile)
   - Add support to to re-arrange file listing order
+  
+Jan 22 (Blaine)
+    - Nexfile: Missing complete changes for autotag search issue (pub/nexfile/javascript/common.js and pub/nexfile/javascript/library.php)
+    - Nexfile: Fix for upload and upload new version (form option value needed to be reset correctly when swithing between both options as we share the form)
+    - Nexfile: Fix for the cancel button not working in upload new version
+    - Nexfile: Upload new version AJAX code was testing for permission upload_dir and should be upload_ver
+    - Nexfile: Added test in pub/nexfile/index.php to exit if public access not permitted and not logged in
+    - Nexfile: Admin can now view submitter of files uploaded via the desktop client in the 'Incomming' report
+    - Nexfile: Fixed a bug deleting files with quotes in the name - file was not removed from storage but record was deleted
+    - Nexfile: Fixed several bugs with the display and rendering logic moving incoming files that effected subsequent operations after move
+    - Nexfile: Added a function that is used to show and hide the AJAX operation result message - used now in the move incoming files function.
 
 Jan 12/2010 (Blaine)
     - Forum: Fix for the basic text notification. Update to plugins/functions.inc and language/english.php
