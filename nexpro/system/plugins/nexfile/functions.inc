@@ -936,8 +936,8 @@ function nexdoc_deletefile($fid) {
 
             // Need to check there are no other repository entries in this category for the same filename
             $fname = DB_getItem($_TABLES['nxfile_fileversions'],"fname","fid=$fid AND version=$version");
-            $fname = addslashes($fname);  // In case stored filename has quotes in it;
-            if (DB_count($_TABLES['nxfile_files'], array('cid','fname'), array("$cid","$fname")) == 1) {
+            $DBfname = addslashes($fname);  // In case stored filename has quotes in it;
+            if (DB_count($_TABLES['nxfile_files'], array('cid','fname'), array("$cid","$DBfname")) == 1) {
                 $ret = @unlink($_FMCONF['storage_path'] . "$cid/$fname");
                 if (!$ret) {
                     COM_errorLog("Attempted to unlink file but failed - path: {$_FMCONF['storage_path']}$cid/$fname");

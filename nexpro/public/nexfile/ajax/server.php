@@ -672,7 +672,7 @@ switch ($op) {
         $data['op'] = 'saveversion';
 
         if (!empty($_CLEAN['fid']) AND !empty($uploadfilename)) {
-            $pos = strrpos($uploadfilename,'.') + 1;
+            $pos = strrpos($uploadfilename,'.');
             $newfilename = substr($uploadfilename,0,$pos);
             $fileExtension = strtolower(substr($uploadfilename, $pos+1));
 
@@ -691,7 +691,7 @@ switch ($op) {
                 // Extract just the filename portion
                 $filename = substr($fname,0,$vpos);
             } else {
-                $filename = substr($fname,0,$pos);
+                $filename = substr($fname,0,$pos-1);
             }
 
             if ($uploadfilename != '') {
@@ -701,7 +701,7 @@ switch ($op) {
             $curVerFname = strtolower($filename) . '_v' .$curVersion. '.' . $oldFileExtension;
             $newVerFname = strtolower($newfilename) . '_v' .$newVersion. '.' . $newFileExtension;
 
-           if (fm_getPermission($cid,'upload_dir')) {
+           if (fm_getPermission($cid,'upload_ver')) {
                 if (empty($_CLEAN['filetitle'])) $_CLEAN['filetitle'] = $upndcname;
                 $filesize =  $_FILES['Filedata']['size'];
                 $directory = "{$_FMCONF['storage_path']}$cid";
@@ -990,7 +990,6 @@ switch ($op) {
                         }
                     }
                 }
-                if (!in_array($reportmode,$validReportModes))  $ajaxBackgroundMode = true;
             }
 
             if ($_POST['reportmode'] == 'incoming') {
@@ -1004,6 +1003,7 @@ switch ($op) {
                         DB_query("DELETE FROM {$_TABLES['nxfile_import_queue']} WHERE id={$id}");
                     }
                 }
+
             } elseif ($_POST['reportmode'] == 'notifications') {
                 foreach ($files as $id) {
                     if ($id > 0 AND DB_count($_TABLES['nxfile_notifications'],array('id','uid'),array($id,$uid))) {
@@ -1016,9 +1016,9 @@ switch ($op) {
                         nexdoc_deletefile($id);
                     }
                 }
-                if (!in_array($reportmode,$validReportModes))  $ajaxBackgroundMode = true;
             }
 
+            if (!in_array($_POST['reportmode'],$validReportModes))  $ajaxBackgroundMode = true;  
             $data['retcode'] = 200;
             $data['activefolder'] = nexdoc_displayActiveFolder($cid);
             $data['displayhtml'] = nexdocsrv_generateFileListing($cid,$_POST['reportmode']);
@@ -1590,13 +1590,15 @@ switch ($op) {
         $filename = DB_getItem($_TABLES['nxfile_import_queue'],'orig_filename',"id={$_CLEAN['id']}");
         if (file_exists("{$_FMCONF['storage_path']}{$_CLEAN['newcid']}/{$filename}")) {
             $data['retcode'] = 500;
-            $data['errmsg'] = $LANG_FMERR['err18'];
+            $data['message'] = $LANG_FMERR['err18'];
         } elseif (nexdoc_moveQueuefile($_CLEAN['id'],$_CLEAN['newcid'])) {
+            $newfoldername = DB_getItem($_TABLES['nxfile_categories'],'name',"cid={$_CLEAN['newcid']}");
             $data['retcode'] = 200;
             $data = nexdocsrv_generateLeftSideNavigation($data);
             $data['displayhtml'] = nexdocsrv_generateFileListing(0,'incoming');
+            $data['message'] = "Successfully moved file to $newfoldername";             
         } else {
-            $data['errmsg'] = $GLOBALS['fm_errmsg'];
+            $data['message'] = $GLOBALS['fm_errmsg'];
             $data['retcode'] = 500;
         }
         $retval = json_encode($data);

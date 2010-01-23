@@ -272,8 +272,8 @@ function nexdoc_displayFileListing($template,$cid=0,$reportmode='',$level,$folde
         $break = false;
         $template->set_var('show_ownername','none');
         if (in_array($reportmode,$validReportModes)) {
-            $template->set_var('show_foldername','');
-            if($reportmode == 'incoming') {
+            $template->set_var('show_foldername','');         
+            if($reportmode == 'incoming' AND SEC_hasRights('nexfile.edit')) {
                 $template->set_var('show_ownername','');
             }
         } else {
@@ -323,6 +323,9 @@ function nexdoc_displayFileListing($template,$cid=0,$reportmode='',$level,$folde
                     $submitterName = DB_getItem($_TABLES['users'],'username',"uid=$submitter");
                     $template->set_var('download_action_link',"<a href=\"{$_CONF['site_url']}/users.php?mode=profile&uid={$submitter}\">{$submitterName}</a>");
                 } elseif ($reportmode == 'incoming') {
+                    $submitterName = DB_getItem($_TABLES['users'],'fullname',"uid=$submitter");
+                    if (empty($submitterName))  $submitterName = DB_getItem($_TABLES['users'],'fullname',"uid=$submitter");
+                    $template->set_var('owner_name',$submitterName);                    
                     if ($status == lockedstatus) {
                         $template->parse('download_action_link','download_disabled');
                         $template->set_var('edit_action_link','');
@@ -530,7 +533,9 @@ function nexdoc_formatHeader($cid=0,$reportmode='') {
         $tpl->set_var('LANG_actionheading','Actions');
     }
 
-    if($reportmode == 'incoming') {
+    if($reportmode == 'incoming' AND SEC_hasRights('nexfile.edit')) {
+        $tpl->set_var('show_ownername','');
+    } else {
         $tpl->set_var('show_ownername','none');
     }
 
