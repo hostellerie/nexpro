@@ -1,6 +1,11 @@
 @todo: (Nexfile)
   - Add support to to re-arrange file listing order
   
+Jan 27 (Randy)
+    - Nexflow updates to custom workflow functions file api.php to fix header issue
+    - Nexflow update to manual workflow function to use correct process ID variable
+    - update to nexflow functions.inc to include all workflow custom files.
+
 Jan 22 (Blaine)
     - Nexfile: Missing complete changes for autotag search issue (pub/nexfile/javascript/common.js and pub/nexfile/javascript/library.php)
     - Nexfile: Fix for upload and upload new version (form option value needed to be reset correctly when swithing between both options as we share the form)

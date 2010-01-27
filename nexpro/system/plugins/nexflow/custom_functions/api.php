@@ -1,3 +1,4 @@
+<?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
 // | nexFlow Plugin v3.1.0 for the nexPro Portal Server                        |

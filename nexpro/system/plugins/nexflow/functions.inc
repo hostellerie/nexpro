@@ -52,10 +52,11 @@ if (isset($CONF_NF['max_uploadfile_size'])) {
 
 /* Include the base nextide provided workflow functions as well as all custom function library files */
 $customFunctionsDir = $_CONF['path'] .'plugins/nexflow/custom_functions/';
+
 if (is_dir($customFunctionsDir)) {
    if ($dh = opendir($customFunctionsDir)) {
        while (($file = readdir($dh)) !== false) {
-           if (filetype($customFunctionsDir . $file) == 'file' && strpos($file, '.pos')) {
+           if (filetype($customFunctionsDir . $file) == 'file' && strpos($file, '.php')) {
                 include_once ($customFunctionsDir . $file);
            }
        }
