@@ -39,8 +39,7 @@ function nf_noOperation($taskid,$processID) {
 
 // Basic batch task that will take a message or string defined in the task optionalParm field and write it to the log file
 function nf_logMessage($taskid,$processID) {
-
-    $nfclass = new nexflow($processid);
+    $nfclass = new nexflow($processID);
     $nfclass->set_currentTaskid($taskid);
     $logfileMsg = $nfclass->get_taskOptionalParm();
     nf_changeLog($logfileMsg);
