@@ -1,7 +1,7 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexFlow Plugin v3.1.0 for the nexPro Portal Server                        |
+// | nexFlow Plugin v3.1.1 for the nexPro Portal Server                        |
 // | January 2010                                                              |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
@@ -317,10 +317,13 @@ function plugin_upgrade_nexflow() {
             DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.1.0', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexflow' LIMIT 1");
         }
         break;
+    case "3.1.0":
+        DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.1.1', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexflow' LIMIT 1");
+        break;
     }
 
     /* Check if update completed and return a message number to be shown */
-    if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexflow'") == '3.1.0') {
+    if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexflow'") == '3.1.1') {
         return true;
         COM_errorlog("nexFlow was updated successfully.");
     } else {
