@@ -1,7 +1,7 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexFile Plugin v3.0.1 for the nexPro Portal Server                        |
+// | nexFile Plugin v3.0.2 for the nexPro Portal Server                        |
 // | January 2010                                                              |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
@@ -34,7 +34,7 @@ $_FMCONF=array();
 $_FMCONF['pi_display_name'] = 'nexfile';
 $_FMCONF['pi_name']         = 'nexfile';
 $_FMCONF['gl_version']      = '1.6.1';
-$_FMCONF['version']         = '3.0.1';
+$_FMCONF['version']         = '3.0.2';
 $_FMCONF['pi_url']          = 'http://www.nextide.ca/';
 
 

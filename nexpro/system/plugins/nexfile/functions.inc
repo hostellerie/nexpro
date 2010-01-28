@@ -1,7 +1,7 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexFile Plugin v3.0.1 for the nexPro Portal Server                        |
+// | nexFile Plugin v3.0.2 for the nexPro Portal Server                        |
 // | January 2010                                                              |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
@@ -238,16 +238,19 @@ function plugin_upgrade_nexfile() {
     $curversion = DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexfile'");
     if (intval($curversion) < 3) {
         if (upgrade_300() == 0 )  {
-            DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.0.1', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexfile' LIMIT 1");
+            DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.0.2', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexfile' LIMIT 1");
         }
+    }
+    else if ($curversion == '3.0.0' || $curversion == '3.0.1') {
+	DB_query("UPDATE {$_TABLES['plugins']} SET `pi_version` = '3.0.2', `pi_gl_version` = '1.6.0' WHERE `pi_name` = 'nexfile' LIMIT 1");
     }
 
     /* Check if update completed and return a message number to be shown */
-    if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexfile'") == '3.0.1') {
+    if (DB_getItem($_TABLES['plugins'],'pi_version',"pi_name = 'nexfile'") == '3.0.2') {
         COM_errorlog("nexFile upgraded successfully..");
         return true;
     } else {
-        COM_errorlog("nexFile was not updated to verion 3.0.1.  Please check any errors before retrying.");
+        COM_errorlog("nexFile was not updated to verion 3.0.2.  Please check any errors before retrying.");
         return false;
     }
 }

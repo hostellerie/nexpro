@@ -1,7 +1,7 @@
 <?php
 /* Reminder: always indent with 4 spaces (no tabs). */
 // +---------------------------------------------------------------------------+
-// | nexFlow Plugin v3.1.0 for the nexPro Portal Server                        |
+// | nexFlow Plugin v3.1.1 for the nexPro Portal Server                        |
 // | January 2010                                                              |
 // | Developed by Nextide Inc. as part of the nexPro suite - www.nextide.ca    |
 // +---------------------------------------------------------------------------+
@@ -36,7 +36,7 @@ $CONF_NF=array();
 $CONF_NF['pi_display_name'] = 'nexflow';
 $CONF_NF['pi_name']         = 'nexflow';
 $CONF_NF['gl_version']      = '1.6.1';
-$CONF_NF['version']         = '3.1.0';          // Plugin Version
+$CONF_NF['version']         = '3.1.1';          // Plugin Version
 $CONF_NF['pi_url']          = 'http://www.nextide.ca/';
 
 
