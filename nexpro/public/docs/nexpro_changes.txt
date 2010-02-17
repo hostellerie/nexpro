@@ -1,6 +1,9 @@
 @todo: (Nexfile)
   - Add support to to re-arrange file listing order
   
+Feb 17 2010 (Blaine)
+    - Nexfile: broken image showing in the view approvals view
+  
 Jan 27 (Randy)
     - Nexflow updates to custom workflow functions file api.php to fix header issue
     - Nexflow update to manual workflow function to use correct process ID variable

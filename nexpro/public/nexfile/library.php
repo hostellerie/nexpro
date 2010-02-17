@@ -315,6 +315,8 @@ function nexdoc_displayFileListing($template,$cid=0,$reportmode='',$level,$folde
                     nexdoc_formatFavoriteImage($template,$fid);
                     nexdoc_formatNotificationIcon($template,$fid,$data['cid']);
                     nexdoc_formatfiletags($template,$tags);
+                } else {
+                    $template->set_var('show_favorite','none');
                 }
 
                 //$description = htmlspecialchars($description,ENT_QUOTES,$charset);
