@@ -1838,6 +1838,7 @@ class nexflow {
         global $_TABLES;
         $processid = NXCOM_filterInt($processid);
         if($txt != '' && $processid > 0){
+            if (!get_magic_quotes_gpc()) $txt = addslashes($txt);
             $sql = "UPDATE {$_TABLES['nf_process']} set customFlowName='{$txt}' where id={$processid}";
             DB_query($sql);
         }
