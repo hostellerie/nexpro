@@ -1,5 +1,5 @@
-@todo: (Nexfile)
-  - Add support to to re-arrange file listing order
+Feb 25 2010 (Blaine)
+    - Nexflow: Fix for SQL error in nexflow->setCustomFlowName method
   
 Feb 17 2010 (Blaine)
     - Nexfile: broken image showing in the view approvals view
