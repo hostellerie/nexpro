@@ -75,8 +75,9 @@ class excel_format {
 
         // Test if output file option set - if so then we don't want to set headers as output does not go to screen
         if ($reportobj->_outputfile == '') {
-            header ("Expires: 0");
-            header ("Pragma: no-cache");
+            // Write some headers, including a modified "cache-control"
+            header("Cache-Control: private, max-age=1, pre-check=1");
+            header("Pragma: none");
             header ('Content-type: application/x-msexcel');
             header ("Content-Disposition: attachment; filename={$filename}");
         }
