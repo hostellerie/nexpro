@@ -1,3 +1,7 @@
+Mar 04 2010 (Blaine)
+    - Nexflow: Fix for SQL error in nexflow->setRequestTitle method
+    - nexreport fix to correct an IE download Excel report issue on a SSL site
+
 Feb 25 2010 (Blaine)
     - Nexflow: Fix for SQL error in nexflow->setCustomFlowName method
   

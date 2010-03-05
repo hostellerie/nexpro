@@ -1823,6 +1823,7 @@ class nexflow {
     function setRequestTitle($processid,$txt) {
         global $_TABLES;
         $processid = NXCOM_filterInt($processid);
+        if (!get_magic_quotes_gpc()) $txt = addslashes($txt);
         if($txt != '' && $processid > 0) {
             $sql = "UPDATE {$_TABLES['nf_projects']} set description='{$txt}' where wf_process_id={$processid}";
             DB_query($sql);
