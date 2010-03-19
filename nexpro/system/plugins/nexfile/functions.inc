@@ -158,7 +158,7 @@ function plugin_dopluginsearch_nexfile($query, $datestart, $dateend, $topic, $ty
     $sql .= "LEFT JOIN {$_TABLES['nxfile_filedetail']} b on a.fid=b.fid ";
     $sql .= "WHERE 1=1 ";
     if (!empty($allowableViewFoldersSql)) {
-        $sql .= "AND file.cid in ($allowableViewFoldersSql) ";
+        $sql .= "AND a.cid in ($allowableViewFoldersSql) ";
     }
 
     if (!empty($datestart) && !empty($dateend))

@@ -1,3 +1,7 @@
+Mar 19 2010 (Blaine)
+    - Nexfile: Fix for a search API bug
+    - Forum: Fix for a search API bug - was not testing forum access group access restrictions
+
 Mar 04 2010 (Blaine)
     - Nexflow: Fix for SQL error in nexflow->setRequestTitle method
     - nexreport fix to correct an IE download Excel report issue on a SSL site

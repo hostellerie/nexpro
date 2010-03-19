@@ -434,9 +434,13 @@ function plugin_dopluginsearch_forum($query, $datestart, $dateend, $topic, $type
     // Make sure the query is SQL safe
     $query = trim(addslashes($query));
 
+    $usergroups = implode(',',array_values(SEC_getUserGroups()));   
+
     $sql = "SELECT id, uid, date, subject AS title, comment AS description, views AS hits, ";
     $sql .= "CONCAT('/forum/viewtopic.php?showtopic=', id) AS url ";
-    $sql .= "FROM {$_TABLES['gf_topic']} WHERE 1=1 ";
+    $sql .= "FROM {$_TABLES['gf_topic']} a ";
+    $sql .= "LEFT JOIN {$_TABLES['gf_forums']} b on b.forum_id=a.forum ";
+    $sql .= "WHERE b.forum_id in ($usergroups) ";
 
     if (!empty($datestart) && !empty($dateend))
     {
