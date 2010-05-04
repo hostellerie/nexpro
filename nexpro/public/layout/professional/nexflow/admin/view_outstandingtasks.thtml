@@ -59,16 +59,16 @@
             <table class="plugin" width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr class="pluginHeader" align="left">
                 <th style="text-align:center;padding-right:5px;border-right:1px solid white;">
-                    <a href="{action_url}?page={page}&order=1&prevorder={prevorder}&prevdirection={prevdirection}&taskappmode={appmode}" TITLE="{title1}">{heading1}</a>
+                    <a href="{action_url}?page={page}&order=1&prevorder={prevorder}&prevdirection={prevdirection}&taskappmode={appmode}&pagesize={pagesize}" TITLE="{title1}">{heading1}</a>
                 </th>
                 <th style="border-right:1px solid white;">
-                    <a href="{action_url}?page={page}&order=2&prevorder={prevorder}&prevdirection={prevdirection}&taskappmode={appmode}" TITLE="{title2}">{heading2}</a>
+                    <a href="{action_url}?page={page}&order=2&prevorder={prevorder}&prevdirection={prevdirection}&taskappmode={appmode}&pagesize={pagesize}" TITLE="{title2}">{heading2}</a>
                 </th>
                 <th style="border-right:1px solid white;">
-                    <a href="{action_url}?page={page}&order=3&prevorder={prevorder}&prevdirection={prevdirection}&taskappmode={appmode}" TITLE="{title3}">{heading3}</a>
+                    <a href="{action_url}?page={page}&order=3&prevorder={prevorder}&prevdirection={prevdirection}&taskappmode={appmode}&pagesize={pagesize}" TITLE="{title3}">{heading3}</a>
                 </th>
                 <th style="border-right:1px solid white;">
-                    <a href="{action_url}?page={page}&order=4&prevorder={prevorder}&prevdirection={prevdirection}&taskappmode={appmode}" TITLE="{title4}">{heading4}</a>
+                    <a href="{action_url}?page={page}&order=4&prevorder={prevorder}&prevdirection={prevdirection}&taskappmode={appmode}&pagesize={pagesize}" TITLE="{title4}">{heading4}</a>
                 </th>
                 <th style="border-right:1px solid white;">{heading5}</th>                 
             </tr>
