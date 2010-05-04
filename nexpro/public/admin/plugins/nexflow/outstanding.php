@@ -54,7 +54,7 @@ $assignmentRecId=COM_applyFilter($_REQUEST['assignmentRecord']);
 $filterApp=COM_applyFilter($_REQUEST['taskappmode'], true);
 
 // Size of page - number of tasks per page 
-$pagesize = COM_applyFilter($_POST['pagesize'],true);
+$pagesize = COM_applyFilter($_REQUEST['pagesize'],true);
 if ($pagesize > 0) {
     $show = $pagesize;
 } else {
@@ -199,12 +199,14 @@ $taskcount = DB_numRows(DB_query($sql));
     
 $numpages = ceil($taskcount / $show);
 $offset = ($page - 1) * $show;
-$base_url = "{$_CONF['site_url']}/admin/plugins/nexflow/outstanding.php?order={$order}&prevorder={$prevorder}&direction={$prevdirection}";
+$base_url = "{$_CONF['site_url']}/admin/plugins/nexflow/outstanding.php?order={$order}&prevorder={$prevorder}&direction={$prevdirection}&taskappmode={$filterApp}&pagesize={$show}";
 
 $p->set_var('prevorder',$order);
 $p->set_var('prevdirection',$prevdirection);
 $p->set_var('page_navigation',COM_printPageNavigation($base_url,$page, $numpages));
 $p->set_var('taskcount',$taskcount);
+$p->set_var('appmode',$filterApp);
+$p->set_var('pagesize',$show);
 $p->set_var('title1',"Click to sort by Assigned $prevdirection");
 $p->set_var('title2',"Click to sort by Owner $prevdirection");
 $p->set_var('title3',"Click to sort by Project $prevdirection");
